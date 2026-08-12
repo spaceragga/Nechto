@@ -6,9 +6,15 @@ COPY package.json package-lock.json ./
 COPY tsconfig.base.json ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
+COPY packages/api-contract/package.json ./packages/api-contract/
+COPY packages/api-client/package.json ./packages/api-client/
 COPY apps/api/prisma ./apps/api/prisma
 
-RUN npm install -w @nechto/api
+# Skip root postinstall (build:packages) until package sources are copied.
+RUN npm install -w @nechto/api -w @nechto/api-contract --ignore-scripts
+
+COPY packages/api-contract ./packages/api-contract
+RUN npm run build -w @nechto/api-contract
 
 COPY apps/api ./apps/api
 

@@ -43,6 +43,7 @@ services:
       - ./apps/api/prisma:/workspace/apps/api/prisma
       - ./apps/api/tsconfig.json:/workspace/apps/api/tsconfig.json:ro
       - ./apps/api/tsconfig.build.json:/workspace/apps/api/tsconfig.build.json:ro
+      - ./packages/api-contract:/workspace/packages/api-contract
       - ./tsconfig.base.json:/workspace/tsconfig.base.json:ro
       - api_uploads:/workspace/apps/api/uploads
     depends_on:
@@ -73,6 +74,8 @@ services:
       - ./apps/web/tsconfig.json:/workspace/apps/web/tsconfig.json:ro
       - ./apps/web/env.d.ts:/workspace/apps/web/env.d.ts:ro
       - ./apps/web/css.d.ts:/workspace/apps/web/css.d.ts:ro
+      - ./packages/api-contract:/workspace/packages/api-contract
+      - ./packages/api-client:/workspace/packages/api-client
       - ./tsconfig.base.json:/workspace/tsconfig.base.json:ro
     depends_on:
       - api
