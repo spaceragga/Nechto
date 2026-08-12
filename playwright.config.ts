@@ -46,6 +46,10 @@ export default defineConfig({
             CORS_ORIGIN:
               process.env.CORS_ORIGIN ??
               'http://localhost:3000,http://127.0.0.1:3000',
+            STORAGE_DRIVER: process.env.STORAGE_DRIVER ?? 'local',
+            STORAGE_LOCAL_ROOT: process.env.STORAGE_LOCAL_ROOT ?? 'uploads-e2e',
+            STORAGE_PUBLIC_BASE_URL:
+              process.env.STORAGE_PUBLIC_BASE_URL ?? `${apiBaseUrl}/uploads`,
           },
         },
         {

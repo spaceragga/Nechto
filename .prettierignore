@@ -9,3 +9,6 @@ playwright/.cache
 package-lock.json
 *.tsbuildinfo
 apps/api/prisma/migrations
+uploads
+uploads-test
+uploads-e2e

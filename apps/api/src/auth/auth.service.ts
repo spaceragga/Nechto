@@ -34,6 +34,9 @@ export class AuthService {
       data: {
         email,
         passwordHash,
+        profile: {
+          create: {},
+        },
       },
       select: {
         id: true,

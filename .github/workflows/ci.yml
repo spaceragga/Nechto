@@ -50,6 +50,9 @@ jobs:
       JWT_EXPIRES_IN: 7d
       COOKIE_SECURE: 'false'
       CORS_ORIGIN: http://localhost:3000,http://127.0.0.1:3000
+      STORAGE_DRIVER: local
+      STORAGE_LOCAL_ROOT: uploads-test
+      STORAGE_PUBLIC_BASE_URL: http://localhost:3001/uploads
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -92,6 +95,9 @@ jobs:
       JWT_EXPIRES_IN: 7d
       COOKIE_SECURE: 'false'
       CORS_ORIGIN: http://localhost:3000,http://127.0.0.1:3000
+      STORAGE_DRIVER: local
+      STORAGE_LOCAL_ROOT: uploads-e2e
+      STORAGE_PUBLIC_BASE_URL: http://localhost:3001/uploads
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

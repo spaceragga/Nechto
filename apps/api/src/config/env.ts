@@ -35,6 +35,12 @@ const apiEnvSchema = z.object({
     .enum(['true', 'false'])
     .default('false')
     .transform((value) => value === 'true'),
+  STORAGE_DRIVER: z.enum(['local']).default('local'),
+  STORAGE_LOCAL_ROOT: z.string().min(1).default('uploads'),
+  STORAGE_PUBLIC_BASE_URL: z
+    .string()
+    .url({ message: 'STORAGE_PUBLIC_BASE_URL must be a valid URL' })
+    .default('http://localhost:3001/uploads'),
 });
 
 const parsed = apiEnvSchema.safeParse(process.env);
@@ -50,3 +56,10 @@ export const env = parsed.data;
 export type ApiEnv = z.infer<typeof apiEnvSchema>;
 
 export const ACCESS_TOKEN_COOKIE = 'nechto_access_token';
+
+export const AVATAR_MAX_BYTES = 5 * 1024 * 1024;
+export const AVATAR_ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+] as const;

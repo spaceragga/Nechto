@@ -9,6 +9,8 @@ coverage
 .turbo
 *.tsbuildinfo
 uploads
+uploads-test
+uploads-e2e
 test-results
 playwright-report
 playwright/.cache

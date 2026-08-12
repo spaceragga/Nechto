@@ -33,6 +33,9 @@ services:
       JWT_SECRET: ${JWT_SECRET:-local-dev-jwt-secret-key}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      STORAGE_DRIVER: ${STORAGE_DRIVER:-local}
+      STORAGE_LOCAL_ROOT: ${STORAGE_LOCAL_ROOT:-/workspace/apps/api/uploads}
+      STORAGE_PUBLIC_BASE_URL: ${STORAGE_PUBLIC_BASE_URL:-http://localhost:3001/uploads}
     ports:
       - '${API_PORT:-3001}:3001'
     volumes:
@@ -41,6 +44,7 @@ services:
       - ./apps/api/tsconfig.json:/workspace/apps/api/tsconfig.json:ro
       - ./apps/api/tsconfig.build.json:/workspace/apps/api/tsconfig.build.json:ro
       - ./tsconfig.base.json:/workspace/tsconfig.base.json:ro
+      - api_uploads:/workspace/apps/api/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -75,3 +79,4 @@ services:
 
 volumes:
   postgres_data:
+  api_uploads:

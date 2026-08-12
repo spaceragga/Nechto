@@ -14,6 +14,8 @@ Locales: **Russian default** (`/`), English (`/en`).
 
 Auth: register/login via JWT httpOnly cookie (`/login`, `/register`, `POST /auth/*`).
 
+Profiles: `/profile` edit + avatar upload. Files go through `StorageService` (local disk now; S3 later).
+
 ## Database
 
 ```bash

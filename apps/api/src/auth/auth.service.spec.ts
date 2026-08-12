@@ -59,6 +59,9 @@ describe('AuthService', () => {
         data: {
           email: 'artist@nechto.test',
           passwordHash: 'hashed',
+          profile: {
+            create: {},
+          },
         },
         select: { id: true, email: true },
       });

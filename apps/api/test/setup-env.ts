@@ -5,3 +5,6 @@ process.env.JWT_SECRET ??= 'test-jwt-secret-key';
 process.env.JWT_EXPIRES_IN ??= '7d';
 process.env.COOKIE_SECURE ??= 'false';
 process.env.CORS_ORIGIN ??= 'http://localhost:3000';
+process.env.STORAGE_DRIVER ??= 'local';
+process.env.STORAGE_LOCAL_ROOT ??= 'uploads-test';
+process.env.STORAGE_PUBLIC_BASE_URL ??= 'http://localhost:3001/uploads';
