@@ -1,0 +1,39 @@
+---
+description: All code comments must be written in English
+globs: "**/*.{ts,tsx,js,jsx,mjs,cjs,css,scss,sql,yml,yaml,Dockerfile,mdc}"
+alwaysApply: true
+---
+
+# English-only code comments
+
+All comments in project source code must be written in **English**.
+
+## Rules
+
+- Use English for `//`, `/* */`, JSX `{/* */}`, and CSS `/* */` comments
+- Use English for JSDoc/`TSDoc` (`/** ... */`)
+- Do not write comments in Russian or any other non-English language
+- User-facing UI copy may be Russian (Belarus market); comments are still English
+- Prefer clear, concise comments that explain **why**, not obvious **what**
+
+## Examples
+
+```typescript
+// ❌ BAD
+// Получаем пользователя из базы
+const user = await users.findById(id);
+
+// ✅ GOOD
+// Load user before applying personal pricing rules
+const user = await users.findById(id);
+```
+
+```tsx
+{/* ❌ BAD */}
+{/* Блок профиля */}
+
+{/* ✅ GOOD */}
+{/* Public creator profile header */}
+```
+
+When editing existing files, translate non-English comments to English instead of leaving them as-is.

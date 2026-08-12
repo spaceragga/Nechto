@@ -1,0 +1,34 @@
+---
+description: Nechto project stack, structure, and agent conventions
+alwaysApply: true
+---
+
+# Nechto — agent context
+
+Art-space platform for the Belarus market. Monorepo scaffold; product is early MVP.
+
+## Stack
+
+- `apps/web` — Next.js 15 (App Router) + Tailwind CSS 4 + TypeScript
+- `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`)
+- PostgreSQL 16 via Docker Compose
+- Local run: `docker compose up --build`
+- Shared TS: `tsconfig.base.json` (strict); no deprecated `baseUrl` / `moduleResolution: node`
+
+## Layout
+
+```
+apps/web   # frontend
+apps/api   # backend API
+docker-compose.yml
+.tsconfig.base.json
+```
+
+## Agent conventions
+
+- Keep changes scoped; no drive-by refactors
+- Prefer TypeScript everywhere (configs included when practical)
+- Do not add Kubernetes / LangChain / payments until product needs them
+- Verify with `npm run typecheck` (and app build when touching that app)
+- Match IDE TypeScript strictness when relevant (CSS side-effect imports need `*.css` module declarations)
+- Comments: English only (see `english-comments` rule)

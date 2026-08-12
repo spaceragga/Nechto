@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nechto}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nechto}
+      POSTGRES_DB: ${POSTGRES_DB:-nechto}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nechto} -d ${POSTGRES_DB:-nechto}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DATABASE_URL: ${DATABASE_URL:-postgresql://nechto:nechto@db:5432/nechto}
+    ports:
+      - "${API_PORT:-3001}:3001"
+    volumes:
+      - ./apps/api/src:/workspace/apps/api/src
+      - ./apps/api/tsconfig.json:/workspace/apps/api/tsconfig.json:ro
+      - ./apps/api/tsconfig.build.json:/workspace/apps/api/tsconfig.build.json:ro
+      - ./tsconfig.base.json:/workspace/tsconfig.base.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    volumes:
+      - ./apps/web/app:/workspace/apps/web/app
+      - ./apps/web/public:/workspace/apps/web/public
+      - ./apps/web/next.config.ts:/workspace/apps/web/next.config.ts:ro
+      - ./apps/web/postcss.config.ts:/workspace/apps/web/postcss.config.ts:ro
+      - ./apps/web/tsconfig.json:/workspace/apps/web/tsconfig.json:ro
+      - ./apps/web/env.d.ts:/workspace/apps/web/env.d.ts:ro
+      - ./tsconfig.base.json:/workspace/tsconfig.base.json:ro
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
