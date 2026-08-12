@@ -34,3 +34,4 @@ tsconfig.base.json
 - Comments: English only (see `english-comments` rule)
 - UI copy: Russian + English via next-intl (see `i18n-bilingual` rule)
 - Commits: English Conventional Commits (see `conventional-commits` rule)
+- Tests: Jest for API, Playwright for UI; cover new behavior (see `testing` rule)

@@ -1,0 +1,46 @@
+---
+description: Require Playwright and Jest coverage for new behavior
+alwaysApply: true
+---
+
+# Testing required
+
+Every behavior change must ship with automated tests. Do not merge feature/fix work without updating or adding tests.
+
+## Stack
+
+| Layer | Tool | Location |
+|-------|------|----------|
+| API unit | Jest | `apps/api/src/**/*.spec.ts` |
+| API HTTP | Jest + Supertest | `apps/api/test/**/*.e2e-spec.ts` |
+| UI / flows | Playwright | `e2e/**/*.spec.ts` |
+
+## Rules
+
+- New API endpoints/services → unit tests + HTTP e2e when the route is user/contract facing
+- New UI pages/flows/copy/i18n behavior → Playwright coverage for the happy path (and critical edge cases)
+- Bug fixes → regression test that fails without the fix
+- Refactors → keep existing tests green; add tests if behavior was previously untested
+- Do not rely on manual clicking as the only verification
+- Prefer focused tests over snapshot spam; use Playwright trace/screenshot on failure
+- Bilingual UI assertions must cover **ru** and **en** when the change is user-facing copy or routing
+
+## Commands
+
+```bash
+npm run test:api      # Jest unit
+npm run test:api:e2e  # Jest API e2e
+npm run test:e2e      # Playwright
+npm test              # api unit + api e2e + playwright
+```
+
+## Examples
+
+```ts
+// ✅ GOOD — new health field covered
+expect(service.getHealth()).toMatchObject({ status: 'ok' });
+
+// ❌ BAD — ship /profiles UI with zero Playwright specs
+```
+
+When asked to implement a feature, include tests in the same change set unless the user explicitly says otherwise.
