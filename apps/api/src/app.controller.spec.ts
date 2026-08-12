@@ -9,7 +9,15 @@ describe('AppController', () => {
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        {
+          provide: AppService,
+          useValue: {
+            getHello: jest.fn(),
+            getHealth: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = moduleRef.get(AppService);
@@ -26,15 +34,15 @@ describe('AppController', () => {
   });
 
   describe('getHealth', () => {
-    it('returns the service health payload', () => {
+    it('returns the service health payload', async () => {
       const payload = {
-        status: 'ok',
+        status: 'ok' as const,
         service: 'nechto-api',
-        databaseUrlConfigured: true,
+        database: 'up' as const,
       };
-      jest.spyOn(service, 'getHealth').mockReturnValue(payload);
+      jest.spyOn(service, 'getHealth').mockResolvedValue(payload);
 
-      expect(controller.getHealth()).toBe(payload);
+      await expect(controller.getHealth()).resolves.toBe(payload);
     });
   });
 });

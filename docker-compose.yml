@@ -24,11 +24,13 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3001
-      DATABASE_URL: ${DATABASE_URL:-postgresql://nechto:nechto@db:5432/nechto}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nechto}:${POSTGRES_PASSWORD:-nechto}@db:5432/${POSTGRES_DB:-nechto}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
     ports:
       - "${API_PORT:-3001}:3001"
     volumes:
       - ./apps/api/src:/workspace/apps/api/src
+      - ./apps/api/prisma:/workspace/apps/api/prisma
       - ./apps/api/tsconfig.json:/workspace/apps/api/tsconfig.json:ro
       - ./apps/api/tsconfig.build.json:/workspace/apps/api/tsconfig.build.json:ro
       - ./tsconfig.base.json:/workspace/tsconfig.base.json:ro
@@ -51,6 +53,7 @@ services:
       - ./apps/web/app:/workspace/apps/web/app
       - ./apps/web/components:/workspace/apps/web/components
       - ./apps/web/i18n:/workspace/apps/web/i18n
+      - ./apps/web/lib:/workspace/apps/web/lib
       - ./apps/web/messages:/workspace/apps/web/messages
       - ./apps/web/public:/workspace/apps/web/public
       - ./apps/web/middleware.ts:/workspace/apps/web/middleware.ts:ro

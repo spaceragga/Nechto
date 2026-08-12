@@ -3,6 +3,7 @@ const config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: 'src',
   testRegex: '.*\\.spec\\.ts$',
+  setupFiles: ['<rootDir>/../test/setup-env.ts'],
   transform: {
     '^.+\\.(t|j)s$': [
       'ts-jest',
@@ -11,7 +12,7 @@ const config = {
       },
     ],
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
+  collectCoverageFrom: ['**/*.(t|j)s', '!**/*.spec.ts'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
 };

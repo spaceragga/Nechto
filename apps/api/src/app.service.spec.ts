@@ -1,10 +1,27 @@
+import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from './app.service';
+import { PrismaService } from './prisma/prisma.service';
 
 describe('AppService', () => {
   let service: AppService;
+  let prisma: { $queryRaw: jest.Mock };
 
-  beforeEach(() => {
-    service = new AppService();
+  beforeEach(async () => {
+    prisma = {
+      $queryRaw: jest.fn(),
+    };
+
+    const moduleRef: TestingModule = await Test.createTestingModule({
+      providers: [
+        AppService,
+        {
+          provide: PrismaService,
+          useValue: prisma,
+        },
+      ],
+    }).compile();
+
+    service = moduleRef.get(AppService);
   });
 
   describe('getHello', () => {
@@ -14,30 +31,24 @@ describe('AppService', () => {
   });
 
   describe('getHealth', () => {
-    const originalDatabaseUrl = process.env.DATABASE_URL;
+    it('reports ok when the database responds', async () => {
+      prisma.$queryRaw.mockResolvedValue([{ '?column?': 1 }]);
 
-    afterEach(() => {
-      if (originalDatabaseUrl === undefined) {
-        delete process.env.DATABASE_URL;
-      } else {
-        process.env.DATABASE_URL = originalDatabaseUrl;
-      }
-    });
-
-    it('reports healthy status and service name', () => {
-      delete process.env.DATABASE_URL;
-
-      expect(service.getHealth()).toEqual({
+      await expect(service.getHealth()).resolves.toEqual({
         status: 'ok',
         service: 'nechto-api',
-        databaseUrlConfigured: false,
+        database: 'up',
       });
     });
 
-    it('marks database URL as configured when env is set', () => {
-      process.env.DATABASE_URL = 'postgresql://nechto:nechto@localhost:5432/nechto';
+    it('reports degraded when the database is unavailable', async () => {
+      prisma.$queryRaw.mockRejectedValue(new Error('connection refused'));
 
-      expect(service.getHealth().databaseUrlConfigured).toBe(true);
+      await expect(service.getHealth()).resolves.toEqual({
+        status: 'degraded',
+        service: 'nechto-api',
+        database: 'down',
+      });
     });
   });
 });
