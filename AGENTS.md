@@ -20,6 +20,8 @@ npm run dev:api             # NestJS locally
 Project Cursor rules live in `.cursor/rules/`:
 
 1. **english-comments** — all code comments must be English
-2. **nechto-project** — stack, layout, agent conventions
+2. **i18n-bilingual** — all UI copy in Russian (primary) + English via next-intl
+3. **conventional-commits** — English Conventional Commits (`feat`/`fix`/`docs`/…)
+4. **nechto-project** — stack, layout, agent conventions
 
 Follow those rules on every change. Prefer small, verified diffs over broad rewrites.

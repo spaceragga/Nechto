@@ -1,0 +1,46 @@
+---
+description: Bilingual UI copy — Russian primary, English secondary via next-intl
+alwaysApply: true
+---
+
+# i18n — Russian + English
+
+User-facing text must ship in **both** languages. **Russian (`ru`) is the default/primary** locale; English (`en`) is secondary.
+
+## Stack
+
+- Library: `next-intl`
+- Messages: `apps/web/messages/ru.json`, `apps/web/messages/en.json`
+- Routing: `apps/web/i18n/routing.ts` (`defaultLocale: 'ru'`, `localePrefix: 'as-needed'`)
+- Use `@/i18n/navigation` (`Link`, `redirect`, `useRouter`, `usePathname`) — not `next/link` / `next/navigation` for app routes
+
+## Rules
+
+- Never hardcode UI strings in components/pages (buttons, labels, titles, errors, empty states, toasts, metadata)
+- Add every new key to **both** `ru.json` and `en.json` in the same change
+- Keep key structure identical across locales
+- Prefer nested namespaces by feature (`HomePage.title`, `Profile.edit`, …)
+- Russian copy first when drafting; English is a full translation, not a stub
+- Code comments stay English-only (see `english-comments` rule)
+- API error codes may be machine keys; user-visible messages still go through i18n on the client (or bilingual API payloads if returned to UI)
+
+## Examples
+
+```tsx
+// ❌ BAD
+<button>Сохранить</button>
+
+// ✅ GOOD
+const t = useTranslations('Profile');
+<button>{t('save')}</button>
+```
+
+```json
+// messages/ru.json
+{ "Profile": { "save": "Сохранить" } }
+
+// messages/en.json
+{ "Profile": { "save": "Save" } }
+```
+
+When reviewing or generating UI, reject PRs/diffs that add RU-only or EN-only user-facing strings.

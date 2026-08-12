@@ -1,0 +1,66 @@
+---
+description: Conventional Commits in English for all git commits
+alwaysApply: true
+---
+
+# Conventional Commits (English only)
+
+All commit messages must be **English** and follow [Conventional Commits](https://www.conventionalcommits.org/).
+
+## Format
+
+```
+<type>(optional-scope): <short summary>
+
+[optional body]
+```
+
+- Summary: imperative mood, lowercase after the type, no trailing period
+- Keep the subject ~72 chars or less
+- Body explains **why** when needed, not a file dump
+
+## Common types
+
+| Type | Use for |
+|------|---------|
+| `feat` | New user-facing feature |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `refactor` | Code change that is not a fix or feature |
+| `test` | Adding or updating tests |
+| `chore` | Maintenance (deps, tooling, agent rules) |
+| `style` | Formatting / whitespace (no logic change) |
+| `perf` | Performance improvement |
+| `ci` | CI/CD config |
+| `build` | Build system or bundler config |
+| `revert` | Revert a previous commit |
+
+## Examples
+
+```
+feat: add user login page
+fix: resolve null pointer crash in cart
+docs: update readme installation steps
+refactor: clean up user auth service
+test: add unit tests for payment module
+chore: update package dependencies
+perf: cache pricelist generation results
+ci: add typecheck job to github actions
+build: enable next standalone output
+style: format nest module imports
+```
+
+## Scopes (optional)
+
+Use when it clarifies the area: `web`, `api`, `i18n`, `docker`, `agent`.
+
+```
+feat(i18n): add language switcher
+chore(agent): add conventional commits rule
+```
+
+## Do not
+
+- Write commit messages in Russian or mixed languages
+- Use vague subjects (`update`, `fix stuff`, `wip`)
+- Bundle unrelated changes in one commit when they can be split cleanly

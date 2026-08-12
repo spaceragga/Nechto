@@ -9,7 +9,7 @@ Art-space platform for the Belarus market. Monorepo scaffold; product is early M
 
 ## Stack
 
-- `apps/web` — Next.js 15 (App Router) + Tailwind CSS 4 + TypeScript
+- `apps/web` — Next.js 15 (App Router) + Tailwind CSS 4 + TypeScript + next-intl (ru default, en)
 - `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`)
 - PostgreSQL 16 via Docker Compose
 - Local run: `docker compose up --build`
@@ -18,10 +18,10 @@ Art-space platform for the Belarus market. Monorepo scaffold; product is early M
 ## Layout
 
 ```
-apps/web   # frontend
+apps/web   # frontend (app/[locale], messages/, i18n/)
 apps/api   # backend API
 docker-compose.yml
-.tsconfig.base.json
+tsconfig.base.json
 ```
 
 ## Agent conventions
@@ -32,3 +32,5 @@ docker-compose.yml
 - Verify with `npm run typecheck` (and app build when touching that app)
 - Match IDE TypeScript strictness when relevant (CSS side-effect imports need `*.css` module declarations)
 - Comments: English only (see `english-comments` rule)
+- UI copy: Russian + English via next-intl (see `i18n-bilingual` rule)
+- Commits: English Conventional Commits (see `conventional-commits` rule)
