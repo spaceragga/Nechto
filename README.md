@@ -32,11 +32,16 @@ npm run test:e2e      # Playwright (starts web unless already running)
 npm test              # all
 ```
 
-## Typecheck
+## Typecheck / lint / format
 
 ```bash
 npm run typecheck
+npm run lint
+npm run format        # write
+npm run format:check  # CI
 ```
+
+CI jobs: `quality` (format + lint + typecheck) → then parallel `api-test` and `web-e2e`.
 
 ## Run (Docker)
 

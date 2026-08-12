@@ -40,8 +40,7 @@ export default defineConfig({
             DATABASE_URL:
               process.env.DATABASE_URL ??
               'postgresql://nechto:nechto@localhost:5432/nechto',
-            JWT_SECRET:
-              process.env.JWT_SECRET ?? 'local-dev-jwt-secret-key',
+            JWT_SECRET: process.env.JWT_SECRET ?? 'local-dev-jwt-secret-key',
             JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? '7d',
             COOKIE_SECURE: process.env.COOKIE_SECURE ?? 'false',
             CORS_ORIGIN:

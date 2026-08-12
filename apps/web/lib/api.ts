@@ -25,10 +25,7 @@ async function parseError(response: Response): Promise<string> {
   return response.statusText || 'Request failed';
 }
 
-async function apiRequest<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<T> {
+async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${path}`, {
     ...init,
     credentials: 'include',
@@ -49,10 +46,7 @@ async function apiRequest<T>(
   return (await response.json()) as T;
 }
 
-export function registerRequest(input: {
-  email: string;
-  password: string;
-}) {
+export function registerRequest(input: { email: string; password: string }) {
   return apiRequest<{ user: AuthUser }>('/auth/register', {
     method: 'POST',
     body: JSON.stringify(input),

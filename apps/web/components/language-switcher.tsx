@@ -23,7 +23,11 @@ export function LanguageSwitcher() {
         onChange={(event) => onChange(event.target.value)}
       >
         {routing.locales.map((item) => (
-          <option key={item} value={item} className="bg-[#0f1115] text-[#f4f1ea]">
+          <option
+            key={item}
+            value={item}
+            className="bg-[#0f1115] text-[#f4f1ea]"
+          >
             {t(item)}
           </option>
         ))}

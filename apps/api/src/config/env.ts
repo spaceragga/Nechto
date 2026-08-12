@@ -29,9 +29,7 @@ const apiEnvSchema = z.object({
       'DATABASE_URL must be a PostgreSQL connection string',
     ),
   CORS_ORIGIN: z.string().optional(),
-  JWT_SECRET: z
-    .string()
-    .min(16, 'JWT_SECRET must be at least 16 characters'),
+  JWT_SECRET: z.string().min(16, 'JWT_SECRET must be at least 16 characters'),
   JWT_EXPIRES_IN: z.string().default('7d'),
   COOKIE_SECURE: z
     .enum(['true', 'false'])

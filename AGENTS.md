@@ -11,10 +11,14 @@ Instructions for AI agents working in this repository.
 ```bash
 docker compose up --build   # web :3000, api :3001, postgres :5432 (runs migrations)
 npm run typecheck           # both workspaces
+npm run lint                # ESLint (root flat config)
+npm run format              # Prettier write
+npm run format:check        # Prettier check (CI)
 npm run test:api            # Jest unit (API)
 npm run test:api:e2e        # Jest HTTP e2e (API)
 npm run test:e2e            # Playwright UI
 npm test                    # all of the above
+# CI: quality → api-test ∥ web-e2e
 npm run db:migrate          # Prisma migrate dev
 npm run db:deploy           # Prisma migrate deploy
 npm run dev:web             # Next.js locally

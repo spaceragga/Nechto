@@ -7,11 +7,15 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nechto}
       POSTGRES_DB: ${POSTGRES_DB:-nechto}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - '${POSTGRES_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nechto} -d ${POSTGRES_DB:-nechto}"]
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${POSTGRES_USER:-nechto} -d ${POSTGRES_DB:-nechto}',
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -30,7 +34,7 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
     ports:
-      - "${API_PORT:-3001}:3001"
+      - '${API_PORT:-3001}:3001'
     volumes:
       - ./apps/api/src:/workspace/apps/api/src
       - ./apps/api/prisma:/workspace/apps/api/prisma
@@ -49,9 +53,9 @@ services:
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
-      WATCHPACK_POLLING: "true"
+      WATCHPACK_POLLING: 'true'
     ports:
-      - "${WEB_PORT:-3000}:3000"
+      - '${WEB_PORT:-3000}:3000'
     volumes:
       - ./apps/web/app:/workspace/apps/web/app
       - ./apps/web/components:/workspace/apps/web/components
