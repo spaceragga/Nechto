@@ -28,6 +28,23 @@
     "logout": "Выйти",
     "signedInAs": "Вы вошли как",
     "checkingSession": "Проверяем сессию…",
+    "unknownError": "Что-то пошло не так",
+    "profileLink": "Профиль"
+  },
+  "Profile": {
+    "title": "Профиль",
+    "subtitle": "Имя, описание и фото для вашей витрины.",
+    "displayName": "Имя",
+    "bio": "О себе",
+    "avatar": "Фото профиля",
+    "avatarAlt": "Фото профиля",
+    "noAvatar": "Нет фото",
+    "save": "Сохранить",
+    "saving": "Сохраняем…",
+    "uploading": "Загружаем фото…",
+    "loading": "Загружаем профиль…",
+    "signedInAs": "Аккаунт:",
+    "loginLink": "Войти",
     "unknownError": "Что-то пошло не так"
   }
 }

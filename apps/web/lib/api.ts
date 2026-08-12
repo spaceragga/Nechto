@@ -5,6 +5,15 @@ export type AuthUser = {
   email: string;
 };
 
+export type Profile = {
+  id: string;
+  userId: string;
+  email: string;
+  displayName: string | null;
+  bio: string | null;
+  avatarUrl: string | null;
+};
+
 type ApiErrorBody = {
   message?: string | string[];
 };
@@ -26,13 +35,18 @@ async function parseError(response: Response): Promise<string> {
 }
 
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = new Headers(init?.headers);
+  const isFormData =
+    typeof FormData !== 'undefined' && init?.body instanceof FormData;
+
+  if (!isFormData && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
   const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${path}`, {
     ...init,
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers ?? {}),
-    },
+    headers,
   });
 
   if (!response.ok) {
@@ -68,4 +82,27 @@ export function logoutRequest() {
 
 export function meRequest() {
   return apiRequest<{ user: AuthUser }>('/auth/me');
+}
+
+export function getMyProfileRequest() {
+  return apiRequest<Profile>('/profiles/me');
+}
+
+export function updateMyProfileRequest(input: {
+  displayName?: string | null;
+  bio?: string | null;
+}) {
+  return apiRequest<Profile>('/profiles/me', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export function uploadMyAvatarRequest(file: File) {
+  const body = new FormData();
+  body.append('file', file);
+  return apiRequest<Profile>('/profiles/me/avatar', {
+    method: 'POST',
+    body,
+  });
 }

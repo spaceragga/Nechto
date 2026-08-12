@@ -50,13 +50,18 @@ export function HomeAuthPanel() {
         <p>
           {t('signedInAs')} <span className="opacity-90">{user.email}</span>
         </p>
-        <button
-          type="button"
-          onClick={onLogout}
-          className="rounded border border-white/30 px-4 py-2"
-        >
-          {t('logout')}
-        </button>
+        <div className="flex gap-4">
+          <Link href="/profile" className="underline">
+            {t('profileLink')}
+          </Link>
+          <button
+            type="button"
+            onClick={onLogout}
+            className="rounded border border-white/30 px-4 py-2"
+          >
+            {t('logout')}
+          </button>
+        </div>
       </div>
     );
   }

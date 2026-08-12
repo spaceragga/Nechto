@@ -28,6 +28,23 @@
     "logout": "Log out",
     "signedInAs": "Signed in as",
     "checkingSession": "Checking session…",
+    "unknownError": "Something went wrong",
+    "profileLink": "Profile"
+  },
+  "Profile": {
+    "title": "Profile",
+    "subtitle": "Name, bio, and photo for your public page.",
+    "displayName": "Display name",
+    "bio": "Bio",
+    "avatar": "Profile photo",
+    "avatarAlt": "Profile photo",
+    "noAvatar": "No photo",
+    "save": "Save",
+    "saving": "Saving…",
+    "uploading": "Uploading photo…",
+    "loading": "Loading profile…",
+    "signedInAs": "Account:",
+    "loginLink": "Log in",
     "unknownError": "Something went wrong"
   }
 }
