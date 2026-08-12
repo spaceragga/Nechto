@@ -5,8 +5,28 @@ on:
     branches: [main]
   pull_request:
 
+env:
+  NODE_VERSION: '20'
+
 jobs:
-  api:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      # Prisma Client typings are required for API typecheck; no DB needed.
+      - run: npx prisma generate
+        working-directory: apps/api
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+
+  api-test:
+    needs: quality
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -26,27 +46,26 @@ jobs:
       NODE_ENV: test
       PORT: 3001
       DATABASE_URL: postgresql://nechto:nechto@localhost:5432/nechto
-      NEXT_PUBLIC_API_URL: http://localhost:3001
       JWT_SECRET: ci-test-jwt-secret-key
       JWT_EXPIRES_IN: 7d
-      COOKIE_SECURE: "false"
+      COOKIE_SECURE: 'false'
       CORS_ORIGIN: http://localhost:3000,http://127.0.0.1:3000
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
       - run: npx prisma generate
         working-directory: apps/api
       - run: npx prisma migrate deploy
         working-directory: apps/api
-      - run: npm run typecheck
       - run: npm run test:api
       - run: npm run test:api:e2e
 
   web-e2e:
+    needs: quality
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -71,13 +90,13 @@ jobs:
       PLAYWRIGHT_API_URL: http://localhost:3001
       JWT_SECRET: ci-test-jwt-secret-key
       JWT_EXPIRES_IN: 7d
-      COOKIE_SECURE: "false"
+      COOKIE_SECURE: 'false'
       CORS_ORIGIN: http://localhost:3000,http://127.0.0.1:3000
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
       - run: npx prisma generate
