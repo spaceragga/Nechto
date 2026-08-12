@@ -1,0 +1,14 @@
+{
+  "LocaleLayout": {
+    "title": "Nechto",
+    "description": "Art space platform"
+  },
+  "HomePage": {
+    "title": "Hello world!"
+  },
+  "LanguageSwitcher": {
+    "label": "Language",
+    "ru": "Русский",
+    "en": "English"
+  }
+}

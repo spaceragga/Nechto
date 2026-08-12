@@ -4,11 +4,13 @@ Art space platform scaffold.
 
 ## Stack
 
-- `apps/web` — Next.js 15 + Tailwind CSS 4 (TypeScript)
+- `apps/web` — Next.js 15 + Tailwind CSS 4 + next-intl (ru / en, TypeScript)
 - `apps/api` — NestJS 11 (TypeScript)
 - PostgreSQL 16
 - Docker Compose
 - Shared strict TS: `tsconfig.base.json`
+
+Locales: **Russian default** (`/`), English (`/en`).
 
 ## Typecheck
 

@@ -1,0 +1,14 @@
+{
+  "LocaleLayout": {
+    "title": "Nechto",
+    "description": "Арт-пространство"
+  },
+  "HomePage": {
+    "title": "Привет, мир!"
+  },
+  "LanguageSwitcher": {
+    "label": "Язык",
+    "ru": "Русский",
+    "en": "English"
+  }
+}

@@ -49,11 +49,16 @@ services:
       - "${WEB_PORT:-3000}:3000"
     volumes:
       - ./apps/web/app:/workspace/apps/web/app
+      - ./apps/web/components:/workspace/apps/web/components
+      - ./apps/web/i18n:/workspace/apps/web/i18n
+      - ./apps/web/messages:/workspace/apps/web/messages
       - ./apps/web/public:/workspace/apps/web/public
+      - ./apps/web/middleware.ts:/workspace/apps/web/middleware.ts:ro
       - ./apps/web/next.config.ts:/workspace/apps/web/next.config.ts:ro
       - ./apps/web/postcss.config.ts:/workspace/apps/web/postcss.config.ts:ro
       - ./apps/web/tsconfig.json:/workspace/apps/web/tsconfig.json:ro
       - ./apps/web/env.d.ts:/workspace/apps/web/env.d.ts:ro
+      - ./apps/web/css.d.ts:/workspace/apps/web/css.d.ts:ro
       - ./tsconfig.base.json:/workspace/tsconfig.base.json:ro
     depends_on:
       - api
