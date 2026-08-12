@@ -27,6 +27,10 @@ jobs:
       PORT: 3001
       DATABASE_URL: postgresql://nechto:nechto@localhost:5432/nechto
       NEXT_PUBLIC_API_URL: http://localhost:3001
+      JWT_SECRET: ci-test-jwt-secret-key
+      JWT_EXPIRES_IN: 7d
+      COOKIE_SECURE: "false"
+      CORS_ORIGIN: http://localhost:3000,http://127.0.0.1:3000
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -44,8 +48,31 @@ jobs:
 
   web-e2e:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: nechto
+          POSTGRES_PASSWORD: nechto
+          POSTGRES_DB: nechto
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nechto -d nechto"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     env:
-      NEXT_PUBLIC_API_URL: http://127.0.0.1:3001
+      NODE_ENV: test
+      PORT: 3001
+      DATABASE_URL: postgresql://nechto:nechto@localhost:5432/nechto
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      PLAYWRIGHT_BASE_URL: http://localhost:3000
+      PLAYWRIGHT_API_URL: http://localhost:3001
+      JWT_SECRET: ci-test-jwt-secret-key
+      JWT_EXPIRES_IN: 7d
+      COOKIE_SECURE: "false"
+      CORS_ORIGIN: http://localhost:3000,http://127.0.0.1:3000
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,5 +80,9 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npx prisma generate
+        working-directory: apps/api
+      - run: npx prisma migrate deploy
+        working-directory: apps/api
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e

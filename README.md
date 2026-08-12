@@ -12,6 +12,8 @@ Art space platform scaffold.
 
 Locales: **Russian default** (`/`), English (`/en`).
 
+Auth: register/login via JWT httpOnly cookie (`/login`, `/register`, `POST /auth/*`).
+
 ## Database
 
 ```bash

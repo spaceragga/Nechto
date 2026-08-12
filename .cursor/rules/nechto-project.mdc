@@ -30,6 +30,7 @@ tsconfig.base.json
 - Prefer TypeScript everywhere (configs included when practical)
 - Do not add Kubernetes / LangChain / payments until product needs them
 - Verify with `npm run typecheck` (and app build when touching that app)
+- Auth uses JWT httpOnly cookies + `JwtAuthGuard`; never store passwords in plaintext
 - Match IDE TypeScript strictness when relevant (CSS side-effect imports need `*.css` module declarations)
 - Comments: English only (see `english-comments` rule)
 - UI copy: Russian + English via next-intl (see `i18n-bilingual` rule)
