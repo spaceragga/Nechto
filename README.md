@@ -12,6 +12,15 @@ Art space platform scaffold.
 
 Locales: **Russian default** (`/`), English (`/en`).
 
+## Tests
+
+```bash
+npm run test:api      # Jest unit (Nest)
+npm run test:api:e2e  # Jest + Supertest
+npm run test:e2e      # Playwright (starts web unless already running)
+npm test              # all
+```
+
 ## Typecheck
 
 ```bash

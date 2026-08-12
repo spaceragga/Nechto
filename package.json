@@ -10,12 +10,20 @@
     "dev:api": "npm run dev -w @nechto/api",
     "build": "npm run build --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test:api && npm run test:api:e2e && npm run test:e2e",
+    "test:api": "npm run test -w @nechto/api",
+    "test:api:e2e": "npm run test:e2e -w @nechto/api",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:install": "playwright install chromium"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.13.10",
     "typescript": "^5.8.2"
   }
 }
