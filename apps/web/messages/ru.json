@@ -10,5 +10,24 @@
     "label": "Язык",
     "ru": "Русский",
     "en": "English"
+  },
+  "Auth": {
+    "loginTitle": "Вход",
+    "registerTitle": "Регистрация",
+    "loginSubtitle": "Войдите, чтобы управлять профилем.",
+    "registerSubtitle": "Создайте аккаунт, чтобы начать выкладывать работы.",
+    "email": "Email",
+    "password": "Пароль",
+    "loginSubmit": "Войти",
+    "registerSubmit": "Создать аккаунт",
+    "submitting": "Отправка…",
+    "noAccount": "Нет аккаунта?",
+    "hasAccount": "Уже есть аккаунт?",
+    "loginLink": "Войти",
+    "registerLink": "Зарегистрироваться",
+    "logout": "Выйти",
+    "signedInAs": "Вы вошли как",
+    "checkingSession": "Проверяем сессию…",
+    "unknownError": "Что-то пошло не так"
   }
 }

@@ -10,5 +10,24 @@
     "label": "Language",
     "ru": "Русский",
     "en": "English"
+  },
+  "Auth": {
+    "loginTitle": "Log in",
+    "registerTitle": "Create account",
+    "loginSubtitle": "Sign in to manage your profile.",
+    "registerSubtitle": "Create an account to start sharing your work.",
+    "email": "Email",
+    "password": "Password",
+    "loginSubmit": "Log in",
+    "registerSubmit": "Create account",
+    "submitting": "Submitting…",
+    "noAccount": "No account yet?",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Log in",
+    "registerLink": "Sign up",
+    "logout": "Log out",
+    "signedInAs": "Signed in as",
+    "checkingSession": "Checking session…",
+    "unknownError": "Something went wrong"
   }
 }
