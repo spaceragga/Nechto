@@ -4,13 +4,22 @@ Art space platform scaffold.
 
 ## Stack
 
-- `apps/web` — Next.js 15 + Tailwind CSS 4 + next-intl (ru / en, TypeScript)
-- `apps/api` — NestJS 11 (TypeScript)
+- `apps/web` — Next.js 15 + Tailwind CSS 4 + next-intl (ru / en, TypeScript) + Zod env
+- `apps/api` — NestJS 11 + Prisma + Zod env (TypeScript)
 - PostgreSQL 16
-- Docker Compose
+- Docker Compose (`prisma migrate deploy` on API boot)
 - Shared strict TS: `tsconfig.base.json`
 
 Locales: **Russian default** (`/`), English (`/en`).
+
+## Database
+
+```bash
+docker compose up db -d
+npm run db:migrate    # prisma migrate dev (local)
+npm run db:deploy     # prisma migrate deploy
+npm run db:generate   # prisma generate
+```
 
 ## Tests
 
@@ -31,6 +40,7 @@ npm run typecheck
 
 ```bash
 cp .env.example .env
+cp apps/web/.env.example apps/web/.env
 docker compose up --build
 ```
 
@@ -43,12 +53,8 @@ docker compose up --build
 
 ```bash
 npm install
+docker compose up db -d
+npm run db:migrate
 npm run dev:api
 npm run dev:web
-```
-
-Postgres still via Compose:
-
-```bash
-docker compose up db -d
 ```

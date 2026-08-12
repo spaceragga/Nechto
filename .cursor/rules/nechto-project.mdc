@@ -10,16 +10,16 @@ Art-space platform for the Belarus market. Monorepo scaffold; product is early M
 ## Stack
 
 - `apps/web` — Next.js 15 (App Router) + Tailwind CSS 4 + TypeScript + next-intl (ru default, en)
-- `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`)
-- PostgreSQL 16 via Docker Compose
+- `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`) + Prisma + Zod env
+- PostgreSQL 16 via Docker Compose (`prisma migrate deploy` on API start)
 - Local run: `docker compose up --build`
 - Shared TS: `tsconfig.base.json` (strict); no deprecated `baseUrl` / `moduleResolution: node`
 
 ## Layout
 
 ```
-apps/web   # frontend (app/[locale], messages/, i18n/)
-apps/api   # backend API
+apps/web   # frontend (app/[locale], messages/, i18n/, lib/env.ts)
+apps/api   # backend API (prisma/, config/env.ts)
 docker-compose.yml
 tsconfig.base.json
 ```
