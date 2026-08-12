@@ -1,10 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import type { AuthUser } from '@nechto/api-contract';
 import type { Request } from 'express';
 
-export type AuthUser = {
-  id: string;
-  email: string;
-};
+export type { AuthUser };
 
 type RequestWithUser = Request & {
   user?: AuthUser;

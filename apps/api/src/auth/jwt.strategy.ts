@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import type { AuthUser } from '@nechto/api-contract';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ACCESS_TOKEN_COOKIE, env } from '../config/env';
-import type { AuthUser } from '../common/decorators/current-user.decorator';
 
 type JwtPayload = {
   sub: string;

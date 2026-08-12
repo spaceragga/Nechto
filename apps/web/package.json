@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@nechto/api-client": "*",
+    "@nechto/api-contract": "*",
     "next": "^15.2.3",
     "next-intl": "^4.13.6",
     "react": "^19.0.0",

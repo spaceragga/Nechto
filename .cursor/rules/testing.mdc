@@ -12,6 +12,7 @@ Every behavior change must ship with automated tests. Do not merge feature/fix w
 | Layer | Tool | Location |
 |-------|------|----------|
 | API unit | Jest | `apps/api/src/**/*.spec.ts` |
+| Shared client | Jest | `packages/api-client/src/**/*.spec.ts` |
 | API HTTP | Jest + Supertest | `apps/api/test/**/*.e2e-spec.ts` |
 | UI / flows | Playwright | `e2e/**/*.spec.ts` |
 

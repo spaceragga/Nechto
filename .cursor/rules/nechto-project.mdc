@@ -11,6 +11,8 @@ Art-space platform for the Belarus market. Monorepo scaffold; product is early M
 
 - `apps/web` — Next.js 15 (App Router) + Tailwind CSS 4 + TypeScript + next-intl (ru default, en)
 - `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`) + Prisma + Zod env
+- `packages/api-contract` — shared Zod request schemas + response types
+- `packages/api-client` — typed fetch client used by web
 - PostgreSQL 16 via Docker Compose (`prisma migrate deploy` on API start)
 - Local run: `docker compose up --build`
 - Shared TS: `tsconfig.base.json` (strict); no deprecated `baseUrl` / `moduleResolution: node`
@@ -18,8 +20,10 @@ Art-space platform for the Belarus market. Monorepo scaffold; product is early M
 ## Layout
 
 ```
-apps/web   # frontend (app/[locale], messages/, i18n/, lib/env.ts)
-apps/api   # backend API (prisma/, config/env.ts)
+apps/web                 # frontend (app/[locale], messages/, i18n/, lib/env.ts)
+apps/api                 # backend API (prisma/, config/env.ts)
+packages/api-contract    # shared API schemas/types
+packages/api-client      # shared typed HTTP client
 docker-compose.yml
 tsconfig.base.json
 ```
@@ -33,8 +37,9 @@ tsconfig.base.json
 - Format with Prettier (`prettier.config.mjs`); do not fight it with manual style diffs
 - Auth uses JWT httpOnly cookies + `JwtAuthGuard`; never store passwords in plaintext
 - File uploads go through `StorageService` (local disk in dev); do not write ad-hoc disk/S3 calls in feature modules
+- Put request/response contracts in `@nechto/api-contract` and call the API through `@nechto/api-client` from web; rebuild packages after contract changes (`npm run build:packages`)
 - Match IDE TypeScript strictness when relevant (CSS side-effect imports need `*.css` module declarations)
 - Comments: English only (see `english-comments` rule)
 - UI copy: Russian + English via next-intl (see `i18n-bilingual` rule)
 - Commits: English Conventional Commits (see `conventional-commits` rule)
-- Tests: Jest for API, Playwright for UI; cover new behavior (see `testing` rule)
+- Tests: Jest for API/packages, Playwright for UI; cover new behavior (see `testing` rule)

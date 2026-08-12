@@ -48,6 +48,7 @@ export default defineConfig([
   {
     files: [
       'apps/api/**/*.{ts,js}',
+      'packages/**/*.{ts,js}',
       'e2e/**/*.ts',
       'playwright.config.ts',
       '*.config.{js,mjs,cjs,ts}',

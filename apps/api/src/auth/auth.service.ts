@@ -4,10 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import type { AuthUser, LoginDto, RegisterDto } from '@nechto/api-contract';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
-import type { AuthUser } from '../common/decorators/current-user.decorator';
-import type { LoginDto, RegisterDto } from './dto/auth.dto';
 
 export type AuthResponse = {
   user: AuthUser;

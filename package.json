@@ -2,20 +2,24 @@
   "name": "nechto",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
     "dev:web": "npm run dev -w @nechto/web",
     "dev:api": "npm run dev -w @nechto/api",
-    "build": "npm run build --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "build": "npm run build:packages && npm run build --workspaces --if-present",
+    "build:packages": "npm run build -w @nechto/api-contract && npm run build -w @nechto/api-client",
+    "typecheck": "npm run build:packages && npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "npm run test:api && npm run test:api:e2e && npm run test:e2e",
+    "test": "npm run test:packages && npm run test:api && npm run test:api:e2e && npm run test:e2e",
     "test:api": "npm run test -w @nechto/api",
     "test:api:e2e": "npm run test:e2e -w @nechto/api",
+    "test:packages": "npm run test -w @nechto/api-client",
+    "postinstall": "npm run build:packages",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install chromium",

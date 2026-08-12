@@ -6,6 +6,8 @@ Art space platform scaffold.
 
 - `apps/web` — Next.js 15 + Tailwind CSS 4 + next-intl (ru / en, TypeScript) + Zod env
 - `apps/api` — NestJS 11 + Prisma + Zod env (TypeScript)
+- `packages/api-contract` — shared Zod schemas + response types
+- `packages/api-client` — typed browser/server fetch client
 - PostgreSQL 16
 - Docker Compose (`prisma migrate deploy` on API boot)
 - Shared strict TS: `tsconfig.base.json`
@@ -15,6 +17,8 @@ Locales: **Russian default** (`/`), English (`/en`).
 Auth: register/login via JWT httpOnly cookie (`/login`, `/register`, `POST /auth/*`).
 
 Profiles: `/profile` edit + avatar upload. Files go through `StorageService` (local disk now; S3 later).
+
+Shared contracts: import schemas/types from `@nechto/api-contract`; web talks to API via `@nechto/api-client`.
 
 ## Database
 
@@ -41,9 +45,10 @@ npm run typecheck
 npm run lint
 npm run format        # write
 npm run format:check  # CI
+npm run build:packages
 ```
 
-CI jobs: `quality` (format + lint + typecheck) → then parallel `api-test` and `web-e2e`.
+CI jobs: `quality` (format + lint + typecheck + package tests) → then parallel `api-test` and `web-e2e`.
 
 ## Run (Docker)
 

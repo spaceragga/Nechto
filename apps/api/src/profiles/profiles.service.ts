@@ -5,19 +5,12 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
+import type { Profile, UpdateProfileDto } from '@nechto/api-contract';
 import { AVATAR_ALLOWED_MIME_TYPES, AVATAR_MAX_BYTES } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
-import type { UpdateProfileDto } from './dto/profile.dto';
 
-export type ProfileView = {
-  id: string;
-  userId: string;
-  email: string;
-  displayName: string | null;
-  bio: string | null;
-  avatarUrl: string | null;
-};
+export type ProfileView = Profile;
 
 @Injectable()
 export class ProfilesService {
