@@ -130,5 +130,52 @@ describe('ProfilesController (e2e)', () => {
       .expect(200);
     expect(publicProfile.body.profile).not.toHaveProperty('email');
     expect(publicProfile.body.works).toHaveLength(5);
+
+    await request(app.getHttpServer())
+      .post(`/profiles/slug/artist-${userId}/report`)
+      .send({ reason: 'spam', details: 'Promotional links' })
+      .expect(202);
+
+    const adminEmail = `admin-${Date.now()}@nechto.test`;
+    const adminResponse = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({ email: adminEmail, password })
+      .expect(201);
+    await prisma.user.update({
+      where: { id: adminResponse.body.user.id as string },
+      data: { role: 'ADMIN' },
+    });
+    const adminCookieHeader = adminResponse.headers['set-cookie'];
+    const adminCookie = Array.isArray(adminCookieHeader)
+      ? adminCookieHeader
+      : [adminCookieHeader as string];
+
+    const reports = await request(app.getHttpServer())
+      .get('/admin/moderation/reports')
+      .set('Cookie', adminCookie)
+      .expect(200);
+    expect(reports.body[0]).toMatchObject({
+      profileSlug: `artist-${userId}`,
+      reason: 'spam',
+      status: 'OPEN',
+    });
+
+    await request(app.getHttpServer())
+      .patch(`/admin/moderation/reports/${reports.body[0].id as string}`)
+      .set('Cookie', adminCookie)
+      .send({
+        status: 'RESOLVED',
+        suspendProfile: true,
+        note: 'Spam portfolio',
+      })
+      .expect(204);
+
+    await request(app.getHttpServer())
+      .get('/auth/me')
+      .set('Cookie', cookie)
+      .expect(401);
+    await request(app.getHttpServer())
+      .get(`/profiles/slug/artist-${userId}`)
+      .expect(404);
   });
 });

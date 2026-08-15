@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ContactLink } from '@/components/contact-link';
+import { ReportProfileForm } from '@/components/report-profile-form';
 import { loadPublicProfile } from '@/lib/public-data';
 
 type PublicProfilePageProps = {
@@ -80,6 +81,9 @@ export default async function PublicProfilePage({
           </figure>
         ))}
       </section>
+      <div className="mt-12">
+        <ReportProfileForm slug={slug} />
+      </div>
     </main>
   );
 }

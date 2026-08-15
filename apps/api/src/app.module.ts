@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfilesModule } from './profiles/profiles.module';
+import { ModerationModule } from './moderation/moderation.module';
 import { StorageModule } from './storage/storage.module';
 import { WorksModule } from './works/works.module';
 
@@ -22,6 +23,7 @@ import { WorksModule } from './works/works.module';
     AuthModule,
     ProfilesModule,
     WorksModule,
+    ModerationModule,
   ],
   controllers: [AppController],
   providers: [
