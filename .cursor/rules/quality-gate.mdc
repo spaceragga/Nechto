@@ -1,53 +1,70 @@
 ---
-description: Pre-merge quality bar — consistency, no junk, perf sanity, verify before push
+description: Pre-commit quality bar — format/lint/tests must pass; no junk diffs
 alwaysApply: true
 ---
 
-# Quality gate (before merge / push)
+# Quality gate (before every commit / push)
 
-Ship clean diffs. Agents must self-check before calling work done.
+Agents must verify the **full CI quality bar** before committing. Do not rely on “it looked fine” or unit tests alone.
 
-## Required checks (touched areas)
+## Mandatory before every commit
+
+Run from repo root (even for docs/chore/cursor-only diffs):
 
 ```bash
-npm run lint
 npm run format:check
-npm run typecheck          # when TS / packages / shared types change
-npm run test:api           # when apps/api behavior changes
-npm run test:api:e2e       # when HTTP routes / auth / contracts change
-npm run test:packages      # when api-client / contract change
-npm run test:e2e           # when user-facing web flows / i18n change
+npm run lint
 ```
 
-Do not push knowing lint/typecheck/tests are red. Fix or add focused tests in the same change set (see testing rule).
+If `format:check` fails:
+
+```bash
+npm run format
+npm run format:check
+```
+
+Then include the formatted files in the same commit. Never leave Prettier-dirty files staged or unstaged that CI will scan (`prettier --check .`).
+
+## Also run when the change touches that area
+
+```bash
+npm run typecheck          # TS / packages / shared types
+npm run test:packages      # api-client / contract
+npm run test:api           # apps/api unit
+npm run test:api:e2e       # HTTP routes / auth / contracts
+npm run test:e2e           # user-facing web / i18n
+```
+
+Do not push with red lint, format, typecheck, or tests. Behavior change ⇒ tests in the same change set (see testing rule).
+
+## Why this exists
+
+CI job `quality` runs `format:check` → `lint` → `typecheck`. A single dirty file (including under `.cursor/`) fails the job and **skips** `api-test` / `web-e2e`. Local green unit tests do not mean CI green.
 
 ## Diff hygiene — reject leftover process junk
 
 Remove before commit:
 
-- `console.log` / `debugger` / temporary `TODO: remove` scaffolding
-- Commented-out code blocks and dead exports
-- Unused imports, unused deps added “just in case”
-- Orphan files from experiments (`foo.old.ts`, `test2.tsx`, scratch notes in src)
+- `console.log` / `debugger` / temporary scaffolding
+- Commented-out code and dead exports
+- Unused imports / speculative deps
+- Orphan experiment files
 - Secrets, `.env`, credentials, personal paths
-- Drive-by reformatting of unrelated files
+- Drive-by reformatting of unrelated files (except when fixing format:check)
 
 ## Consistency
 
-- Match existing folder patterns (do not invent a parallel component system)
+- Match existing folder patterns
 - Same problem → same solution (auth, validation, storage, i18n, api-client)
-- Naming: clear English identifiers; UI strings via messages, not hardcoded
 - After contract changes: `npm run build:packages` and update callers
 
-## Performance sanity (lightweight review)
+## Performance sanity
 
 - No unbounded `findMany` / unpaginated feeds
-- No fetching the same resource repeatedly in a loop (client or server)
-- No giant client bundles for simple pages (keep heavy UI behind client boundaries intentionally)
-- Images/files go through established storage/upload paths
+- No repeated identical fetches in a loop
+- Images/files via StorageService / established upload paths
 
 ## PR / commit shape
 
 - One concern per commit when practical (Conventional Commits)
-- Behavior change ⇒ tests
 - Prefer small PRs over “redesign everything” dumps
