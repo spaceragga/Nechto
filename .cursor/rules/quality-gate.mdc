@@ -1,0 +1,53 @@
+---
+description: Pre-merge quality bar — consistency, no junk, perf sanity, verify before push
+alwaysApply: true
+---
+
+# Quality gate (before merge / push)
+
+Ship clean diffs. Agents must self-check before calling work done.
+
+## Required checks (touched areas)
+
+```bash
+npm run lint
+npm run format:check
+npm run typecheck          # when TS / packages / shared types change
+npm run test:api           # when apps/api behavior changes
+npm run test:api:e2e       # when HTTP routes / auth / contracts change
+npm run test:packages      # when api-client / contract change
+npm run test:e2e           # when user-facing web flows / i18n change
+```
+
+Do not push knowing lint/typecheck/tests are red. Fix or add focused tests in the same change set (see testing rule).
+
+## Diff hygiene — reject leftover process junk
+
+Remove before commit:
+
+- `console.log` / `debugger` / temporary `TODO: remove` scaffolding
+- Commented-out code blocks and dead exports
+- Unused imports, unused deps added “just in case”
+- Orphan files from experiments (`foo.old.ts`, `test2.tsx`, scratch notes in src)
+- Secrets, `.env`, credentials, personal paths
+- Drive-by reformatting of unrelated files
+
+## Consistency
+
+- Match existing folder patterns (do not invent a parallel component system)
+- Same problem → same solution (auth, validation, storage, i18n, api-client)
+- Naming: clear English identifiers; UI strings via messages, not hardcoded
+- After contract changes: `npm run build:packages` and update callers
+
+## Performance sanity (lightweight review)
+
+- No unbounded `findMany` / unpaginated feeds
+- No fetching the same resource repeatedly in a loop (client or server)
+- No giant client bundles for simple pages (keep heavy UI behind client boundaries intentionally)
+- Images/files go through established storage/upload paths
+
+## PR / commit shape
+
+- One concern per commit when practical (Conventional Commits)
+- Behavior change ⇒ tests
+- Prefer small PRs over “redesign everything” dumps

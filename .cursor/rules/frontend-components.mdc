@@ -1,0 +1,49 @@
+---
+description: Atomic UI, shared components, unidirectional data, render performance
+globs: apps/web/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Frontend — components & performance
+
+Design will change often. Build **replaceable pieces**, not page monoliths.
+
+## Atomic layout (small → large)
+
+| Level | Where | Examples |
+|-------|--------|----------|
+| **Primitives** | `components/ui/` | Button, Input, Avatar, Icon |
+| **Composites** | `components/` or `components/blocks/` | AuthForm, WorkCard, DirectionChips |
+| **Features** | `components/<feature>/` or route `_components/` | ProfileEditor, WorksFeed |
+| **Pages** | `app/[locale]/...` | Compose only — almost no markup logic |
+
+Promote to `components/ui/` only when used in **2+** places or clearly a design-system atom.
+
+## Rules
+
+- **One component, one job** — presentational vs container/hooks split when state grows
+- **Props in, events out** — unidirectional data; no child→parent mutation of shared objects
+- **No hardcoded UI copy** — next-intl only (see i18n rule)
+- **Composable API** — prefer `children` / slots over mega-prop configs
+- **Stable public props** — rename internals freely; avoid breaking callers during redesigns
+- **Colocate** — styles/hooks next to the component; shared hooks in `lib/` or `hooks/`
+
+```tsx
+// ❌ BAD — 400-line page with inline buttons and fetch
+// ✅ GOOD — <WorksFeed /> uses <WorkCard /> + <DirectionChips />; page only layouts
+```
+
+## Data & rendering
+
+- Fetch behind server components / dedicated loaders; client components stay thin
+- Do not add `useMemo` / `useCallback` by default — only for proven expensive trees or stable deps
+- Lists: stable `key`s (ids, not indexes); virtualize only when lists are huge
+- Images: sized, lazy below fold; avoid layout shift
+- Prefer CSS/`next/font` over JS animation libraries unless motion is a product requirement
+- Avoid prop-drilling through 4+ levels — lift state or pass a narrow context
+
+## Redesign-friendly
+
+- Visual tokens (colors, spacing, type) via Tailwind theme / CSS variables — not scattered hex in JSX
+- Do not couple business labels to CSS class names
+- Swapping a primitive (e.g. new Button) must not require rewriting features

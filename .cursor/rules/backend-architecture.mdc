@@ -1,0 +1,52 @@
+---
+description: Clean-ish Nest layers, fail-fast, idempotency, scalability, API perf
+globs: apps/api/**/*.ts
+alwaysApply: false
+---
+
+# Backend — architecture & reliability
+
+Keep Nest as the delivery mechanism. Business rules must not be trapped in controllers or Prisma calls.
+
+## Layering (pragmatic Clean Architecture)
+
+| Layer | Responsibility |
+|-------|----------------|
+| **Controller** | HTTP mapping, auth guards, DTO/Zod pipe — no business branching |
+| **Service / use-case** | Domain rules, orchestration, transactions |
+| **Prisma / Storage** | Persistence & files only — swap-friendly via interfaces where it matters |
+
+```ts
+// ❌ BAD — controller writes Prisma + hashes password + sets cookies inline
+// ✅ GOOD — controller → AuthService; storage via StorageService; cookies helper isolated
+```
+
+- Contracts live in `@nechto/api-contract`; API DTOs re-export, do not fork schemas
+- Env via Zod (`config/env.ts`) — **fail-fast** on boot if invalid
+- Validate input at the boundary; reject early (`400` / `401` / `403` / `404`)
+
+## Idempotency & safety
+
+- Safe methods (`GET`, `HEAD`) stay side-effect free
+- Mutating retries must not double-create (unique constraints, idempotency keys where needed)
+- Auth: JWT httpOnly cookies + `JwtAuthGuard`; never store plaintext passwords
+- Uploads only through `StorageService` — no ad-hoc disk/S3 in feature modules
+
+## Scalability (design for multi-instance)
+
+- No required in-process-only state for correctness (sessions in DB/cookie JWT already)
+- Avoid local-memory caches as source of truth
+- Background work / locks later via DB or queue — not “global variable on this server”
+- Stateless API containers behind Compose/prod reverse proxy
+
+## Performance
+
+- Prevent **N+1** — explicit `include`/`select`; index foreign keys and filter columns (`slug`, tags, `createdAt`)
+- Return only needed fields; paginate list endpoints from day one when feeds appear
+- Transactions for multi-step writes that must stay consistent
+- Do not log PII/secrets; keep hot paths free of sync heavy CPU (hashing is fine; huge image work → async later)
+
+## Errors
+
+- Map domain failures to stable HTTP semantics
+- No empty `catch`; no “return null” for auth failures — throw / reject clearly

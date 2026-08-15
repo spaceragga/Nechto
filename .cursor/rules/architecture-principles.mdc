@@ -1,0 +1,38 @@
+---
+description: SOLID, DRY, KISS, SoC, YAGNI — core scalable design principles
+alwaysApply: true
+---
+
+# Architecture principles
+
+Write code that survives design churn and growth. Prefer clarity over cleverness.
+
+## Core
+
+| Principle | Meaning here |
+|-----------|----------------|
+| **SoC** | UI ≠ data fetching ≠ domain rules ≠ persistence. One module, one reason to change. |
+| **DRY** | Share *real* duplication (schemas, UI primitives, auth). Do not abstract after one use. |
+| **KISS** | Smallest design that works. No framework-inside-framework. |
+| **YAGNI** | Do not build “future marketplace” / generic engines until the product needs them. |
+| **SOLID** | Especially **S** (one responsibility) and **D** (depend on contracts/interfaces, not Nest/Prisma/React details in domain code). |
+
+## Also required (often missed)
+
+- **Composition over inheritance** — combine small units; avoid deep class/component trees
+- **Explicit boundaries** — web talks to API only via `@nechto/api-client` + `@nechto/api-contract`
+- **Fail at the edge** — validate env, auth, and input early; never trust client payloads
+- **Replaceability** — UI and infra must be swappable without rewriting business rules
+- **No silent failure** — typed errors / HTTP codes; do not swallow exceptions empty
+- **Secure by default** — httpOnly cookies, no secrets in client, no ad-hoc storage paths
+
+## Do / Don't
+
+```ts
+// ❌ BAD — page owns fetch, layout, form, and API URL strings
+// ✅ GOOD — page composes features; feature uses api-client; primitives are dumb UI
+```
+
+- Prefer many small files with clear names over one “utils/helpers.ts” dumping ground
+- Delete dead code in the same PR; do not leave “tmp”, commented-out blocks, or unused exports
+- Optimize with evidence (measure / known hot path). Readable first; micro-opts second

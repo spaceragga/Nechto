@@ -8,6 +8,7 @@ coverage
 .DS_Store
 .turbo
 *.tsbuildinfo
+.history
 uploads
 uploads-test
 uploads-e2e
