@@ -23,4 +23,3 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
-export type WebEnv = z.infer<typeof webEnvSchema>;

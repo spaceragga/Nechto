@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { logoutRequest, meRequest, type AuthUser } from '@/lib/api';
 
@@ -54,13 +55,9 @@ export function HomeAuthPanel() {
           <Link href="/profile" className="underline">
             {t('profileLink')}
           </Link>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="rounded border border-white/30 px-4 py-2"
-          >
+          <Button type="button" onClick={onLogout}>
             {t('logout')}
-          </button>
+          </Button>
         </div>
       </div>
     );

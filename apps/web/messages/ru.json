@@ -31,6 +31,19 @@
     "unknownError": "Что-то пошло не так",
     "profileLink": "Профиль"
   },
+  "Errors": {
+    "unknown": "Что-то пошло не так",
+    "unauthorized": "Нужно войти в аккаунт",
+    "forbidden": "Недостаточно прав",
+    "notFound": "Не найдено",
+    "conflict": "Конфликт данных",
+    "validation": "Проверьте введённые данные",
+    "emailTaken": "Этот email уже зарегистрирован",
+    "invalidCredentials": "Неверный email или пароль",
+    "avatarRequired": "Выберите файл фото",
+    "avatarTooLarge": "Файл слишком большой",
+    "avatarType": "Нужен JPEG, PNG или WebP"
+  },
   "Profile": {
     "title": "Профиль",
     "subtitle": "Имя, описание и фото для вашей витрины.",

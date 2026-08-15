@@ -26,7 +26,7 @@ export function LanguageSwitcher() {
           <option
             key={item}
             value={item}
-            className="bg-[#0f1115] text-[#f4f1ea]"
+            className="bg-[var(--bg)] text-[var(--fg)]"
           >
             {t(item)}
           </option>

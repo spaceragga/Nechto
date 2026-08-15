@@ -31,6 +31,19 @@
     "unknownError": "Something went wrong",
     "profileLink": "Profile"
   },
+  "Errors": {
+    "unknown": "Something went wrong",
+    "unauthorized": "Please sign in",
+    "forbidden": "You do not have access",
+    "notFound": "Not found",
+    "conflict": "Data conflict",
+    "validation": "Check the entered data",
+    "emailTaken": "This email is already registered",
+    "invalidCredentials": "Invalid email or password",
+    "avatarRequired": "Please choose a photo file",
+    "avatarTooLarge": "File is too large",
+    "avatarType": "Use JPEG, PNG, or WebP"
+  },
   "Profile": {
     "title": "Profile",
     "subtitle": "Name, bio, and photo for your public page.",

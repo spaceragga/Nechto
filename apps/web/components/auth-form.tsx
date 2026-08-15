@@ -2,9 +2,13 @@
 
 import { FormEvent, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/button';
+import { FormError } from '@/components/ui/form-error';
+import { Input } from '@/components/ui/input';
 import { Link, getPathname } from '@/i18n/navigation';
 import type { AppLocale } from '@/i18n/routing';
 import { loginRequest, registerRequest } from '@/lib/api';
+import { mapApiErrorMessage } from '@/lib/map-api-error';
 
 type AuthFormProps = {
   mode: 'login' | 'register';
@@ -12,6 +16,7 @@ type AuthFormProps = {
 
 export function AuthForm({ mode }: AuthFormProps) {
   const t = useTranslations('Auth');
+  const tErrors = useTranslations('Errors');
   const locale = useLocale() as AppLocale;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,9 +37,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       // Full navigation so HomeAuthPanel remounts with the auth cookie.
       window.location.assign(getPathname({ locale, href: '/' }));
     } catch (submitError) {
-      setError(
-        submitError instanceof Error ? submitError.message : t('unknownError'),
-      );
+      setError(mapApiErrorMessage(submitError, tErrors));
     } finally {
       setPending(false);
     }
@@ -54,20 +57,19 @@ export function AuthForm({ mode }: AuthFormProps) {
 
       <label className="flex flex-col gap-2 text-sm">
         <span>{t('email')}</span>
-        <input
+        <Input
           type="email"
           name="email"
           autoComplete="email"
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="rounded border border-white/20 bg-transparent px-3 py-2"
         />
       </label>
 
       <label className="flex flex-col gap-2 text-sm">
         <span>{t('password')}</span>
-        <input
+        <Input
           type="password"
           name="password"
           autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
@@ -75,27 +77,18 @@ export function AuthForm({ mode }: AuthFormProps) {
           minLength={mode === 'register' ? 8 : 1}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="rounded border border-white/20 bg-transparent px-3 py-2"
         />
       </label>
 
-      {error ? (
-        <p className="text-sm text-[#e07070]" role="alert">
-          {error}
-        </p>
-      ) : null}
+      {error ? <FormError>{error}</FormError> : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded border border-white/30 px-4 py-2 text-sm tracking-wide disabled:opacity-50"
-      >
+      <Button type="submit" disabled={pending}>
         {pending
           ? t('submitting')
           : mode === 'login'
             ? t('loginSubmit')
             : t('registerSubmit')}
-      </button>
+      </Button>
 
       <p className="text-sm opacity-70">
         {mode === 'login' ? (

@@ -2,6 +2,10 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/button';
+import { FormError } from '@/components/ui/form-error';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Link } from '@/i18n/navigation';
 import {
   getMyProfileRequest,
@@ -9,9 +13,11 @@ import {
   uploadMyAvatarRequest,
   type Profile,
 } from '@/lib/api';
+import { mapApiErrorMessage } from '@/lib/map-api-error';
 
 export function ProfileEditor() {
   const t = useTranslations('Profile');
+  const tErrors = useTranslations('Errors');
   const [profile, setProfile] = useState<Profile | null>(null);
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
@@ -34,9 +40,7 @@ export function ProfileEditor() {
       })
       .catch((loadError) => {
         if (active) {
-          setError(
-            loadError instanceof Error ? loadError.message : t('unknownError'),
-          );
+          setError(mapApiErrorMessage(loadError, tErrors));
         }
       })
       .finally(() => {
@@ -48,7 +52,7 @@ export function ProfileEditor() {
     return () => {
       active = false;
     };
-  }, [t]);
+  }, [tErrors]);
 
   async function onSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -62,9 +66,7 @@ export function ProfileEditor() {
       });
       setProfile(updated);
     } catch (saveError) {
-      setError(
-        saveError instanceof Error ? saveError.message : t('unknownError'),
-      );
+      setError(mapApiErrorMessage(saveError, tErrors));
     } finally {
       setSaving(false);
     }
@@ -83,9 +85,7 @@ export function ProfileEditor() {
       const updated = await uploadMyAvatarRequest(file);
       setProfile(updated);
     } catch (uploadError) {
-      setError(
-        uploadError instanceof Error ? uploadError.message : t('unknownError'),
-      );
+      setError(mapApiErrorMessage(uploadError, tErrors));
     } finally {
       setUploading(false);
     }
@@ -104,9 +104,7 @@ export function ProfileEditor() {
     return (
       <div className="mx-auto flex w-full max-w-md flex-col gap-3 text-sm">
         <h1 className="text-3xl tracking-wide">{t('title')}</h1>
-        <p className="text-[#e07070]" role="alert">
-          {error ?? t('unknownError')}
-        </p>
+        <FormError>{error ?? tErrors('unknown')}</FormError>
         <Link href="/login" className="underline">
           {t('loginLink')}
         </Link>
@@ -156,40 +154,30 @@ export function ProfileEditor() {
       <form onSubmit={onSave} className="flex flex-col gap-4">
         <label className="flex flex-col gap-2 text-sm">
           <span>{t('displayName')}</span>
-          <input
+          <Input
             name="displayName"
             value={displayName}
             onChange={(event) => setDisplayName(event.target.value)}
             maxLength={80}
-            className="rounded border border-white/20 bg-transparent px-3 py-2"
           />
         </label>
 
         <label className="flex flex-col gap-2 text-sm">
           <span>{t('bio')}</span>
-          <textarea
+          <Textarea
             name="bio"
             value={bio}
             onChange={(event) => setBio(event.target.value)}
             maxLength={2000}
             rows={4}
-            className="rounded border border-white/20 bg-transparent px-3 py-2"
           />
         </label>
 
-        {error ? (
-          <p className="text-sm text-[#e07070]" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {error ? <FormError>{error}</FormError> : null}
 
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded border border-white/30 px-4 py-2 text-sm tracking-wide disabled:opacity-50"
-        >
+        <Button type="submit" disabled={saving}>
           {saving ? t('saving') : t('save')}
-        </button>
+        </Button>
       </form>
 
       <p className="text-sm opacity-70">
