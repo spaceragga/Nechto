@@ -6,7 +6,7 @@ test.describe('home page locales', () => {
 
     await expect(page).toHaveTitle(/Nechto/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Привет, мир!',
+      'Творческие люди Беларуси',
     );
   });
 
@@ -14,7 +14,7 @@ test.describe('home page locales', () => {
     await page.goto('/en');
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Hello world!',
+      'Creative people of Belarus',
     );
   });
 
@@ -24,13 +24,13 @@ test.describe('home page locales', () => {
     await page.getByRole('combobox').selectOption('en');
     await expect(page).toHaveURL(/\/en\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Hello world!',
+      'Creative people of Belarus',
     );
 
     await page.getByRole('combobox').selectOption('ru');
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Привет, мир!',
+      'Творческие люди Беларуси',
     );
   });
 });

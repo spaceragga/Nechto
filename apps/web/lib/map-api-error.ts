@@ -1,16 +1,23 @@
 import { ApiError } from '@nechto/api-client';
+import { API_ERROR_CODES, type ApiErrorCode } from '@nechto/api-contract';
 
 type Translate = (key: string) => string;
 
-const MESSAGE_KEYS: Record<string, string> = {
-  'Email is already registered': 'emailTaken',
-  'Invalid email or password': 'invalidCredentials',
-  'Avatar file is required': 'avatarRequired',
-  'Avatar file is too large': 'avatarTooLarge',
-  'Avatar must be JPEG, PNG, or WebP': 'avatarType',
-  'Profile not found': 'notFound',
-  'User not found': 'notFound',
-  'Authentication required': 'unauthorized',
+const CODE_KEYS: Partial<Record<ApiErrorCode, string>> = {
+  [API_ERROR_CODES.EMAIL_TAKEN]: 'emailTaken',
+  [API_ERROR_CODES.SLUG_TAKEN]: 'slugTaken',
+  [API_ERROR_CODES.PUBLISH_REQUIREMENTS_NOT_MET]: 'publishRequirements',
+  [API_ERROR_CODES.INVALID_CREDENTIALS]: 'invalidCredentials',
+  [API_ERROR_CODES.AVATAR_REQUIRED]: 'avatarRequired',
+  [API_ERROR_CODES.AVATAR_TOO_LARGE]: 'avatarTooLarge',
+  [API_ERROR_CODES.AVATAR_INVALID_TYPE]: 'avatarType',
+  [API_ERROR_CODES.PROFILE_NOT_FOUND]: 'notFound',
+  [API_ERROR_CODES.USER_NOT_FOUND]: 'notFound',
+  [API_ERROR_CODES.AUTHENTICATION_REQUIRED]: 'unauthorized',
+  [API_ERROR_CODES.FORBIDDEN]: 'forbidden',
+  [API_ERROR_CODES.VALIDATION_FAILED]: 'validation',
+  [API_ERROR_CODES.RATE_LIMITED]: 'rateLimited',
+  [API_ERROR_CODES.SERVICE_UNAVAILABLE]: 'serviceUnavailable',
 };
 
 /** Resolve Errors.* message key from an API failure (no i18n). */
@@ -19,9 +26,9 @@ export function resolveApiErrorKey(
   fallbackKey = 'unknown',
 ): string {
   if (error instanceof ApiError) {
-    const byMessage = MESSAGE_KEYS[error.message];
-    if (byMessage) {
-      return byMessage;
+    const byCode = CODE_KEYS[error.code];
+    if (byCode) {
+      return byCode;
     }
 
     if (error.status === 401) {

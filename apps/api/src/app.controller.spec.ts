@@ -39,10 +39,36 @@ describe('AppController', () => {
         status: 'ok' as const,
         service: 'nechto-api',
         database: 'up' as const,
+        release: 'development',
       };
       jest.spyOn(service, 'getHealth').mockResolvedValue(payload);
 
-      await expect(controller.getHealth()).resolves.toBe(payload);
+      await expect(
+        controller.getHealth({ status: jest.fn() } as never),
+      ).resolves.toBe(payload);
+    });
+  });
+
+  describe('getLiveness', () => {
+    it('returns process liveness', () => {
+      expect(controller.getLiveness()).toEqual({ status: 'ok' });
+    });
+  });
+
+  describe('getReadiness', () => {
+    it('returns 503 when the database probe fails', async () => {
+      const status = jest.fn();
+      jest.spyOn(service, 'getHealth').mockResolvedValue({
+        status: 'degraded',
+        service: 'nechto-api',
+        database: 'down',
+        release: 'development',
+      });
+
+      await expect(
+        controller.getReadiness({ status } as never),
+      ).resolves.toEqual({ status: 'unavailable', database: 'down' });
+      expect(status).toHaveBeenCalledWith(503);
     });
   });
 });

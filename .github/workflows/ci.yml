@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '22.18'
 
 jobs:
   quality:
@@ -18,12 +18,14 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
+      - run: npm audit --audit-level=high
       # Prisma Client typings are required for API typecheck; no DB needed.
       - run: npx prisma generate
         working-directory: apps/api
       - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm run build
       - run: npm run test:packages
 
   api-test:
@@ -89,7 +91,6 @@ jobs:
       NODE_ENV: test
       PORT: 3001
       DATABASE_URL: postgresql://nechto:nechto@localhost:5432/nechto
-      NEXT_PUBLIC_API_URL: http://localhost:3001
       PLAYWRIGHT_BASE_URL: http://localhost:3000
       PLAYWRIGHT_API_URL: http://localhost:3001
       JWT_SECRET: ci-test-jwt-secret-key
@@ -112,3 +113,11 @@ jobs:
         working-directory: apps/api
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7

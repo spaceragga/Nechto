@@ -6,12 +6,11 @@ import type {
   RegisterDto,
   UpdateProfileDto,
 } from '@nechto/api-contract';
-import { env } from '@/lib/env';
 
 export type { AuthUser, Profile };
 
 const api = createApiClient({
-  baseUrl: env.NEXT_PUBLIC_API_URL,
+  baseUrl: '/api',
 });
 
 export function registerRequest(input: RegisterDto) {
