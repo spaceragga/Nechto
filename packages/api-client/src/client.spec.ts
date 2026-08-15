@@ -1,4 +1,5 @@
 import { ApiClient, ApiError } from './client';
+import { API_ERROR_CODES } from '@nechto/api-contract';
 
 describe('ApiClient', () => {
   const fetchMock = jest.fn<
@@ -80,10 +81,16 @@ describe('ApiClient', () => {
 
   it('throws ApiError on non-OK responses', async () => {
     fetchMock.mockResolvedValue(
-      new Response(JSON.stringify({ message: 'Invalid email or password' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      }),
+      new Response(
+        JSON.stringify({
+          code: API_ERROR_CODES.INVALID_CREDENTIALS,
+          message: 'Invalid email or password',
+        }),
+        {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
     );
 
     const client = new ApiClient({
@@ -96,6 +103,7 @@ describe('ApiClient', () => {
     ).rejects.toMatchObject({
       name: 'ApiError',
       status: 401,
+      code: API_ERROR_CODES.INVALID_CREDENTIALS,
       message: 'Invalid email or password',
     } satisfies Partial<ApiError>);
   });
@@ -131,6 +139,9 @@ describe('ApiClient', () => {
     expect(
       new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get('Cookie'),
     ).toBe('nechto_access_token=tok');
+    expect(
+      new Headers(fetchMock.mock.calls[0]?.[1]?.headers).has('Content-Type'),
+    ).toBe(false);
   });
 
   it('uses a bound global fetch by default without Illegal invocation', async () => {

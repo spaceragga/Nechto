@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /workspace
 
@@ -11,7 +11,7 @@ COPY packages/api-client/package.json ./packages/api-client/
 COPY apps/api/prisma ./apps/api/prisma
 
 # Skip root postinstall (build:packages) until package sources are copied.
-RUN npm install -w @nechto/api -w @nechto/api-contract --ignore-scripts
+RUN npm ci --ignore-scripts
 
 COPY packages/api-contract ./packages/api-contract
 RUN npm run build -w @nechto/api-contract

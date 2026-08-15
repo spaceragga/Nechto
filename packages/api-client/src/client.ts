@@ -8,7 +8,7 @@ import type {
   RegisterDto,
   UpdateProfileDto,
 } from '@nechto/api-contract';
-import { ApiError, parseApiErrorMessage } from './api-error';
+import { ApiError, parseApiErrorResponse } from './api-error';
 
 export { ApiError } from './api-error';
 
@@ -103,7 +103,7 @@ export class ApiClient {
     const isFormData =
       typeof FormData !== 'undefined' && init?.body instanceof FormData;
 
-    if (!isFormData && !headers.has('Content-Type')) {
+    if (init?.body != null && !isFormData && !headers.has('Content-Type')) {
       headers.set('Content-Type', 'application/json');
     }
 
@@ -115,7 +115,13 @@ export class ApiClient {
     });
 
     if (!response.ok) {
-      throw new ApiError(await parseApiErrorMessage(response), response.status);
+      const error = await parseApiErrorResponse(response);
+      throw new ApiError(
+        error.message,
+        response.status,
+        error.code,
+        error.errors,
+      );
     }
 
     if (response.status === 204) {

@@ -3,24 +3,29 @@ import type { AuthUser, Profile } from '@nechto/api-contract';
 import { cache } from 'react';
 import { createServerApiClient } from '@/lib/api-server';
 
-export const getCurrentUser = cache(async (): Promise<AuthUser | null> => {
+export type CurrentUserResult =
+  | { status: 'authenticated'; user: AuthUser }
+  | { status: 'anonymous' }
+  | { status: 'unavailable' };
+
+export type MyProfileLoadResult =
+  { ok: true; profile: Profile } | { ok: false; status: number | null };
+
+export const getCurrentUser = cache(async (): Promise<CurrentUserResult> => {
   try {
     const api = await createServerApiClient();
     const { user } = await api.me();
-    return user;
+    return { status: 'authenticated', user };
   } catch (error) {
     if (
       error instanceof ApiError &&
       (error.status === 401 || error.status === 403)
     ) {
-      return null;
+      return { status: 'anonymous' };
     }
-    return null;
+    return { status: 'unavailable' };
   }
 });
-
-export type MyProfileLoadResult =
-  { ok: true; profile: Profile } | { ok: false; status: number | null };
 
 export const loadMyProfile = cache(async (): Promise<MyProfileLoadResult> => {
   try {

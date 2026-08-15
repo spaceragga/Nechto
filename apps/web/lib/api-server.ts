@@ -1,4 +1,5 @@
 import { createApiClient } from '@nechto/api-client';
+import { ACCESS_TOKEN_COOKIE } from '@nechto/api-contract';
 import { cookies } from 'next/headers';
 import { env } from '@/lib/env';
 
@@ -9,15 +10,14 @@ import { env } from '@/lib/env';
  */
 export async function createServerApiClient() {
   const cookieStore = await cookies();
-  const cookieHeader = cookieStore
-    .getAll()
-    .map((cookie) => `${cookie.name}=${cookie.value}`)
-    .join('; ');
+  const accessToken = cookieStore.get(ACCESS_TOKEN_COOKIE)?.value;
 
   return createApiClient({
     baseUrl: env.API_INTERNAL_URL,
     credentials: 'omit',
     cache: 'no-store',
-    headers: cookieHeader ? { Cookie: cookieHeader } : undefined,
+    headers: accessToken
+      ? { Cookie: `${ACCESS_TOKEN_COOKIE}=${accessToken}` }
+      : undefined,
   });
 }

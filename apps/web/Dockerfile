@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /workspace
 
@@ -10,7 +10,7 @@ COPY packages/api-contract/package.json ./packages/api-contract/
 COPY packages/api-client/package.json ./packages/api-client/
 
 # Skip root postinstall (build:packages) until package sources are copied.
-RUN npm install -w @nechto/web -w @nechto/api-contract -w @nechto/api-client --ignore-scripts
+RUN npm ci --ignore-scripts
 
 COPY packages/api-contract ./packages/api-contract
 COPY packages/api-client ./packages/api-client

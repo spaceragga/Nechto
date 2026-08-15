@@ -8,9 +8,16 @@ test.describe('auth flow', () => {
     await page.goto('/register');
     await page.getByLabel('Email').fill(email);
     await page.getByLabel('Пароль').fill(password);
+    const registration = page.waitForResponse(
+      (response) => new URL(response.url()).pathname === '/api/auth/register',
+    );
     await page.getByRole('button', { name: 'Создать аккаунт' }).click();
+    const registrationResponse = await registration;
 
     await expect(page).toHaveURL(/\/$/);
+    expect(new URL(registrationResponse.url()).origin).toBe(
+      new URL(page.url()).origin,
+    );
     await expect(page.getByText(email)).toBeVisible();
     await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
   });

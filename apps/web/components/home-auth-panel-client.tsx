@@ -4,26 +4,44 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { AuthUser } from '@nechto/api-contract';
 import { Button } from '@/components/ui/button';
+import { FormError } from '@/components/ui/form-error';
 import { Link, useRouter } from '@/i18n/navigation';
 import { logoutRequest } from '@/lib/api';
 
 type HomeAuthPanelClientProps = {
   user: AuthUser | null;
+  unavailable: boolean;
 };
 
-export function HomeAuthPanelClient({ user }: HomeAuthPanelClientProps) {
+export function HomeAuthPanelClient({
+  user,
+  unavailable,
+}: HomeAuthPanelClientProps) {
   const t = useTranslations('Auth');
+  const tErrors = useTranslations('Errors');
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [logoutError, setLogoutError] = useState(false);
 
   async function logout() {
     setPending(true);
+    setLogoutError(false);
     try {
       await logoutRequest();
       router.refresh();
+    } catch {
+      setLogoutError(true);
     } finally {
       setPending(false);
     }
+  }
+
+  if (unavailable) {
+    return (
+      <div className="mt-8">
+        <FormError>{tErrors('serviceUnavailable')}</FormError>
+      </div>
+    );
   }
 
   if (user) {
@@ -40,6 +58,9 @@ export function HomeAuthPanelClient({ user }: HomeAuthPanelClientProps) {
             {t('logout')}
           </Button>
         </div>
+        {logoutError ? (
+          <FormError>{tErrors('serviceUnavailable')}</FormError>
+        ) : null}
       </div>
     );
   }

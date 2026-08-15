@@ -1,10 +1,14 @@
 {
   "LocaleLayout": {
     "title": "Nechto",
-    "description": "Art space platform"
+    "description": "Art space platform",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "community": "Community"
   },
   "HomePage": {
-    "title": "Hello world!"
+    "title": "Creative people of Belarus",
+    "creatorsLink": "Explore creators"
   },
   "LanguageSwitcher": {
     "label": "Language",
@@ -28,7 +32,8 @@
     "logout": "Log out",
     "signedInAs": "Signed in as",
     "checkingSession": "Checking session…",
-    "profileLink": "Profile"
+    "profileLink": "Profile",
+    "forgotPassword": "Forgot password?"
   },
   "Errors": {
     "unknown": "Something went wrong",
@@ -38,16 +43,44 @@
     "conflict": "Data conflict",
     "validation": "Check the entered data",
     "emailTaken": "This email is already registered",
+    "slugTaken": "This profile address is already taken",
+    "publishRequirements": "Complete your profile, accept the policies, and publish at least five works",
     "invalidCredentials": "Invalid email or password",
     "avatarRequired": "Please choose a photo file",
     "avatarTooLarge": "File is too large",
-    "avatarType": "Use JPEG, PNG, or WebP"
+    "avatarType": "Use JPEG, PNG, or WebP",
+    "rateLimited": "Too many attempts. Try again later",
+    "serviceUnavailable": "The service is temporarily unavailable"
+  },
+  "System": {
+    "errorTitle": "Something broke",
+    "errorBody": "This page failed to load. You can try again.",
+    "retry": "Try again",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "That page does not exist. Check the address or go back home.",
+    "home": "Home"
   },
   "Profile": {
     "title": "Profile",
     "subtitle": "Name, bio, and photo for your public page.",
     "displayName": "Display name",
     "bio": "Bio",
+    "slug": "Profile address",
+    "directions": "Directions (up to three)",
+    "websiteUrl": "Website",
+    "instagramUrl": "Instagram",
+    "telegramUrl": "Telegram",
+    "acceptPolicies": "I accept the platform terms and privacy policy",
+    "directionLabels": {
+      "illustration": "Illustration",
+      "graphic-design": "Graphic design",
+      "photography": "Photography",
+      "fashion": "Fashion",
+      "craft": "Craft",
+      "video": "Video",
+      "interior": "Interior",
+      "beauty": "Beauty"
+    },
     "avatar": "Profile photo",
     "avatarAlt": "Profile photo",
     "noAvatar": "No photo",
@@ -57,5 +90,126 @@
     "loading": "Loading profile…",
     "signedInAs": "Account:",
     "loginLink": "Log in"
+  },
+  "Works": {
+    "title": "Works",
+    "name": "Title",
+    "altText": "Image description",
+    "caption": "Caption",
+    "add": "Add work",
+    "publish": "Publish",
+    "unpublish": "Hide",
+    "delete": "Delete",
+    "publishProfile": "Publish profile",
+    "publishHint": "Complete your profile and publish at least five works.",
+    "published": "Profile published",
+    "viewPublic": "Open public page"
+  },
+  "Creators": {
+    "title": "Creators",
+    "filter": "Filter by direction",
+    "all": "All",
+    "empty": "No creators here yet",
+    "loadMore": "Load more",
+    "directions": {
+      "illustration": "Illustration",
+      "graphic-design": "Graphic design",
+      "photography": "Photography",
+      "fashion": "Fashion",
+      "craft": "Craft",
+      "video": "Video",
+      "interior": "Interior",
+      "beauty": "Beauty"
+    }
+  },
+  "PublicProfile": {
+    "works": "Works",
+    "website": "Website",
+    "instagram": "Instagram",
+    "telegram": "Telegram",
+    "directions": {
+      "illustration": "Illustration",
+      "graphic-design": "Graphic design",
+      "photography": "Photography",
+      "fashion": "Fashion",
+      "craft": "Craft",
+      "video": "Video",
+      "interior": "Interior",
+      "beauty": "Beauty"
+    }
+  },
+  "Policies": {
+    "terms": {
+      "title": "Platform terms",
+      "updated": "Version dated August 15, 2026",
+      "paragraphs": [
+        "Nechto gives creators tools to publish portfolios and connect with visitors. Creators are responsible for profile accuracy, account security, and rights to uploaded material.",
+        "Illegal material, harassment, impersonation, spam, malicious links, and content that infringes third-party rights are prohibited. We may hide content or suspend a profile after review.",
+        "Creators retain ownership of their work and grant Nechto a non-exclusive license to store, technically process, and display it within the service.",
+        "For account, complaint, and data deletion requests, contact support@nechto.by."
+      ]
+    },
+    "privacy": {
+      "title": "Privacy notice",
+      "updated": "Version dated August 15, 2026",
+      "paragraphs": [
+        "We process email, profile data, uploaded work, technical logs, sessions, and aggregated views/contact clicks to operate and protect the service.",
+        "Data is shared only with infrastructure, storage, and email providers needed to operate Nechto. We do not sell personal data.",
+        "Users can export their data and delete their account. Backups expire under the retention schedule; incident and complaint evidence may be retained longer when required by law or service protection.",
+        "For access, correction, or deletion requests, contact support@nechto.by."
+      ]
+    },
+    "community": {
+      "title": "Community guidelines",
+      "updated": "Version dated August 15, 2026",
+      "paragraphs": [
+        "Publish your own work or material you are authorized to use. Provide clear titles and useful image descriptions.",
+        "Threats, degradation, discrimination, sexual exploitation, fraud, spam, and deliberate deception are prohibited.",
+        "Visitors can report violations from a creator page. A moderator reviews reports; profiles may be hidden and decisions are recorded in the moderation audit log.",
+        "Copyright reports should include the material URL, a description of the rights, and contact details: support@nechto.by."
+      ]
+    }
+  },
+  "Report": {
+    "open": "Report",
+    "reason": "Reason",
+    "details": "Details",
+    "email": "Contact email",
+    "submit": "Submit report",
+    "sent": "Report submitted",
+    "reasons": {
+      "spam": "Spam",
+      "impersonation": "Impersonation",
+      "harassment": "Harassment",
+      "copyright": "Copyright infringement",
+      "other": "Other"
+    }
+  },
+  "Recovery": {
+    "email": "Email",
+    "password": "New password",
+    "forgot": {
+      "title": "Reset password",
+      "submit": "Send reset link",
+      "success": "If the account exists, a reset link has been sent."
+    },
+    "reset": {
+      "title": "New password",
+      "submit": "Save password",
+      "success": "Password updated. You can now sign in."
+    },
+    "verify": {
+      "title": "Verify email",
+      "submit": "Verify email",
+      "success": "Email verified."
+    }
+  },
+  "Account": {
+    "title": "Account data",
+    "export": "Download my data",
+    "resendVerification": "Send email verification",
+    "verificationSent": "Email sent if the address is not verified yet.",
+    "delete": "Delete account",
+    "confirmDelete": "Delete the account and all works permanently?"
   }
 }
