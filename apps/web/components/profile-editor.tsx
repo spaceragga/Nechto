@@ -1,49 +1,55 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import type { Profile } from '@nechto/api-contract';
 import { ProfileAvatarField } from '@/components/profile/profile-avatar-field';
 import { ProfileDetailsForm } from '@/components/profile/profile-details-form';
 import { FormError } from '@/components/ui/form-error';
 import { useMyProfile } from '@/hooks/use-my-profile';
 import { Link } from '@/i18n/navigation';
 
-export function ProfileEditor() {
+type ProfileEditorProps = {
+  profile: Profile | null;
+  errorStatus?: number | null;
+};
+
+export function ProfileEditor({ profile, errorStatus }: ProfileEditorProps) {
   const t = useTranslations('Profile');
   const tErrors = useTranslations('Errors');
-  const {
-    profile,
-    displayName,
-    setDisplayName,
-    bio,
-    setBio,
-    loading,
-    saving,
-    uploading,
-    error,
-    saveProfile,
-    uploadAvatar,
-  } = useMyProfile();
-
-  if (loading) {
-    return (
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6">
-        <h1 className="text-3xl tracking-wide">{t('title')}</h1>
-        <p className="text-sm opacity-70">{t('loading')}</p>
-      </div>
-    );
-  }
 
   if (!profile) {
     return (
       <div className="mx-auto flex w-full max-w-md flex-col gap-3 text-sm">
         <h1 className="text-3xl tracking-wide">{t('title')}</h1>
-        <FormError>{error ?? tErrors('unknown')}</FormError>
+        <FormError>
+          {errorStatus === 401 || errorStatus === 403
+            ? tErrors('unauthorized')
+            : tErrors('unknown')}
+        </FormError>
         <Link href="/login" className="underline">
           {t('loginLink')}
         </Link>
       </div>
     );
   }
+
+  return <ProfileEditorForm profile={profile} />;
+}
+
+function ProfileEditorForm({ profile }: { profile: Profile }) {
+  const t = useTranslations('Profile');
+  const {
+    profile: current,
+    displayName,
+    setDisplayName,
+    bio,
+    setBio,
+    saving,
+    uploading,
+    error,
+    saveProfile,
+    uploadAvatar,
+  } = useMyProfile(profile);
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6">
@@ -53,7 +59,7 @@ export function ProfileEditor() {
       </div>
 
       <ProfileAvatarField
-        avatarUrl={profile.avatarUrl}
+        avatarUrl={current.avatarUrl}
         uploading={uploading}
         onFileChange={uploadAvatar}
       />
@@ -69,7 +75,7 @@ export function ProfileEditor() {
       />
 
       <p className="text-sm opacity-70">
-        {t('signedInAs')} {profile.email}
+        {t('signedInAs')} {current.email}
       </p>
     </div>
   );

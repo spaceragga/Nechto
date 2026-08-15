@@ -58,7 +58,6 @@ if (!parsed.success) {
 export const env = parsed.data;
 export type ApiEnv = z.infer<typeof apiEnvSchema>;
 
-export const ACCESS_TOKEN_COOKIE = 'nechto_access_token';
-
+export { ACCESS_TOKEN_COOKIE } from '@nechto/api-contract';
 export { jwtExpiresInToMs } from './jwt-expires';
 export { AVATAR_ALLOWED_MIME_TYPES, AVATAR_MAX_BYTES } from './avatar-limits';

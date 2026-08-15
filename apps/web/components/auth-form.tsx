@@ -34,7 +34,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       } else {
         await loginRequest({ email, password });
       }
-      // Full navigation so HomeAuthPanel remounts with the auth cookie.
+      // Full navigation so RSC loaders see the new auth cookie.
       window.location.assign(getPathname({ locale, href: '/' }));
     } catch (submitError) {
       setError(mapApiErrorMessage(submitError, tErrors));

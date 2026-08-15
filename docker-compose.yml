@@ -58,6 +58,8 @@ services:
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      # RSC server fetch must reach the api service (not host localhost).
+      API_INTERNAL_URL: ${API_INTERNAL_URL:-http://api:3001}
       WATCHPACK_POLLING: 'true'
     ports:
       - '${WEB_PORT:-3000}:3000'

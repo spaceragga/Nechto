@@ -16,12 +16,18 @@ export type ApiClientOptions = {
   baseUrl: string;
   fetch?: typeof fetch;
   credentials?: 'include' | 'omit' | 'same-origin';
+  /** Merged into every request (e.g. Cookie for RSC → API). */
+  headers?: HeadersInit;
+  /** Passed to fetch; use `no-store` for auth-scoped server reads. */
+  cache?: RequestCache;
 };
 
 export class ApiClient {
   private readonly baseUrl: string;
   private readonly fetchImpl: typeof fetch;
   private readonly credentials: 'include' | 'omit' | 'same-origin';
+  private readonly defaultHeaders: HeadersInit | undefined;
+  private readonly cache: RequestCache | undefined;
 
   constructor(options: ApiClientOptions) {
     this.baseUrl = options.baseUrl.replace(/\/$/, '');
@@ -29,6 +35,8 @@ export class ApiClient {
     const fetchImpl = options.fetch ?? globalThis.fetch.bind(globalThis);
     this.fetchImpl = fetchImpl;
     this.credentials = options.credentials ?? 'include';
+    this.defaultHeaders = options.headers;
+    this.cache = options.cache;
   }
 
   getHealth() {
@@ -88,7 +96,10 @@ export class ApiClient {
   }
 
   private async request<T>(path: string, init?: RequestInit): Promise<T> {
-    const headers = new Headers(init?.headers);
+    const headers = new Headers(this.defaultHeaders);
+    new Headers(init?.headers).forEach((value, key) => {
+      headers.set(key, value);
+    });
     const isFormData =
       typeof FormData !== 'undefined' && init?.body instanceof FormData;
 
@@ -99,6 +110,7 @@ export class ApiClient {
     const response = await this.fetchImpl(`${this.baseUrl}${path}`, {
       ...init,
       credentials: this.credentials,
+      cache: init?.cache ?? this.cache,
       headers,
     });
 

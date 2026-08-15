@@ -35,7 +35,8 @@ Promote to `components/ui/` only when used in **2+** places or clearly a design-
 
 ## Data & rendering
 
-- Fetch behind server components / dedicated loaders; client components stay thin
+- **Auth/session reads in RSC** — load `me` / profile via server loaders (`lib/session.ts`); forward cookies with `createServerApiClient` (`API_INTERNAL_URL` in Docker). Client components own mutations only (`logout`, PATCH, upload) + `router.refresh()` when RSC data must update
+- Do not `useEffect`+fetch for initial auth state the server already knows from cookies
 - Do not add `useMemo` / `useCallback` by default — only for proven expensive trees or stable deps
 - Lists: stable `key`s (ids, not indexes); virtualize only when lists are huge
 - Images: sized, lazy below fold; avoid layout shift

@@ -27,6 +27,7 @@ npm run db:migrate          # Prisma migrate dev
 npm run db:deploy           # Prisma migrate deploy
 npm run dev:web             # Next.js locally
 npm run dev:api             # NestJS locally
+# Docker: compose sets API_INTERNAL_URL=http://api:3001 for RSC→API
 ```
 
 ## Rules

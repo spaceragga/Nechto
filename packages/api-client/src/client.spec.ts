@@ -100,6 +100,39 @@ describe('ApiClient', () => {
     } satisfies Partial<ApiError>);
   });
 
+  it('merges default headers for server-side cookie forwarding', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({ user: { id: '1', email: 'a@nechto.test' } }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://api:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+      credentials: 'omit',
+      headers: { Cookie: 'nechto_access_token=tok' },
+      cache: 'no-store',
+    });
+
+    await client.me();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://api:3001/auth/me',
+      expect.objectContaining({
+        credentials: 'omit',
+        cache: 'no-store',
+      }),
+    );
+    expect(
+      new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get('Cookie'),
+    ).toBe('nechto_access_token=tok');
+  });
+
   it('uses a bound global fetch by default without Illegal invocation', async () => {
     const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(

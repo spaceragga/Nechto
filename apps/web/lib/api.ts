@@ -26,14 +26,6 @@ export function logoutRequest() {
   return api.logout();
 }
 
-export function meRequest() {
-  return api.me();
-}
-
-export function getMyProfileRequest() {
-  return api.getMyProfile();
-}
-
 export function updateMyProfileRequest(input: UpdateProfileDto) {
   return api.updateMyProfile(input);
 }

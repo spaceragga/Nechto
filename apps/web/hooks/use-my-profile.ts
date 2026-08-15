@@ -1,52 +1,24 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import {
-  getMyProfileRequest,
   updateMyProfileRequest,
   uploadMyAvatarRequest,
   type Profile,
 } from '@/lib/api';
 import { mapApiErrorMessage } from '@/lib/map-api-error';
 
-export function useMyProfile() {
+export function useMyProfile(initialProfile: Profile) {
   const tErrors = useTranslations('Errors');
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [displayName, setDisplayName] = useState('');
-  const [bio, setBio] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(initialProfile);
+  const [displayName, setDisplayName] = useState(
+    initialProfile.displayName ?? '',
+  );
+  const [bio, setBio] = useState(initialProfile.bio ?? '');
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-
-    getMyProfileRequest()
-      .then((data) => {
-        if (!active) {
-          return;
-        }
-        setProfile(data);
-        setDisplayName(data.displayName ?? '');
-        setBio(data.bio ?? '');
-      })
-      .catch((loadError) => {
-        if (active) {
-          setError(mapApiErrorMessage(loadError, tErrors));
-        }
-      })
-      .finally(() => {
-        if (active) {
-          setLoading(false);
-        }
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [tErrors]);
 
   async function saveProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -91,7 +63,6 @@ export function useMyProfile() {
     setDisplayName,
     bio,
     setBio,
-    loading,
     saving,
     uploading,
     error,

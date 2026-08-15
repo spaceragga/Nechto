@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/** HttpOnly JWT cookie name — keep in sync across API Set-Cookie and web RSC forwarding. */
+export const ACCESS_TOKEN_COOKIE = 'nechto_access_token';
+
 export const registerSchema = z.object({
   email: z.string().trim().email(),
   password: z.string().min(8).max(128),

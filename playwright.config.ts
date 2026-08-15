@@ -59,8 +59,10 @@ export default defineConfig({
           timeout: 120_000,
           env: {
             ...process.env,
-            // Always match apiBaseUrl — do not inherit a mismatched shell .env.
+            // Always match apiBaseUrl — do not inherit a mismatched shell .env
+            // (or Docker's API_INTERNAL_URL=http://api:3001) on the host.
             NEXT_PUBLIC_API_URL: apiBaseUrl,
+            API_INTERNAL_URL: apiBaseUrl,
           },
         },
       ],
