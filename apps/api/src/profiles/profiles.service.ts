@@ -1,16 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { extname } from 'node:path';
 import type { Profile, UpdateProfileDto } from '@nechto/api-contract';
-import { AVATAR_ALLOWED_MIME_TYPES, AVATAR_MAX_BYTES } from '../config/env';
+import { isUniqueConstraintError } from '../prisma/is-unique-constraint-error';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
+import { assertAvatarFile, extensionForAvatarMime } from './avatar-file';
+import { toProfileView } from './profile.mapper';
 
 export type ProfileView = Profile;
 
@@ -25,7 +20,7 @@ export class ProfilesService {
 
   async getMine(userId: string): Promise<ProfileView> {
     const profile = await this.ensureProfile(userId);
-    return this.toView(profile);
+    return toProfileView(profile, this.storage);
   }
 
   async getByUserId(userId: string): Promise<ProfileView> {
@@ -38,7 +33,7 @@ export class ProfilesService {
       throw new NotFoundException('Profile not found');
     }
 
-    return this.toView(profile);
+    return toProfileView(profile, this.storage);
   }
 
   async updateMine(
@@ -58,38 +53,22 @@ export class ProfilesService {
       include: { user: { select: { email: true } } },
     });
 
-    return this.toView(profile);
+    return toProfileView(profile, this.storage);
   }
 
   async uploadAvatar(
     userId: string,
     file: Express.Multer.File | undefined,
   ): Promise<ProfileView> {
-    if (!file) {
-      throw new BadRequestException('Avatar file is required');
-    }
-
-    if (file.size > AVATAR_MAX_BYTES) {
-      throw new BadRequestException('Avatar file is too large');
-    }
-
-    if (
-      !AVATAR_ALLOWED_MIME_TYPES.includes(
-        file.mimetype as (typeof AVATAR_ALLOWED_MIME_TYPES)[number],
-      )
-    ) {
-      throw new BadRequestException('Avatar must be JPEG, PNG, or WebP');
-    }
-
+    const avatar = assertAvatarFile(file);
     const profile = await this.ensureProfile(userId);
     const previousKey = profile.avatarKey;
-    const extension = this.extensionForMime(file.mimetype);
-    const key = `avatars/${userId}/${randomUUID()}${extension}`;
+    const key = `avatars/${userId}/${randomUUID()}${extensionForAvatarMime(avatar.mimetype)}`;
 
     await this.storage.put({
       key,
-      body: file.buffer,
-      contentType: file.mimetype,
+      body: avatar.buffer,
+      contentType: avatar.mimetype,
     });
 
     // Persist the new key before deleting the old object so a crash cannot leave
@@ -111,7 +90,7 @@ export class ProfilesService {
       }
     }
 
-    return this.toView(updated);
+    return toProfileView(updated, this.storage);
   }
 
   private async ensureProfile(userId: string) {
@@ -139,10 +118,7 @@ export class ProfilesService {
         include: { user: { select: { email: true } } },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
+      if (isUniqueConstraintError(error)) {
         const raced = await this.prisma.profile.findUnique({
           where: { userId },
           include: { user: { select: { email: true } } },
@@ -152,39 +128,6 @@ export class ProfilesService {
         }
       }
       throw error;
-    }
-  }
-
-  private toView(profile: {
-    id: string;
-    userId: string;
-    displayName: string | null;
-    bio: string | null;
-    avatarKey: string | null;
-    user: { email: string };
-  }): ProfileView {
-    return {
-      id: profile.id,
-      userId: profile.userId,
-      email: profile.user.email,
-      displayName: profile.displayName,
-      bio: profile.bio,
-      avatarUrl: profile.avatarKey
-        ? this.storage.getPublicUrl(profile.avatarKey)
-        : null,
-    };
-  }
-
-  private extensionForMime(mimeType: string): string {
-    switch (mimeType) {
-      case 'image/jpeg':
-        return '.jpg';
-      case 'image/png':
-        return '.png';
-      case 'image/webp':
-        return '.webp';
-      default:
-        return extname(mimeType) || '.bin';
     }
   }
 }

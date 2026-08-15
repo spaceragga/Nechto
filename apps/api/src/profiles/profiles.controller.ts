@@ -15,7 +15,7 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/decorators/current-user.decorator';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { AVATAR_MAX_BYTES } from '../config/env';
+import { AVATAR_MAX_BYTES } from '../config/avatar-limits';
 import { updateProfileSchema, type UpdateProfileDto } from './dto/profile.dto';
 import { ProfilesService } from './profiles.service';
 

@@ -4,9 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma } from '@prisma/client';
 import type { AuthUser, LoginDto, RegisterDto } from '@nechto/api-contract';
 import * as bcrypt from 'bcryptjs';
+import { isUniqueConstraintError } from '../prisma/is-unique-constraint-error';
 import { PrismaService } from '../prisma/prisma.service';
 
 export type AuthResponse = {
@@ -42,10 +42,7 @@ export class AuthService {
 
       return this.buildAuthResponse(user);
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
+      if (isUniqueConstraintError(error)) {
         throw new ConflictException('Email is already registered');
       }
       throw error;

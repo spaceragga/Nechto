@@ -1,4 +1,4 @@
-import { jwtExpiresInToMs } from './env';
+import { jwtExpiresInToMs } from './jwt-expires';
 
 describe('jwtExpiresInToMs', () => {
   it('parses supported duration units', () => {
