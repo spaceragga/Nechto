@@ -8,42 +8,15 @@ import type {
   RegisterDto,
   UpdateProfileDto,
 } from '@nechto/api-contract';
+import { ApiError, parseApiErrorMessage } from './api-error';
+
+export { ApiError } from './api-error';
 
 export type ApiClientOptions = {
   baseUrl: string;
   fetch?: typeof fetch;
   credentials?: 'include' | 'omit' | 'same-origin';
 };
-
-type ApiErrorBody = {
-  message?: string | string[];
-};
-
-export class ApiError extends Error {
-  readonly status: number;
-
-  constructor(message: string, status: number) {
-    super(message);
-    this.name = 'ApiError';
-    this.status = status;
-  }
-}
-
-async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as ApiErrorBody;
-    if (Array.isArray(body.message)) {
-      return body.message.join('; ');
-    }
-    if (typeof body.message === 'string' && body.message.length > 0) {
-      return body.message;
-    }
-  } catch {
-    // Fall through to status text.
-  }
-
-  return response.statusText || 'Request failed';
-}
 
 export class ApiClient {
   private readonly baseUrl: string;
@@ -130,7 +103,7 @@ export class ApiClient {
     });
 
     if (!response.ok) {
-      throw new ApiError(await parseError(response), response.status);
+      throw new ApiError(await parseApiErrorMessage(response), response.status);
     }
 
     if (response.status === 204) {
