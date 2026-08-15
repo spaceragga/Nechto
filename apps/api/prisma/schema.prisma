@@ -7,22 +7,158 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ProfileStatus {
+  DRAFT
+  PUBLISHED
+  SUSPENDED
+}
+
+enum WorkStatus {
+  DRAFT
+  PUBLISHED
+  REMOVED
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  profile      Profile?
+  id                      String                   @id @default(cuid())
+  email                   String                   @unique
+  passwordHash            String
+  role                    UserRole                 @default(USER)
+  emailVerifiedAt         DateTime?
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  profile                 Profile?
+  sessions                Session[]
+  passwordResetTokens     PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+  moderationActions       ModerationAudit[]        @relation("ModeratorActions")
 }
 
 model Profile {
+  id               String               @id @default(cuid())
+  userId           String               @unique
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slug             String?              @unique
+  displayName      String?
+  bio              String?
+  avatarKey        String?
+  directions       String[]             @default([])
+  websiteUrl       String?
+  instagramUrl     String?
+  telegramUrl      String?
+  status           ProfileStatus        @default(DRAFT)
+  policyVersion    String?
+  policyAcceptedAt DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  works            Work[]
+  reports          Report[]
+  dailyMetrics     ProfileDailyMetric[]
+  moderationAudit  ModerationAudit[]
+
+  @@index([status, updatedAt])
+}
+
+model Work {
+  id           String     @id @default(cuid())
+  profileId    String
+  profile      Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title        String
+  caption      String?
+  altText      String
+  imageKey     String
+  thumbnailKey String
+  width        Int
+  height       Int
+  position     Int        @default(0)
+  status       WorkStatus @default(DRAFT)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([profileId, status, position])
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, expiresAt])
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, expiresAt])
+}
+
+model ProfileDailyMetric {
+  id            String   @id @default(cuid())
+  profileId     String
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
+  views         Int      @default(0)
+  contactClicks Int      @default(0)
+
+  @@unique([profileId, date])
+}
+
+model Report {
+  id            String       @id @default(cuid())
+  profileId     String
+  profile       Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  reporterEmail String?
+  reason        String
+  details       String?
+  status        ReportStatus @default(OPEN)
+  createdAt     DateTime     @default(now())
+  reviewedAt    DateTime?
+
+  @@index([status, createdAt])
+}
+
+model ModerationAudit {
   id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  displayName String?
-  bio         String?
-  avatarKey   String?
+  profileId   String
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  moderatorId String
+  moderator   User     @relation("ModeratorActions", fields: [moderatorId], references: [id], onDelete: Restrict)
+  action      String
+  reason      String?
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  @@index([profileId, createdAt])
 }

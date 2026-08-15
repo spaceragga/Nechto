@@ -3,10 +3,10 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import type { AuthUser } from '@nechto/api-contract';
 import type { Request } from 'express';
+import type { AuthPrincipal } from '../../auth/auth-principal';
 
-export type { AuthUser };
+export type AuthUser = AuthPrincipal;
 
 type RequestWithUser = Request & {
   user?: AuthUser;

@@ -1,12 +1,13 @@
-import type { INestApplication } from '@nestjs/common';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
-import cookieParser from 'cookie-parser';
+import { API_ERROR_CODES } from '@nechto/api-contract';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
+import { configureApp } from '../src/configure-app';
 import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('AuthController (e2e)', () => {
-  let app: INestApplication;
+  let app: NestExpressApplication;
   let prisma: PrismaService;
   const email = `artist-${Date.now()}@nechto.test`;
   const password = 'password123';
@@ -16,8 +17,8 @@ describe('AuthController (e2e)', () => {
       imports: [AppModule],
     }).compile();
 
-    app = moduleRef.createNestApplication();
-    app.use(cookieParser());
+    app = moduleRef.createNestApplication<NestExpressApplication>();
+    configureApp(app);
     await app.init();
 
     prisma = app.get(PrismaService);
@@ -64,7 +65,10 @@ describe('AuthController (e2e)', () => {
       .set('Cookie', cookie)
       .expect(200);
 
-    await request(app.getHttpServer()).get('/auth/me').expect(401);
+    const revoked = await request(app.getHttpServer())
+      .get('/auth/me')
+      .expect(401);
+    expect(revoked.body.code).toBe(API_ERROR_CODES.AUTHENTICATION_REQUIRED);
   });
 
   it('logs in with valid credentials', async () => {
@@ -78,9 +82,10 @@ describe('AuthController (e2e)', () => {
   });
 
   it('rejects invalid login credentials', async () => {
-    await request(app.getHttpServer())
+    const invalid = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email, password: 'wrong-password' })
       .expect(401);
+    expect(invalid.body.code).toBe(API_ERROR_CODES.INVALID_CREDENTIALS);
   });
 });

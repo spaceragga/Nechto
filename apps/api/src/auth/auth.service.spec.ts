@@ -1,8 +1,9 @@
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { API_ERROR_CODES } from '@nechto/api-contract';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { AuthService } from './auth.service';
+import { MailService } from '../mail/mail.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 jest.mock('bcryptjs', () => ({
@@ -17,6 +18,13 @@ describe('AuthService', () => {
       findUnique: jest.Mock;
       create: jest.Mock;
     };
+    session: {
+      create: jest.Mock;
+      updateMany: jest.Mock;
+    };
+    emailVerificationToken: {
+      create: jest.Mock;
+    };
   };
   let jwtService: { sign: jest.Mock };
 
@@ -26,6 +34,13 @@ describe('AuthService', () => {
         findUnique: jest.fn(),
         create: jest.fn(),
       },
+      session: {
+        create: jest.fn().mockResolvedValue({ id: 'session-1' }),
+        updateMany: jest.fn(),
+      },
+      emailVerificationToken: {
+        create: jest.fn().mockResolvedValue({ id: 'verification-1' }),
+      },
     };
     jwtService = {
       sign: jest.fn().mockReturnValue('test-token'),
@@ -33,6 +48,10 @@ describe('AuthService', () => {
     service = new AuthService(
       prisma as unknown as PrismaService,
       jwtService as unknown as JwtService,
+      {
+        sendEmailVerification: jest.fn().mockResolvedValue(undefined),
+        sendPasswordReset: jest.fn().mockResolvedValue(undefined),
+      } as unknown as MailService,
     );
     jest.clearAllMocks();
   });
@@ -65,6 +84,11 @@ describe('AuthService', () => {
         },
         select: { id: true, email: true },
       });
+      expect(jwtService.sign).toHaveBeenCalledWith({
+        sub: 'user-1',
+        email: 'artist@nechto.test',
+        sid: 'session-1',
+      });
     });
 
     it('rejects duplicate emails via unique constraint', async () => {
@@ -81,7 +105,10 @@ describe('AuthService', () => {
           email: 'artist@nechto.test',
           password: 'password123',
         }),
-      ).rejects.toBeInstanceOf(ConflictException);
+      ).rejects.toMatchObject({
+        status: 409,
+        response: { code: API_ERROR_CODES.EMAIL_TAKEN },
+      });
     });
   });
 
@@ -118,7 +145,27 @@ describe('AuthService', () => {
           email: 'artist@nechto.test',
           password: 'wrong-password',
         }),
-      ).rejects.toBeInstanceOf(UnauthorizedException);
+      ).rejects.toMatchObject({
+        status: 401,
+        response: { code: API_ERROR_CODES.INVALID_CREDENTIALS },
+      });
+    });
+
+    it('performs a dummy password comparison for unknown emails', async () => {
+      prisma.user.findUnique.mockResolvedValue(null);
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+
+      await expect(
+        service.login({
+          email: 'missing@nechto.test',
+          password: 'wrong-password',
+        }),
+      ).rejects.toMatchObject({ status: 401 });
+
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        'wrong-password',
+        expect.stringMatching(/^\$2b\$10\$/),
+      );
     });
   });
 });
