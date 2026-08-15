@@ -1,45 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
+import { useAuthSession } from '@/hooks/use-auth-session';
 import { Link } from '@/i18n/navigation';
-import { logoutRequest, meRequest, type AuthUser } from '@/lib/api';
 
 export function HomeAuthPanel() {
   const t = useTranslations('Auth');
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-
-    meRequest()
-      .then((response) => {
-        if (active) {
-          setUser(response.user);
-        }
-      })
-      .catch(() => {
-        if (active) {
-          setUser(null);
-        }
-      })
-      .finally(() => {
-        if (active) {
-          setLoading(false);
-        }
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  async function onLogout() {
-    await logoutRequest();
-    setUser(null);
-  }
+  const { user, loading, logout } = useAuthSession();
 
   if (loading) {
     return <p className="text-sm opacity-70">{t('checkingSession')}</p>;
@@ -55,7 +23,7 @@ export function HomeAuthPanel() {
           <Link href="/profile" className="underline">
             {t('profileLink')}
           </Link>
-          <Button type="button" onClick={onLogout}>
+          <Button type="button" onClick={logout}>
             {t('logout')}
           </Button>
         </div>
