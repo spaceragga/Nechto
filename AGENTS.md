@@ -37,8 +37,9 @@ Project Cursor rules live in `.cursor/rules/`:
 4. **testing** — Jest (API) + Playwright (UI); new behavior needs tests
 5. **nechto-project** — stack, layout, agent conventions
 6. **architecture-principles** — SOLID / DRY / KISS / SoC / YAGNI, boundaries, replaceability
-7. **frontend-components** — atomic UI, shared primitives, unidirectional data, render perf
-8. **backend-architecture** — layered Nest, fail-fast, idempotency, scale-out, query perf
-9. **quality-gate** — lint/typecheck/tests before push; no junk or dead code in diffs
+7. **file-decomposition** — extract helpers/hooks/use-cases into focused files; no mega-modules
+8. **frontend-components** — atomic UI, shared primitives, unidirectional data, render perf
+9. **backend-architecture** — layered Nest, fail-fast, idempotency, scale-out, query perf
+10. **quality-gate** — lint/typecheck/tests before push; no junk or dead code in diffs
 
 Follow those rules on every change. Prefer small, verified diffs over broad rewrites.

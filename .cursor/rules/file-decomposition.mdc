@@ -1,0 +1,50 @@
+---
+description: Keep files small — extract helpers, hooks, and use-cases into focused modules
+alwaysApply: true
+---
+
+# File decomposition
+
+Do not let pages, components, controllers, or services become dumping grounds. Extract **named units of work** into their own files so modules stay readable and swappable when design/logic changes.
+
+## Default posture
+
+- **One primary export per file** when the unit has a clear name (`map-api-error.ts`, `auth-cookies.ts`, `use-my-profile.ts`)
+- Host file = wiring/composition; extracted file = the behavior
+- Prefer **colocated** extracts next to the feature over a global `utils/` junk drawer
+
+## Extract when (any)
+
+- File is heading past ~150–200 lines **or** has 2+ unrelated concerns
+- Logic is reusable (or clearly will be) across components/services
+- Pure helpers, mappers, validators, cookie/JWT utils, formatters
+- React: non-trivial state/effects → `hooks/use-*.ts`; presentational chunks → sibling components
+- Nest: non-trivial branching → private collaborators or `*.helper.ts` / use-case module — keep controllers thin
+- Tests get clearer when the unit is imported alone
+
+## Do not extract when
+
+- 5–15 line glue used once next to its only caller (KISS / YAGNI)
+- Trivial one-liners that only make navigation worse
+- “Future reuse” with a single call site and no clear name
+
+## Placement
+
+| Kind | Where |
+|------|--------|
+| UI primitive | `apps/web/components/ui/` |
+| Feature UI / hook | next to the feature (`components/<feature>/`, `hooks/`) |
+| Web lib helper | `apps/web/lib/<name>.ts` |
+| API helper | next to domain (`auth/auth-cookies.ts`) — not inside the controller |
+| Shared contract | `@nechto/api-contract` / `@nechto/api-client` |
+
+```ts
+// ❌ BAD — profile-editor.tsx owns fetch mapping, avatar MIME checks, and form UI
+// ✅ GOOD — map-api-error.ts + ProfileAvatar.tsx + profile-editor.tsx composes them
+```
+
+## Naming
+
+- File name = what it does (`jwt-expires.ts`, not `helpers2.ts`)
+- No catch-all `utils.ts` / `misc.ts` / `helpers.ts` that accumulates unrelated exports
+- If a “utils” file grows a second theme — split by theme immediately

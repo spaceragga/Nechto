@@ -44,6 +44,7 @@ tsconfig.base.json
 - Commits: English Conventional Commits (see `conventional-commits` rule)
 - Tests: Jest for API/packages, Playwright for UI; cover new behavior (see `testing` rule)
 - Architecture / SOLID: see `architecture-principles`
+- File size / extracts: see `file-decomposition` (helpers and hooks in their own files; no mega-modules)
 - Web UI decomposition: see `frontend-components` (`components/ui` primitives → features → pages)
 - API layering & reliability: see `backend-architecture`
 - Before push: see `quality-gate` (no junk, checks green)
