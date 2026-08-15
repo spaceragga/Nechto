@@ -4,7 +4,9 @@ Instructions for AI agents working in this repository.
 
 ## Project
 
-**Nechto** — internet art-space platform (Belarus-first). Current state: monorepo scaffold with Hello World web/API and Docker Compose.
+**Nechto** — internet art-space platform (Belarus-first). Current state: monorepo MVP with auth, profiles/avatars, shared api-contract/api-client, Docker Compose.
+
+Docker bind-mounts package sources over the image. After `git pull` or package edits, run `npm run build:packages` on the host so `dist/` exists for the mounts.
 
 ## Commands
 

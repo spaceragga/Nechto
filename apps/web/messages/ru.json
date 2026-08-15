@@ -28,7 +28,6 @@
     "logout": "Выйти",
     "signedInAs": "Вы вошли как",
     "checkingSession": "Проверяем сессию…",
-    "unknownError": "Что-то пошло не так",
     "profileLink": "Профиль"
   },
   "Errors": {
@@ -57,7 +56,6 @@
     "uploading": "Загружаем фото…",
     "loading": "Загружаем профиль…",
     "signedInAs": "Аккаунт:",
-    "loginLink": "Войти",
-    "unknownError": "Что-то пошло не так"
+    "loginLink": "Войти"
   }
 }

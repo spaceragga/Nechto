@@ -8,8 +8,9 @@
     "rootDir": "src",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["jest", "node"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["dist", "src/**/*.spec.ts"]
+  "exclude": ["dist"]
 }

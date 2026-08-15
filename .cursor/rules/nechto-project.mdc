@@ -5,7 +5,9 @@ alwaysApply: true
 
 # Nechto — agent context
 
-Art-space platform for the Belarus market. Monorepo scaffold; product is early MVP.
+Art-space platform for the Belarus market. Monorepo MVP: auth, profiles/avatars, shared contracts, Docker Compose.
+
+After package source changes used with Docker bind mounts, run `npm run build:packages` on the host so `dist/` is available.
 
 ## Stack
 

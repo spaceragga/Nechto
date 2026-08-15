@@ -28,7 +28,6 @@
     "logout": "Log out",
     "signedInAs": "Signed in as",
     "checkingSession": "Checking session…",
-    "unknownError": "Something went wrong",
     "profileLink": "Profile"
   },
   "Errors": {
@@ -57,7 +56,6 @@
     "uploading": "Uploading photo…",
     "loading": "Loading profile…",
     "signedInAs": "Account:",
-    "loginLink": "Log in",
-    "unknownError": "Something went wrong"
+    "loginLink": "Log in"
   }
 }

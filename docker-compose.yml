@@ -64,6 +64,7 @@ services:
     volumes:
       - ./apps/web/app:/workspace/apps/web/app
       - ./apps/web/components:/workspace/apps/web/components
+      - ./apps/web/hooks:/workspace/apps/web/hooks
       - ./apps/web/i18n:/workspace/apps/web/i18n
       - ./apps/web/lib:/workspace/apps/web/lib
       - ./apps/web/messages:/workspace/apps/web/messages

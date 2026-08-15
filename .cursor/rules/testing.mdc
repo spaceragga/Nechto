@@ -29,10 +29,11 @@ Every behavior change must ship with automated tests. Do not merge feature/fix w
 ## Commands
 
 ```bash
+npm run test:packages # Jest api-client
 npm run test:api      # Jest unit
 npm run test:api:e2e  # Jest API e2e
 npm run test:e2e      # Playwright
-npm test              # api unit + api e2e + playwright
+npm test              # packages + api unit + api e2e + playwright
 ```
 
 ## Examples
