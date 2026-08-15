@@ -1,7 +1,5 @@
 import type { Response } from 'express';
-import { ACCESS_TOKEN_COOKIE, env } from '../config/env';
-
-const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+import { ACCESS_TOKEN_COOKIE, env, jwtExpiresInToMs } from '../config/env';
 
 export function setAccessTokenCookie(response: Response, token: string): void {
   response.cookie(ACCESS_TOKEN_COOKIE, token, {
@@ -9,7 +7,7 @@ export function setAccessTokenCookie(response: Response, token: string): void {
     sameSite: 'lax',
     secure: env.COOKIE_SECURE,
     path: '/',
-    maxAge: SEVEN_DAYS_MS,
+    maxAge: jwtExpiresInToMs(env.JWT_EXPIRES_IN),
   });
 }
 

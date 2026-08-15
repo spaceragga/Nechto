@@ -72,7 +72,7 @@ describe('ProfilesService', () => {
     );
   });
 
-  it('stores avatar and replaces previous key', async () => {
+  it('stores avatar and replaces previous key after DB update', async () => {
     prisma.profile.findUnique.mockResolvedValue({
       id: 'p1',
       userId: 'u1',
@@ -109,7 +109,13 @@ describe('ProfilesService', () => {
     });
 
     expect(storage.put).toHaveBeenCalled();
+    expect(prisma.profile.update).toHaveBeenCalled();
     expect(storage.delete).toHaveBeenCalledWith('avatars/u1/old.png');
+    const putOrder = storage.put.mock.invocationCallOrder[0]!;
+    const updateOrder = prisma.profile.update.mock.invocationCallOrder[0]!;
+    const deleteOrder = storage.delete.mock.invocationCallOrder[0]!;
+    expect(putOrder).toBeLessThan(updateOrder);
+    expect(updateOrder).toBeLessThan(deleteOrder);
     expect(view.avatarUrl).toBe(
       'http://localhost:3001/uploads/avatars/u1/new.png',
     );

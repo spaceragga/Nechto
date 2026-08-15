@@ -1,8 +1,10 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
 import type { Profile, UpdateProfileDto } from '@nechto/api-contract';
@@ -14,6 +16,8 @@ export type ProfileView = Profile;
 
 @Injectable()
 export class ProfilesService {
+  private readonly logger = new Logger(ProfilesService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
@@ -78,6 +82,7 @@ export class ProfilesService {
     }
 
     const profile = await this.ensureProfile(userId);
+    const previousKey = profile.avatarKey;
     const extension = this.extensionForMime(file.mimetype);
     const key = `avatars/${userId}/${randomUUID()}${extension}`;
 
@@ -87,15 +92,24 @@ export class ProfilesService {
       contentType: file.mimetype,
     });
 
-    if (profile.avatarKey) {
-      await this.storage.delete(profile.avatarKey);
-    }
-
+    // Persist the new key before deleting the old object so a crash cannot leave
+    // the DB pointing at a deleted file.
     const updated = await this.prisma.profile.update({
       where: { userId },
       data: { avatarKey: key },
       include: { user: { select: { email: true } } },
     });
+
+    if (previousKey && previousKey !== key) {
+      try {
+        await this.storage.delete(previousKey);
+      } catch (error) {
+        this.logger.warn(
+          `Failed to delete previous avatar key ${previousKey}`,
+          error instanceof Error ? error.stack : undefined,
+        );
+      }
+    }
 
     return this.toView(updated);
   }
@@ -119,10 +133,26 @@ export class ProfilesService {
       throw new NotFoundException('User not found');
     }
 
-    return this.prisma.profile.create({
-      data: { userId },
-      include: { user: { select: { email: true } } },
-    });
+    try {
+      return await this.prisma.profile.create({
+        data: { userId },
+        include: { user: { select: { email: true } } },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const raced = await this.prisma.profile.findUnique({
+          where: { userId },
+          include: { user: { select: { email: true } } },
+        });
+        if (raced) {
+          return raced;
+        }
+      }
+      throw error;
+    }
   }
 
   private toView(profile: {

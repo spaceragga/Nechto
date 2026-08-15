@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   getHello() {
@@ -15,7 +17,11 @@ export class AppService {
     try {
       await this.prisma.$queryRaw`SELECT 1`;
       database = 'up';
-    } catch {
+    } catch (error) {
+      this.logger.debug(
+        'Health check database probe failed',
+        error instanceof Error ? error.stack : undefined,
+      );
       database = 'down';
     }
 

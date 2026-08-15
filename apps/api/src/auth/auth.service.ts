@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Prisma } from '@prisma/client';
 import type { AuthUser, LoginDto, RegisterDto } from '@nechto/api-contract';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
@@ -22,28 +23,33 @@ export class AuthService {
 
   async register(dto: RegisterDto): Promise<AuthResponse> {
     const email = dto.email.toLowerCase();
-    const existing = await this.prisma.user.findUnique({ where: { email } });
-
-    if (existing) {
-      throw new ConflictException('Email is already registered');
-    }
-
     const passwordHash = await bcrypt.hash(dto.password, 10);
-    const user = await this.prisma.user.create({
-      data: {
-        email,
-        passwordHash,
-        profile: {
-          create: {},
-        },
-      },
-      select: {
-        id: true,
-        email: true,
-      },
-    });
 
-    return this.buildAuthResponse(user);
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email,
+          passwordHash,
+          profile: {
+            create: {},
+          },
+        },
+        select: {
+          id: true,
+          email: true,
+        },
+      });
+
+      return this.buildAuthResponse(user);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Email is already registered');
+      }
+      throw error;
+    }
   }
 
   async login(dto: LoginDto): Promise<AuthResponse> {

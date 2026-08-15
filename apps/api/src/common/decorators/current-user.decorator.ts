@@ -1,4 +1,8 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import {
+  createParamDecorator,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import type { AuthUser } from '@nechto/api-contract';
 import type { Request } from 'express';
 
@@ -12,7 +16,7 @@ export const CurrentUser = createParamDecorator(
   (_data: unknown, context: ExecutionContext): AuthUser => {
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     if (!request.user) {
-      throw new Error('CurrentUser used without authenticated request');
+      throw new UnauthorizedException('Authentication required');
     }
     return request.user;
   },

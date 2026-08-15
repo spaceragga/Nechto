@@ -1,5 +1,6 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -38,7 +39,6 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('creates a user and returns a token payload', async () => {
-      prisma.user.findUnique.mockResolvedValue(null);
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashed');
       prisma.user.create.mockResolvedValue({
         id: 'user-1',
@@ -67,8 +67,14 @@ describe('AuthService', () => {
       });
     });
 
-    it('rejects duplicate emails', async () => {
-      prisma.user.findUnique.mockResolvedValue({ id: 'existing' });
+    it('rejects duplicate emails via unique constraint', async () => {
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashed');
+      prisma.user.create.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('Unique constraint', {
+          code: 'P2002',
+          clientVersion: 'test',
+        }),
+      );
 
       await expect(
         service.register({
