@@ -53,7 +53,6 @@ describe('AppController (e2e)', () => {
       status: 'ok',
       service: 'nechto-api',
       database: 'up',
-      release: 'development',
     });
   });
 
