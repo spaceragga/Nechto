@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import type { CreatorDirection } from '@nechto/api-contract';
 import {
   updateMyProfileRequest,
   uploadMyAvatarRequest,
@@ -26,9 +27,18 @@ export function useMyProfile(initialProfile: Profile) {
     setError(null);
 
     try {
+      const formData = new FormData(event.currentTarget);
       const updated = await updateMyProfileRequest({
         displayName: displayName.trim() || null,
         bio: bio.trim() || null,
+        slug: String(formData.get('slug') ?? '').trim() || null,
+        directions: formData.getAll('directions') as CreatorDirection[],
+        websiteUrl: String(formData.get('websiteUrl') ?? '').trim() || null,
+        instagramUrl: String(formData.get('instagramUrl') ?? '').trim() || null,
+        telegramUrl: String(formData.get('telegramUrl') ?? '').trim() || null,
+        ...(formData.get('acceptPolicies') === 'true'
+          ? { acceptPolicies: true as const }
+          : {}),
       });
       setProfile(updated);
     } catch (saveError) {

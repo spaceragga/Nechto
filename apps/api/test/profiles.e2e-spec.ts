@@ -1,16 +1,15 @@
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import type { INestApplication } from '@nestjs/common';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
-import cookieParser from 'cookie-parser';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
+import { configureApp } from '../src/configure-app';
 import { env } from '../src/config/env';
 import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('ProfilesController (e2e)', () => {
-  let app: INestApplication;
+  let app: NestExpressApplication;
   let prisma: PrismaService;
   const email = `profile-${Date.now()}@nechto.test`;
   const password = 'password123';
@@ -26,8 +25,8 @@ describe('ProfilesController (e2e)', () => {
     }).compile();
 
     app = moduleRef.createNestApplication<NestExpressApplication>();
-    app.use(cookieParser());
-    (app as NestExpressApplication).useStaticAssets(uploadsRoot, {
+    configureApp(app);
+    app.useStaticAssets(uploadsRoot, {
       prefix: '/uploads/',
     });
     await app.init();
@@ -55,14 +54,21 @@ describe('ProfilesController (e2e)', () => {
     const updated = await request(app.getHttpServer())
       .patch('/profiles/me')
       .set('Cookie', cookie)
-      .send({ displayName: 'Nechto Artist', bio: 'Minsk photos' })
+      .send({
+        slug: `artist-${userId}`,
+        displayName: 'Nechto Artist',
+        bio: 'Belarus photos',
+        directions: ['photography'],
+        websiteUrl: 'https://example.com',
+        acceptPolicies: true,
+      })
       .expect(200);
 
     expect(updated.body).toMatchObject({
       userId,
       email,
       displayName: 'Nechto Artist',
-      bio: 'Minsk photos',
+      bio: 'Belarus photos',
       avatarUrl: null,
     });
 
@@ -83,19 +89,46 @@ describe('ProfilesController (e2e)', () => {
 
     expect(avatarResponse.body.avatarUrl).toMatch(/\/uploads\/avatars\//);
 
-    const publicProfile = await request(app.getHttpServer())
-      .get(`/profiles/${userId}`)
-      .expect(200);
-
-    expect(publicProfile.body.displayName).toBe('Nechto Artist');
-    expect(publicProfile.body.avatarUrl).toBe(avatarResponse.body.avatarUrl);
-
     const avatarPath = new URL(avatarResponse.body.avatarUrl as string)
       .pathname;
     const image = await request(app.getHttpServer())
       .get(avatarPath)
       .expect(200);
 
-    expect(image.headers['content-type']).toMatch(/image\/png/);
+    expect(image.headers['content-type']).toMatch(/image\/webp/);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { emailVerifiedAt: new Date() },
+    });
+
+    for (let index = 0; index < 5; index += 1) {
+      const work = await request(app.getHttpServer())
+        .post('/works')
+        .set('Cookie', cookie)
+        .field('title', `Work ${index + 1}`)
+        .field('altText', `Work ${index + 1} preview`)
+        .attach('file', png, {
+          filename: `work-${index + 1}.png`,
+          contentType: 'image/png',
+        })
+        .expect(201);
+      await request(app.getHttpServer())
+        .patch(`/works/${work.body.id as string}`)
+        .set('Cookie', cookie)
+        .send({ status: 'PUBLISHED' })
+        .expect(200);
+    }
+
+    await request(app.getHttpServer())
+      .post('/profiles/me/publish')
+      .set('Cookie', cookie)
+      .expect(201);
+
+    const publicProfile = await request(app.getHttpServer())
+      .get(`/profiles/slug/artist-${userId}`)
+      .expect(200);
+    expect(publicProfile.body.profile).not.toHaveProperty('email');
+    expect(publicProfile.body.works).toHaveLength(5);
   });
 });

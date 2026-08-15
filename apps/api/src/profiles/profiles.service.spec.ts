@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
+import { API_ERROR_CODES } from '@nechto/api-contract';
 import { ProfilesService } from './profiles.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
@@ -9,6 +9,7 @@ describe('ProfilesService', () => {
   const prisma = {
     profile: {
       findUnique: jest.fn(),
+      findMany: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     },
@@ -67,9 +68,10 @@ describe('ProfilesService', () => {
   });
 
   it('rejects missing avatar file', async () => {
-    await expect(service.uploadAvatar('u1', undefined)).rejects.toBeInstanceOf(
-      BadRequestException,
-    );
+    await expect(service.uploadAvatar('u1', undefined)).rejects.toMatchObject({
+      status: 400,
+      response: { code: API_ERROR_CODES.AVATAR_REQUIRED },
+    });
   });
 
   it('stores avatar and replaces previous key after DB update', async () => {
@@ -95,13 +97,17 @@ describe('ProfilesService', () => {
       user: { email: 'a@nechto.test' },
     });
 
+    const png = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+      'base64',
+    );
     const view = await service.uploadAvatar('u1', {
       fieldname: 'file',
       originalname: 'photo.png',
       encoding: '7bit',
       mimetype: 'image/png',
-      size: 4,
-      buffer: Buffer.from([1, 2, 3, 4]),
+      size: png.byteLength,
+      buffer: png,
       destination: '',
       filename: '',
       path: '',
@@ -119,5 +125,30 @@ describe('ProfilesService', () => {
     expect(view.avatarUrl).toBe(
       'http://localhost:3001/uploads/avatars/u1/new.png',
     );
+  });
+
+  it('returns nextCursor when another catalog page exists', async () => {
+    prisma.profile.findMany.mockResolvedValue(
+      [0, 1, 2].map((index) => ({
+        id: `c${index}`,
+        userId: `u${index}`,
+        slug: `artist-${index}`,
+        displayName: `Artist ${index}`,
+        bio: null,
+        avatarKey: null,
+        directions: ['photography'],
+        websiteUrl: null,
+        instagramUrl: null,
+        telegramUrl: null,
+        status: 'PUBLISHED',
+        user: { email: `a${index}@nechto.test` },
+      })),
+    );
+
+    const page = await service.listPublic(undefined, undefined, 2);
+
+    expect(page.items).toHaveLength(2);
+    expect(page.nextCursor).toBe('c1');
+    expect(page.items[0]).not.toHaveProperty('email');
   });
 });

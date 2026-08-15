@@ -8,9 +8,19 @@ import {
   UseGuards,
   UseInterceptors,
   Body,
+  HttpCode,
+  Query,
+  Delete,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  creatorCatalogQuerySchema,
+  type CreatorCatalogQuery,
+} from '@nechto/api-contract';
 import { memoryStorage } from 'multer';
+import type { Response } from 'express';
+import { clearAccessTokenCookie } from '../auth/auth-cookies';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/decorators/current-user.decorator';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -38,6 +48,23 @@ export class ProfilesController {
     return this.profilesService.updateMine(user.id, body);
   }
 
+  @Get('me/export')
+  @UseGuards(JwtAuthGuard)
+  exportMine(@CurrentUser() user: AuthUser) {
+    return this.profilesService.exportMine(user.id);
+  }
+
+  @Delete('me')
+  @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
+  async deleteMine(
+    @CurrentUser() user: AuthUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.profilesService.deleteMine(user.id);
+    clearAccessTokenCookie(response);
+  }
+
   @Post('me/avatar')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
@@ -53,8 +80,32 @@ export class ProfilesController {
     return this.profilesService.uploadAvatar(user.id, file);
   }
 
-  @Get(':userId')
-  getByUserId(@Param('userId') userId: string) {
-    return this.profilesService.getByUserId(userId);
+  @Post('me/publish')
+  @UseGuards(JwtAuthGuard)
+  publishMine(@CurrentUser() user: AuthUser) {
+    return this.profilesService.publishMine(user.id);
+  }
+
+  @Get()
+  listPublic(
+    @Query(new ZodValidationPipe(creatorCatalogQuerySchema))
+    query: CreatorCatalogQuery,
+  ) {
+    return this.profilesService.listPublic(
+      query.direction,
+      query.cursor,
+      query.limit,
+    );
+  }
+
+  @Get('slug/:slug')
+  getBySlug(@Param('slug') slug: string) {
+    return this.profilesService.getPublicBySlug(slug);
+  }
+
+  @Post('slug/:slug/contact')
+  @HttpCode(204)
+  async recordContact(@Param('slug') slug: string) {
+    await this.profilesService.recordContact(slug);
   }
 }

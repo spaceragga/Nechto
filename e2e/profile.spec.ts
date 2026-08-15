@@ -19,6 +19,12 @@ test.describe('profile photo', () => {
 
     await page.getByLabel('Имя').fill('Тестовый художник');
     await page.getByLabel('О себе').fill('Минск, фото');
+    await page.getByLabel('Адрес профиля').fill(`artist-${Date.now()}`);
+    await page.getByLabel('Фотография').check();
+    await page.getByLabel('Сайт').fill('https://example.com');
+    await page
+      .getByLabel('Я принимаю правила платформы и политику конфиденциальности')
+      .check();
     await page.getByRole('button', { name: 'Сохранить' }).click();
 
     await expect(page.getByLabel('Имя')).toHaveValue('Тестовый художник');
@@ -31,5 +37,30 @@ test.describe('profile photo', () => {
       'src',
       /\/uploads\/avatars\//,
     );
+
+    const works = page.getByRole('heading', { name: 'Работы' }).locator('..');
+    await works.getByPlaceholder('Название').fill('Тестовая работа');
+    await works
+      .getByPlaceholder('Описание изображения')
+      .fill('Абстрактная композиция');
+    await works.locator('input[name="file"]').setInputFiles(avatarFixture);
+    await works.getByRole('button', { name: 'Добавить работу' }).click();
+    await expect(works.getByText('Тестовая работа')).toBeVisible();
+    await works
+      .getByRole('button', { name: 'Опубликовать', exact: true })
+      .click();
+    await expect(works.getByRole('button', { name: 'Скрыть' })).toBeVisible();
+  });
+
+  test('loads the English profile editor after sign-in', async ({ page }) => {
+    const email = `profile-en-${Date.now()}@nechto.test`;
+
+    await page.goto('/en/register');
+    await page.getByLabel('Email').fill(email);
+    await page.getByLabel('Password').fill('password123');
+    await page.getByRole('button', { name: 'Create account' }).click();
+    await page.getByRole('link', { name: 'Profile' }).click();
+    await expect(page.getByRole('heading', { name: 'Profile' })).toBeVisible();
+    await expect(page.getByLabel('Display name')).toBeVisible();
   });
 });

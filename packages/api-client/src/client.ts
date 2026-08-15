@@ -1,14 +1,22 @@
 import type {
   AuthUserResponse,
+  CreatorCatalogPage,
+  CreatorCatalogQuery,
   ForgotPasswordDto,
   HealthResponse,
   HelloResponse,
   LoginDto,
   LogoutResponse,
   Profile,
+  PublicCreatorProfile,
+  ReorderWorksDto,
   RegisterDto,
+  ReportProfileDto,
   ResetPasswordDto,
   UpdateProfileDto,
+  UpdateWorkDto,
+  Work,
+  WorkFieldsDto,
   VerifyEmailDto,
 } from '@nechto/api-contract';
 import { ApiError, parseApiErrorResponse } from './api-error';
@@ -105,10 +113,6 @@ export class ApiClient {
     return this.request<Profile>('/profiles/me');
   }
 
-  getProfile(userId: string) {
-    return this.request<Profile>(`/profiles/${userId}`);
-  }
-
   updateMyProfile(input: UpdateProfileDto) {
     return this.request<Profile>('/profiles/me', {
       method: 'PATCH',
@@ -122,6 +126,79 @@ export class ApiClient {
     return this.request<Profile>('/profiles/me/avatar', {
       method: 'POST',
       body,
+    });
+  }
+
+  publishMyProfile() {
+    return this.request<Profile>('/profiles/me/publish', { method: 'POST' });
+  }
+
+  exportMyAccount() {
+    return this.request<unknown>('/profiles/me/export');
+  }
+
+  deleteMyAccount() {
+    return this.request<void>('/profiles/me', { method: 'DELETE' });
+  }
+
+  getPublicProfile(slug: string) {
+    return this.request<PublicCreatorProfile>(
+      `/profiles/slug/${encodeURIComponent(slug)}`,
+    );
+  }
+
+  listCreators(query: CreatorCatalogQuery) {
+    const params = new URLSearchParams();
+    if (query.direction) params.set('direction', query.direction);
+    if (query.cursor) params.set('cursor', query.cursor);
+    params.set('limit', String(query.limit));
+    return this.request<CreatorCatalogPage>(`/profiles?${params.toString()}`);
+  }
+
+  recordContactClick(slug: string) {
+    return this.request<void>(
+      `/profiles/slug/${encodeURIComponent(slug)}/contact`,
+      { method: 'POST', keepalive: true },
+    );
+  }
+
+  reportProfile(slug: string, input: ReportProfileDto) {
+    return this.request<{ ok: boolean }>(
+      `/profiles/slug/${encodeURIComponent(slug)}/report`,
+      { method: 'POST', body: JSON.stringify(input) },
+    );
+  }
+
+  listMyWorks() {
+    return this.request<Work[]>('/works');
+  }
+
+  createWork(input: WorkFieldsDto, file: Blob, fileName = 'work') {
+    const body = new FormData();
+    body.append('title', input.title);
+    body.append('altText', input.altText);
+    if (input.caption) body.append('caption', input.caption);
+    body.append('file', file, fileName);
+    return this.request<Work>('/works', { method: 'POST', body });
+  }
+
+  updateWork(id: string, input: UpdateWorkDto) {
+    return this.request<Work>(`/works/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(input),
+    });
+  }
+
+  reorderWorks(input: ReorderWorksDto) {
+    return this.request<void>('/works/reorder', {
+      method: 'PATCH',
+      body: JSON.stringify(input),
+    });
+  }
+
+  deleteWork(id: string) {
+    return this.request<void>(`/works/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
     });
   }
 

@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProfileEditor } from '@/components/profile-editor';
-import { loadMyProfile } from '@/lib/session';
+import { loadMyProfile, loadMyWorks } from '@/lib/session';
 
 type ProfilePageProps = {
   params: Promise<{ locale: string }>;
@@ -30,11 +30,15 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 }
 
 async function ProfilePageContent() {
-  const result = await loadMyProfile();
+  const [result, works] = await Promise.all([loadMyProfile(), loadMyWorks()]);
 
   if (!result.ok) {
-    return <ProfileEditor profile={null} errorStatus={result.status} />;
+    return <ProfileEditor profile={null} errorKind={result.kind} />;
   }
 
-  return <ProfileEditor profile={result.profile} />;
+  if (!works.ok) {
+    return <ProfileEditor profile={null} errorKind="unavailable" />;
+  }
+
+  return <ProfileEditor profile={result.profile} works={works.works} />;
 }

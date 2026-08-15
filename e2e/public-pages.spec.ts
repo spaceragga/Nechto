@@ -1,6 +1,20 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('public bilingual surfaces', () => {
+  test('shows the creator catalog in Russian and English', async ({ page }) => {
+    await page.goto('/creators');
+    await expect(page.getByRole('heading', { name: 'Авторы' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Фотография', exact: true }),
+    ).toBeVisible();
+
+    await page.goto('/en/creators');
+    await expect(page.getByRole('heading', { name: 'Creators' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Photography', exact: true }),
+    ).toBeVisible();
+  });
+
   test('shows legal policy surfaces in both locales', async ({ page }) => {
     await page.goto('/privacy');
     await expect(

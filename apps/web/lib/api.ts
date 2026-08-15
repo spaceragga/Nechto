@@ -5,6 +5,8 @@ import type {
   Profile,
   RegisterDto,
   UpdateProfileDto,
+  UpdateWorkDto,
+  WorkFieldsDto,
 } from '@nechto/api-contract';
 
 export type { AuthUser, Profile };
@@ -47,4 +49,39 @@ export function updateMyProfileRequest(input: UpdateProfileDto) {
 
 export function uploadMyAvatarRequest(file: File) {
   return api.uploadMyAvatar(file, file.name);
+}
+
+export function publishMyProfileRequest() {
+  return api.publishMyProfile();
+}
+
+export function exportMyAccountRequest() {
+  return api.exportMyAccount();
+}
+
+export function deleteMyAccountRequest() {
+  return api.deleteMyAccount();
+}
+
+export function createWorkRequest(input: WorkFieldsDto, file: File) {
+  return api.createWork(input, file, file.name);
+}
+
+export function updateWorkRequest(id: string, input: UpdateWorkDto) {
+  return api.updateWork(id, input);
+}
+
+export function deleteWorkRequest(id: string) {
+  return api.deleteWork(id);
+}
+
+export function recordContactClickRequest(slug: string) {
+  return api.recordContactClick(slug);
+}
+
+export function reportProfileRequest(
+  slug: string,
+  input: Parameters<typeof api.reportProfile>[1],
+) {
+  return api.reportProfile(slug, input);
 }
