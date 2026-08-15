@@ -1,12 +1,15 @@
 import type {
   AuthUserResponse,
+  ForgotPasswordDto,
   HealthResponse,
   HelloResponse,
   LoginDto,
   LogoutResponse,
   Profile,
   RegisterDto,
+  ResetPasswordDto,
   UpdateProfileDto,
+  VerifyEmailDto,
 } from '@nechto/api-contract';
 import { ApiError, parseApiErrorResponse } from './api-error';
 
@@ -58,6 +61,33 @@ export class ApiClient {
     return this.request<AuthUserResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(input),
+    });
+  }
+
+  forgotPassword(input: ForgotPasswordDto) {
+    return this.request<{ ok: boolean }>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  resetPassword(input: ResetPasswordDto) {
+    return this.request<{ ok: boolean }>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  verifyEmail(input: VerifyEmailDto) {
+    return this.request<{ ok: boolean }>('/auth/verify-email', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  resendVerification() {
+    return this.request<{ ok: boolean }>('/auth/resend-verification', {
+      method: 'POST',
     });
   }
 

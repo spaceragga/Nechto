@@ -21,6 +21,22 @@ export function loginRequest(input: LoginDto) {
   return api.login(input);
 }
 
+export function forgotPasswordRequest(email: string) {
+  return api.forgotPassword({ email });
+}
+
+export function resetPasswordRequest(token: string, password: string) {
+  return api.resetPassword({ token, password });
+}
+
+export function verifyEmailRequest(token: string) {
+  return api.verifyEmail({ token });
+}
+
+export function resendVerificationRequest() {
+  return api.resendVerification();
+}
+
 export function logoutRequest() {
   return api.logout();
 }

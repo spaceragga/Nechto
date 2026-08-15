@@ -3,6 +3,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 
 type LocaleLayoutProps = {
@@ -35,6 +36,7 @@ export default async function LocaleLayout({
   }
 
   setRequestLocale(locale);
+  const t = await getTranslations('LocaleLayout');
 
   return (
     <html lang={locale}>
@@ -44,6 +46,11 @@ export default async function LocaleLayout({
             <LanguageSwitcher />
           </div>
           {children}
+          <footer className="flex flex-wrap justify-center gap-4 border-t px-6 py-8 text-sm">
+            <Link href="/terms">{t('terms')}</Link>
+            <Link href="/privacy">{t('privacy')}</Link>
+            <Link href="/community-guidelines">{t('community')}</Link>
+          </footer>
         </NextIntlClientProvider>
       </body>
     </html>

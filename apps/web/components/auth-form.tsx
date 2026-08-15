@@ -90,6 +90,12 @@ export function AuthForm({ mode }: AuthFormProps) {
             : t('registerSubmit')}
       </Button>
 
+      {mode === 'login' ? (
+        <Link href="/forgot-password" className="text-sm underline">
+          {t('forgotPassword')}
+        </Link>
+      ) : null}
+
       <p className="text-sm opacity-70">
         {mode === 'login' ? (
           <>
