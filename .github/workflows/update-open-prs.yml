@@ -1,0 +1,41 @@
+name: Update open PRs
+
+# Keeps open PR heads current after a merge to main (GitHub has no native toggle).
+# GITHUB_TOKEN updates do not retrigger workflows; required checks re-run on the
+# next human/agent push, or the agent fallback in git-pr-workflow.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge main into open PR branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mapfile -t prs < <(
+            gh pr list --repo "$REPO" --base main --state open \
+              --json number,isCrossRepository \
+              --jq '.[] | select(.isCrossRepository | not) | .number'
+          )
+          if [ "${#prs[@]}" -eq 0 ]; then
+            echo 'No same-repo open PRs targeting main.'
+            exit 0
+          fi
+          for number in "${prs[@]}"; do
+            echo "Updating PR #${number}"
+            if gh api --method PUT "/repos/${REPO}/pulls/${number}/update-branch"; then
+              echo "PR #${number} updated."
+            else
+              echo "PR #${number} skipped (already current, conflict, or API error)."
+            fi
+          done

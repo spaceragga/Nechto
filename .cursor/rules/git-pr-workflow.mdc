@@ -31,7 +31,9 @@ Later commits on that PR: push, then edit the PR description so it stays consist
 
 ## When `main` updates
 
-`git fetch origin`. If `origin/main` has new commits, merge it into **every other still-open PR** branch and push those branches. Do this without waiting to be asked (this is the exception to “no unprompted push”).
+Primary: GitHub Action `update-open-prs.yml` (push to `main`) calls the Update branch API on every same-repo open PR.
+
+Fallback (this agent), if a PR is still behind or the Action skipped it: `git fetch origin`, merge `origin/main` into that PR head, push. Do this without waiting to be asked (exception to “no unprompted push”).
 
 - Merge `origin/main` into the PR head. Do not rebase. Do not force-push.
 - Skip the branch that was just merged (GitHub deletes it).
