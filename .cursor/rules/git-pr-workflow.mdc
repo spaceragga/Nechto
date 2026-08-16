@@ -1,0 +1,28 @@
+---
+description: Agent prepares review PRs; only the user merges to main
+alwaysApply: true
+---
+
+# Git — PRs for review, user merges
+
+The user owns `main`. The agent never lands work there.
+
+## Delivery order
+
+1. Branch off current `main` (`feat/…` / `fix/…`). Do not commit on `main`.
+2. One concern per branch/PR. Split unrelated requests (e.g. homepage vs error copy) into separate PRs. Stack later PRs on the earlier branch when they depend on it.
+3. Commit locally (Conventional Commits, English). Push the branch. Open a PR to `main` (or the stacked base).
+4. Required checks: `quality`, `api-test`, `web-e2e`. Fix the PR if CI is red. Do not merge.
+5. Stop. Tell the user the PR URL. They review and merge.
+
+## Never
+
+- `git push` to `main` / `master`
+- `gh pr merge`, merge-button equivalents, or “merge when green” loops
+- Force-push to `main`
+
+## After they merge
+
+Do not fast-forward local `main` or restack later PRs unless they ask.
+
+After `git pull` / branch switch: `npm run build:packages` (`dist/` is gitignored; stale types kill the API watch).

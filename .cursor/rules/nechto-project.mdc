@@ -51,3 +51,4 @@ tsconfig.base.json
 - Web UI decomposition: see `frontend-components` (`components/ui` primitives → features → pages)
 - API layering & reliability: see `backend-architecture`
 - Before push: see `quality-gate` (no junk, checks green)
+- Git: see `git-pr-workflow` (PRs for review; user merges `main`)
