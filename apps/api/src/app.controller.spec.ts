@@ -39,7 +39,6 @@ describe('AppController', () => {
         status: 'ok' as const,
         service: 'nechto-api',
         database: 'up' as const,
-        release: 'development',
       };
       jest.spyOn(service, 'getHealth').mockResolvedValue(payload);
 
@@ -62,7 +61,6 @@ describe('AppController', () => {
         status: 'degraded',
         service: 'nechto-api',
         database: 'down',
-        release: 'development',
       });
 
       await expect(

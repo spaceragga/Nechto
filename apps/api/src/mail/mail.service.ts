@@ -1,9 +1,15 @@
-import { Injectable, ServiceUnavailableException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import nodemailer from 'nodemailer';
 import { env } from '../config/env';
 
 @Injectable()
 export class MailService {
+  private readonly logger = new Logger(MailService.name);
+
   async sendPasswordReset(email: string, token: string): Promise<void> {
     const url = `${env.WEB_PUBLIC_URL}/reset-password?token=${encodeURIComponent(token)}`;
     await this.send(
@@ -23,20 +29,27 @@ export class MailService {
   }
 
   private async send(to: string, subject: string, text: string): Promise<void> {
-    if (
-      !env.SMTP_HOST ||
-      !env.SMTP_USER ||
-      !env.SMTP_PASSWORD ||
-      !env.SMTP_FROM
-    ) {
-      throw new ServiceUnavailableException('Email delivery is not configured');
+    const host = env.SMTP_HOST;
+    const user = env.SMTP_USER;
+    const password = env.SMTP_PASSWORD;
+    const from = env.SMTP_FROM;
+    if (!host || !user || !password || !from) {
+      if (env.NODE_ENV === 'production') {
+        throw new ServiceUnavailableException(
+          'Email delivery is not configured',
+        );
+      }
+      this.logger.warn(
+        `Email delivery is not configured; skipped "${subject}" to ${to}`,
+      );
+      return;
     }
     const transport = nodemailer.createTransport({
-      host: env.SMTP_HOST,
+      host,
       port: env.SMTP_PORT,
       secure: env.SMTP_PORT === 465,
-      auth: { user: env.SMTP_USER, pass: env.SMTP_PASSWORD },
+      auth: { user, pass: password },
     });
-    await transport.sendMail({ from: env.SMTP_FROM, to, subject, text });
+    await transport.sendMail({ from, to, subject, text });
   }
 }
