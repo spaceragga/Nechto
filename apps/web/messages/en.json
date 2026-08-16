@@ -292,6 +292,7 @@
     "export": "Download my data",
     "resendVerification": "Send email verification",
     "verificationSent": "Email sent if the address is not verified yet.",
+    "changePassword": "Change password",
     "delete": "Delete account",
     "confirmDelete": "Delete the account and all works permanently?"
   }

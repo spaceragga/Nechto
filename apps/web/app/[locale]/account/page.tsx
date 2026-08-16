@@ -10,6 +10,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
   setRequestLocale(locale);
   const t = await getTranslations('Account');
   const tAuth = await getTranslations('Auth');
+  const tRecovery = await getTranslations('Recovery');
 
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-16">
@@ -18,6 +19,16 @@ export default async function AccountPage({ params }: AccountPageProps) {
         <li>{t('export')}</li>
         <li>{t('resendVerification')}</li>
         <li>{t('delete')}</li>
+        <li>
+          <Link href="/forgot-password" className="underline">
+            {tRecovery('forgot.title')}
+          </Link>
+        </li>
+        <li>
+          <Link href="/change-password" className="underline">
+            {t('changePassword')}
+          </Link>
+        </li>
       </ul>
       <Link href="/profile" className="mt-8 inline-block underline">
         {tAuth('profileLink')}
