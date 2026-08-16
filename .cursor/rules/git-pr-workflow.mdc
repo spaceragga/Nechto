@@ -1,22 +1,33 @@
 ---
-description: Agent prepares review PRs; only the user merges to main
+description: Implement first; commit/push/PR only when the user asks; user merges main
 alwaysApply: true
 ---
 
-# Git — PRs for review, user merges
+# Git — implement first, PR only on request
 
 The user owns `main`. The agent never lands work there.
 
-## Delivery order
+## Default (every prompt)
 
-1. Branch off current `main` (`feat/…` / `fix/…`). Do not commit on `main`.
-2. One concern per branch/PR. Split unrelated requests (e.g. homepage vs error copy) into separate PRs. Stack later PRs on the earlier branch when they depend on it.
-3. Commit locally (Conventional Commits, English). Push the branch. Open a PR to `main` (or the stacked base).
+Implement the change. Leave it **uncommitted**.
+
+Do **not** `git commit`, `git push`, or `gh pr create` until the user explicitly asks (e.g. «сделай PR», «commit», «push»). «Сделай PR» means open a PR — never merge.
+
+## When they ask to commit
+
+Commit (Conventional Commits, English) **and push the branch immediately**. Do not wait for a second «push». Do not open a PR unless they also asked for one.
+
+## When they ask for a PR
+
+1. Branch off current `main` (`feat/…` / `fix/…`) if not already on one. Do not commit on `main`.
+2. One concern per branch/PR. Split unrelated requests into separate PRs. Stack later PRs when they depend on an earlier branch.
+3. Commit (Conventional Commits, English). Push the branch. Open a PR to `main` (or the stacked base).
 4. Required checks: `quality`, `api-test`, `web-e2e`. Fix the PR if CI is red. Do not merge.
 5. Stop. Tell the user the PR URL. They review and merge.
 
 ## Never
 
+- Commit / push / open a PR unprompted
 - `git push` to `main` / `master`
 - `gh pr merge`, merge-button equivalents, or “merge when green” loops
 - Force-push to `main`
