@@ -5,13 +5,13 @@ alwaysApply: true
 
 # Nechto — agent context
 
-Art-space platform for the Belarus market. Monorepo MVP: auth, profiles/avatars, shared contracts, Docker Compose.
+Art-space platform for the Belarus market (Дом Независимого Творца). Monorepo MVP: auth, profiles/avatars, shared contracts, Docker Compose.
 
-After package source changes used with Docker bind mounts, run `npm run build:packages` on the host so `dist/` is available.
+Node **>= 22.18**. After package source changes used with Docker bind mounts, run `npm run build:packages` on the host so `dist/` is available.
 
 ## Stack
 
-- `apps/web` — Next.js 15 (App Router) + Tailwind CSS 4 + TypeScript + next-intl (ru default, en)
+- `apps/web` — Next.js 16 (App Router) + React 19 + Tailwind CSS 4 + TypeScript + next-intl (ru default, en)
 - `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`) + Prisma + Zod env
 - `packages/api-contract` — shared Zod request schemas + response types
 - `packages/api-client` — typed fetch client used by web
@@ -39,7 +39,7 @@ tsconfig.base.json
 - Format with Prettier (`prettier.config.mjs`); do not fight it with manual style diffs
 - Auth uses JWT httpOnly cookies + `JwtAuthGuard`; never store passwords in plaintext
 - Web session reads (`me` / profile) load in RSC via `lib/session.ts` + cookie forwarding (`lib/api-server.ts`); Docker sets `API_INTERNAL_URL=http://api:3001`
-- File uploads go through `StorageService` (local disk in dev); do not write ad-hoc disk/S3 calls in feature modules
+- File uploads go through `StorageService` (local disk); do not write ad-hoc disk or cloud SDK calls in feature modules
 - Put request/response contracts in `@nechto/api-contract` and call the API through `@nechto/api-client` from web; rebuild packages after contract changes (`npm run build:packages`)
 - Match IDE TypeScript strictness when relevant (CSS side-effect imports need `*.css` module declarations)
 - Comments: English only (see `english-comments` rule)
@@ -51,4 +51,4 @@ tsconfig.base.json
 - Web UI decomposition: see `frontend-components` (`components/ui` primitives → features → pages)
 - API layering & reliability: see `backend-architecture`
 - Before push: see `quality-gate` (no junk, checks green)
-- Git: see `git-pr-workflow` (PRs for review; user merges `main`)
+- Git: see `git-pr-workflow` (no commit/PR until asked; commit ⇒ push; user merges `main`)

@@ -30,7 +30,7 @@ Keep Nest as the delivery mechanism. Business rules must not be trapped in contr
 - Safe methods (`GET`, `HEAD`) stay side-effect free
 - Mutating retries must not double-create (unique constraints, idempotency keys where needed)
 - Auth: JWT httpOnly cookies + `JwtAuthGuard`; never store plaintext passwords
-- Uploads only through `StorageService` — no ad-hoc disk/S3 in feature modules
+- Uploads only through `StorageService` — no ad-hoc disk or cloud SDK calls in feature modules
 
 ## Scalability (design for multi-instance)
 
