@@ -1,5 +1,5 @@
 ---
-description: Implement first; commit/push/PR only when the user asks; user merges main
+description: Implement first; commit/push/PR only when asked; keep PR body in sync; user merges main
 alwaysApply: true
 ---
 
@@ -11,19 +11,23 @@ The user owns `main`. The agent never lands work there.
 
 Implement the change. Leave it **uncommitted**.
 
-Do **not** `git commit`, `git push`, or `gh pr create` until the user explicitly asks (e.g. «сделай PR», «commit», «push»). «Сделай PR» means open a PR — never merge.
+Do **not** `git commit`, `git push`, or `gh pr create` until the user explicitly asks. Asking for a PR means open a PR — never merge.
 
 ## When they ask to commit
 
-Commit (Conventional Commits, English) **and push the branch immediately**. Do not wait for a second «push». Do not open a PR unless they also asked for one.
+Commit (Conventional Commits, English) **and push immediately**. Do not wait for a second push request. Do not open a PR unless they also asked for one.
+
+If the branch already has an open PR, edit that PR’s title and body so they match **every** commit and file on the branch (not only the latest).
 
 ## When they ask for a PR
 
 1. Branch off current `main` (`feat/…` / `fix/…`) if not already on one. Do not commit on `main`.
-2. One concern per branch/PR. Split unrelated requests into separate PRs. Stack later PRs when they depend on an earlier branch.
-3. Commit (Conventional Commits, English). Push the branch. Open a PR to `main` (or the stacked base).
+2. One concern per branch/PR. Split unrelated requests. Stack later PRs when they depend on an earlier branch.
+3. Commit (Conventional Commits, English). Push. Open a PR whose body covers **all** commits in the PR.
 4. Required checks: `quality`, `api-test`, `web-e2e`. Fix the PR if CI is red. Do not merge.
 5. Stop. Tell the user the PR URL. They review and merge.
+
+Later commits on that PR: push, then edit the PR description so it stays consistent.
 
 ## Never
 
