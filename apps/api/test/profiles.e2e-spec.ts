@@ -1,16 +1,15 @@
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import type { INestApplication } from '@nestjs/common';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
-import cookieParser from 'cookie-parser';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
+import { configureApp } from '../src/configure-app';
 import { env } from '../src/config/env';
 import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('ProfilesController (e2e)', () => {
-  let app: INestApplication;
+  let app: NestExpressApplication;
   let prisma: PrismaService;
   const email = `profile-${Date.now()}@nechto.test`;
   const password = 'password123';
@@ -26,8 +25,8 @@ describe('ProfilesController (e2e)', () => {
     }).compile();
 
     app = moduleRef.createNestApplication<NestExpressApplication>();
-    app.use(cookieParser());
-    (app as NestExpressApplication).useStaticAssets(uploadsRoot, {
+    configureApp(app);
+    app.useStaticAssets(uploadsRoot, {
       prefix: '/uploads/',
     });
     await app.init();
@@ -97,5 +96,6 @@ describe('ProfilesController (e2e)', () => {
       .expect(200);
 
     expect(image.headers['content-type']).toMatch(/image\/png/);
+    expect(image.headers['cross-origin-resource-policy']).toBe('cross-origin');
   });
 });

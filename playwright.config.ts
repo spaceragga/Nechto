@@ -49,7 +49,7 @@ export default defineConfig({
             STORAGE_DRIVER: process.env.STORAGE_DRIVER ?? 'local',
             STORAGE_LOCAL_ROOT: process.env.STORAGE_LOCAL_ROOT ?? 'uploads-e2e',
             STORAGE_PUBLIC_BASE_URL:
-              process.env.STORAGE_PUBLIC_BASE_URL ?? `${apiBaseUrl}/uploads`,
+              process.env.STORAGE_PUBLIC_BASE_URL ?? `${webBaseUrl}/uploads`,
           },
         },
         {

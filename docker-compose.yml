@@ -35,7 +35,7 @@ services:
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       STORAGE_DRIVER: ${STORAGE_DRIVER:-local}
       STORAGE_LOCAL_ROOT: ${STORAGE_LOCAL_ROOT:-/workspace/apps/api/uploads}
-      STORAGE_PUBLIC_BASE_URL: ${STORAGE_PUBLIC_BASE_URL:-http://localhost:3001/uploads}
+      STORAGE_PUBLIC_BASE_URL: ${STORAGE_PUBLIC_BASE_URL:-http://localhost:3000/uploads}
     ports:
       - '${API_PORT:-3001}:3001'
     volumes:

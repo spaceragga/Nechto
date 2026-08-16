@@ -1,6 +1,5 @@
 'use client';
 
-import type { FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
@@ -12,9 +11,9 @@ type ProfileDetailsFormProps = {
   bio: string;
   saving: boolean;
   error: string | null;
+  saved: boolean;
   onDisplayNameChange: (value: string) => void;
   onBioChange: (value: string) => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };
 
 export function ProfileDetailsForm({
@@ -22,14 +21,14 @@ export function ProfileDetailsForm({
   bio,
   saving,
   error,
+  saved,
   onDisplayNameChange,
   onBioChange,
-  onSubmit,
 }: ProfileDetailsFormProps) {
   const t = useTranslations('Profile');
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <label className="flex flex-col gap-2 text-sm">
         <span>{t('displayName')}</span>
         <Input
@@ -52,10 +51,15 @@ export function ProfileDetailsForm({
       </label>
 
       {error ? <FormError>{error}</FormError> : null}
+      {saved ? (
+        <p className="text-sm opacity-70" role="status">
+          {t('saved')}
+        </p>
+      ) : null}
 
       <Button type="submit" disabled={saving}>
         {saving ? t('saving') : t('save')}
       </Button>
-    </form>
+    </div>
   );
 }

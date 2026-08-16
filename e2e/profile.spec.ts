@@ -24,11 +24,12 @@ test.describe('profile photo', () => {
 
     await page.getByLabel('Имя').fill('Тестовый художник');
     await page.getByLabel('О себе').fill('Минск, фото');
+    await page.getByLabel('Фото профиля').setInputFiles(avatarFixture);
     await page.getByRole('button', { name: 'Сохранить' }).click();
 
     await expect(page.getByLabel('Имя')).toHaveValue('Тестовый художник');
-
-    await page.getByLabel('Фото профиля').setInputFiles(avatarFixture);
+    await expect(page.getByRole('status')).toHaveText('Сохранено');
+    await expect(page.getByLabel('Фото профиля')).toHaveValue('');
     await expect(page.getByTestId('profile-avatar')).toBeVisible({
       timeout: 15_000,
     });
@@ -36,5 +37,12 @@ test.describe('profile photo', () => {
       'src',
       /\/uploads\/avatars\//,
     );
+    await expect
+      .poll(async () =>
+        page.getByTestId('profile-avatar').evaluate((image) => {
+          return (image as { naturalWidth: number }).naturalWidth;
+        }),
+      )
+      .toBeGreaterThan(0);
   });
 });

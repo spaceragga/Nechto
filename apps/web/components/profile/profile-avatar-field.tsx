@@ -1,26 +1,31 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { toUploadSrc } from '@/lib/to-upload-src';
 
 type ProfileAvatarFieldProps = {
   avatarUrl: string | null;
   uploading: boolean;
+  fileInputKey: number;
   onFileChange: (files: FileList | null) => void;
 };
 
 export function ProfileAvatarField({
   avatarUrl,
   uploading,
+  fileInputKey,
   onFileChange,
 }: ProfileAvatarFieldProps) {
   const t = useTranslations('Profile');
 
+  const previewSrc = toUploadSrc(avatarUrl);
+
   return (
     <div className="flex flex-col items-start gap-3">
-      {avatarUrl ? (
+      {previewSrc ? (
         // eslint-disable-next-line @next/next/no-img-element -- remote upload URL from API
         <img
-          src={avatarUrl}
+          src={previewSrc}
           alt={t('avatarAlt')}
           className="h-28 w-28 object-cover"
           data-testid="profile-avatar"
@@ -37,6 +42,7 @@ export function ProfileAvatarField({
       <label className="flex flex-col gap-2 text-sm">
         <span>{t('avatar')}</span>
         <input
+          key={fileInputKey}
           type="file"
           accept="image/jpeg,image/png,image/webp"
           disabled={uploading}
