@@ -2,6 +2,7 @@ import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
+import { API_ERROR_CODES } from '@nechto/api-contract';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/configure-app';
@@ -149,6 +150,12 @@ describe('ProfilesController (e2e)', () => {
     const adminCookie = Array.isArray(adminCookieHeader)
       ? adminCookieHeader
       : [adminCookieHeader as string];
+
+    const forbidden = await request(app.getHttpServer())
+      .get('/admin/moderation/reports')
+      .set('Cookie', cookie)
+      .expect(403);
+    expect(forbidden.body.code).toBe(API_ERROR_CODES.FORBIDDEN);
 
     const reports = await request(app.getHttpServer())
       .get('/admin/moderation/reports')

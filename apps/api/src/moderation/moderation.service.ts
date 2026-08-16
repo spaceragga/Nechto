@@ -49,9 +49,9 @@ export class ModerationService {
   ): Promise<void> {
     const report = await this.prisma.report.findUnique({
       where: { id: reportId },
-      select: { id: true, profileId: true },
+      select: { id: true, profileId: true, status: true },
     });
-    if (!report) throw this.notFound();
+    if (!report || report.status !== 'OPEN') throw this.notFound();
 
     const profile = await this.prisma.profile.findUnique({
       where: { id: report.profileId },

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
+import { REPORT_REASONS } from '@nechto/api-contract';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { Input } from '@/components/ui/input';
@@ -14,21 +15,26 @@ export function ReportProfileForm({ slug }: { slug: string }) {
   const tErrors = useTranslations('Errors');
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState(false);
+  const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending) return;
     const data = new FormData(event.currentTarget);
+    setError(null);
+    setPending(true);
     try {
       await reportProfileRequest(slug, {
-        reason: data.get('reason') as
-          'spam' | 'impersonation' | 'harassment' | 'copyright' | 'other',
+        reason: data.get('reason') as (typeof REPORT_REASONS)[number],
         details: String(data.get('details') ?? '') || null,
         reporterEmail: String(data.get('reporterEmail') ?? '') || null,
       });
       setSent(true);
     } catch (requestError) {
       setError(mapApiErrorMessage(requestError, tErrors));
+    } finally {
+      setPending(false);
     }
   }
 
@@ -45,19 +51,19 @@ export function ReportProfileForm({ slug }: { slug: string }) {
       <label>
         {t('reason')}
         <select name="reason" className="w-full border p-2">
-          {['spam', 'impersonation', 'harassment', 'copyright', 'other'].map(
-            (reason) => (
-              <option key={reason} value={reason}>
-                {t(`reasons.${reason}`)}
-              </option>
-            ),
-          )}
+          {REPORT_REASONS.map((reason) => (
+            <option key={reason} value={reason}>
+              {t(`reasons.${reason}`)}
+            </option>
+          ))}
         </select>
       </label>
       <Textarea name="details" maxLength={2000} placeholder={t('details')} />
       <Input name="reporterEmail" type="email" placeholder={t('email')} />
       {error ? <FormError>{error}</FormError> : null}
-      <Button type="submit">{t('submit')}</Button>
+      <Button type="submit" disabled={pending}>
+        {t('submit')}
+      </Button>
     </form>
   );
 }
