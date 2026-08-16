@@ -26,21 +26,15 @@ services:
       JWT_SECRET: ${JWT_SECRET:?required}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       COOKIE_SECURE: 'true'
-      STORAGE_DRIVER: s3
+      STORAGE_DRIVER: local
+      STORAGE_LOCAL_ROOT: uploads
       STORAGE_PUBLIC_BASE_URL: ${STORAGE_PUBLIC_BASE_URL:?required}
-      S3_ENDPOINT: ${S3_ENDPOINT:?required}
-      S3_REGION: ${S3_REGION:-auto}
-      S3_BUCKET: ${S3_BUCKET:?required}
-      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?required}
-      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?required}
-      S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-false}
       WEB_PUBLIC_URL: https://${DOMAIN}
       SMTP_HOST: ${SMTP_HOST:?required}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:?required}
       SMTP_PASSWORD: ${SMTP_PASSWORD:?required}
       SMTP_FROM: ${SMTP_FROM:?required}
-      RELEASE_SHA: ${RELEASE_SHA:?required}
     depends_on:
       db:
         condition: service_healthy
@@ -54,11 +48,17 @@ services:
     environment:
       <<: *api-env
       PORT: 3001
+    volumes:
+      - uploads_data:/workspace/apps/api/uploads
     depends_on:
       migrate:
         condition: service_completed_successfully
     healthcheck:
-      test: ['CMD', 'wget', '-qO-', 'http://localhost:3001/health']
+      test:
+        [
+          'CMD-SHELL',
+          'node -e "fetch(''http://127.0.0.1:3001/health'').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -77,7 +77,11 @@ services:
       api:
         condition: service_healthy
     healthcheck:
-      test: ['CMD', 'wget', '-qO-', 'http://localhost:3000/']
+      test:
+        [
+          'CMD-SHELL',
+          'node -e "fetch(''http://127.0.0.1:3000/'').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -101,5 +105,6 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:
   caddy_data:
   caddy_config:

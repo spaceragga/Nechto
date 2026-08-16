@@ -1,52 +1,89 @@
-# Public launch runbook
+# Launch runbook
 
-## Required human approvals
+Manual testing after merge uses the **dev** compose on your machine. Production compose is for a VPS (hoster.by or similar) with Docker + a domain.
 
-- Legal counsel approves the Russian and English terms, privacy notice, cookie use, content rules, takedown flow, and Belarus/EU data-transfer wording.
-- A moderator owns `support@nechto.by`, has an `ADMIN` database role, and accepts the moderation response SLA.
-- DNS owner points `nechto.by` to the production host and the media hostname to the S3-compatible bucket/CDN.
-- Product owner verifies the creator onboarding copy, taxonomy, five-work publication threshold, and analytics events.
+## Manual test (local)
 
-## Preflight
+```bash
+cp .env.example .env
+cp apps/web/.env.example apps/web/.env
+docker compose up --build
+```
 
-1. Copy `deploy/.env.prod.example` to `deploy/.env.prod`; replace every placeholder with a secret from the production secret manager.
-2. Confirm ports 80/443 are the only public application ports. PostgreSQL and Nest must remain private.
-3. Run `npm ci`, `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, and `npm audit --audit-level=high`.
-4. Build both production images:
-   `docker compose --env-file deploy/.env.prod -f deploy/docker-compose.prod.yml build`.
-5. Test database restore and S3 object access before accepting user uploads.
+Open http://localhost:3000 (Russian) and http://localhost:3000/en.
+
+SMTP is optional in this mode: register/forgot-password succeed, mail is skipped and warned in API logs. Publish still needs a verified email — set it in Postgres:
+
+```bash
+docker compose exec db psql -U nechto -d nechto -c "UPDATE \"User\" SET \"emailVerifiedAt\" = NOW() WHERE email = 'you@example.com';"
+```
+
+Promote an admin the same way (`role = 'ADMIN'`). There is no admin UI; use curl against `/api/admin/moderation/reports` with the admin cookie.
+
+### Logs
+
+There is no log UI in the browser. Nest writes JSON lines to stdout/stderr.
+
+```bash
+docker compose logs -f api          # API JSON logs
+docker compose logs -f web          # Next
+docker compose logs -f --tail=100   # everything
+```
+
+Pretty-print API JSON (jq):
+
+```bash
+docker compose logs -f api | jq -R 'fromjson? // .'
+```
+
+In the browser use DevTools → Network for HTTP only (`/api/...`). That is not the application logger.
+
+On a VPS with prod compose, same commands with `-f deploy/docker-compose.prod.yml --env-file deploy/.env.prod`.
+
+## Required human approvals (public launch)
+
+- Legal counsel approves terms, privacy, community guidelines (pages are stubs).
+- Someone owns `support@nechto.by` and has `User.role = ADMIN`.
+- DNS `nechto.by` → the VPS. Caddy terminates TLS.
+- Real SMTP. Production API **will not start** without `SMTP_*`.
+- Media lives on the API disk volume (`uploads_data`). Back it up with Postgres.
+
+## Preflight (production)
+
+1. Copy `deploy/.env.prod.example` to `deploy/.env.prod` and fill secrets (`JWT_SECRET` ≥ 32 chars).
+2. Do not publish Postgres or Nest ports. Only 80/443 via Caddy.
+3. `docker compose --env-file deploy/.env.prod -f deploy/docker-compose.prod.yml config`
+4. Build: `docker compose --env-file deploy/.env.prod -f deploy/docker-compose.prod.yml build`
 
 ## Deploy
 
-1. Create an on-demand database backup.
-2. Run `docker compose --env-file deploy/.env.prod -f deploy/docker-compose.prod.yml up -d`.
-3. Verify the one-shot `migrate` container exited with code 0.
-4. Verify `/health`, `/api/health`, `/api/ready`, `/`, `/ru`, `/en`, registration, login, logout, profile editing, five image uploads, publication, discovery, contact click, report submission, password reset, and email verification.
-5. Confirm cookies are `HttpOnly`, `Secure`, `SameSite=Lax`, and scoped to `/`.
-6. Confirm direct access to PostgreSQL and Nest from the public internet fails.
+1. Backup Postgres (see `backup-restore.md`).
+2. `docker compose --env-file deploy/.env.prod -f deploy/docker-compose.prod.yml up -d`
+3. `migrate` container must exit 0.
+4. Check `/health` via the site (`https://nechto.by/api/health`) and the smoke list: register, login, profile, 5 works, publish, catalog, report, password reset (needs SMTP).
+5. Cookies: `HttpOnly`, `Secure`, `SameSite=Lax`, path `/`.
+
+If hoster.by already terminates TLS, skip the `caddy` service and reverse-proxy to `web:3000`. Keep `/api` going through Next (same-origin cookies).
 
 ## Assign the first admin
 
-There is no admin UI. Moderation is an authenticated API:
-
 ```bash
-# Promote an existing user (run against the private Postgres instance).
-psql "$DATABASE_URL" -c "UPDATE \"User\" SET role = 'ADMIN' WHERE email = 'support@nechto.by';"
+docker compose --env-file deploy/.env.prod -f deploy/docker-compose.prod.yml exec db \
+  psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" \
+  -c "UPDATE \"User\" SET role = 'ADMIN' WHERE email = 'support@nechto.by';"
 ```
 
 ```bash
-# List open reports (session cookie from an ADMIN login on nechto.by).
 curl -sS -H "Cookie: nechto_access_token=<token>" https://nechto.by/api/admin/moderation/reports
 
-# Resolve and suspend the reported profile (revokes every live session).
 curl -sS -X PATCH https://nechto.by/api/admin/moderation/reports/<reportId> \
   -H "Cookie: nechto_access_token=<token>" \
   -H "Content-Type: application/json" \
   -d '{"status":"RESOLVED","suspendProfile":true,"note":"copyright"}'
 ```
 
-Dismiss without hiding the profile by sending `"suspendProfile": false` and `"status": "DISMISSED"`.
+Dismiss without hiding: `"suspendProfile": false`, `"status": "DISMISSED"`.
 
 ## Rollback
 
-Application rollback means deploying the previous immutable image tags. Do not roll back a database migration by editing migration history. If a migration is incompatible, restore the pre-deploy backup into a new database, point the previous application version at it, and retain the failed database for investigation.
+Redeploy previous images. Do not rewrite Prisma migration history. Restore a pre-deploy dump into a new database if a migration cannot stay.

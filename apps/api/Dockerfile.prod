@@ -18,6 +18,7 @@ COPY --from=builder --chown=nechto:nechto /workspace/node_modules node_modules
 COPY --from=builder --chown=nechto:nechto /workspace/apps/api/dist apps/api/dist
 COPY --from=builder --chown=nechto:nechto /workspace/apps/api/prisma apps/api/prisma
 COPY --from=builder --chown=nechto:nechto /workspace/apps/api/package.json apps/api/package.json
+RUN mkdir -p /workspace/apps/api/uploads && chown nechto:nechto /workspace/apps/api/uploads
 USER nechto
 WORKDIR /workspace/apps/api
 EXPOSE 3001

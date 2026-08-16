@@ -16,7 +16,7 @@ Locales: **Russian default** (`/`), English (`/en`).
 
 Auth: register/login via JWT httpOnly cookie (`/login`, `/register`, `POST /auth/*`).
 
-Profiles: `/profile` edit + avatar upload. Files go through `StorageService` (local disk now; S3 later).
+Profiles: `/profile` edit + avatar upload. Files go through `StorageService` (local disk).
 
 Shared contracts: import schemas/types from `@nechto/api-contract`; web talks to API via `@nechto/api-client`.
 

@@ -10,18 +10,18 @@
 
 1. Name an incident lead and start a timestamped log.
 2. Preserve logs and database evidence; do not delete suspicious records.
-3. Contain the issue: revoke affected sessions, rotate compromised secrets, disable registration/uploads, or roll back the application image.
-4. Check API health, container restarts, database saturation, storage errors, SMTP errors, rate-limit events, and recent deploys.
+3. Contain: revoke sessions, rotate secrets, or roll back the application image.
+4. Check `docker compose logs api` (JSON), container restarts, disk for uploads, SMTP errors, and recent deploys.
 5. Post a user-facing status update for SEV-1/2.
 
 ## Security events
 
-- Rotate JWT, database, S3, SMTP, CI, and host credentials according to the exposed boundary.
-- Revoking the JWT secret logs out every user. Individual sessions can be revoked in `Session`.
+- Rotate JWT, database, SMTP, CI, and host credentials for the exposed boundary.
+- Rotating `JWT_SECRET` logs out every user. Individual rows can be revoked in `Session`.
 - Suspend abusive profiles instead of deleting evidence.
-- Export relevant moderation audit records and immutable infrastructure logs.
-- Legal owner decides notification obligations and timelines.
+- Export relevant `ModerationAudit` rows and container logs.
+- Legal owner decides notification obligations.
 
 ## Recovery
 
-Restore service in stages, validate the core creator flow, monitor error and latency rates, then close containment controls. Within 72 hours, publish an internal postmortem with root cause, impact, detection gap, corrective owners, and deadlines.
+Restore service in stages, validate register → 5 works → publish → catalog → report, then close containment. Within 72 hours, write an internal postmortem.
