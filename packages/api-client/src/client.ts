@@ -1,12 +1,13 @@
-import type {
-  AuthUserResponse,
-  HealthResponse,
-  HelloResponse,
-  LoginDto,
-  LogoutResponse,
-  Profile,
-  RegisterDto,
-  UpdateProfileDto,
+import {
+  API_ERROR_CODES,
+  type AuthUserResponse,
+  type HealthResponse,
+  type HelloResponse,
+  type LoginDto,
+  type LogoutResponse,
+  type Profile,
+  type RegisterDto,
+  type UpdateProfileDto,
 } from '@nechto/api-contract';
 import { ApiError, parseApiErrorResponse } from './api-error';
 
@@ -107,12 +108,21 @@ export class ApiClient {
       headers.set('Content-Type', 'application/json');
     }
 
-    const response = await this.fetchImpl(`${this.baseUrl}${path}`, {
-      ...init,
-      credentials: this.credentials,
-      cache: init?.cache ?? this.cache,
-      headers,
-    });
+    let response: Response;
+    try {
+      response = await this.fetchImpl(`${this.baseUrl}${path}`, {
+        ...init,
+        credentials: this.credentials,
+        cache: init?.cache ?? this.cache,
+        headers,
+      });
+    } catch {
+      throw new ApiError(
+        'Service unavailable',
+        503,
+        API_ERROR_CODES.SERVICE_UNAVAILABLE,
+      );
+    }
 
     if (!response.ok) {
       const error = await parseApiErrorResponse(response);

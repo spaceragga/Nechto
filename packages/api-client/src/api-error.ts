@@ -41,7 +41,10 @@ export async function parseApiErrorResponse(
   }
 
   return {
-    code: API_ERROR_CODES.UNKNOWN,
+    code:
+      response.status >= 500
+        ? API_ERROR_CODES.SERVICE_UNAVAILABLE
+        : API_ERROR_CODES.UNKNOWN,
     message: response.statusText || 'Request failed',
   };
 }

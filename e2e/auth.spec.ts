@@ -95,4 +95,36 @@ test.describe('auth flow', () => {
       page.getByRole('alert').getByText('This email is already registered'),
     ).toBeVisible();
   });
+
+  test('shows localized error for invalid login credentials', async ({
+    page,
+  }) => {
+    const email = `login-err-${Date.now()}@nechto.test`;
+    const password = 'password123';
+
+    await page.goto('/register');
+    await page.getByLabel('Email').fill(email);
+    await page.getByLabel('Пароль').fill(password);
+    await page.getByRole('button', { name: 'Создать аккаунт' }).click();
+    await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
+    await page.getByRole('button', { name: 'Выйти' }).click();
+
+    await page.goto('/login');
+    await page.getByLabel('Email').fill(email);
+    await page.getByLabel('Пароль').fill('wrong-password');
+    await page.getByRole('button', { name: 'Войти' }).click();
+
+    await expect(
+      page.getByRole('alert').getByText('Неверный email или пароль'),
+    ).toBeVisible();
+
+    await page.goto('/en/login');
+    await page.getByLabel('Email').fill(email);
+    await page.getByLabel('Password').fill('wrong-password');
+    await page.getByRole('button', { name: 'Log in' }).click();
+
+    await expect(
+      page.getByRole('alert').getByText('Invalid email or password'),
+    ).toBeVisible();
+  });
 });
