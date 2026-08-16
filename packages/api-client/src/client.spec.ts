@@ -79,6 +79,42 @@ describe('ApiClient', () => {
     expect(new Headers(init?.headers).get('Content-Type')).toBeNull();
   });
 
+  it('throws SERVICE_UNAVAILABLE when fetch cannot reach the API', async () => {
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'));
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await expect(
+      client.login({ email: 'a@nechto.test', password: 'password123' }),
+    ).rejects.toMatchObject({
+      name: 'ApiError',
+      status: 503,
+      code: API_ERROR_CODES.SERVICE_UNAVAILABLE,
+    } satisfies Partial<ApiError>);
+  });
+
+  it('throws SERVICE_UNAVAILABLE on a non-JSON 502 from the proxy', async () => {
+    fetchMock.mockResolvedValue(
+      new Response('<html>bad gateway</html>', { status: 502 }),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await expect(
+      client.login({ email: 'a@nechto.test', password: 'password123' }),
+    ).rejects.toMatchObject({
+      name: 'ApiError',
+      status: 502,
+      code: API_ERROR_CODES.SERVICE_UNAVAILABLE,
+    } satisfies Partial<ApiError>);
+  });
+
   it('throws ApiError on non-OK responses', async () => {
     fetchMock.mockResolvedValue(
       new Response(

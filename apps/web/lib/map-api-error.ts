@@ -46,9 +46,14 @@ export function resolveApiErrorKey(
     if (error.status === 400) {
       return 'validation';
     }
+    if (error.status === 0 || error.status >= 500) {
+      return 'serviceUnavailable';
+    }
+
+    return fallbackKey;
   }
 
-  return fallbackKey;
+  return 'serviceUnavailable';
 }
 
 /**
@@ -61,4 +66,13 @@ export function mapApiErrorMessage(
   fallbackKey = 'unknown',
 ): string {
   return t(resolveApiErrorKey(error, fallbackKey));
+}
+
+/** Login/register: 401 is always a credential mismatch, not "please sign in". */
+export function mapAuthFormError(error: unknown, t: Translate): string {
+  if (error instanceof ApiError && error.status === 401) {
+    return t('invalidCredentials');
+  }
+
+  return mapApiErrorMessage(error, t);
 }

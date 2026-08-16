@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Link, getPathname } from '@/i18n/navigation';
 import type { AppLocale } from '@/i18n/routing';
 import { loginRequest, registerRequest } from '@/lib/api';
-import { mapApiErrorMessage } from '@/lib/map-api-error';
+import { mapAuthFormError } from '@/lib/map-api-error';
 
 type AuthFormProps = {
   mode: 'login' | 'register';
@@ -37,7 +37,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       // Full navigation so RSC loaders see the new auth cookie.
       window.location.assign(getPathname({ locale, href: '/' }));
     } catch (submitError) {
-      setError(mapApiErrorMessage(submitError, tErrors));
+      setError(mapAuthFormError(submitError, tErrors));
     } finally {
       setPending(false);
     }
