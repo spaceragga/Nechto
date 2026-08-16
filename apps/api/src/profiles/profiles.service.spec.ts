@@ -151,4 +151,38 @@ describe('ProfilesService', () => {
     expect(page.nextCursor).toBe('c1');
     expect(page.items[0]).not.toHaveProperty('email');
   });
+
+  it('exports account data without the password hash', async () => {
+    prisma.user.findUnique.mockResolvedValue({
+      email: 'a@nechto.test',
+      createdAt: new Date('2026-01-01'),
+      profile: {
+        slug: 'artist',
+        displayName: 'Artist',
+        works: [{ id: 'w1', title: 'Work', imageKey: 'works/w1.webp' }],
+      },
+    });
+
+    await expect(service.exportMine('u1')).resolves.toEqual({
+      email: 'a@nechto.test',
+      createdAt: new Date('2026-01-01'),
+      profile: {
+        slug: 'artist',
+        displayName: 'Artist',
+        works: [{ id: 'w1', title: 'Work', imageKey: 'works/w1.webp' }],
+      },
+    });
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      where: { id: 'u1' },
+      select: {
+        email: true,
+        createdAt: true,
+        profile: {
+          include: {
+            works: { where: { status: { not: 'REMOVED' } } },
+          },
+        },
+      },
+    });
+  });
 });
