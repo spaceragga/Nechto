@@ -1,17 +1,15 @@
 import { expect, test, type Locator } from '@playwright/test';
 
-async function countVisibleLinks(parent: Locator) {
-  const links = parent.getByRole('link');
-  const total = await links.count();
-  let visible = 0;
-
-  for (let i = 0; i < total; i += 1) {
-    if (await links.nth(i).isVisible()) {
-      visible += 1;
-    }
-  }
-
-  return visible;
+async function countUnclippedLinks(rail: Locator) {
+  return rail.evaluate((root) => {
+    const clip = root.getBoundingClientRect();
+    return [...root.querySelectorAll('a')].filter((el) => {
+      const box = el.getBoundingClientRect();
+      const overlap =
+        Math.min(box.right, clip.right) - Math.max(box.left, clip.left);
+      return overlap > 8;
+    }).length;
+  });
 }
 
 test.describe('home page locales', () => {
@@ -242,10 +240,10 @@ test.describe('home page locales', () => {
 
     await page.setViewportSize({ width: 420, height: 900 });
     await page.goto('/');
-    const narrowVisible = await countVisibleLinks(worksRail);
+    const narrowVisible = await countUnclippedLinks(worksRail);
 
     await page.setViewportSize({ width: 1400, height: 900 });
-    const wideVisible = await countVisibleLinks(worksRail);
+    const wideVisible = await countUnclippedLinks(worksRail);
 
     expect(narrowVisible).toBeGreaterThan(0);
     expect(wideVisible).toBeGreaterThan(narrowVisible);
