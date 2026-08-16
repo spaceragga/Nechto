@@ -97,6 +97,10 @@ export function AuthForm({ mode }: AuthFormProps) {
             <Link href="/register" className="underline">
               {t('registerLink')}
             </Link>
+            <br />
+            <Link href="/forgot-password" className="underline">
+              {t('forgotPassword')}
+            </Link>
           </>
         ) : (
           <>

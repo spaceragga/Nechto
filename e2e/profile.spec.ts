@@ -12,9 +12,14 @@ test.describe('profile photo', () => {
     await page.getByLabel('Email').fill(email);
     await page.getByLabel('Пароль').fill(password);
     await page.getByRole('button', { name: 'Создать аккаунт' }).click();
-    await expect(page.getByRole('link', { name: 'Профиль' })).toBeVisible();
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Профиль' }),
+    ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Профиль' }).click();
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Профиль' })
+      .click();
     await expect(page.getByRole('heading', { name: 'Профиль' })).toBeVisible();
 
     await page.getByLabel('Имя').fill('Тестовый художник');

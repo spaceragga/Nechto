@@ -14,7 +14,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const t = await getTranslations('Profile');
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6 py-16">
+    <main className="flex flex-1 items-center justify-center px-6 py-16">
       <Suspense
         fallback={
           <div className="mx-auto flex w-full max-w-md flex-col gap-6">
