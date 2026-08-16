@@ -53,6 +53,45 @@ test.describe('home page locales', () => {
     await expect(now.getByRole('link', { name: 'Ателье' })).toBeVisible();
   });
 
+  test('hovering a Now author outlines the whole row', async ({ page }) => {
+    await page.goto('/');
+
+    const now = page.getByRole('complementary', { name: 'Сейчас' });
+    const author = now.getByRole('link', { name: 'Кася Фотография' });
+    const outline = author.locator('..').locator('[data-now-row-outline]');
+
+    await expect(outline).toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
+    await author.hover();
+    await expect(outline).toHaveCSS(
+      'border-top-color',
+      'rgba(255, 255, 255, 0.5)',
+    );
+  });
+
+  test('explore and direction chips use the shared hover outline', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const exploreChip = page
+      .getByRole('navigation', { name: 'Разделы' })
+      .getByRole('link', { name: 'Авторы' });
+    await exploreChip.hover();
+    await expect(exploreChip).toHaveCSS(
+      'border-top-color',
+      'rgba(255, 255, 255, 0.5)',
+    );
+
+    const directionChip = page
+      .getByRole('navigation', { name: 'Фильтр по направлению' })
+      .getByRole('link', { name: 'Фотография' });
+    await directionChip.hover();
+    await expect(directionChip).toHaveCSS(
+      'border-top-color',
+      'rgba(255, 255, 255, 0.5)',
+    );
+  });
+
   test('shows the Now strip with three authors and their latest works in English', async ({
     page,
   }) => {

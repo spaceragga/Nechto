@@ -5,6 +5,7 @@
   --fg: #f4f1ea;
   --accent: #c45c26;
   --error: #e07070;
+  --hover-outline: rgb(255 255 255 / 50%);
 }
 
 /* Stretch children to fill one row; leftover items overflow and clip. */

@@ -14,10 +14,10 @@ type HomeNowRowProps = {
 
 export function HomeNowRow({ item }: HomeNowRowProps) {
   return (
-    <div className="flex h-28 gap-2 overflow-hidden">
+    <div className="relative flex min-h-28 flex-1 gap-2 overflow-hidden rounded p-1">
       <Link
         href={DEMO_PROFILE_HREF}
-        className="flex w-28 shrink-0 flex-col justify-end overflow-hidden rounded border border-white/15 bg-[var(--bg)] px-2 py-1.5 hover:bg-white/5"
+        className="peer/author flex w-28 shrink-0 flex-col justify-end overflow-hidden rounded border border-white/15 bg-[var(--bg)] px-2 py-1.5 hover:bg-white/5"
       >
         <span className="text-sm leading-tight">{item.author}</span>
         <span className="mt-0.5 text-[11px] leading-tight opacity-70">
@@ -38,6 +38,11 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
           </Link>
         ))}
       </FluidRail>
+      <div
+        aria-hidden
+        data-now-row-outline
+        className="pointer-events-none absolute inset-0 rounded border border-transparent peer-hover/author:border-[var(--hover-outline)]"
+      />
     </div>
   );
 }
