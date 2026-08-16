@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import { FluidRail } from '@/components/ui/fluid-rail';
 import { MediaTile } from '@/components/ui/media-tile';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 
@@ -20,7 +21,7 @@ export async function HomeWorksGrid() {
           {t('seeAll')}
         </Link>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <FluidRail minItem="16rem">
         {cards.map((card) => (
           <MediaTile
             key={card.title}
@@ -29,7 +30,7 @@ export async function HomeWorksGrid() {
             subtitle={card.author}
           />
         ))}
-      </div>
+      </FluidRail>
     </section>
   );
 }

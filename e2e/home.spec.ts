@@ -1,4 +1,18 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
+
+async function countVisibleLinks(parent: Locator) {
+  const links = parent.getByRole('link');
+  const total = await links.count();
+  let visible = 0;
+
+  for (let i = 0; i < total; i += 1) {
+    if (await links.nth(i).isVisible()) {
+      visible += 1;
+    }
+  }
+
+  return visible;
+}
 
 test.describe('home page locales', () => {
   test('renders Russian copy by default', async ({ page }) => {
@@ -31,7 +45,7 @@ test.describe('home page locales', () => {
       now.getByRole('link', { name: 'Анна Интерьер' }),
     ).toBeVisible();
     await expect(now.getByRole('link', { name: 'Юлия Мода' })).toBeVisible();
-    await expect(now.getByRole('link')).toHaveCount(12);
+    await expect(now.getByRole('link')).toHaveCount(18);
     await expect(
       now.getByRole('link', { name: 'Портрет у окна' }),
     ).toBeVisible();
@@ -54,7 +68,7 @@ test.describe('home page locales', () => {
     await expect(
       now.getByRole('link', { name: 'Yulia Fashion' }),
     ).toBeVisible();
-    await expect(now.getByRole('link')).toHaveCount(12);
+    await expect(now.getByRole('link')).toHaveCount(18);
     await expect(
       now.getByRole('link', { name: 'Portrait by the window' }),
     ).toBeVisible();
@@ -180,6 +194,23 @@ test.describe('home page locales', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Community',
     );
+  });
+
+  test('home rails show more cards as the viewport widens', async ({
+    page,
+  }) => {
+    const worksRail = page.locator('#works .fluid-rail');
+
+    await page.setViewportSize({ width: 420, height: 900 });
+    await page.goto('/');
+    const narrowVisible = await countVisibleLinks(worksRail);
+
+    await page.setViewportSize({ width: 1400, height: 900 });
+    const wideVisible = await countVisibleLinks(worksRail);
+
+    expect(narrowVisible).toBeGreaterThan(0);
+    expect(wideVisible).toBeGreaterThan(narrowVisible);
+    expect(wideVisible).toBeLessThan(8);
   });
 
   test('switches language from the locale select', async ({ page }) => {

@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { FluidRail } from '@/components/ui/fluid-rail';
 import { MediaTile } from '@/components/ui/media-tile';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 
@@ -9,18 +10,13 @@ export async function HomeFragmentsRail() {
   return (
     <section id="fragments" className="scroll-mt-20">
       <h2 className="mb-3 text-xl tracking-wide">{t('fragments')}</h2>
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <FluidRail minItem="9rem">
         {cards.map((title) => (
-          <MediaTile
-            key={title}
-            href={DEMO_PROFILE_HREF}
-            title={title}
-            className="w-32 shrink-0"
-          >
+          <MediaTile key={title} href={DEMO_PROFILE_HREF} title={title}>
             <div className="aspect-square bg-white/10" />
           </MediaTile>
         ))}
-      </div>
+      </FluidRail>
     </section>
   );
 }
