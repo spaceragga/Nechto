@@ -4,9 +4,9 @@ Instructions for AI agents working in this repository.
 
 ## Project
 
-**Nechto** — internet art-space platform (Belarus-first). Current state: monorepo MVP with auth, profiles/avatars, shared api-contract/api-client, Docker Compose.
+**Nechto** — internet art-space (Belarus-first). Public name: Дом Независимого Творца. Monorepo MVP: Next.js 16 + NestJS 11, auth/profiles, local-disk uploads, shared api-contract/api-client, Docker Compose.
 
-Docker bind-mounts package sources over the image. After `git pull` or package edits, run `npm run build:packages` on the host so `dist/` exists for the mounts.
+Node **>= 22.18** (`.nvmrc`). Docker bind-mounts package sources over the image. After `git pull` or package edits, run `npm run build:packages` on the host so `dist/` exists for the mounts.
 
 ## Commands
 
