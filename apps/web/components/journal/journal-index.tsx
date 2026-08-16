@@ -1,5 +1,5 @@
 import { MediaTile } from '@/components/ui/media-tile';
-import type { DemoStillKind } from '@/components/ui/demo-still';
+import type { DemoStillKind } from '@/lib/demo-media';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 
 export type JournalIssue = {
@@ -7,7 +7,6 @@ export type JournalIssue = {
   title: string;
   meta: string;
   still: DemoStillKind;
-  ratio?: string;
 };
 
 type JournalIndexProps = {
@@ -32,7 +31,6 @@ export function JournalIndex({ title, lede, issues }: JournalIndexProps) {
           title={featured.title}
           subtitle={`${featured.kicker} · ${featured.meta}`}
           still={featured.still}
-          ratio={featured.ratio ?? '16/10'}
           wellClassName="h-64 w-full md:h-80"
         />
       ) : null}
@@ -46,7 +44,6 @@ export function JournalIndex({ title, lede, issues }: JournalIndexProps) {
               title={issue.title}
               subtitle={`${issue.kicker} · ${issue.meta}`}
               still={issue.still}
-              ratio={issue.ratio ?? '4/3'}
             />
           ))}
         </div>

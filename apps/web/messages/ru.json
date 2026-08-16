@@ -64,33 +64,33 @@
         "author": "Кася",
         "direction": "photography",
         "works": [
-          { "title": "Портрет у окна", "still": "window", "ratio": "3/4" },
-          { "title": "Ночной двор", "still": "courtyard", "ratio": "4/3" },
-          { "title": "Рынок", "still": "market", "ratio": "16/10" },
-          { "title": "Мост", "still": "courtyard", "ratio": "16/10" },
-          { "title": "Двор", "still": "courtyard", "ratio": "3/4" }
+          { "title": "Портрет у окна", "still": "window" },
+          { "title": "Ночной двор", "still": "courtyard" },
+          { "title": "Рынок", "still": "market" },
+          { "title": "Мост", "still": "courtyard" },
+          { "title": "Двор", "still": "courtyard" }
         ]
       },
       {
         "author": "Анна",
         "direction": "interior",
         "works": [
-          { "title": "Свет в подъезде", "still": "interior", "ratio": "4/3" },
-          { "title": "Кухня", "still": "interior", "ratio": "16/10" },
-          { "title": "Коридор", "still": "door", "ratio": "3/4" },
-          { "title": "Окно", "still": "window", "ratio": "3/4" },
-          { "title": "Дверь", "still": "door", "ratio": "3/4" }
+          { "title": "Свет в подъезде", "still": "interior" },
+          { "title": "Кухня", "still": "interior" },
+          { "title": "Коридор", "still": "door" },
+          { "title": "Окно", "still": "window" },
+          { "title": "Дверь", "still": "door" }
         ]
       },
       {
         "author": "Юлия",
         "direction": "fashion",
         "works": [
-          { "title": "Красный текстиль", "still": "textile", "ratio": "16/10" },
-          { "title": "Подиум", "still": "neon", "ratio": "4/3" },
-          { "title": "Ателье", "still": "runway", "ratio": "3/4" },
-          { "title": "Шов", "still": "textile", "ratio": "4/3" },
-          { "title": "Манекен", "still": "runway", "ratio": "3/4" }
+          { "title": "Красный текстиль", "still": "textile" },
+          { "title": "Подиум", "still": "neon" },
+          { "title": "Ателье", "still": "runway" },
+          { "title": "Шов", "still": "textile" },
+          { "title": "Манекен", "still": "runway" }
         ]
       }
     ],
@@ -111,36 +111,31 @@
       {
         "title": "Свет в подъезде",
         "author": "Анна",
-        "still": "interior",
-        "ratio": "4/3"
+        "still": "interior"
       },
       {
         "title": "Красный текстиль",
         "author": "Юлия",
-        "still": "textile",
-        "ratio": "16/10"
+        "still": "textile"
       },
       {
         "title": "Портрет у окна",
         "author": "Кася",
-        "still": "window",
-        "ratio": "3/4"
+        "still": "window"
       },
       {
         "title": "Ночной двор",
         "author": "Кася",
-        "still": "courtyard",
-        "ratio": "4/3"
+        "still": "courtyard"
       },
       {
         "title": "Кухня",
         "author": "Анна",
-        "still": "interior",
-        "ratio": "16/10"
+        "still": "interior"
       },
-      { "title": "Подиум", "author": "Юлия", "still": "neon", "ratio": "4/3" },
-      { "title": "Коридор", "author": "Анна", "still": "door", "ratio": "3/4" },
-      { "title": "Ателье", "author": "Юлия", "still": "runway", "ratio": "3/4" }
+      { "title": "Подиум", "author": "Юлия", "still": "neon" },
+      { "title": "Коридор", "author": "Анна", "still": "door" },
+      { "title": "Ателье", "author": "Юлия", "still": "runway" }
     ],
     "creatorCards": [
       { "name": "Кася", "direction": "photography" },
@@ -153,14 +148,14 @@
       { "name": "Павел", "direction": "beauty" }
     ],
     "fragmentCards": [
-      { "title": "Фрагмент 1", "still": "paper", "ratio": "4/3" },
-      { "title": "Фрагмент 2", "still": "paper", "ratio": "3/4" },
-      { "title": "Фрагмент 3", "still": "paper", "ratio": "16/10" },
-      { "title": "Фрагмент 4", "still": "paper", "ratio": "4/3" },
-      { "title": "Фрагмент 5", "still": "paper", "ratio": "3/4" },
-      { "title": "Фрагмент 6", "still": "paper", "ratio": "4/3" },
-      { "title": "Фрагмент 7", "still": "paper", "ratio": "16/10" },
-      { "title": "Фрагмент 8", "still": "paper", "ratio": "3/4" }
+      { "title": "Фрагмент 1", "still": "paper" },
+      { "title": "Фрагмент 2", "still": "paper" },
+      { "title": "Фрагмент 3", "still": "paper" },
+      { "title": "Фрагмент 4", "still": "paper" },
+      { "title": "Фрагмент 5", "still": "paper" },
+      { "title": "Фрагмент 6", "still": "paper" },
+      { "title": "Фрагмент 7", "still": "paper" },
+      { "title": "Фрагмент 8", "still": "paper" }
     ]
   },
   "Journal": {
@@ -171,29 +166,25 @@
         "kicker": "Разбор",
         "title": "Окна Каси",
         "meta": "фотография · Минск",
-        "still": "window",
-        "ratio": "16/10"
+        "still": "window"
       },
       {
         "kicker": "Репортаж",
         "title": "Рынок ночью",
         "meta": "Кася · 2026",
-        "still": "market",
-        "ratio": "4/3"
+        "still": "market"
       },
       {
         "kicker": "Эссе",
         "title": "Письмо с кухни",
         "meta": "Лена · текст",
-        "still": "paper",
-        "ratio": "3/4"
+        "still": "paper"
       },
       {
         "kicker": "Сцена",
         "title": "Красный текстиль",
         "meta": "Юлия · мода",
-        "still": "textile",
-        "ratio": "4/3"
+        "still": "textile"
       }
     ]
   },

@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { MediaTile } from '@/components/ui/media-tile';
-import type { DemoStillKind } from '@/components/ui/demo-still';
+import type { DemoStillKind } from '@/lib/demo-media';
 
 type PublicProfilePageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -10,7 +10,6 @@ type WorkCard = {
   title: string;
   author: string;
   still?: DemoStillKind;
-  ratio?: string;
 };
 
 export default async function PublicProfilePage({
@@ -40,7 +39,6 @@ export default async function PublicProfilePage({
             title={work.title}
             subtitle={work.author}
             still={work.still}
-            ratio={work.ratio}
           />
         ))}
       </section>

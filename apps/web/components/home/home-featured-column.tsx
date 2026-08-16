@@ -10,7 +10,6 @@ export async function HomeFeaturedColumn() {
       <HomeFeatured
         href={DEMO_PROFILE_HREF}
         still="market"
-        ratio="16/10"
         kicker={t('billboardKicker')}
         title={t('billboardTitle')}
         meta={t('billboardAuthor')}
@@ -19,7 +18,6 @@ export async function HomeFeaturedColumn() {
       <HomeFeatured
         href={DEMO_PROFILE_HREF}
         still="portrait"
-        ratio="3/4"
         kicker={t('creatorKicker')}
         title={t('creatorTitle')}
         meta={t('creatorMeta')}

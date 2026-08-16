@@ -1,13 +1,12 @@
 import { getTranslations } from 'next-intl/server';
 import { FluidRail } from '@/components/ui/fluid-rail';
 import { MediaTile } from '@/components/ui/media-tile';
-import type { DemoStillKind } from '@/components/ui/demo-still';
+import type { DemoStillKind } from '@/lib/demo-media';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 
 type FragmentCard = {
   title: string;
   still?: DemoStillKind;
-  ratio?: string;
 };
 
 export async function HomeFragmentsRail() {
@@ -24,7 +23,6 @@ export async function HomeFragmentsRail() {
             href={DEMO_PROFILE_HREF}
             title={card.title}
             still={card.still ?? 'paper'}
-            ratio={card.ratio ?? '4/3'}
             wellClassName="h-36 w-full"
           />
         ))}

@@ -1,4 +1,3 @@
-import { DemoStill } from '@/components/ui/demo-still';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 
@@ -27,9 +26,7 @@ export function HomeJournalSpot({
         <p className="mt-3 max-w-sm font-sans text-sm leading-relaxed opacity-70">
           {lede}
         </p>
-        <WorkFrame ratio="16/10" className="mt-5 h-36 w-full">
-          <DemoStill kind="window" />
-        </WorkFrame>
+        <WorkFrame still="window" alt={title} className="mt-5 h-36 w-full" />
         <span className="mt-3 font-sans text-sm text-[var(--accent)]">
           {cta}
         </span>

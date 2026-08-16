@@ -1,4 +1,4 @@
-import { DemoStill, type DemoStillKind } from '@/components/ui/demo-still';
+import { type DemoStillKind } from '@/lib/demo-media';
 import { FluidRail } from '@/components/ui/fluid-rail';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
@@ -7,7 +7,6 @@ import { Link } from '@/i18n/navigation';
 export type HomeNowWork = {
   title: string;
   still?: DemoStillKind;
-  ratio?: string;
 };
 
 export type HomeNowItem = {
@@ -40,11 +39,10 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
             className="flex min-h-0 flex-col"
           >
             <WorkFrame
-              ratio={work.ratio ?? '4/3'}
+              still={work.still ?? 'interior'}
+              alt={work.title}
               className="min-h-0 w-full flex-1"
-            >
-              <DemoStill kind={work.still ?? 'interior'} />
-            </WorkFrame>
+            />
             <span className="truncate pt-1 font-serif text-[11px] leading-tight">
               {work.title}
             </span>

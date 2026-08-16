@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react';
-import { DemoStill, type DemoStillKind } from '@/components/ui/demo-still';
+import { type DemoStillKind } from '@/lib/demo-media';
 import { WorkCaption } from '@/components/ui/work-caption';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
@@ -9,10 +8,9 @@ type MediaTileProps = {
   title?: string;
   subtitle?: string;
   still?: DemoStillKind;
-  ratio?: string;
+  src?: string | null;
   wellClassName?: string;
   className?: string;
-  children?: ReactNode;
 };
 
 export function MediaTile({
@@ -20,16 +18,18 @@ export function MediaTile({
   title,
   subtitle,
   still = 'interior',
-  ratio = '4/3',
+  src,
   wellClassName = 'h-44 w-full',
   className = '',
-  children,
 }: MediaTileProps) {
   return (
     <Link href={href} className={`block min-w-0 ${className}`.trim()}>
-      <WorkFrame ratio={ratio} className={wellClassName}>
-        {children ?? <DemoStill kind={still} />}
-      </WorkFrame>
+      <WorkFrame
+        src={src}
+        still={still}
+        alt={title ?? ''}
+        className={wellClassName}
+      />
       <WorkCaption title={title} meta={subtitle} />
     </Link>
   );

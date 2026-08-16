@@ -1,12 +1,10 @@
-import type { DemoStillKind } from '@/components/ui/demo-still';
-import { DemoStill } from '@/components/ui/demo-still';
+import type { DemoStillKind } from '@/lib/demo-media';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 
 type HomeFeaturedProps = {
   href: string;
   still: DemoStillKind;
-  ratio: string;
   kicker: string;
   title: string;
   meta: string;
@@ -16,7 +14,6 @@ type HomeFeaturedProps = {
 export function HomeFeatured({
   href,
   still,
-  ratio,
   kicker,
   title,
   meta,
@@ -24,9 +21,7 @@ export function HomeFeatured({
 }: HomeFeaturedProps) {
   return (
     <Link href={href} className="flex min-w-0 flex-col">
-      <WorkFrame ratio={ratio} className="h-40 w-full md:h-52">
-        <DemoStill kind={still} />
-      </WorkFrame>
+      <WorkFrame still={still} alt={title} className="h-40 w-full md:h-52" />
       <p className="mt-3 font-sans text-xs tracking-[0.2em] uppercase opacity-80">
         {kicker}
       </p>

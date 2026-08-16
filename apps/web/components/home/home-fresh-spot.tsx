@@ -1,4 +1,4 @@
-import { DemoStill, type DemoStillKind } from '@/components/ui/demo-still';
+import { type DemoStillKind } from '@/lib/demo-media';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import { Link } from '@/i18n/navigation';
@@ -37,9 +37,11 @@ export function HomeFreshSpot({ kicker, seeAll, items }: HomeFreshSpotProps) {
               href={DEMO_PROFILE_HREF}
               className="flex items-center gap-3 py-3"
             >
-              <WorkFrame ratio="4/3" className="h-14 w-16 shrink-0">
-                <DemoStill kind={item.still} />
-              </WorkFrame>
+              <WorkFrame
+                still={item.still}
+                alt={item.title}
+                className="h-14 w-16 shrink-0"
+              />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-serif text-sm">{item.title}</p>
                 <p className="mt-0.5 font-serif text-xs opacity-70">

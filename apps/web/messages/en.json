@@ -61,13 +61,12 @@
         "works": [
           {
             "title": "Portrait by the window",
-            "still": "window",
-            "ratio": "3/4"
+            "still": "window"
           },
-          { "title": "Night courtyard", "still": "courtyard", "ratio": "4/3" },
-          { "title": "Market", "still": "market", "ratio": "16/10" },
-          { "title": "Bridge", "still": "courtyard", "ratio": "16/10" },
-          { "title": "Yard", "still": "courtyard", "ratio": "3/4" }
+          { "title": "Night courtyard", "still": "courtyard" },
+          { "title": "Market", "still": "market" },
+          { "title": "Bridge", "still": "courtyard" },
+          { "title": "Yard", "still": "courtyard" }
         ]
       },
       {
@@ -76,24 +75,23 @@
         "works": [
           {
             "title": "Light in the stairwell",
-            "still": "interior",
-            "ratio": "4/3"
+            "still": "interior"
           },
-          { "title": "Kitchen", "still": "interior", "ratio": "16/10" },
-          { "title": "Hallway", "still": "door", "ratio": "3/4" },
-          { "title": "Window", "still": "window", "ratio": "3/4" },
-          { "title": "Door", "still": "door", "ratio": "3/4" }
+          { "title": "Kitchen", "still": "interior" },
+          { "title": "Hallway", "still": "door" },
+          { "title": "Window", "still": "window" },
+          { "title": "Door", "still": "door" }
         ]
       },
       {
         "author": "Yulia",
         "direction": "fashion",
         "works": [
-          { "title": "Red textile", "still": "textile", "ratio": "16/10" },
-          { "title": "Runway", "still": "neon", "ratio": "4/3" },
-          { "title": "Atelier", "still": "runway", "ratio": "3/4" },
-          { "title": "Seam", "still": "textile", "ratio": "4/3" },
-          { "title": "Mannequin", "still": "runway", "ratio": "3/4" }
+          { "title": "Red textile", "still": "textile" },
+          { "title": "Runway", "still": "neon" },
+          { "title": "Atelier", "still": "runway" },
+          { "title": "Seam", "still": "textile" },
+          { "title": "Mannequin", "still": "runway" }
         ]
       }
     ],
@@ -114,40 +112,34 @@
       {
         "title": "Light in the stairwell",
         "author": "Anna",
-        "still": "interior",
-        "ratio": "4/3"
+        "still": "interior"
       },
       {
         "title": "Red textile",
         "author": "Yulia",
-        "still": "textile",
-        "ratio": "16/10"
+        "still": "textile"
       },
       {
         "title": "Portrait by the window",
         "author": "Kasia",
-        "still": "window",
-        "ratio": "3/4"
+        "still": "window"
       },
       {
         "title": "Night courtyard",
         "author": "Kasia",
-        "still": "courtyard",
-        "ratio": "4/3"
+        "still": "courtyard"
       },
       {
         "title": "Kitchen",
         "author": "Anna",
-        "still": "interior",
-        "ratio": "16/10"
+        "still": "interior"
       },
-      { "title": "Runway", "author": "Yulia", "still": "neon", "ratio": "4/3" },
-      { "title": "Hallway", "author": "Anna", "still": "door", "ratio": "3/4" },
+      { "title": "Runway", "author": "Yulia", "still": "neon" },
+      { "title": "Hallway", "author": "Anna", "still": "door" },
       {
         "title": "Atelier",
         "author": "Yulia",
-        "still": "runway",
-        "ratio": "3/4"
+        "still": "runway"
       }
     ],
     "creatorCards": [
@@ -161,14 +153,14 @@
       { "name": "Pavel", "direction": "beauty" }
     ],
     "fragmentCards": [
-      { "title": "Fragment 1", "still": "paper", "ratio": "4/3" },
-      { "title": "Fragment 2", "still": "paper", "ratio": "3/4" },
-      { "title": "Fragment 3", "still": "paper", "ratio": "16/10" },
-      { "title": "Fragment 4", "still": "paper", "ratio": "4/3" },
-      { "title": "Fragment 5", "still": "paper", "ratio": "3/4" },
-      { "title": "Fragment 6", "still": "paper", "ratio": "4/3" },
-      { "title": "Fragment 7", "still": "paper", "ratio": "16/10" },
-      { "title": "Fragment 8", "still": "paper", "ratio": "3/4" }
+      { "title": "Fragment 1", "still": "paper" },
+      { "title": "Fragment 2", "still": "paper" },
+      { "title": "Fragment 3", "still": "paper" },
+      { "title": "Fragment 4", "still": "paper" },
+      { "title": "Fragment 5", "still": "paper" },
+      { "title": "Fragment 6", "still": "paper" },
+      { "title": "Fragment 7", "still": "paper" },
+      { "title": "Fragment 8", "still": "paper" }
     ]
   },
   "Journal": {
@@ -179,29 +171,25 @@
         "kicker": "Close look",
         "title": "Kasia’s windows",
         "meta": "photography · Minsk",
-        "still": "window",
-        "ratio": "16/10"
+        "still": "window"
       },
       {
         "kicker": "Report",
         "title": "Night market",
         "meta": "Kasia · 2026",
-        "still": "market",
-        "ratio": "4/3"
+        "still": "market"
       },
       {
         "kicker": "Essay",
         "title": "Letter from the kitchen",
         "meta": "Lena · text",
-        "still": "paper",
-        "ratio": "3/4"
+        "still": "paper"
       },
       {
         "kicker": "Scene",
         "title": "Red textile",
         "meta": "Yulia · fashion",
-        "still": "textile",
-        "ratio": "4/3"
+        "still": "textile"
       }
     ]
   },

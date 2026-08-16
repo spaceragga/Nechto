@@ -175,6 +175,23 @@ test.describe('home page locales', () => {
     );
   });
 
+  test('demo works load public still URLs into the frame', async ({ page }) => {
+    await page.goto('/');
+
+    const frame = page.locator('#works [data-work-frame]').first();
+    await expect(frame).toHaveAttribute(
+      'data-still-src',
+      /\/demo\/[a-z]+\.jpg$/,
+    );
+    await expect
+      .poll(async () =>
+        frame.locator('img').evaluate((image) => {
+          return (image as { naturalWidth: number }).naturalWidth;
+        }),
+      )
+      .toBeGreaterThan(0);
+  });
+
   test('shows the Now strip with three authors and their latest works in English', async ({
     page,
   }) => {

@@ -1,4 +1,4 @@
-import { DemoStill, type DemoStillKind } from '@/components/ui/demo-still';
+import { type DemoStillKind } from '@/lib/demo-media';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 
@@ -20,9 +20,11 @@ export function HomeCollectionSpot({
       <Link href="/collections" className="flex min-w-0 flex-col">
         <div className="grid grid-cols-2 gap-1">
           {MOSAIC.map((kind) => (
-            <WorkFrame key={kind} ratio="1/1" className="aspect-square w-full">
-              <DemoStill kind={kind} />
-            </WorkFrame>
+            <WorkFrame
+              key={kind}
+              still={kind}
+              className="aspect-square w-full"
+            />
           ))}
         </div>
         <p className="mt-3 font-sans text-xs tracking-[0.2em] uppercase opacity-80">

@@ -30,7 +30,6 @@ export async function HomeCreatorsRail() {
             title={card.name}
             subtitle={tCreators(`directions.${card.direction}`)}
             still="portrait"
-            ratio="1/1"
             wellClassName="h-40 w-full"
           />
         ))}

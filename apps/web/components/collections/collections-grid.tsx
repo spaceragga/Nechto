@@ -1,5 +1,5 @@
 import { MediaTile } from '@/components/ui/media-tile';
-import type { DemoStillKind } from '@/components/ui/demo-still';
+import type { DemoStillKind } from '@/lib/demo-media';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 
 export type CollectionChannel = {
@@ -33,7 +33,6 @@ export function CollectionsGrid({
             title={channel.title}
             subtitle={channel.meta}
             still={channel.still}
-            ratio="1/1"
             wellClassName="aspect-square w-full"
           />
         ))}
