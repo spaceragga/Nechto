@@ -6,7 +6,7 @@ export async function SiteFooter() {
 
   return (
     <footer className="mt-auto border-t border-white/15 px-6 py-8 text-sm">
-      <nav className="mx-auto flex max-w-6xl flex-wrap justify-center gap-4">
+      <nav className="flex flex-wrap justify-center gap-4">
         <Link href="/terms" className="underline">
           {t('terms')}
         </Link>

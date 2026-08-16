@@ -1,4 +1,16 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
+
+async function countUnclippedLinks(rail: Locator) {
+  return rail.evaluate((root) => {
+    const clip = root.getBoundingClientRect();
+    return [...root.querySelectorAll('a')].filter((el) => {
+      const box = el.getBoundingClientRect();
+      const overlap =
+        Math.min(box.right, clip.right) - Math.max(box.left, clip.left);
+      return overlap > 8;
+    }).length;
+  });
+}
 
 test.describe('home page locales', () => {
   test('renders Russian copy by default', async ({ page }) => {
@@ -31,12 +43,51 @@ test.describe('home page locales', () => {
       now.getByRole('link', { name: 'Анна Интерьер' }),
     ).toBeVisible();
     await expect(now.getByRole('link', { name: 'Юлия Мода' })).toBeVisible();
-    await expect(now.getByRole('link')).toHaveCount(12);
+    await expect(now.getByRole('link')).toHaveCount(18);
     await expect(
       now.getByRole('link', { name: 'Портрет у окна' }),
     ).toBeVisible();
     await expect(now.getByRole('link', { name: 'Кухня' })).toBeVisible();
     await expect(now.getByRole('link', { name: 'Ателье' })).toBeVisible();
+  });
+
+  test('hovering a Now author outlines the whole row', async ({ page }) => {
+    await page.goto('/');
+
+    const now = page.getByRole('complementary', { name: 'Сейчас' });
+    const author = now.getByRole('link', { name: 'Кася Фотография' });
+    const outline = author.locator('..').locator('[data-now-row-outline]');
+
+    await expect(outline).toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
+    await author.hover();
+    await expect(outline).toHaveCSS(
+      'border-top-color',
+      'rgba(255, 255, 255, 0.5)',
+    );
+  });
+
+  test('explore and direction chips use the shared hover outline', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const exploreChip = page
+      .getByRole('navigation', { name: 'Разделы' })
+      .getByRole('link', { name: 'Авторы' });
+    await exploreChip.hover();
+    await expect(exploreChip).toHaveCSS(
+      'border-top-color',
+      'rgba(255, 255, 255, 0.5)',
+    );
+
+    const directionChip = page
+      .getByRole('navigation', { name: 'Фильтр по направлению' })
+      .getByRole('link', { name: 'Фотография' });
+    await directionChip.hover();
+    await expect(directionChip).toHaveCSS(
+      'border-top-color',
+      'rgba(255, 255, 255, 0.5)',
+    );
   });
 
   test('shows the Now strip with three authors and their latest works in English', async ({
@@ -54,7 +105,7 @@ test.describe('home page locales', () => {
     await expect(
       now.getByRole('link', { name: 'Yulia Fashion' }),
     ).toBeVisible();
-    await expect(now.getByRole('link')).toHaveCount(12);
+    await expect(now.getByRole('link')).toHaveCount(18);
     await expect(
       now.getByRole('link', { name: 'Portrait by the window' }),
     ).toBeVisible();
@@ -180,6 +231,23 @@ test.describe('home page locales', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Community',
     );
+  });
+
+  test('home rails show more cards as the viewport widens', async ({
+    page,
+  }) => {
+    const worksRail = page.locator('#works .fluid-rail');
+
+    await page.setViewportSize({ width: 420, height: 900 });
+    await page.goto('/');
+    const narrowVisible = await countUnclippedLinks(worksRail);
+
+    await page.setViewportSize({ width: 1400, height: 900 });
+    const wideVisible = await countUnclippedLinks(worksRail);
+
+    expect(narrowVisible).toBeGreaterThan(0);
+    expect(wideVisible).toBeGreaterThan(narrowVisible);
+    expect(wideVisible).toBeLessThan(8);
   });
 
   test('switches language from the locale select', async ({ page }) => {

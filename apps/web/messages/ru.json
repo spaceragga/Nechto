@@ -26,7 +26,9 @@
         "works": [
           { "title": "Портрет у окна" },
           { "title": "Ночной двор" },
-          { "title": "Рынок" }
+          { "title": "Рынок" },
+          { "title": "Мост" },
+          { "title": "Двор" }
         ]
       },
       {
@@ -35,7 +37,9 @@
         "works": [
           { "title": "Свет в подъезде" },
           { "title": "Кухня" },
-          { "title": "Коридор" }
+          { "title": "Коридор" },
+          { "title": "Окно" },
+          { "title": "Дверь" }
         ]
       },
       {
@@ -44,7 +48,9 @@
         "works": [
           { "title": "Красный текстиль" },
           { "title": "Подиум" },
-          { "title": "Ателье" }
+          { "title": "Ателье" },
+          { "title": "Шов" },
+          { "title": "Манекен" }
         ]
       }
     ],
@@ -63,15 +69,34 @@
     },
     "workCards": [
       { "title": "Свет в подъезде", "author": "Анна" },
-      { "title": "Красный текстиль", "author": "Юлия" }
+      { "title": "Красный текстиль", "author": "Юлия" },
+      { "title": "Портрет у окна", "author": "Кася" },
+      { "title": "Ночной двор", "author": "Кася" },
+      { "title": "Кухня", "author": "Анна" },
+      { "title": "Подиум", "author": "Юлия" },
+      { "title": "Коридор", "author": "Анна" },
+      { "title": "Ателье", "author": "Юлия" }
     ],
     "creatorCards": [
       { "name": "Кася", "direction": "photography" },
       { "name": "Анна", "direction": "interior" },
       { "name": "Юлия", "direction": "fashion" },
-      { "name": "Максим", "direction": "video" }
+      { "name": "Максим", "direction": "video" },
+      { "name": "Ольга", "direction": "illustration" },
+      { "name": "Игорь", "direction": "graphic-design" },
+      { "name": "Лена", "direction": "craft" },
+      { "name": "Павел", "direction": "beauty" }
     ],
-    "fragmentCards": ["Фрагмент 1", "Фрагмент 2", "Фрагмент 3", "Фрагмент 4"]
+    "fragmentCards": [
+      "Фрагмент 1",
+      "Фрагмент 2",
+      "Фрагмент 3",
+      "Фрагмент 4",
+      "Фрагмент 5",
+      "Фрагмент 6",
+      "Фрагмент 7",
+      "Фрагмент 8"
+    ]
   },
   "Journal": {
     "title": "Журнал",
@@ -169,6 +194,7 @@
     "noAvatar": "Нет фото",
     "save": "Сохранить",
     "saving": "Сохраняем…",
+    "saved": "Сохранено",
     "uploading": "Загружаем фото…",
     "loading": "Загружаем профиль…",
     "signedInAs": "Аккаунт:",

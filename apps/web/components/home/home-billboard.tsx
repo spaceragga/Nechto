@@ -8,7 +8,7 @@ export async function HomeBillboard() {
   return (
     <Link
       href={DEMO_PROFILE_HREF}
-      className="relative flex min-h-56 flex-1 flex-col justify-end overflow-hidden rounded border border-white/15 bg-white/10 p-5 md:min-h-72"
+      className="relative flex min-h-56 min-w-0 flex-1 basis-80 flex-col justify-end overflow-hidden rounded border border-white/15 bg-white/10 p-5 md:min-h-72"
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
       <p className="relative text-xs tracking-[0.2em] uppercase opacity-80">

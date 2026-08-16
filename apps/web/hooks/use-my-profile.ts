@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   updateMyProfileRequest,
@@ -8,52 +8,87 @@ import {
   type Profile,
 } from '@/lib/api';
 import { mapApiErrorMessage } from '@/lib/map-api-error';
+import { toUploadSrc } from '@/lib/to-upload-src';
 
 export function useMyProfile(initialProfile: Profile) {
   const tErrors = useTranslations('Errors');
   const [profile, setProfile] = useState(initialProfile);
-  const [displayName, setDisplayName] = useState(
+  const [displayName, setDisplayNameValue] = useState(
     initialProfile.displayName ?? '',
   );
-  const [bio, setBio] = useState(initialProfile.bio ?? '');
+  const [bio, setBioValue] = useState(initialProfile.bio ?? '');
+  const [pendingAvatar, setPendingAvatar] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+  const [fileInputKey, setFileInputKey] = useState(0);
 
-  async function saveProfile(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSaving(true);
-    setError(null);
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
-    try {
-      const updated = await updateMyProfileRequest({
-        displayName: displayName.trim() || null,
-        bio: bio.trim() || null,
-      });
-      setProfile(updated);
-    } catch (saveError) {
-      setError(mapApiErrorMessage(saveError, tErrors));
-    } finally {
-      setSaving(false);
-    }
+  function setDisplayName(value: string) {
+    setDisplayNameValue(value);
+    setSaved(false);
   }
 
-  async function uploadAvatar(fileList: FileList | null) {
+  function setBio(value: string) {
+    setBioValue(value);
+    setSaved(false);
+  }
+
+  function selectAvatar(fileList: FileList | null) {
     const file = fileList?.[0];
     if (!file) {
       return;
     }
 
-    setUploading(true);
+    setPendingAvatar(file);
+    setPreviewUrl((current) => {
+      if (current) {
+        URL.revokeObjectURL(current);
+      }
+      return URL.createObjectURL(file);
+    });
     setError(null);
+    setSaved(false);
+  }
+
+  async function saveProfile(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSaving(true);
+    setError(null);
+    setSaved(false);
 
     try {
-      const updated = await uploadMyAvatarRequest(file);
+      let updated = await updateMyProfileRequest({
+        displayName: displayName.trim() || null,
+        bio: bio.trim() || null,
+      });
+
+      if (pendingAvatar) {
+        updated = await uploadMyAvatarRequest(pendingAvatar);
+        setPendingAvatar(null);
+        setPreviewUrl((current) => {
+          if (current) {
+            URL.revokeObjectURL(current);
+          }
+          return null;
+        });
+      }
+
       setProfile(updated);
-    } catch (uploadError) {
-      setError(mapApiErrorMessage(uploadError, tErrors));
+      setSaved(true);
+      setFileInputKey((key) => key + 1);
+    } catch (saveError) {
+      setError(mapApiErrorMessage(saveError, tErrors));
     } finally {
-      setUploading(false);
+      setSaving(false);
     }
   }
 
@@ -63,10 +98,12 @@ export function useMyProfile(initialProfile: Profile) {
     setDisplayName,
     bio,
     setBio,
+    avatarUrl: previewUrl ?? toUploadSrc(profile.avatarUrl),
     saving,
-    uploading,
     error,
+    saved,
+    fileInputKey,
+    selectAvatar,
     saveProfile,
-    uploadAvatar,
   };
 }

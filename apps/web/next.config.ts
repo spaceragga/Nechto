@@ -23,12 +23,20 @@ const nextConfig: NextConfig = {
     return config;
   },
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${apiInternalUrl}/:path*`,
-      },
-    ];
+    return {
+      beforeFiles: [
+        {
+          source: '/uploads/:path*',
+          destination: `${apiInternalUrl}/uploads/:path*`,
+        },
+      ],
+      afterFiles: [
+        {
+          source: '/api/:path*',
+          destination: `${apiInternalUrl}/:path*`,
+        },
+      ],
+    };
   },
 };
 

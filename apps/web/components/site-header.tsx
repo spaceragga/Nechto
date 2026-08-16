@@ -10,7 +10,7 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-white/15 bg-[var(--bg)]/95 px-6 py-3 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center gap-4">
+      <div className="flex w-full items-center gap-4">
         <Link href="/" className="text-lg tracking-wide">
           {t('brand')}
         </Link>

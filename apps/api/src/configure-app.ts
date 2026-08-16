@@ -13,7 +13,13 @@ export function configureApp(app: NestExpressApplication): void {
     app.set('trust proxy', 1);
   }
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      // Web (:3000) embeds API upload URLs; Helmet's default same-origin CORP
+      // makes <img src="http://localhost:3001/uploads/..."> render as broken.
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
   app.use((request: Request, response: Response, next: NextFunction) => {
     const startedAt = Date.now();
     const suppliedId = request.header('x-request-id');

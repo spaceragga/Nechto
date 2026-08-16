@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import { FluidRail } from '@/components/ui/fluid-rail';
 import { MediaTile } from '@/components/ui/media-tile';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 
@@ -21,19 +22,18 @@ export async function HomeCreatorsRail() {
           {t('creatorsLink')}
         </Link>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <FluidRail minItem="11rem">
         {cards.map((card) => (
           <MediaTile
             key={card.name}
             href={DEMO_PROFILE_HREF}
             title={card.name}
             subtitle={tCreators(`directions.${card.direction}`)}
-            className="w-40 shrink-0"
           >
             <div className="aspect-square bg-white/10" />
           </MediaTile>
         ))}
-      </div>
+      </FluidRail>
     </section>
   );
 }

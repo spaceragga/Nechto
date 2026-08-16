@@ -18,7 +18,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const t = await getTranslations('HomePage');
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-10">
+    <main className="flex w-full flex-col gap-10 px-6 py-10">
       <div className="flex flex-col gap-5">
         <header>
           <h1 className="text-4xl tracking-wide md:text-6xl">{t('title')}</h1>
@@ -28,7 +28,7 @@ export default async function HomePage({ params }: HomePageProps) {
           </div>
         </header>
 
-        <div className="flex flex-col gap-4 md:flex-row">
+        <div className="flex flex-wrap gap-4">
           <HomeBillboard />
           <HomeNow />
         </div>

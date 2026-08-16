@@ -44,11 +44,13 @@ function ProfileEditorForm({ profile }: { profile: Profile }) {
     setDisplayName,
     bio,
     setBio,
+    avatarUrl,
     saving,
-    uploading,
     error,
+    saved,
+    fileInputKey,
+    selectAvatar,
     saveProfile,
-    uploadAvatar,
   } = useMyProfile(profile);
 
   return (
@@ -58,21 +60,24 @@ function ProfileEditorForm({ profile }: { profile: Profile }) {
         <p className="mt-2 text-sm opacity-70">{t('subtitle')}</p>
       </div>
 
-      <ProfileAvatarField
-        avatarUrl={current.avatarUrl}
-        uploading={uploading}
-        onFileChange={uploadAvatar}
-      />
+      <form onSubmit={saveProfile} className="flex flex-col gap-6">
+        <ProfileAvatarField
+          avatarUrl={avatarUrl}
+          uploading={saving}
+          fileInputKey={fileInputKey}
+          onFileChange={selectAvatar}
+        />
 
-      <ProfileDetailsForm
-        displayName={displayName}
-        bio={bio}
-        saving={saving}
-        error={error}
-        onDisplayNameChange={setDisplayName}
-        onBioChange={setBio}
-        onSubmit={saveProfile}
-      />
+        <ProfileDetailsForm
+          displayName={displayName}
+          bio={bio}
+          saving={saving}
+          error={error}
+          saved={saved}
+          onDisplayNameChange={setDisplayName}
+          onBioChange={setBio}
+        />
+      </form>
 
       <p className="text-sm opacity-70">
         {t('signedInAs')} {current.email}

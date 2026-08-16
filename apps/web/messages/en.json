@@ -26,7 +26,9 @@
         "works": [
           { "title": "Portrait by the window" },
           { "title": "Night courtyard" },
-          { "title": "Market" }
+          { "title": "Market" },
+          { "title": "Bridge" },
+          { "title": "Yard" }
         ]
       },
       {
@@ -35,7 +37,9 @@
         "works": [
           { "title": "Light in the stairwell" },
           { "title": "Kitchen" },
-          { "title": "Hallway" }
+          { "title": "Hallway" },
+          { "title": "Window" },
+          { "title": "Door" }
         ]
       },
       {
@@ -44,7 +48,9 @@
         "works": [
           { "title": "Red textile" },
           { "title": "Runway" },
-          { "title": "Atelier" }
+          { "title": "Atelier" },
+          { "title": "Seam" },
+          { "title": "Mannequin" }
         ]
       }
     ],
@@ -63,15 +69,34 @@
     },
     "workCards": [
       { "title": "Light in the stairwell", "author": "Anna" },
-      { "title": "Red textile", "author": "Yulia" }
+      { "title": "Red textile", "author": "Yulia" },
+      { "title": "Portrait by the window", "author": "Kasia" },
+      { "title": "Night courtyard", "author": "Kasia" },
+      { "title": "Kitchen", "author": "Anna" },
+      { "title": "Runway", "author": "Yulia" },
+      { "title": "Hallway", "author": "Anna" },
+      { "title": "Atelier", "author": "Yulia" }
     ],
     "creatorCards": [
       { "name": "Kasia", "direction": "photography" },
       { "name": "Anna", "direction": "interior" },
       { "name": "Yulia", "direction": "fashion" },
-      { "name": "Maxim", "direction": "video" }
+      { "name": "Maxim", "direction": "video" },
+      { "name": "Olga", "direction": "illustration" },
+      { "name": "Igor", "direction": "graphic-design" },
+      { "name": "Lena", "direction": "craft" },
+      { "name": "Pavel", "direction": "beauty" }
     ],
-    "fragmentCards": ["Fragment 1", "Fragment 2", "Fragment 3", "Fragment 4"]
+    "fragmentCards": [
+      "Fragment 1",
+      "Fragment 2",
+      "Fragment 3",
+      "Fragment 4",
+      "Fragment 5",
+      "Fragment 6",
+      "Fragment 7",
+      "Fragment 8"
+    ]
   },
   "Journal": {
     "title": "Journal",
@@ -169,6 +194,7 @@
     "noAvatar": "No photo",
     "save": "Save",
     "saving": "Saving…",
+    "saved": "Saved",
     "uploading": "Uploading photo…",
     "loading": "Loading profile…",
     "signedInAs": "Account:",
