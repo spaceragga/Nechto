@@ -11,7 +11,7 @@ export function ChipLink({ href, children, active = false }: ChipLinkProps) {
   return (
     <Link
       href={href}
-      className={`rounded border px-3 py-1 text-xs tracking-wide ${
+      className={`rounded-full border px-3 py-1 font-sans text-xs tracking-wide ${
         active
           ? 'border-[var(--accent)] bg-[var(--accent)]/20'
           : 'border-white/20 hover:border-[var(--hover-outline)]'

@@ -35,7 +35,7 @@ test.describe('home page locales', () => {
   }) => {
     await page.goto('/');
 
-    const now = page.getByRole('complementary', { name: 'Сейчас' });
+    const now = page.getByRole('complementary', { name: 'Подборка авторов' });
     await expect(
       now.getByRole('link', { name: 'Кася Фотография' }),
     ).toBeVisible();
@@ -54,7 +54,7 @@ test.describe('home page locales', () => {
   test('hovering a Now author outlines the whole row', async ({ page }) => {
     await page.goto('/');
 
-    const now = page.getByRole('complementary', { name: 'Сейчас' });
+    const now = page.getByRole('complementary', { name: 'Подборка авторов' });
     const author = now.getByRole('link', { name: 'Кася Фотография' });
     const outline = author.locator('..').locator('[data-now-row-outline]');
 
@@ -90,12 +90,97 @@ test.describe('home page locales', () => {
     );
   });
 
+  test('billboard caption sits below the still, not on it', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const billboard = page.getByRole('link', { name: /Ночной рынок/ }).first();
+    const frame = billboard.locator('[data-work-frame]');
+    const kicker = billboard.getByText('Работа недели');
+    const frameBox = await frame.boundingBox();
+    const kickerBox = await kicker.boundingBox();
+
+    expect(frameBox).toBeTruthy();
+    expect(kickerBox).toBeTruthy();
+    expect(kickerBox!.y).toBeGreaterThanOrEqual(
+      frameBox!.y + frameBox!.height - 1,
+    );
+  });
+
+  test('shows a work feature and a creator feature in Russian', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    await expect(page.getByText('Работа недели')).toBeVisible();
+    await expect(page.getByText('Автор недели')).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Ночной рынок/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Автор недели/ }),
+    ).toBeVisible();
+  });
+
+  test('shows a work feature and a creator feature in English', async ({
+    page,
+  }) => {
+    await page.goto('/en');
+
+    await expect(page.getByText('Work of the week')).toBeVisible();
+    await expect(page.getByText('Creator of the week')).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Night market/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Creator of the week/ }),
+    ).toBeVisible();
+  });
+
+  test('shows journal, selection, and fresh spots in Russian', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const spots = page.getByRole('region', {
+      name: 'Журнал, подборки и новые работы',
+    });
+    await expect(spots.getByRole('link', { name: /Окна Каси/ })).toBeVisible();
+    await expect(spots.getByRole('link', { name: /Дворы/ })).toBeVisible();
+    await expect(spots.getByRole('link', { name: 'Все новые' })).toBeVisible();
+    await expect(spots.getByRole('link', { name: /Шов/ })).toBeVisible();
+  });
+
+  test('shows journal, selection, and fresh spots in English', async ({
+    page,
+  }) => {
+    await page.goto('/en');
+
+    const spots = page.getByRole('region', {
+      name: 'Journal, selections, and new work',
+    });
+    await expect(spots.getByRole('link', { name: /windows/i })).toBeVisible();
+    await expect(spots.getByRole('link', { name: /Yards/ })).toBeVisible();
+    await expect(spots.getByRole('link', { name: 'All new' })).toBeVisible();
+    await expect(spots.getByRole('link', { name: /Seam/ })).toBeVisible();
+  });
+
+  test('work frames have no rounding', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(page.locator('#works [data-work-frame]').first()).toHaveCSS(
+      'border-radius',
+      '0px',
+    );
+  });
+
   test('shows the Now strip with three authors and their latest works in English', async ({
     page,
   }) => {
     await page.goto('/en');
 
-    const now = page.getByRole('complementary', { name: 'Now' });
+    const now = page.getByRole('complementary', { name: 'Author selection' });
     await expect(
       now.getByRole('link', { name: 'Kasia Photography' }),
     ).toBeVisible();
@@ -153,6 +238,7 @@ test.describe('home page locales', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Подборки',
     );
+    await expect(page.getByRole('link', { name: /Дворы/ })).toBeVisible();
 
     await page.goto('/');
     await page
@@ -160,6 +246,7 @@ test.describe('home page locales', () => {
       .getByRole('link', { name: 'Журнал' })
       .click();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Журнал');
+    await expect(page.getByRole('link', { name: /Окна Каси/ })).toBeVisible();
 
     await page.goto('/');
     await page
@@ -215,6 +302,7 @@ test.describe('home page locales', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Selections',
     );
+    await expect(page.getByRole('link', { name: /Yards/ })).toBeVisible();
 
     await page.goto('/en');
     await page
@@ -222,6 +310,7 @@ test.describe('home page locales', () => {
       .getByRole('link', { name: 'Journal' })
       .click();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Journal');
+    await expect(page.getByRole('link', { name: /windows/i })).toBeVisible();
 
     await page.goto('/en');
     await page
@@ -253,13 +342,13 @@ test.describe('home page locales', () => {
   test('switches language from the locale select', async ({ page }) => {
     await page.goto('/');
 
-    await page.getByRole('combobox').selectOption('en');
+    await page.getByRole('banner').getByRole('combobox').selectOption('en');
     await expect(page).toHaveURL(/\/en\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'House of the Independent Creator',
     );
 
-    await page.getByRole('combobox').selectOption('ru');
+    await page.getByRole('banner').getByRole('combobox').selectOption('ru');
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Дом Независимого Творца',

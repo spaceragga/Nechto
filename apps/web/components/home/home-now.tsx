@@ -19,10 +19,12 @@ export async function HomeNow() {
   return (
     <aside
       aria-label={t('nowLabel')}
-      className="flex min-w-0 flex-1 basis-80 scroll-mt-20 flex-col gap-1 overflow-hidden rounded border border-white/15 bg-black/20 p-2"
+      className="flex min-w-0 flex-1 basis-80 scroll-mt-20 flex-col gap-1 overflow-hidden p-1"
       id="now"
     >
-      <p className="px-1 text-xs tracking-[0.2em] uppercase">{t('nowLabel')}</p>
+      <p className="px-1 font-sans text-xs tracking-[0.2em] uppercase">
+        {t('nowLabel')}
+      </p>
       {items.map((item) => (
         <HomeNowRow key={item.author} item={item} />
       ))}

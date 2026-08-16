@@ -17,40 +17,80 @@
     "billboardKicker": "Работа недели",
     "billboardTitle": "Ночной рынок",
     "billboardAuthor": "Кася · фотография",
-    "billboardCta": "Открыть профиль",
-    "nowLabel": "Сейчас",
+    "billboardCta": "Открыть работу",
+    "creatorKicker": "Автор недели",
+    "creatorTitle": "Юлия",
+    "creatorMeta": "мода · Минск",
+    "creatorCta": "Смотреть работы",
+    "growthSpotsLabel": "Журнал, подборки и новые работы",
+    "journalSpot": {
+      "kicker": "Журнал",
+      "title": "Окна Каси",
+      "lede": "Как двор и стекло держат ночной Минск. Разбор одной серии, без лайков.",
+      "cta": "Читать выпуск"
+    },
+    "collectionSpot": {
+      "kicker": "Подборка",
+      "title": "Дворы",
+      "meta": "12 работ · без алгоритма"
+    },
+    "freshSpot": {
+      "kicker": "Только что",
+      "seeAll": "Все новые",
+      "items": [
+        {
+          "title": "Шов",
+          "author": "Юлия",
+          "time": "1 ч",
+          "still": "textile"
+        },
+        {
+          "title": "Дверь",
+          "author": "Анна",
+          "time": "3 ч",
+          "still": "door"
+        },
+        {
+          "title": "Мост",
+          "author": "Кася",
+          "time": "5 ч",
+          "still": "courtyard"
+        }
+      ]
+    },
+    "nowLabel": "Подборка авторов",
     "nowItems": [
       {
         "author": "Кася",
         "direction": "photography",
         "works": [
-          { "title": "Портрет у окна" },
-          { "title": "Ночной двор" },
-          { "title": "Рынок" },
-          { "title": "Мост" },
-          { "title": "Двор" }
+          { "title": "Портрет у окна", "still": "window", "ratio": "3/4" },
+          { "title": "Ночной двор", "still": "courtyard", "ratio": "4/3" },
+          { "title": "Рынок", "still": "market", "ratio": "16/10" },
+          { "title": "Мост", "still": "courtyard", "ratio": "16/10" },
+          { "title": "Двор", "still": "courtyard", "ratio": "3/4" }
         ]
       },
       {
         "author": "Анна",
         "direction": "interior",
         "works": [
-          { "title": "Свет в подъезде" },
-          { "title": "Кухня" },
-          { "title": "Коридор" },
-          { "title": "Окно" },
-          { "title": "Дверь" }
+          { "title": "Свет в подъезде", "still": "interior", "ratio": "4/3" },
+          { "title": "Кухня", "still": "interior", "ratio": "16/10" },
+          { "title": "Коридор", "still": "door", "ratio": "3/4" },
+          { "title": "Окно", "still": "window", "ratio": "3/4" },
+          { "title": "Дверь", "still": "door", "ratio": "3/4" }
         ]
       },
       {
         "author": "Юлия",
         "direction": "fashion",
         "works": [
-          { "title": "Красный текстиль" },
-          { "title": "Подиум" },
-          { "title": "Ателье" },
-          { "title": "Шов" },
-          { "title": "Манекен" }
+          { "title": "Красный текстиль", "still": "textile", "ratio": "16/10" },
+          { "title": "Подиум", "still": "neon", "ratio": "4/3" },
+          { "title": "Ателье", "still": "runway", "ratio": "3/4" },
+          { "title": "Шов", "still": "textile", "ratio": "4/3" },
+          { "title": "Манекен", "still": "runway", "ratio": "3/4" }
         ]
       }
     ],
@@ -68,14 +108,39 @@
       "community": "Сообщество"
     },
     "workCards": [
-      { "title": "Свет в подъезде", "author": "Анна" },
-      { "title": "Красный текстиль", "author": "Юлия" },
-      { "title": "Портрет у окна", "author": "Кася" },
-      { "title": "Ночной двор", "author": "Кася" },
-      { "title": "Кухня", "author": "Анна" },
-      { "title": "Подиум", "author": "Юлия" },
-      { "title": "Коридор", "author": "Анна" },
-      { "title": "Ателье", "author": "Юлия" }
+      {
+        "title": "Свет в подъезде",
+        "author": "Анна",
+        "still": "interior",
+        "ratio": "4/3"
+      },
+      {
+        "title": "Красный текстиль",
+        "author": "Юлия",
+        "still": "textile",
+        "ratio": "16/10"
+      },
+      {
+        "title": "Портрет у окна",
+        "author": "Кася",
+        "still": "window",
+        "ratio": "3/4"
+      },
+      {
+        "title": "Ночной двор",
+        "author": "Кася",
+        "still": "courtyard",
+        "ratio": "4/3"
+      },
+      {
+        "title": "Кухня",
+        "author": "Анна",
+        "still": "interior",
+        "ratio": "16/10"
+      },
+      { "title": "Подиум", "author": "Юлия", "still": "neon", "ratio": "4/3" },
+      { "title": "Коридор", "author": "Анна", "still": "door", "ratio": "3/4" },
+      { "title": "Ателье", "author": "Юлия", "still": "runway", "ratio": "3/4" }
     ],
     "creatorCards": [
       { "name": "Кася", "direction": "photography" },
@@ -88,19 +153,49 @@
       { "name": "Павел", "direction": "beauty" }
     ],
     "fragmentCards": [
-      "Фрагмент 1",
-      "Фрагмент 2",
-      "Фрагмент 3",
-      "Фрагмент 4",
-      "Фрагмент 5",
-      "Фрагмент 6",
-      "Фрагмент 7",
-      "Фрагмент 8"
+      { "title": "Фрагмент 1", "still": "paper", "ratio": "4/3" },
+      { "title": "Фрагмент 2", "still": "paper", "ratio": "3/4" },
+      { "title": "Фрагмент 3", "still": "paper", "ratio": "16/10" },
+      { "title": "Фрагмент 4", "still": "paper", "ratio": "4/3" },
+      { "title": "Фрагмент 5", "still": "paper", "ratio": "3/4" },
+      { "title": "Фрагмент 6", "still": "paper", "ratio": "4/3" },
+      { "title": "Фрагмент 7", "still": "paper", "ratio": "16/10" },
+      { "title": "Фрагмент 8", "still": "paper", "ratio": "3/4" }
     ]
   },
   "Journal": {
     "title": "Журнал",
-    "body": "Интервью, разборы работ и тексты о независимой сцене. Раздел ещё собирается."
+    "lede": "Интервью, разборы работ и тексты о независимой сцене.",
+    "issues": [
+      {
+        "kicker": "Разбор",
+        "title": "Окна Каси",
+        "meta": "фотография · Минск",
+        "still": "window",
+        "ratio": "16/10"
+      },
+      {
+        "kicker": "Репортаж",
+        "title": "Рынок ночью",
+        "meta": "Кася · 2026",
+        "still": "market",
+        "ratio": "4/3"
+      },
+      {
+        "kicker": "Эссе",
+        "title": "Письмо с кухни",
+        "meta": "Лена · текст",
+        "still": "paper",
+        "ratio": "3/4"
+      },
+      {
+        "kicker": "Сцена",
+        "title": "Красный текстиль",
+        "meta": "Юлия · мода",
+        "still": "textile",
+        "ratio": "4/3"
+      }
+    ]
   },
   "TopWorks": {
     "title": "Топ работ",
@@ -112,7 +207,15 @@
   },
   "Collections": {
     "title": "Подборки",
-    "body": "Тематические подборки. Раздел ещё собирается."
+    "lede": "Каналы работ. Равные блоки, без алгоритма.",
+    "channels": [
+      { "title": "Дворы", "meta": "12 работ", "still": "courtyard" },
+      { "title": "Окна", "meta": "8 работ", "still": "window" },
+      { "title": "Кухни", "meta": "9 работ", "still": "interior" },
+      { "title": "Текстиль", "meta": "6 работ", "still": "textile" },
+      { "title": "Подиум", "meta": "5 работ", "still": "neon" },
+      { "title": "Бумага", "meta": "7 работ", "still": "paper" }
+    ]
   },
   "CommunityFeed": {
     "title": "Сообщество",
@@ -232,6 +335,7 @@
     }
   },
   "PublicProfile": {
+    "kicker": "Автор",
     "works": "Работы",
     "website": "Сайт",
     "instagram": "Instagram",

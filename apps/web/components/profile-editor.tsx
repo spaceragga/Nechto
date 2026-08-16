@@ -20,7 +20,7 @@ export function ProfileEditor({ profile, errorStatus }: ProfileEditorProps) {
   if (!profile) {
     return (
       <div className="mx-auto flex w-full max-w-md flex-col gap-3 text-sm">
-        <h1 className="text-3xl tracking-wide">{t('title')}</h1>
+        <h1 className="font-serif text-3xl tracking-wide">{t('title')}</h1>
         <FormError>
           {errorStatus === 401 || errorStatus === 403
             ? tErrors('unauthorized')
@@ -56,7 +56,7 @@ function ProfileEditorForm({ profile }: { profile: Profile }) {
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6">
       <div>
-        <h1 className="text-3xl tracking-wide">{t('title')}</h1>
+        <h1 className="font-serif text-3xl tracking-wide">{t('title')}</h1>
         <p className="mt-2 text-sm opacity-70">{t('subtitle')}</p>
       </div>
 

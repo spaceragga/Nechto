@@ -1,11 +1,19 @@
-import { Link } from '@/i18n/navigation';
+import { DemoStill, type DemoStillKind } from '@/components/ui/demo-still';
 import { FluidRail } from '@/components/ui/fluid-rail';
+import { WorkFrame } from '@/components/ui/work-frame';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
+import { Link } from '@/i18n/navigation';
+
+export type HomeNowWork = {
+  title: string;
+  still?: DemoStillKind;
+  ratio?: string;
+};
 
 export type HomeNowItem = {
   author: string;
   directionLabel: string;
-  works: { title: string }[];
+  works: HomeNowWork[];
 };
 
 type HomeNowRowProps = {
@@ -14,13 +22,13 @@ type HomeNowRowProps = {
 
 export function HomeNowRow({ item }: HomeNowRowProps) {
   return (
-    <div className="relative flex min-h-28 flex-1 gap-2 overflow-hidden rounded p-1">
+    <div className="relative flex min-h-28 flex-1 gap-2 overflow-hidden p-1">
       <Link
         href={DEMO_PROFILE_HREF}
-        className="peer/author flex w-28 shrink-0 flex-col justify-end overflow-hidden rounded border border-white/15 bg-[var(--bg)] px-2 py-1.5 hover:bg-white/5"
+        className="peer/author flex w-28 shrink-0 flex-col justify-end px-1 py-1.5"
       >
-        <span className="text-sm leading-tight">{item.author}</span>
-        <span className="mt-0.5 text-[11px] leading-tight opacity-70">
+        <span className="font-serif text-sm leading-tight">{item.author}</span>
+        <span className="mt-0.5 font-sans text-[11px] leading-tight opacity-70">
           {item.directionLabel}
         </span>
       </Link>
@@ -29,10 +37,15 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
           <Link
             key={work.title}
             href={DEMO_PROFILE_HREF}
-            className="flex min-h-0 flex-col overflow-hidden rounded border border-white/15 bg-[var(--bg)] hover:bg-white/5"
+            className="flex min-h-0 flex-col"
           >
-            <span className="min-h-0 flex-1 bg-white/10" />
-            <span className="truncate px-1.5 py-1 text-[11px] leading-tight">
+            <WorkFrame
+              ratio={work.ratio ?? '4/3'}
+              className="min-h-0 w-full flex-1"
+            >
+              <DemoStill kind={work.still ?? 'interior'} />
+            </WorkFrame>
+            <span className="truncate pt-1 font-serif text-[11px] leading-tight">
               {work.title}
             </span>
           </Link>
@@ -41,7 +54,7 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
       <div
         aria-hidden
         data-now-row-outline
-        className="pointer-events-none absolute inset-0 rounded border border-transparent peer-hover/author:border-[var(--hover-outline)]"
+        className="pointer-events-none absolute inset-0 border border-transparent peer-hover/author:border-[var(--hover-outline)]"
       />
     </div>
   );

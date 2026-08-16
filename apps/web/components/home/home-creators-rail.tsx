@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
 import { FluidRail } from '@/components/ui/fluid-rail';
 import { MediaTile } from '@/components/ui/media-tile';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
+import { Link } from '@/i18n/navigation';
 
 type CreatorCard = {
   name: string;
@@ -17,8 +17,8 @@ export async function HomeCreatorsRail() {
   return (
     <section>
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-xl tracking-wide">{t('creators')}</h2>
-        <Link href="/creators" className="text-sm underline">
+        <h2 className="font-sans text-xl tracking-wide">{t('creators')}</h2>
+        <Link href="/creators" className="font-sans text-sm underline">
           {t('creatorsLink')}
         </Link>
       </div>
@@ -29,9 +29,10 @@ export async function HomeCreatorsRail() {
             href={DEMO_PROFILE_HREF}
             title={card.name}
             subtitle={tCreators(`directions.${card.direction}`)}
-          >
-            <div className="aspect-square bg-white/10" />
-          </MediaTile>
+            still="portrait"
+            ratio="1/1"
+            wellClassName="h-40 w-full"
+          />
         ))}
       </FluidRail>
     </section>

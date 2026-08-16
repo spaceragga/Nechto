@@ -22,8 +22,8 @@ export default async function CreatorsPage({
   const t = await getTranslations('Creators');
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-16">
-      <h1 className="text-4xl tracking-wide">{t('title')}</h1>
+    <main className="w-full px-6 py-16">
+      <h1 className="font-serif text-4xl tracking-wide">{t('title')}</h1>
       <div className="mt-6">
         <DirectionChips active={direction} />
       </div>
