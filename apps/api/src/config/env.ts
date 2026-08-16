@@ -42,46 +42,20 @@ const apiEnvSchema = z
       .enum(['true', 'false'])
       .default('false')
       .transform((value) => value === 'true'),
-    STORAGE_DRIVER: z.enum(['local', 's3']).default('local'),
+    STORAGE_DRIVER: z.enum(['local']).default('local'),
     STORAGE_LOCAL_ROOT: z.string().min(1).default('uploads'),
     STORAGE_PUBLIC_BASE_URL: z
       .string()
       .url({ message: 'STORAGE_PUBLIC_BASE_URL must be a valid URL' })
       .default('http://localhost:3001/uploads'),
-    S3_ENDPOINT: z.string().url().optional(),
-    S3_REGION: z.string().min(1).default('eu-central-1'),
-    S3_BUCKET: z.string().min(1).optional(),
-    S3_ACCESS_KEY_ID: z.string().min(1).optional(),
-    S3_SECRET_ACCESS_KEY: z.string().min(1).optional(),
-    S3_FORCE_PATH_STYLE: z
-      .enum(['true', 'false'])
-      .default('false')
-      .transform((value) => value === 'true'),
     WEB_PUBLIC_URL: z.string().url().default('http://localhost:3000'),
     SMTP_HOST: z.string().min(1).optional(),
     SMTP_PORT: z.coerce.number().int().positive().default(587),
     SMTP_USER: z.string().min(1).optional(),
     SMTP_PASSWORD: z.string().min(1).optional(),
     SMTP_FROM: z.string().email().optional(),
-    RELEASE_SHA: z.string().min(7).default('development'),
   })
   .superRefine((value, context) => {
-    if (value.STORAGE_DRIVER === 's3') {
-      for (const field of [
-        'S3_ENDPOINT',
-        'S3_BUCKET',
-        'S3_ACCESS_KEY_ID',
-        'S3_SECRET_ACCESS_KEY',
-      ] as const) {
-        if (!value[field]) {
-          context.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [field],
-            message: `${field} is required for S3 storage`,
-          });
-        }
-      }
-    }
     if (value.NODE_ENV !== 'production') {
       return;
     }
@@ -104,13 +78,6 @@ const apiEnvSchema = z
         code: z.ZodIssueCode.custom,
         path: ['JWT_SECRET'],
         message: 'JWT_SECRET must be at least 32 characters in production',
-      });
-    }
-    if (value.STORAGE_DRIVER !== 's3') {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['STORAGE_DRIVER'],
-        message: 'STORAGE_DRIVER must be s3 in production',
       });
     }
     for (const field of [

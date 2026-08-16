@@ -67,5 +67,15 @@ test.describe('public bilingual surfaces', () => {
     await expect(
       page.getByRole('heading', { name: 'Page not found' }),
     ).toBeVisible();
+
+    await page.goto('/reset-password');
+    await expect(
+      page.getByText('В ссылке нет токена. Запросите новый.'),
+    ).toBeVisible();
+
+    await page.goto('/en/reset-password');
+    await expect(
+      page.getByText('This link is missing a token. Request a new one.'),
+    ).toBeVisible();
   });
 });
