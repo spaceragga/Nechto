@@ -13,7 +13,7 @@ export async function HomeWorksGrid() {
   const cards = t.raw('workCards') as WorkCard[];
 
   return (
-    <section>
+    <section id="works" className="scroll-mt-20">
       <div className="mb-3 flex items-baseline justify-between">
         <h2 className="text-xl tracking-wide">{t('works')}</h2>
         <Link href="/creators" className="text-sm underline">

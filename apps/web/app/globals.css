@@ -15,26 +15,3 @@ body {
   color: var(--fg);
   font-family: Georgia, 'Times New Roman', serif;
 }
-
-@keyframes nechto-ticker-y {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-50%);
-  }
-}
-
-.nechto-ticker-track {
-  animation: nechto-ticker-y 22s linear infinite;
-}
-
-.nechto-ticker:hover .nechto-ticker-track {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nechto-ticker-track {
-    animation: none;
-  }
-}

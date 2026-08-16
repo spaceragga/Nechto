@@ -14,17 +14,6 @@ export async function SiteHeader() {
         <Link href="/" className="text-lg tracking-wide">
           {t('brand')}
         </Link>
-        <nav className="flex gap-4 text-sm">
-          <Link href="/" className="opacity-80 hover:opacity-100">
-            {t('home')}
-          </Link>
-          <Link href="/creators" className="opacity-80 hover:opacity-100">
-            {t('creators')}
-          </Link>
-          <Link href="/account" className="opacity-80 hover:opacity-100">
-            {t('account')}
-          </Link>
-        </nav>
         <div className="ml-auto flex items-center gap-4">
           <Suspense
             fallback={
@@ -33,6 +22,12 @@ export async function SiteHeader() {
           >
             <HomeAuthPanel />
           </Suspense>
+          <Link
+            href="/account"
+            className="text-sm opacity-80 hover:opacity-100"
+          >
+            {t('account')}
+          </Link>
           <LanguageSwitcher />
         </div>
       </div>

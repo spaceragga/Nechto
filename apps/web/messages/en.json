@@ -8,8 +8,6 @@
   },
   "Site": {
     "brand": "Nechto",
-    "home": "Home",
-    "creators": "Creators",
     "account": "Account"
   },
   "HomePage": {
@@ -20,19 +18,49 @@
     "billboardTitle": "Night market",
     "billboardAuthor": "Kasia · photography",
     "billboardCta": "Open profile",
-    "tickerLabel": "Now",
-    "tickerItems": [
-      "Kasia · portrait",
-      "Anna · interior",
-      "Yulia · fashion",
-      "Maxim · video",
-      "Lena · illustration",
-      "Oleg · craft"
+    "nowLabel": "Now",
+    "nowItems": [
+      {
+        "author": "Kasia",
+        "direction": "photography",
+        "works": [
+          { "title": "Portrait by the window" },
+          { "title": "Night courtyard" },
+          { "title": "Market" }
+        ]
+      },
+      {
+        "author": "Anna",
+        "direction": "interior",
+        "works": [
+          { "title": "Light in the stairwell" },
+          { "title": "Kitchen" },
+          { "title": "Hallway" }
+        ]
+      },
+      {
+        "author": "Yulia",
+        "direction": "fashion",
+        "works": [
+          { "title": "Red textile" },
+          { "title": "Runway" },
+          { "title": "Atelier" }
+        ]
+      }
     ],
     "works": "Works",
     "creators": "Creators",
     "fragments": "Fragments",
     "seeAll": "All",
+    "exploreNav": {
+      "label": "Sections",
+      "creators": "Creators",
+      "topWorks": "Top works",
+      "new": "New",
+      "collections": "Selections",
+      "journal": "Journal",
+      "community": "Community"
+    },
     "workCards": [
       { "title": "Light in the stairwell", "author": "Anna" },
       { "title": "Red textile", "author": "Yulia" }
@@ -44,6 +72,26 @@
       { "name": "Maxim", "direction": "video" }
     ],
     "fragmentCards": ["Fragment 1", "Fragment 2", "Fragment 3", "Fragment 4"]
+  },
+  "Journal": {
+    "title": "Journal",
+    "body": "Interviews, close looks at work, and writing on the independent scene. This section is still taking shape."
+  },
+  "TopWorks": {
+    "title": "Top works",
+    "body": "The strongest work from creators. This selection is still taking shape."
+  },
+  "Fresh": {
+    "title": "New",
+    "body": "Fresh publications. This feed is still taking shape."
+  },
+  "Collections": {
+    "title": "Selections",
+    "body": "Editorial selections. This section is still taking shape."
+  },
+  "CommunityFeed": {
+    "title": "Community",
+    "body": "Community feed and discussion. This section is still taking shape."
   },
   "LanguageSwitcher": {
     "label": "Language",

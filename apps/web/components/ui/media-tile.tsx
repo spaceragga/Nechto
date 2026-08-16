@@ -19,7 +19,7 @@ export function MediaTile({
   return (
     <Link
       href={href}
-      className={`block border border-white/15 bg-white/5 ${className}`}
+      className={`block overflow-hidden rounded border border-white/15 bg-white/5 ${className}`}
     >
       {children ?? <div className="aspect-[4/3] bg-white/10" />}
       {title ? <p className="px-3 pt-2 text-sm">{title}</p> : null}

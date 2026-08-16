@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
+import { ChipLink } from '@/components/ui/chip-link';
 import { CREATOR_DIRECTION_IDS } from '@/lib/creator-directions';
 
 type DirectionChipsProps = {
@@ -11,28 +11,17 @@ export async function DirectionChips({ active }: DirectionChipsProps) {
 
   return (
     <nav aria-label={t('filter')} className="flex flex-wrap gap-2">
-      <Link
-        href="/creators"
-        className={`rounded border px-3 py-1 text-xs tracking-wide ${
-          !active
-            ? 'border-[var(--accent)] bg-[var(--accent)]/20'
-            : 'border-white/20'
-        }`}
-      >
+      <ChipLink href="/creators" active={!active}>
         {t('all')}
-      </Link>
+      </ChipLink>
       {CREATOR_DIRECTION_IDS.map((direction) => (
-        <Link
+        <ChipLink
           key={direction}
           href={`/creators?direction=${direction}`}
-          className={`rounded border px-3 py-1 text-xs tracking-wide ${
-            active === direction
-              ? 'border-[var(--accent)] bg-[var(--accent)]/20'
-              : 'border-white/20'
-          }`}
+          active={active === direction}
         >
           {t(`directions.${direction}`)}
-        </Link>
+        </ChipLink>
       ))}
     </nav>
   );

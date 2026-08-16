@@ -3,11 +3,11 @@ import { expect, test } from '@playwright/test';
 test.describe('site navigation', () => {
   test('opens remaining pages from the Russian shell', async ({ page }) => {
     await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Дом Независимого Творца',
+    );
 
-    await page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Авторы' })
-      .click();
+    await page.goto('/creators');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Авторы');
 
     await page
@@ -56,11 +56,11 @@ test.describe('site navigation', () => {
 
   test('opens remaining pages from the English shell', async ({ page }) => {
     await page.goto('/en');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'House of the Independent Creator',
+    );
 
-    await page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Creators' })
-      .click();
+    await page.goto('/en/creators');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Creators',
     );
