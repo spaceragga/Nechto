@@ -59,7 +59,10 @@ services:
       NODE_ENV: development
       # RSC server fetch must reach the api service (not host localhost).
       API_INTERNAL_URL: ${API_INTERNAL_URL:-http://api:3001}
+      # Windows bind mounts do not notify inotify; webpack + Watchpack poll instead.
       WATCHPACK_POLLING: 'true'
+    # Webpack loads postcss.config.mjs; polling sees host edits without recreating the container.
+    command: npm run dev -- --webpack
     ports:
       - '${WEB_PORT:-3000}:3000'
     volumes:
@@ -72,7 +75,7 @@ services:
       - ./apps/web/public:/workspace/apps/web/public
       - ./apps/web/proxy.ts:/workspace/apps/web/proxy.ts:ro
       - ./apps/web/next.config.ts:/workspace/apps/web/next.config.ts:ro
-      - ./apps/web/postcss.config.ts:/workspace/apps/web/postcss.config.ts:ro
+      - ./apps/web/postcss.config.mjs:/workspace/apps/web/postcss.config.mjs:ro
       - ./apps/web/tsconfig.json:/workspace/apps/web/tsconfig.json:ro
       - ./apps/web/env.d.ts:/workspace/apps/web/env.d.ts:ro
       - ./apps/web/css.d.ts:/workspace/apps/web/css.d.ts:ro
