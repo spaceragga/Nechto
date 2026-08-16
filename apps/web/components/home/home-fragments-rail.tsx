@@ -7,7 +7,7 @@ export async function HomeFragmentsRail() {
   const cards = t.raw('fragmentCards') as string[];
 
   return (
-    <section>
+    <section id="fragments" className="scroll-mt-20">
       <h2 className="mb-3 text-xl tracking-wide">{t('fragments')}</h2>
       <div className="flex gap-3 overflow-x-auto pb-2">
         {cards.map((title) => (
