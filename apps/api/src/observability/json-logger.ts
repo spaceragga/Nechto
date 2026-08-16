@@ -1,5 +1,4 @@
 import type { LoggerService, LogLevel } from '@nestjs/common';
-import { env } from '../config/env';
 
 export class JsonLogger implements LoggerService {
   log(message: unknown, context?: string): void {
@@ -32,7 +31,6 @@ export class JsonLogger implements LoggerService {
       timestamp: new Date().toISOString(),
       level,
       service: 'nechto-api',
-      release: env.RELEASE_SHA,
       context,
       message: this.toMessage(message),
       ...(trace ? { trace } : {}),

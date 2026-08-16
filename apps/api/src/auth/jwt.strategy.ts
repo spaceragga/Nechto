@@ -31,6 +31,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload): Promise<AuthPrincipal> {
+    if (!payload.sid || !payload.sub) {
+      throw new UnauthorizedException('Authentication required');
+    }
+
     const session = await this.prisma.session.findFirst({
       where: {
         id: payload.sid,

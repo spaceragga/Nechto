@@ -47,6 +47,7 @@ describe('ModerationService', () => {
     prisma.report.findUnique.mockResolvedValue({
       id: 'report-1',
       profileId: 'profile-1',
+      status: 'OPEN',
     });
     prisma.profile.findUnique.mockResolvedValue({ userId: 'user-1' });
     prisma.report.update.mockResolvedValue({});
@@ -74,6 +75,7 @@ describe('ModerationService', () => {
     prisma.report.findUnique.mockResolvedValue({
       id: 'report-1',
       profileId: 'profile-1',
+      status: 'OPEN',
     });
     prisma.profile.findUnique.mockResolvedValue({ userId: 'user-1' });
     prisma.report.update.mockResolvedValue({});
@@ -86,5 +88,21 @@ describe('ModerationService', () => {
 
     expect(prisma.session.updateMany).not.toHaveBeenCalled();
     expect(prisma.profile.update).not.toHaveBeenCalled();
+  });
+
+  it('does not review a report that is no longer open', async () => {
+    prisma.report.findUnique.mockResolvedValue({
+      id: 'report-1',
+      profileId: 'profile-1',
+      status: 'RESOLVED',
+    });
+
+    await expect(
+      service.review('admin-1', 'report-1', {
+        status: 'DISMISSED',
+        suspendProfile: true,
+      }),
+    ).rejects.toMatchObject({ status: 404 });
+    expect(prisma.session.updateMany).not.toHaveBeenCalled();
   });
 });

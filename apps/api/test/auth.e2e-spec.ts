@@ -67,8 +67,32 @@ describe('AuthController (e2e)', () => {
 
     const revoked = await request(app.getHttpServer())
       .get('/auth/me')
+      .set('Cookie', cookie)
       .expect(401);
     expect(revoked.body.code).toBe(API_ERROR_CODES.AUTHENTICATION_REQUIRED);
+  });
+
+  it('accepts forgot-password without revealing whether the email exists', async () => {
+    await request(app.getHttpServer())
+      .post('/auth/forgot-password')
+      .send({ email: 'nobody@nechto.test' })
+      .expect(202)
+      .expect({ ok: true });
+  });
+
+  it('rejects invalid reset and verify tokens', async () => {
+    const token = 'a'.repeat(32);
+    const reset = await request(app.getHttpServer())
+      .post('/auth/reset-password')
+      .send({ token, password: 'new-password' })
+      .expect(400);
+    expect(reset.body.code).toBe(API_ERROR_CODES.VALIDATION_FAILED);
+
+    const verify = await request(app.getHttpServer())
+      .post('/auth/verify-email')
+      .send({ token })
+      .expect(400);
+    expect(verify.body.code).toBe(API_ERROR_CODES.VALIDATION_FAILED);
   });
 
   it('logs in with valid credentials', async () => {

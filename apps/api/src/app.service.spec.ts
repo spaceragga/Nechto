@@ -38,7 +38,6 @@ describe('AppService', () => {
         status: 'ok',
         service: 'nechto-api',
         database: 'up',
-        release: 'development',
       });
     });
 
@@ -49,7 +48,6 @@ describe('AppService', () => {
         status: 'degraded',
         service: 'nechto-api',
         database: 'down',
-        release: 'development',
       });
     });
   });

@@ -6,6 +6,8 @@ export const reportProfileSchema = z.object({
   reporterEmail: z.string().trim().email().nullable().optional(),
 });
 
+export const REPORT_REASONS = reportProfileSchema.shape.reason.options;
+
 export const reviewReportSchema = z.object({
   status: z.enum(['RESOLVED', 'DISMISSED']),
   suspendProfile: z.boolean().default(false),
