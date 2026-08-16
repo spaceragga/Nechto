@@ -1,5 +1,5 @@
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { API_ERROR_CODES } from '@nechto/api-contract';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { AuthService } from './auth.service';
@@ -81,7 +81,10 @@ describe('AuthService', () => {
           email: 'artist@nechto.test',
           password: 'password123',
         }),
-      ).rejects.toBeInstanceOf(ConflictException);
+      ).rejects.toMatchObject({
+        status: 409,
+        response: { code: API_ERROR_CODES.EMAIL_TAKEN },
+      });
     });
   });
 
@@ -118,7 +121,10 @@ describe('AuthService', () => {
           email: 'artist@nechto.test',
           password: 'wrong-password',
         }),
-      ).rejects.toBeInstanceOf(UnauthorizedException);
+      ).rejects.toMatchObject({
+        status: 401,
+        response: { code: API_ERROR_CODES.INVALID_CREDENTIALS },
+      });
     });
   });
 });

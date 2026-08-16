@@ -1,5 +1,7 @@
 name: CI
 
+# Repo ruleset "Protect main" requires these job names before merge:
+# quality, api-test, web-e2e
 on:
   push:
     branches: [main]
@@ -121,3 +123,21 @@ jobs:
             playwright-report
             test-results
           retention-days: 7
+
+  # Single green/red signal. Required checks still use the job names above so
+  # stacked PRs without this aggregator are not stuck waiting for a new check.
+  ci:
+    name: ci
+    needs: [quality, api-test, web-e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require quality, api-test, and web-e2e
+        run: |
+          set -euo pipefail
+          echo "quality=${{ needs.quality.result }}"
+          echo "api-test=${{ needs.api-test.result }}"
+          echo "web-e2e=${{ needs.web-e2e.result }}"
+          test "${{ needs.quality.result }}" = success
+          test "${{ needs.api-test.result }}" = success
+          test "${{ needs.web-e2e.result }}" = success
