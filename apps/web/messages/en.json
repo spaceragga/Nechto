@@ -202,7 +202,9 @@
       "title": "Verify email",
       "submit": "Verify email",
       "success": "Email verified."
-    }
+    },
+    "missingToken": "This link is missing a token. Request a new one.",
+    "signIn": "Sign in"
   },
   "Account": {
     "title": "Account data",

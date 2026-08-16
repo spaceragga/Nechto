@@ -21,7 +21,6 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1111.0",
     "@nechto/api-contract": "*",
     "@nestjs/common": "^11.0.12",
     "@nestjs/core": "^11.0.12",

@@ -144,6 +144,32 @@ describe('ApiClient', () => {
     ).toBe(false);
   });
 
+  it('posts forgot-password payloads', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ ok: true }), {
+        status: 202,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await expect(
+      client.forgotPassword({ email: 'a@nechto.test' }),
+    ).resolves.toEqual({ ok: true });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3001/auth/forgot-password',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ email: 'a@nechto.test' }),
+      }),
+    );
+  });
+
   it('uses a bound global fetch by default without Illegal invocation', async () => {
     const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(

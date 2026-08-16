@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
-import { env } from './config/env';
 
 @Injectable()
 export class AppService {
@@ -30,7 +29,6 @@ export class AppService {
       status: database === 'up' ? 'ok' : 'degraded',
       service: 'nechto-api',
       database,
-      release: env.RELEASE_SHA,
     };
   }
 }
