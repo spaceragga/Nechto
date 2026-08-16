@@ -56,7 +56,7 @@ test.describe('public bilingual surfaces', () => {
 
     await page.goto('/reset-password');
     await expect(
-      page.getByText('В ссылке нет токена. Запросите новую.'),
+      page.getByText('В ссылке нет токена. Запросите новый.'),
     ).toBeVisible();
 
     await page.goto('/en/reset-password');
