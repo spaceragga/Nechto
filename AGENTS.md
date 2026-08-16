@@ -44,6 +44,6 @@ Project Cursor rules live in `.cursor/rules/`:
 8. **frontend-components** — atomic UI, shared primitives, unidirectional data, render perf
 9. **backend-architecture** — layered Nest, fail-fast, idempotency, scale-out, query perf
 10. **quality-gate** — lint/typecheck/tests before push; no junk or dead code in diffs
-11. **git-pr-workflow** — implement uncommitted; commit/PR only when asked (commit ⇒ push); user merges `main`
+11. **git-pr-workflow** — implement uncommitted; commit/PR only when asked (commit ⇒ push); sync open PRs when `main` moves; user merges `main`
 
 Follow those rules on every change. Prefer small, verified diffs over broad rewrites.
