@@ -1,11 +1,13 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import type { AuthUser, LoginDto, RegisterDto } from '@nechto/api-contract';
+import {
+  API_ERROR_CODES,
+  type AuthUser,
+  type LoginDto,
+  type RegisterDto,
+} from '@nechto/api-contract';
 import * as bcrypt from 'bcryptjs';
+import { ApiHttpException } from '../common/errors/api-http-exception';
 import { isUniqueConstraintError } from '../prisma/is-unique-constraint-error';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -43,7 +45,11 @@ export class AuthService {
       return this.buildAuthResponse(user);
     } catch (error) {
       if (isUniqueConstraintError(error)) {
-        throw new ConflictException('Email is already registered');
+        throw new ApiHttpException(
+          HttpStatus.CONFLICT,
+          API_ERROR_CODES.EMAIL_TAKEN,
+          'Email is already registered',
+        );
       }
       throw error;
     }
@@ -54,7 +60,11 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new ApiHttpException(
+        HttpStatus.UNAUTHORIZED,
+        API_ERROR_CODES.INVALID_CREDENTIALS,
+        'Invalid email or password',
+      );
     }
 
     const passwordMatches = await bcrypt.compare(
@@ -63,7 +73,11 @@ export class AuthService {
     );
 
     if (!passwordMatches) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new ApiHttpException(
+        HttpStatus.UNAUTHORIZED,
+        API_ERROR_CODES.INVALID_CREDENTIALS,
+        'Invalid email or password',
+      );
     }
 
     return this.buildAuthResponse({

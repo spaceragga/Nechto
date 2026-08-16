@@ -60,7 +60,17 @@ test.describe('auth flow', () => {
     await page.goto('/register');
     await page.getByLabel('Email').fill(email);
     await page.getByLabel('Пароль').fill(password);
+    const duplicateRu = page.waitForResponse(
+      (response) =>
+        new URL(response.url()).pathname === '/api/auth/register' &&
+        response.request().method() === 'POST',
+    );
     await page.getByRole('button', { name: 'Создать аккаунт' }).click();
+    const duplicateRuResponse = await duplicateRu;
+    expect(duplicateRuResponse.status()).toBe(409);
+    await expect(duplicateRuResponse.json()).resolves.toMatchObject({
+      code: 'EMAIL_TAKEN',
+    });
 
     await expect(
       page.getByRole('alert').getByText('Этот email уже зарегистрирован'),
@@ -69,7 +79,17 @@ test.describe('auth flow', () => {
     await page.goto('/en/register');
     await page.getByLabel('Email').fill(email);
     await page.getByLabel('Password').fill(password);
+    const duplicateEn = page.waitForResponse(
+      (response) =>
+        new URL(response.url()).pathname === '/api/auth/register' &&
+        response.request().method() === 'POST',
+    );
     await page.getByRole('button', { name: 'Create account' }).click();
+    const duplicateEnResponse = await duplicateEn;
+    expect(duplicateEnResponse.status()).toBe(409);
+    await expect(duplicateEnResponse.json()).resolves.toMatchObject({
+      code: 'EMAIL_TAKEN',
+    });
 
     await expect(
       page.getByRole('alert').getByText('This email is already registered'),

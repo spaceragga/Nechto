@@ -1,4 +1,5 @@
 import type { INestApplication } from '@nestjs/common';
+import { API_ERROR_CODES } from '@nechto/api-contract';
 import { Test, TestingModule } from '@nestjs/testing';
 import cookieParser from 'cookie-parser';
 import request from 'supertest';
@@ -78,9 +79,26 @@ describe('AuthController (e2e)', () => {
   });
 
   it('rejects invalid login credentials', async () => {
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email, password: 'wrong-password' })
       .expect(401);
+
+    expect(response.body).toMatchObject({
+      statusCode: 401,
+      code: API_ERROR_CODES.INVALID_CREDENTIALS,
+    });
+  });
+
+  it('rejects a duplicate email with EMAIL_TAKEN', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({ email, password })
+      .expect(409);
+
+    expect(response.body).toMatchObject({
+      statusCode: 409,
+      code: API_ERROR_CODES.EMAIL_TAKEN,
+    });
   });
 });
