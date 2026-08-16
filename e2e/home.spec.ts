@@ -6,7 +6,7 @@ test.describe('home page locales', () => {
 
     await expect(page).toHaveTitle(/Nechto/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Творческие люди Беларуси',
+      'Дом Независимого Творца',
     );
   });
 
@@ -14,7 +14,7 @@ test.describe('home page locales', () => {
     await page.goto('/en');
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Creative people of Belarus',
+      'House of the Independent Creator',
     );
   });
 
@@ -24,13 +24,13 @@ test.describe('home page locales', () => {
     await page.getByRole('combobox').selectOption('en');
     await expect(page).toHaveURL(/\/en\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Creative people of Belarus',
+      'House of the Independent Creator',
     );
 
     await page.getByRole('combobox').selectOption('ru');
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Творческие люди Беларуси',
+      'Дом Независимого Творца',
     );
   });
 });

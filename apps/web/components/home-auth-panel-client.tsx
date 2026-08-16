@@ -38,7 +38,7 @@ export function HomeAuthPanelClient({
 
   if (unavailable) {
     return (
-      <div className="mt-8">
+      <div>
         <FormError>{tErrors('serviceUnavailable')}</FormError>
       </div>
     );
@@ -46,18 +46,16 @@ export function HomeAuthPanelClient({
 
   if (user) {
     return (
-      <div className="mt-8 flex flex-col items-center gap-3 text-sm">
-        <p>
+      <div className="flex flex-wrap items-center gap-3 text-sm">
+        <p className="max-w-[14rem] truncate">
           {t('signedInAs')} <span className="opacity-90">{user.email}</span>
         </p>
-        <div className="flex gap-4">
-          <Link href="/profile" className="underline">
-            {t('profileLink')}
-          </Link>
-          <Button type="button" onClick={logout} disabled={pending}>
-            {t('logout')}
-          </Button>
-        </div>
+        <Link href="/profile" className="underline">
+          {t('profileLink')}
+        </Link>
+        <Button type="button" onClick={logout} disabled={pending}>
+          {t('logout')}
+        </Button>
         {logoutError ? (
           <FormError>{tErrors('serviceUnavailable')}</FormError>
         ) : null}
@@ -66,7 +64,7 @@ export function HomeAuthPanelClient({
   }
 
   return (
-    <div className="mt-8 flex gap-4 text-sm">
+    <div className="flex gap-3 text-sm">
       <Link href="/login" className="underline">
         {t('loginLink')}
       </Link>

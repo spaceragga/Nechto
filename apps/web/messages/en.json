@@ -6,9 +6,44 @@
     "privacy": "Privacy",
     "community": "Community"
   },
+  "Site": {
+    "brand": "Nechto",
+    "home": "Home",
+    "creators": "Creators",
+    "account": "Account"
+  },
   "HomePage": {
-    "title": "Creative people of Belarus",
-    "creatorsLink": "Explore creators"
+    "title": "House of the Independent Creator",
+    "subtitle": "Public portfolios of independent creators in Belarus.",
+    "creatorsLink": "Explore creators",
+    "billboardKicker": "Work of the week",
+    "billboardTitle": "Night market",
+    "billboardAuthor": "Kasia · photography",
+    "billboardCta": "Open profile",
+    "tickerLabel": "Now",
+    "tickerItems": [
+      "Kasia · portrait",
+      "Anna · interior",
+      "Yulia · fashion",
+      "Maxim · video",
+      "Lena · illustration",
+      "Oleg · craft"
+    ],
+    "works": "Works",
+    "creators": "Creators",
+    "fragments": "Fragments",
+    "seeAll": "All",
+    "workCards": [
+      { "title": "Light in the stairwell", "author": "Anna" },
+      { "title": "Red textile", "author": "Yulia" }
+    ],
+    "creatorCards": [
+      { "name": "Kasia", "direction": "photography" },
+      { "name": "Anna", "direction": "interior" },
+      { "name": "Yulia", "direction": "fashion" },
+      { "name": "Maxim", "direction": "video" }
+    ],
+    "fragmentCards": ["Fragment 1", "Fragment 2", "Fragment 3", "Fragment 4"]
   },
   "LanguageSwitcher": {
     "label": "Language",

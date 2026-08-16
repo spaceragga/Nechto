@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { LanguageSwitcher } from '@/components/language-switcher';
+import type { ReactNode } from 'react';
+import { SiteFooter } from '@/components/site-footer';
+import { SiteHeader } from '@/components/site-header';
 import { routing } from '@/i18n/routing';
 
 type LocaleLayoutProps = {
@@ -40,10 +41,11 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider>
-          <div className="fixed right-4 top-4 z-10">
-            <LanguageSwitcher />
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader />
+            {children}
+            <SiteFooter />
           </div>
-          {children}
         </NextIntlClientProvider>
       </body>
     </html>
