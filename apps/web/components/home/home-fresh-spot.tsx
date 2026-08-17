@@ -19,7 +19,7 @@ type HomeFreshSpotProps = {
 export function HomeFreshSpot({ kicker, seeAll, items }: HomeFreshSpotProps) {
   return (
     <article>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+      <div className="mb-2 flex items-baseline justify-between gap-3">
         <h2 className="font-sans text-xs tracking-[0.2em] uppercase opacity-80">
           {kicker}
         </h2>
@@ -35,12 +35,12 @@ export function HomeFreshSpot({ kicker, seeAll, items }: HomeFreshSpotProps) {
           >
             <Link
               href={DEMO_PROFILE_HREF}
-              className="flex items-center gap-3 py-3"
+              className="flex items-center gap-3 py-2"
             >
               <WorkFrame
                 still={item.still}
                 alt={item.title}
-                className="h-14 w-16 shrink-0"
+                className="h-12 w-14 shrink-0"
               />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-serif text-sm">{item.title}</p>

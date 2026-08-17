@@ -22,7 +22,7 @@
     "creatorTitle": "Yulia",
     "creatorMeta": "fashion · Minsk",
     "creatorCta": "See works",
-    "growthSpotsLabel": "Journal, selections, and new work",
+    "growthSpotsLabel": "New work, selections, looking, dialogue, and studio",
     "journalSpot": {
       "kicker": "Journal",
       "title": "Kasia’s windows",
@@ -42,54 +42,106 @@
           "title": "Seam",
           "author": "Yulia",
           "time": "1h",
-          "still": "textile"
+          "still": "fabric"
         },
-        { "title": "Door", "author": "Anna", "time": "3h", "still": "door" },
+        { "title": "Door", "author": "Anna", "time": "3h", "still": "stair" },
         {
           "title": "Bridge",
           "author": "Kasia",
           "time": "5h",
-          "still": "courtyard"
+          "still": "alley"
         }
       ]
+    },
+    "openCallSpot": {
+      "kicker": "Open call",
+      "title": "Work is welcome",
+      "lede": "Name, city, a series. Then five works and the house rules — no shop window, no likes.",
+      "cta": "Submit work"
+    },
+    "dialogueSpot": {
+      "kicker": "Dialogue",
+      "title": "Window and door",
+      "lede": "Kasia holds the glass, Anna the threshold. Two works about the edge of a flat and a yard.",
+      "leftTitle": "Portrait by the window",
+      "leftMeta": "Kasia",
+      "rightTitle": "Door",
+      "rightMeta": "Anna",
+      "cta": "See them together"
+    },
+    "studioSpot": {
+      "kicker": "Studio",
+      "title": "Yulia’s atelier",
+      "lede": "A table, a mannequin, red cloth. Not a runway — the room where it is sewn at night.",
+      "cta": "Enter the studio"
+    },
+    "hangingSpot": {
+      "kicker": "Hanging",
+      "title": "On the wall today",
+      "lede": "Five works, as in a salon: light, a seam, a yard, a window, a door. Not a feed.",
+      "cta": "The full hanging",
+      "items": [
+        {
+          "title": "Light in the stairwell",
+          "author": "Anna",
+          "still": "lamp"
+        },
+        { "title": "Seam", "author": "Yulia", "still": "fabric" },
+        { "title": "Night courtyard", "author": "Kasia", "still": "alley" },
+        {
+          "title": "Portrait by the window",
+          "author": "Kasia",
+          "still": "glass"
+        },
+        { "title": "Door", "author": "Anna", "still": "stair" }
+      ]
+    },
+    "lookingSpot": {
+      "kicker": "For the visitor",
+      "title": "How to look",
+      "lede": "No feed, no counter. One work, a caption, a pause. The journal teaches this slower than a rail.",
+      "cta": "Read how to look"
     },
     "nowLabel": "Author selection",
     "nowItems": [
       {
         "author": "Kasia",
         "direction": "photography",
+        "avatar": "portrait",
         "works": [
           {
             "title": "Portrait by the window",
-            "still": "window"
+            "still": "glass"
           },
-          { "title": "Night courtyard", "still": "courtyard" },
+          { "title": "Night courtyard", "still": "alley" },
           { "title": "Market", "still": "market" },
-          { "title": "Bridge", "still": "courtyard" },
+          { "title": "Bridge", "still": "brick" },
           { "title": "Yard", "still": "courtyard" }
         ]
       },
       {
         "author": "Anna",
         "direction": "interior",
+        "avatar": "interior",
         "works": [
           {
             "title": "Light in the stairwell",
-            "still": "interior"
+            "still": "lamp"
           },
-          { "title": "Kitchen", "still": "interior" },
-          { "title": "Hallway", "still": "door" },
-          { "title": "Window", "still": "window" },
-          { "title": "Door", "still": "door" }
+          { "title": "Kitchen", "still": "kettle" },
+          { "title": "Hallway", "still": "stair" },
+          { "title": "Window", "still": "glass" },
+          { "title": "Door", "still": "stool" }
         ]
       },
       {
         "author": "Yulia",
         "direction": "fashion",
+        "avatar": "film",
         "works": [
-          { "title": "Red textile", "still": "textile" },
+          { "title": "Red textile", "still": "fabric" },
           { "title": "Runway", "still": "neon" },
-          { "title": "Atelier", "still": "runway" },
+          { "title": "Atelier", "still": "coat" },
           { "title": "Seam", "still": "textile" },
           { "title": "Mannequin", "still": "runway" }
         ]
@@ -112,34 +164,34 @@
       {
         "title": "Light in the stairwell",
         "author": "Anna",
-        "still": "interior"
+        "still": "lamp"
       },
       {
         "title": "Red textile",
         "author": "Yulia",
-        "still": "textile"
+        "still": "fabric"
       },
       {
         "title": "Portrait by the window",
         "author": "Kasia",
-        "still": "window"
+        "still": "glass"
       },
       {
         "title": "Night courtyard",
         "author": "Kasia",
-        "still": "courtyard"
+        "still": "alley"
       },
       {
         "title": "Kitchen",
         "author": "Anna",
-        "still": "interior"
+        "still": "kettle"
       },
       { "title": "Runway", "author": "Yulia", "still": "neon" },
-      { "title": "Hallway", "author": "Anna", "still": "door" },
+      { "title": "Hallway", "author": "Anna", "still": "stair" },
       {
         "title": "Atelier",
         "author": "Yulia",
-        "still": "runway"
+        "still": "coat"
       }
     ],
     "creatorCards": [
@@ -153,14 +205,14 @@
       { "name": "Pavel", "direction": "beauty" }
     ],
     "fragmentCards": [
-      { "title": "Fragment 1", "still": "paper" },
-      { "title": "Fragment 2", "still": "paper" },
-      { "title": "Fragment 3", "still": "paper" },
-      { "title": "Fragment 4", "still": "paper" },
-      { "title": "Fragment 5", "still": "paper" },
-      { "title": "Fragment 6", "still": "paper" },
-      { "title": "Fragment 7", "still": "paper" },
-      { "title": "Fragment 8", "still": "paper" }
+      { "title": "Fragment 1", "still": "film" },
+      { "title": "Fragment 2", "still": "glass" },
+      { "title": "Fragment 3", "still": "brick" },
+      { "title": "Fragment 4", "still": "stool" },
+      { "title": "Fragment 5", "still": "coat" },
+      { "title": "Fragment 6", "still": "alley" },
+      { "title": "Fragment 7", "still": "kettle" },
+      { "title": "Fragment 8", "still": "fabric" }
     ]
   },
   "Journal": {
@@ -171,7 +223,7 @@
         "kicker": "Close look",
         "title": "Kasia’s windows",
         "meta": "photography · Minsk",
-        "still": "window"
+        "still": "glass"
       },
       {
         "kicker": "Report",
@@ -183,13 +235,13 @@
         "kicker": "Essay",
         "title": "Letter from the kitchen",
         "meta": "Lena · text",
-        "still": "paper"
+        "still": "film"
       },
       {
         "kicker": "Scene",
         "title": "Red textile",
         "meta": "Yulia · fashion",
-        "still": "textile"
+        "still": "fabric"
       }
     ]
   },
@@ -205,12 +257,12 @@
     "title": "Selections",
     "lede": "Channels of work. Equal blocks, no algorithm.",
     "channels": [
-      { "title": "Yards", "meta": "12 works", "still": "courtyard" },
-      { "title": "Windows", "meta": "8 works", "still": "window" },
-      { "title": "Kitchens", "meta": "9 works", "still": "interior" },
-      { "title": "Textile", "meta": "6 works", "still": "textile" },
-      { "title": "Runway", "meta": "5 works", "still": "neon" },
-      { "title": "Paper", "meta": "7 works", "still": "paper" }
+      { "title": "Yards", "meta": "12 works", "still": "alley" },
+      { "title": "Windows", "meta": "8 works", "still": "glass" },
+      { "title": "Kitchens", "meta": "9 works", "still": "kettle" },
+      { "title": "Textile", "meta": "6 works", "still": "fabric" },
+      { "title": "Runway", "meta": "5 works", "still": "coat" },
+      { "title": "Paper", "meta": "7 works", "still": "film" }
     ]
   },
   "CommunityFeed": {

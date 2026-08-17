@@ -6,6 +6,7 @@ type WorkFrameProps = {
   still?: DemoStillKind;
   alt?: string;
   className?: string;
+  fit?: 'contain' | 'cover';
 };
 
 export function WorkFrame({
@@ -13,6 +14,7 @@ export function WorkFrame({
   still,
   alt = '',
   className = '',
+  fit = 'contain',
 }: WorkFrameProps) {
   const resolved = src ?? (still ? demoMediaSrc(still) : null);
   const imageSrc = resolved ? (toUploadSrc(resolved) ?? resolved) : null;
@@ -21,14 +23,22 @@ export function WorkFrame({
     <div
       data-work-frame
       data-still-src={imageSrc ?? undefined}
-      className={`flex items-center justify-center overflow-hidden bg-[var(--bg)] ${className}`.trim()}
+      className={`${
+        fit === 'cover'
+          ? 'overflow-hidden bg-[var(--bg)]'
+          : 'flex items-center justify-center overflow-hidden bg-[var(--bg)]'
+      } ${className}`.trim()}
     >
       {imageSrc ? (
         // eslint-disable-next-line @next/next/no-img-element -- same path as StorageService public URLs
         <img
           src={imageSrc}
           alt={alt}
-          className="max-h-full max-w-full object-contain"
+          className={
+            fit === 'cover'
+              ? 'block h-full w-full object-cover'
+              : 'max-h-full max-w-full object-contain'
+          }
         />
       ) : null}
     </div>

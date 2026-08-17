@@ -22,7 +22,7 @@
     "creatorTitle": "Юлия",
     "creatorMeta": "мода · Минск",
     "creatorCta": "Смотреть работы",
-    "growthSpotsLabel": "Журнал, подборки и новые работы",
+    "growthSpotsLabel": "Новые работы, подборки, зритель, диалог и студия",
     "journalSpot": {
       "kicker": "Журнал",
       "title": "Окна Каси",
@@ -42,53 +42,97 @@
           "title": "Шов",
           "author": "Юлия",
           "time": "1 ч",
-          "still": "textile"
+          "still": "fabric"
         },
         {
           "title": "Дверь",
           "author": "Анна",
           "time": "3 ч",
-          "still": "door"
+          "still": "stair"
         },
         {
           "title": "Мост",
           "author": "Кася",
           "time": "5 ч",
-          "still": "courtyard"
+          "still": "alley"
         }
       ]
+    },
+    "openCallSpot": {
+      "kicker": "Приём",
+      "title": "Открытый приём",
+      "lede": "Имя, город, серия. Потом пять работ и согласие с правилами дома — без витрины и без лайков.",
+      "cta": "Подать работы"
+    },
+    "dialogueSpot": {
+      "kicker": "Диалог",
+      "title": "Окно и дверь",
+      "lede": "Кася держит стекло, Анна — порог. Две работы про границу квартиры и двора.",
+      "leftTitle": "Портрет у окна",
+      "leftMeta": "Кася",
+      "rightTitle": "Дверь",
+      "rightMeta": "Анна",
+      "cta": "Смотреть рядом"
+    },
+    "studioSpot": {
+      "kicker": "Студия",
+      "title": "Ателье Юлии",
+      "lede": "Стол, манекен, красный текстиль. Не подиум — комната, где шьют вечером.",
+      "cta": "Войти в студию"
+    },
+    "hangingSpot": {
+      "kicker": "Развес",
+      "title": "Сегодня на стене",
+      "lede": "Пять работ, как в салоне: свет, шов, двор, окно, дверь. Не лента.",
+      "cta": "Весь развес",
+      "items": [
+        { "title": "Свет в подъезде", "author": "Анна", "still": "lamp" },
+        { "title": "Шов", "author": "Юлия", "still": "fabric" },
+        { "title": "Ночной двор", "author": "Кася", "still": "alley" },
+        { "title": "Портрет у окна", "author": "Кася", "still": "glass" },
+        { "title": "Дверь", "author": "Анна", "still": "stair" }
+      ]
+    },
+    "lookingSpot": {
+      "kicker": "Зрителю",
+      "title": "Как смотреть",
+      "lede": "Без ленты и без счётчика. Одна работа, подпись, пауза. Журнал учит этому медленнее, чем рельс.",
+      "cta": "Читать как смотреть"
     },
     "nowLabel": "Подборка авторов",
     "nowItems": [
       {
         "author": "Кася",
         "direction": "photography",
+        "avatar": "portrait",
         "works": [
-          { "title": "Портрет у окна", "still": "window" },
-          { "title": "Ночной двор", "still": "courtyard" },
+          { "title": "Портрет у окна", "still": "glass" },
+          { "title": "Ночной двор", "still": "alley" },
           { "title": "Рынок", "still": "market" },
-          { "title": "Мост", "still": "courtyard" },
+          { "title": "Мост", "still": "brick" },
           { "title": "Двор", "still": "courtyard" }
         ]
       },
       {
         "author": "Анна",
         "direction": "interior",
+        "avatar": "interior",
         "works": [
-          { "title": "Свет в подъезде", "still": "interior" },
-          { "title": "Кухня", "still": "interior" },
-          { "title": "Коридор", "still": "door" },
-          { "title": "Окно", "still": "window" },
-          { "title": "Дверь", "still": "door" }
+          { "title": "Свет в подъезде", "still": "lamp" },
+          { "title": "Кухня", "still": "kettle" },
+          { "title": "Коридор", "still": "stair" },
+          { "title": "Окно", "still": "glass" },
+          { "title": "Дверь", "still": "stool" }
         ]
       },
       {
         "author": "Юлия",
         "direction": "fashion",
+        "avatar": "film",
         "works": [
-          { "title": "Красный текстиль", "still": "textile" },
+          { "title": "Красный текстиль", "still": "fabric" },
           { "title": "Подиум", "still": "neon" },
-          { "title": "Ателье", "still": "runway" },
+          { "title": "Ателье", "still": "coat" },
           { "title": "Шов", "still": "textile" },
           { "title": "Манекен", "still": "runway" }
         ]
@@ -111,31 +155,31 @@
       {
         "title": "Свет в подъезде",
         "author": "Анна",
-        "still": "interior"
+        "still": "lamp"
       },
       {
         "title": "Красный текстиль",
         "author": "Юлия",
-        "still": "textile"
+        "still": "fabric"
       },
       {
         "title": "Портрет у окна",
         "author": "Кася",
-        "still": "window"
+        "still": "glass"
       },
       {
         "title": "Ночной двор",
         "author": "Кася",
-        "still": "courtyard"
+        "still": "alley"
       },
       {
         "title": "Кухня",
         "author": "Анна",
-        "still": "interior"
+        "still": "kettle"
       },
       { "title": "Подиум", "author": "Юлия", "still": "neon" },
-      { "title": "Коридор", "author": "Анна", "still": "door" },
-      { "title": "Ателье", "author": "Юлия", "still": "runway" }
+      { "title": "Коридор", "author": "Анна", "still": "stair" },
+      { "title": "Ателье", "author": "Юлия", "still": "coat" }
     ],
     "creatorCards": [
       { "name": "Кася", "direction": "photography" },
@@ -148,14 +192,14 @@
       { "name": "Павел", "direction": "beauty" }
     ],
     "fragmentCards": [
-      { "title": "Фрагмент 1", "still": "paper" },
-      { "title": "Фрагмент 2", "still": "paper" },
-      { "title": "Фрагмент 3", "still": "paper" },
-      { "title": "Фрагмент 4", "still": "paper" },
-      { "title": "Фрагмент 5", "still": "paper" },
-      { "title": "Фрагмент 6", "still": "paper" },
-      { "title": "Фрагмент 7", "still": "paper" },
-      { "title": "Фрагмент 8", "still": "paper" }
+      { "title": "Фрагмент 1", "still": "film" },
+      { "title": "Фрагмент 2", "still": "glass" },
+      { "title": "Фрагмент 3", "still": "brick" },
+      { "title": "Фрагмент 4", "still": "stool" },
+      { "title": "Фрагмент 5", "still": "coat" },
+      { "title": "Фрагмент 6", "still": "alley" },
+      { "title": "Фрагмент 7", "still": "kettle" },
+      { "title": "Фрагмент 8", "still": "fabric" }
     ]
   },
   "Journal": {
@@ -166,7 +210,7 @@
         "kicker": "Разбор",
         "title": "Окна Каси",
         "meta": "фотография · Минск",
-        "still": "window"
+        "still": "glass"
       },
       {
         "kicker": "Репортаж",
@@ -178,13 +222,13 @@
         "kicker": "Эссе",
         "title": "Письмо с кухни",
         "meta": "Лена · текст",
-        "still": "paper"
+        "still": "film"
       },
       {
         "kicker": "Сцена",
         "title": "Красный текстиль",
         "meta": "Юлия · мода",
-        "still": "textile"
+        "still": "fabric"
       }
     ]
   },
@@ -200,12 +244,12 @@
     "title": "Подборки",
     "lede": "Каналы работ. Равные блоки, без алгоритма.",
     "channels": [
-      { "title": "Дворы", "meta": "12 работ", "still": "courtyard" },
-      { "title": "Окна", "meta": "8 работ", "still": "window" },
-      { "title": "Кухни", "meta": "9 работ", "still": "interior" },
-      { "title": "Текстиль", "meta": "6 работ", "still": "textile" },
-      { "title": "Подиум", "meta": "5 работ", "still": "neon" },
-      { "title": "Бумага", "meta": "7 работ", "still": "paper" }
+      { "title": "Дворы", "meta": "12 работ", "still": "alley" },
+      { "title": "Окна", "meta": "8 работ", "still": "glass" },
+      { "title": "Кухни", "meta": "9 работ", "still": "kettle" },
+      { "title": "Текстиль", "meta": "6 работ", "still": "fabric" },
+      { "title": "Подиум", "meta": "5 работ", "still": "coat" },
+      { "title": "Бумага", "meta": "7 работ", "still": "film" }
     ]
   },
   "CommunityFeed": {

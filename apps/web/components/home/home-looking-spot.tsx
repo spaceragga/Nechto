@@ -1,19 +1,18 @@
-import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 
-type HomeJournalSpotProps = {
+type HomeLookingSpotProps = {
   kicker: string;
   title: string;
   lede: string;
   cta: string;
 };
 
-export function HomeJournalSpot({
+export function HomeLookingSpot({
   kicker,
   title,
   lede,
   cta,
-}: HomeJournalSpotProps) {
+}: HomeLookingSpotProps) {
   return (
     <article>
       <Link href="/journal" className="flex min-w-0 flex-col">
@@ -23,16 +22,10 @@ export function HomeJournalSpot({
         <h2 className="mt-2 font-serif text-3xl leading-tight tracking-wide">
           {title}
         </h2>
-        <p className="mt-2 max-w-sm font-sans text-sm leading-relaxed opacity-70">
+        <p className="mt-2 max-w-sm font-serif text-sm leading-relaxed opacity-70">
           {lede}
         </p>
-        <WorkFrame
-          still="glass"
-          alt={title}
-          fit="cover"
-          className="mt-3 h-72 w-full md:h-[30rem]"
-        />
-        <span className="mt-2 font-sans text-sm text-[var(--accent)]">
+        <span className="mt-3 font-sans text-sm text-[var(--accent)]">
           {cta}
         </span>
       </Link>

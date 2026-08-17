@@ -1,8 +1,20 @@
 import { getTranslations } from 'next-intl/server';
 import { FluidRail } from '@/components/ui/fluid-rail';
 import { MediaTile } from '@/components/ui/media-tile';
+import { type DemoStillKind } from '@/lib/demo-media';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import { Link } from '@/i18n/navigation';
+
+const CREATOR_STILLS: DemoStillKind[] = [
+  'portrait',
+  'coat',
+  'film',
+  'glass',
+  'stool',
+  'lamp',
+  'stair',
+  'alley',
+];
 
 type CreatorCard = {
   name: string;
@@ -23,13 +35,13 @@ export async function HomeCreatorsRail() {
         </Link>
       </div>
       <FluidRail minItem="11rem">
-        {cards.map((card) => (
+        {cards.map((card, index) => (
           <MediaTile
             key={card.name}
             href={DEMO_PROFILE_HREF}
             title={card.name}
             subtitle={tCreators(`directions.${card.direction}`)}
-            still="portrait"
+            still={CREATOR_STILLS[index % CREATOR_STILLS.length]}
             wellClassName="h-40 w-full"
           />
         ))}
