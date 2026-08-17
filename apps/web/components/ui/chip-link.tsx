@@ -11,11 +11,11 @@ export function ChipLink({ href, children, active = false }: ChipLinkProps) {
   return (
     <Link
       href={href}
-      className={`rounded border px-3 py-1 text-xs tracking-wide ${
+      className={`inline-flex items-center justify-center px-5 py-1 font-sans text-xl tracking-wide transition-colors duration-150 ${
         active
-          ? 'border-[var(--accent)] bg-[var(--accent)]/20'
-          : 'border-white/20 hover:border-[var(--hover-outline)]'
-      }`}
+          ? 'bg-[var(--accent)] text-[var(--fg)]'
+          : 'bg-white/[0.04] hover:bg-white/[0.08]'
+      } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]`}
     >
       {children}
     </Link>

@@ -18,7 +18,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       <Suspense
         fallback={
           <div className="mx-auto flex w-full max-w-md flex-col gap-6">
-            <h1 className="text-3xl tracking-wide">{t('title')}</h1>
+            <h1 className="font-serif text-3xl tracking-wide">{t('title')}</h1>
             <p className="text-sm opacity-70">{t('loading')}</p>
           </div>
         }

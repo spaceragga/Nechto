@@ -17,40 +17,124 @@
     "billboardKicker": "Работа недели",
     "billboardTitle": "Ночной рынок",
     "billboardAuthor": "Кася · фотография",
-    "billboardCta": "Открыть профиль",
-    "nowLabel": "Сейчас",
+    "billboardCta": "Открыть работу",
+    "creatorKicker": "Автор недели",
+    "creatorTitle": "Юлия",
+    "creatorMeta": "мода · Минск",
+    "creatorCta": "Смотреть работы",
+    "growthSpotsLabel": "Новые работы, подборки, зритель, диалог и студия",
+    "journalSpot": {
+      "kicker": "Журнал",
+      "title": "Окна Каси",
+      "lede": "Как двор и стекло держат ночной Минск. Разбор одной серии, без лайков.",
+      "cta": "Читать выпуск"
+    },
+    "collectionSpot": {
+      "kicker": "Подборка",
+      "title": "Дворы",
+      "meta": "12 работ · без алгоритма"
+    },
+    "freshSpot": {
+      "kicker": "Только что",
+      "seeAll": "Все новые",
+      "items": [
+        {
+          "title": "Шов",
+          "author": "Юлия",
+          "time": "1 ч",
+          "still": "fabric"
+        },
+        {
+          "title": "Дверь",
+          "author": "Анна",
+          "time": "3 ч",
+          "still": "stair"
+        },
+        {
+          "title": "Мост",
+          "author": "Кася",
+          "time": "5 ч",
+          "still": "alley"
+        }
+      ]
+    },
+    "openCallSpot": {
+      "kicker": "Приём",
+      "title": "Открытый приём",
+      "lede": "Имя, город, серия. Потом пять работ и согласие с правилами дома — без витрины и без лайков.",
+      "cta": "Подать работы"
+    },
+    "dialogueSpot": {
+      "kicker": "Диалог",
+      "title": "Окно и дверь",
+      "lede": "Кася держит стекло, Анна — порог. Две работы про границу квартиры и двора.",
+      "leftTitle": "Портрет у окна",
+      "leftMeta": "Кася",
+      "rightTitle": "Дверь",
+      "rightMeta": "Анна",
+      "cta": "Смотреть рядом"
+    },
+    "studioSpot": {
+      "kicker": "Студия",
+      "title": "Ателье Юлии",
+      "lede": "Стол, манекен, красный текстиль. Не подиум — комната, где шьют вечером.",
+      "cta": "Войти в студию"
+    },
+    "hangingSpot": {
+      "kicker": "Развес",
+      "title": "Сегодня на стене",
+      "lede": "Пять работ, как в салоне: свет, шов, двор, окно, дверь. Не лента.",
+      "cta": "Весь развес",
+      "items": [
+        { "title": "Свет в подъезде", "author": "Анна", "still": "lamp" },
+        { "title": "Шов", "author": "Юлия", "still": "fabric" },
+        { "title": "Ночной двор", "author": "Кася", "still": "alley" },
+        { "title": "Портрет у окна", "author": "Кася", "still": "glass" },
+        { "title": "Дверь", "author": "Анна", "still": "stair" }
+      ]
+    },
+    "lookingSpot": {
+      "kicker": "Зрителю",
+      "title": "Как смотреть",
+      "lede": "Без ленты и без счётчика. Одна работа, подпись, пауза. Журнал учит этому медленнее, чем рельс.",
+      "cta": "Читать как смотреть"
+    },
+    "nowLabel": "Подборка авторов",
     "nowItems": [
       {
         "author": "Кася",
         "direction": "photography",
+        "avatar": "portrait",
         "works": [
-          { "title": "Портрет у окна" },
-          { "title": "Ночной двор" },
-          { "title": "Рынок" },
-          { "title": "Мост" },
-          { "title": "Двор" }
+          { "title": "Портрет у окна", "still": "glass" },
+          { "title": "Ночной двор", "still": "alley" },
+          { "title": "Рынок", "still": "market" },
+          { "title": "Мост", "still": "brick" },
+          { "title": "Двор", "still": "courtyard" }
         ]
       },
       {
         "author": "Анна",
         "direction": "interior",
+        "avatar": "interior",
         "works": [
-          { "title": "Свет в подъезде" },
-          { "title": "Кухня" },
-          { "title": "Коридор" },
-          { "title": "Окно" },
-          { "title": "Дверь" }
+          { "title": "Свет в подъезде", "still": "lamp" },
+          { "title": "Кухня", "still": "kettle" },
+          { "title": "Коридор", "still": "stair" },
+          { "title": "Окно", "still": "glass" },
+          { "title": "Дверь", "still": "stool" }
         ]
       },
       {
         "author": "Юлия",
         "direction": "fashion",
+        "avatar": "film",
         "works": [
-          { "title": "Красный текстиль" },
-          { "title": "Подиум" },
-          { "title": "Ателье" },
-          { "title": "Шов" },
-          { "title": "Манекен" }
+          { "title": "Красный текстиль", "still": "fabric" },
+          { "title": "Подиум", "still": "neon" },
+          { "title": "Ателье", "still": "coat" },
+          { "title": "Шов", "still": "textile" },
+          { "title": "Манекен", "still": "runway" }
         ]
       }
     ],
@@ -68,14 +152,34 @@
       "community": "Сообщество"
     },
     "workCards": [
-      { "title": "Свет в подъезде", "author": "Анна" },
-      { "title": "Красный текстиль", "author": "Юлия" },
-      { "title": "Портрет у окна", "author": "Кася" },
-      { "title": "Ночной двор", "author": "Кася" },
-      { "title": "Кухня", "author": "Анна" },
-      { "title": "Подиум", "author": "Юлия" },
-      { "title": "Коридор", "author": "Анна" },
-      { "title": "Ателье", "author": "Юлия" }
+      {
+        "title": "Свет в подъезде",
+        "author": "Анна",
+        "still": "lamp"
+      },
+      {
+        "title": "Красный текстиль",
+        "author": "Юлия",
+        "still": "fabric"
+      },
+      {
+        "title": "Портрет у окна",
+        "author": "Кася",
+        "still": "glass"
+      },
+      {
+        "title": "Ночной двор",
+        "author": "Кася",
+        "still": "alley"
+      },
+      {
+        "title": "Кухня",
+        "author": "Анна",
+        "still": "kettle"
+      },
+      { "title": "Подиум", "author": "Юлия", "still": "neon" },
+      { "title": "Коридор", "author": "Анна", "still": "stair" },
+      { "title": "Ателье", "author": "Юлия", "still": "coat" }
     ],
     "creatorCards": [
       { "name": "Кася", "direction": "photography" },
@@ -88,19 +192,45 @@
       { "name": "Павел", "direction": "beauty" }
     ],
     "fragmentCards": [
-      "Фрагмент 1",
-      "Фрагмент 2",
-      "Фрагмент 3",
-      "Фрагмент 4",
-      "Фрагмент 5",
-      "Фрагмент 6",
-      "Фрагмент 7",
-      "Фрагмент 8"
+      { "title": "Фрагмент 1", "still": "film" },
+      { "title": "Фрагмент 2", "still": "glass" },
+      { "title": "Фрагмент 3", "still": "brick" },
+      { "title": "Фрагмент 4", "still": "stool" },
+      { "title": "Фрагмент 5", "still": "coat" },
+      { "title": "Фрагмент 6", "still": "alley" },
+      { "title": "Фрагмент 7", "still": "kettle" },
+      { "title": "Фрагмент 8", "still": "fabric" }
     ]
   },
   "Journal": {
     "title": "Журнал",
-    "body": "Интервью, разборы работ и тексты о независимой сцене. Раздел ещё собирается."
+    "lede": "Интервью, разборы работ и тексты о независимой сцене.",
+    "issues": [
+      {
+        "kicker": "Разбор",
+        "title": "Окна Каси",
+        "meta": "фотография · Минск",
+        "still": "glass"
+      },
+      {
+        "kicker": "Репортаж",
+        "title": "Рынок ночью",
+        "meta": "Кася · 2026",
+        "still": "market"
+      },
+      {
+        "kicker": "Эссе",
+        "title": "Письмо с кухни",
+        "meta": "Лена · текст",
+        "still": "film"
+      },
+      {
+        "kicker": "Сцена",
+        "title": "Красный текстиль",
+        "meta": "Юлия · мода",
+        "still": "fabric"
+      }
+    ]
   },
   "TopWorks": {
     "title": "Топ работ",
@@ -112,7 +242,15 @@
   },
   "Collections": {
     "title": "Подборки",
-    "body": "Тематические подборки. Раздел ещё собирается."
+    "lede": "Каналы работ. Равные блоки, без алгоритма.",
+    "channels": [
+      { "title": "Дворы", "meta": "12 работ", "still": "alley" },
+      { "title": "Окна", "meta": "8 работ", "still": "glass" },
+      { "title": "Кухни", "meta": "9 работ", "still": "kettle" },
+      { "title": "Текстиль", "meta": "6 работ", "still": "fabric" },
+      { "title": "Подиум", "meta": "5 работ", "still": "coat" },
+      { "title": "Бумага", "meta": "7 работ", "still": "film" }
+    ]
   },
   "CommunityFeed": {
     "title": "Сообщество",
@@ -232,6 +370,7 @@
     }
   },
   "PublicProfile": {
+    "kicker": "Автор",
     "works": "Работы",
     "website": "Сайт",
     "instagram": "Instagram",

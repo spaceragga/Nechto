@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+@theme inline {
+  --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-display), Georgia, 'Times New Roman', serif;
+}
+
 :root {
   --bg: #0f1115;
   --fg: #f4f1ea;
@@ -24,8 +29,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at top, #1a1f2b 0%, var(--bg) 55%), var(--bg);
+  background: var(--bg);
   color: var(--fg);
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-sans);
 }

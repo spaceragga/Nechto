@@ -9,9 +9,9 @@ export async function SiteHeader() {
   const tAuth = await getTranslations('Auth');
 
   return (
-    <header className="sticky top-0 z-20 border-b border-white/15 bg-[var(--bg)]/95 px-6 py-3 backdrop-blur-sm">
+    <header className="sticky top-0 z-20 border-b border-white/15 bg-[var(--bg)] px-6 py-2">
       <div className="flex w-full items-center gap-4">
-        <Link href="/" className="text-lg tracking-wide">
+        <Link href="/" className="font-sans text-sm tracking-[0.14em]">
           {t('brand')}
         </Link>
         <div className="ml-auto flex items-center gap-4">
@@ -24,7 +24,7 @@ export async function SiteHeader() {
           </Suspense>
           <Link
             href="/account"
-            className="text-sm opacity-80 hover:opacity-100"
+            className="font-sans text-sm opacity-80 hover:opacity-100"
           >
             {t('account')}
           </Link>

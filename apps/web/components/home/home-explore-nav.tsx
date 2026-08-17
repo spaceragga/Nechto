@@ -14,7 +14,7 @@ export async function HomeExploreNav() {
   const t = await getTranslations('HomePage.exploreNav');
 
   return (
-    <nav aria-label={t('label')} className="flex flex-wrap gap-2">
+    <nav aria-label={t('label')} className="mt-3 flex flex-wrap gap-4">
       {EXPLORE_LINKS.map((link) => (
         <ChipLink key={link.key} href={link.href}>
           {t(link.key)}
