@@ -9,6 +9,16 @@ export const DEMO_STILL_KINDS = [
   'courtyard',
   'runway',
   'door',
+  'alley',
+  'brick',
+  'lamp',
+  'kettle',
+  'film',
+  'glass',
+  'fabric',
+  'stair',
+  'coat',
+  'stool',
 ] as const;
 
 export type DemoStillKind = (typeof DEMO_STILL_KINDS)[number];
