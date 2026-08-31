@@ -10,7 +10,7 @@ export async function DirectionChips({ active }: DirectionChipsProps) {
   const t = await getTranslations('Creators');
 
   return (
-    <nav aria-label={t('filter')} className="flex flex-wrap gap-2">
+    <nav aria-label={t('filter')} className="flex flex-wrap gap-4">
       <ChipLink href="/creators" active={!active}>
         {t('all')}
       </ChipLink>

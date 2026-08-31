@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { routing } from '@/i18n/routing';
+import { fontSans, fontSerif } from '@/lib/fonts';
 
 type LocaleLayoutProps = {
   children: ReactNode;
@@ -38,7 +39,10 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale}>
+    <html
+      lang={locale}
+      className={`${fontSans.variable} ${fontSerif.variable}`}
+    >
       <body>
         <NextIntlClientProvider>
           <div className="flex min-h-screen flex-col">

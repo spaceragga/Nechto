@@ -1,33 +1,36 @@
-import type { ReactNode } from 'react';
+import { type DemoStillKind } from '@/lib/demo-media';
+import { WorkCaption } from '@/components/ui/work-caption';
+import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 
 type MediaTileProps = {
   href: string;
   title?: string;
   subtitle?: string;
+  still?: DemoStillKind;
+  src?: string | null;
+  wellClassName?: string;
   className?: string;
-  children?: ReactNode;
 };
 
 export function MediaTile({
   href,
   title,
   subtitle,
+  still = 'interior',
+  src,
+  wellClassName = 'h-44 w-full',
   className = '',
-  children,
 }: MediaTileProps) {
   return (
-    <Link
-      href={href}
-      className={`block overflow-hidden rounded border border-white/15 bg-white/5 ${className}`}
-    >
-      {children ?? <div className="aspect-[4/3] bg-white/10" />}
-      {title ? <p className="px-3 pt-2 text-sm">{title}</p> : null}
-      {subtitle ? (
-        <p className="px-3 pt-1 pb-2 text-xs opacity-70">{subtitle}</p>
-      ) : title ? (
-        <div className="pb-2" />
-      ) : null}
+    <Link href={href} className={`block min-w-0 ${className}`.trim()}>
+      <WorkFrame
+        src={src}
+        still={still}
+        alt={title ?? ''}
+        className={wellClassName}
+      />
+      <WorkCaption title={title} meta={subtitle} />
     </Link>
   );
 }
