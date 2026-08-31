@@ -51,7 +51,7 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
       >
         {item.works.map((work) => (
           <Link
-            key={work.title}
+            key={work.href}
             href={work.href}
             className="flex min-h-0 flex-col"
           >

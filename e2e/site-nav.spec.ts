@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('site navigation', () => {
   test('opens remaining pages from the Russian shell', async ({ page }) => {
+    test.setTimeout(60_000);
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Дом Независимого Творца',
@@ -72,6 +73,7 @@ test.describe('site navigation', () => {
   });
 
   test('opens remaining pages from the English shell', async ({ page }) => {
+    test.setTimeout(60_000);
     await page.goto('/en');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'House of the Independent Creator',

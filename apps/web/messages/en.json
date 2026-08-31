@@ -32,7 +32,8 @@
     "collectionSpot": {
       "kicker": "Selection",
       "title": "Yards",
-      "meta": "12 works · no algorithm"
+      "meta": "12 works · no algorithm",
+      "countMeta": "{count} works · no algorithm"
     },
     "freshSpot": {
       "kicker": "Just in",
@@ -151,6 +152,8 @@
     "creators": "Creators",
     "fragments": "Fragments",
     "seeAll": "All",
+    "emptyWorks": "No works in this direction yet.",
+    "emptyCreators": "No creators in this direction yet.",
     "exploreNav": {
       "label": "Sections",
       "creators": "Creators",
@@ -218,6 +221,8 @@
   "Journal": {
     "title": "Journal",
     "lede": "Interviews, close looks at work, and writing on the independent scene.",
+    "kicker": "Close look",
+    "empty": "No published profiles for the journal yet.",
     "issues": [
       {
         "kicker": "Close look",
@@ -247,15 +252,22 @@
   },
   "TopWorks": {
     "title": "Top works",
+    "lede": "The latest work from each published creator. No ranking, no likes.",
+    "empty": "No published works yet.",
     "body": "The strongest work from creators. This selection is still taking shape."
   },
   "Fresh": {
     "title": "New",
+    "lede": "Fresh publications in the order they arrived in the house.",
+    "empty": "No published works yet.",
+    "more": "More",
     "body": "Fresh publications. This feed is still taking shape."
   },
   "Collections": {
     "title": "Selections",
     "lede": "Channels of work. Equal blocks, no algorithm.",
+    "empty": "No published works for selections yet.",
+    "worksCount": "{count} works",
     "channels": [
       { "title": "Yards", "meta": "12 works", "still": "alley" },
       { "title": "Windows", "meta": "8 works", "still": "glass" },
@@ -267,6 +279,10 @@
   },
   "CommunityFeed": {
     "title": "Community",
+    "lede": "The house wall: people who have stepped into the light, and the work beside them. No comments, no ranking.",
+    "people": "Creators",
+    "wall": "Wall",
+    "empty": "Quiet for now. Published profiles will appear here.",
     "body": "Community feed and discussion. This section is still taking shape."
   },
   "LanguageSwitcher": {
@@ -406,6 +422,10 @@
       "interior": "Interior",
       "beauty": "Beauty"
     }
+  },
+  "WorkPage": {
+    "kicker": "Work",
+    "more": "More from this creator"
   },
   "Policies": {
     "terms": {

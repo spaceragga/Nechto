@@ -1,13 +1,14 @@
 import { type DemoStillKind } from '@/lib/demo-media';
 import { WorkFrame } from '@/components/ui/work-frame';
-import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import { Link } from '@/i18n/navigation';
 
 export type HomeFreshItem = {
   title: string;
   author: string;
   time: string;
-  still: DemoStillKind;
+  href: string;
+  still?: DemoStillKind;
+  src?: string | null;
 };
 
 type HomeFreshSpotProps = {
@@ -30,15 +31,13 @@ export function HomeFreshSpot({ kicker, seeAll, items }: HomeFreshSpotProps) {
       <ul className="flex flex-col">
         {items.map((item, index) => (
           <li
-            key={item.title}
+            key={`${item.href}-${item.title}`}
             className={index === 0 ? '' : 'border-t border-white/15'}
           >
-            <Link
-              href={DEMO_PROFILE_HREF}
-              className="flex items-center gap-3 py-2"
-            >
+            <Link href={item.href} className="flex items-center gap-3 py-2">
               <WorkFrame
                 still={item.still}
+                src={item.src}
                 alt={item.title}
                 className="h-12 w-14 shrink-0"
               />

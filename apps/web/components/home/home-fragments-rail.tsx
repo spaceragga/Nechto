@@ -1,4 +1,6 @@
 import { getTranslations } from 'next-intl/server';
+import type { CursorPage, WorkWithAuthor } from '@nechto/api-contract';
+import { HomeFragmentsFeed } from '@/components/home/home-fragments-feed';
 import { FluidRail } from '@/components/ui/fluid-rail';
 import { MediaTile } from '@/components/ui/media-tile';
 import type { DemoStillKind } from '@/lib/demo-media';
@@ -9,8 +11,17 @@ type FragmentCard = {
   still?: DemoStillKind;
 };
 
-export async function HomeFragmentsRail() {
+type HomeFragmentsRailProps = {
+  feed: CursorPage<WorkWithAuthor>;
+};
+
+export async function HomeFragmentsRail({ feed }: HomeFragmentsRailProps) {
   const t = await getTranslations('HomePage');
+
+  if (feed.items.length > 0) {
+    return <HomeFragmentsFeed initial={feed} />;
+  }
+
   const cards = t.raw('fragmentCards') as FragmentCard[];
 
   return (

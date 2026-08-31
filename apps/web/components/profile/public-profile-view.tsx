@@ -60,7 +60,7 @@ export async function PublicProfileView({
           {works.map((work) => (
             <MediaTile
               key={work.id}
-              href={`/u/${profile.slug}`}
+              href={`/u/${profile.slug}/${work.id}`}
               title={work.title}
               subtitle={title}
               src={toUploadSrc(work.imageUrl)}

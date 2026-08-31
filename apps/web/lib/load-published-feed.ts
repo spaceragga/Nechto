@@ -1,6 +1,7 @@
 import { ApiError } from '@nechto/api-client';
 import type {
   CreatorDirection,
+  CursorPage,
   PublicProfile,
   PublicProfileWithWorks,
   Work,
@@ -42,13 +43,53 @@ export async function loadPublishedCreators(options?: {
   }
 }
 
-export async function loadPublishedWorks(limit = 8): Promise<WorkWithAuthor[]> {
+function withAuthorDirections(work: WorkWithAuthor): WorkWithAuthor {
+  return {
+    ...work,
+    author: {
+      ...work.author,
+      directions: work.author.directions ?? [],
+    },
+  };
+}
+
+export async function loadPublishedWorksPage(options?: {
+  limit?: number;
+  cursor?: string;
+  direction?: string;
+}): Promise<CursorPage<WorkWithAuthor>> {
   try {
     const api = await createServerApiClient();
-    const page = await api.listPublishedWorks({ limit });
-    return page.items;
+    const page = await api.listPublishedWorks({
+      limit: options?.limit ?? 24,
+      cursor: options?.cursor,
+      direction: parseDirection(options?.direction),
+    });
+    return {
+      items: page.items.map(withAuthorDirections),
+      nextCursor: page.nextCursor,
+    };
   } catch {
-    return [];
+    return { items: [], nextCursor: null };
+  }
+}
+
+export async function loadPublishedWorks(limit = 8): Promise<WorkWithAuthor[]> {
+  const page = await loadPublishedWorksPage({ limit });
+  return page.items;
+}
+
+export async function loadPublishedWork(
+  id: string,
+): Promise<WorkWithAuthor | null> {
+  try {
+    const api = await createServerApiClient();
+    return withAuthorDirections(await api.getWork(id));
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    return null;
   }
 }
 

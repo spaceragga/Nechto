@@ -1,21 +1,28 @@
 import { MediaTile } from '@/components/ui/media-tile';
 import type { DemoStillKind } from '@/lib/demo-media';
-import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 
 export type JournalIssue = {
+  href: string;
   kicker: string;
   title: string;
   meta: string;
-  still: DemoStillKind;
+  still?: DemoStillKind;
+  src?: string | null;
 };
 
 type JournalIndexProps = {
   title: string;
   lede: string;
+  empty?: string;
   issues: JournalIssue[];
 };
 
-export function JournalIndex({ title, lede, issues }: JournalIndexProps) {
+export function JournalIndex({
+  title,
+  lede,
+  empty,
+  issues,
+}: JournalIndexProps) {
   const [featured, ...rest] = issues;
 
   return (
@@ -27,23 +34,27 @@ export function JournalIndex({ title, lede, issues }: JournalIndexProps) {
 
       {featured ? (
         <MediaTile
-          href={DEMO_PROFILE_HREF}
+          href={featured.href}
           title={featured.title}
           subtitle={`${featured.kicker} · ${featured.meta}`}
           still={featured.still}
+          src={featured.src}
           wellClassName="h-64 w-full md:h-80"
         />
+      ) : empty ? (
+        <p className="text-sm opacity-70">{empty}</p>
       ) : null}
 
       {rest.length > 0 ? (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((issue) => (
             <MediaTile
-              key={issue.title}
-              href={DEMO_PROFILE_HREF}
+              key={issue.href}
+              href={issue.href}
               title={issue.title}
               subtitle={`${issue.kicker} · ${issue.meta}`}
               still={issue.still}
+              src={issue.src}
             />
           ))}
         </div>

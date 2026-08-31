@@ -15,7 +15,11 @@ export function HomeLookingSpot({
 }: HomeLookingSpotProps) {
   return (
     <article>
-      <Link href="/journal" className="flex min-w-0 flex-col">
+      <Link
+        href="/journal"
+        data-home-spot="looking"
+        className="flex min-w-0 flex-col"
+      >
         <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-80">
           {kicker}
         </p>

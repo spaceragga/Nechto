@@ -56,6 +56,12 @@ export function deleteMyWorkRequest(workId: string) {
   return api.deleteMyWork(workId);
 }
 
+export function listPublishedWorksRequest(
+  query: Partial<ListCreatorsQuery> = {},
+) {
+  return api.listPublishedWorks(query);
+}
+
 export function listCreatorsRequest(query: Partial<ListCreatorsQuery> = {}) {
   return api.listCreators(query);
 }

@@ -64,6 +64,12 @@ test.describe('publish profile', () => {
     await expect(page.getByText('Работа 1')).toBeVisible();
     await expect(page.getByText('Работа 5')).toBeVisible();
 
+    await page.getByRole('link', { name: 'Работа 5' }).click();
+    await expect(page).toHaveURL(new RegExp(`/u/${slug}/`));
+    await expect(page.getByRole('heading', { name: 'Работа 5' })).toBeVisible();
+    await expect(page.locator('main [data-work-frame]').first()).toBeVisible();
+    await expect(page.getByText('Ещё у автора')).toBeVisible();
+
     await page.goto('/');
     const rail = page.getByRole('region', { name: 'Авторы' });
     const railCard = rail.getByRole('link', { name: /Кася Тест/ });
