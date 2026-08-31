@@ -68,6 +68,7 @@ test.describe('site navigation', () => {
 
     await page.goto('/u/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
+    await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });
 
   test('opens remaining pages from the English shell', async ({ page }) => {
@@ -141,5 +142,6 @@ test.describe('site navigation', () => {
 
     await page.goto('/en/u/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
+    await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });
 });

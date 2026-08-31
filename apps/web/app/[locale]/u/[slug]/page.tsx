@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { MediaTile } from '@/components/ui/media-tile';
+import { WorkFrame } from '@/components/ui/work-frame';
 import { PublicProfileView } from '@/components/profile/public-profile-view';
 import type { DemoStillKind } from '@/lib/demo-media';
 import { loadPublishedProfile } from '@/lib/load-published-feed';
@@ -42,12 +43,24 @@ async function DemoPublicProfile({ slug }: { slug: string }) {
 
   return (
     <main className="w-full px-6 py-12">
-      <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
-        {t('kicker')}
-      </p>
-      <h1 className="mt-2 font-serif text-4xl tracking-wide md:text-5xl">
-        {slug}
-      </h1>
+      <div className="flex items-start justify-between gap-6">
+        <div className="min-w-0">
+          <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
+            {t('kicker')}
+          </p>
+          <h1 className="mt-2 font-serif text-4xl tracking-wide md:text-5xl">
+            {slug}
+          </h1>
+        </div>
+        <div data-public-profile-photo className="shrink-0">
+          <WorkFrame
+            still="portrait"
+            alt={slug}
+            fit="cover"
+            className="aspect-3/4 w-28 sm:w-40 md:w-44"
+          />
+        </div>
+      </div>
       <p className="mt-8 font-sans text-sm opacity-70">{t('works')}</p>
       <section className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
         {works.map((work) => (

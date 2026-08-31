@@ -33,6 +33,11 @@ test.describe('publish profile', () => {
     await page.getByLabel('Имя').fill('Кася Тест');
     await page.getByLabel('Адрес профиля').fill(slug);
     await page.getByRole('checkbox', { name: /принимаю правила/ }).check();
+    await page.getByLabel('Фото профиля').setInputFiles(avatarFixture);
+    await page.getByRole('button', { name: 'Сохранить' }).click();
+    await expect(page.getByTestId('profile-avatar')).toBeVisible({
+      timeout: 15_000,
+    });
     await page.getByRole('button', { name: 'Фотография' }).click();
 
     for (let index = 1; index <= 5; index += 1) {
@@ -53,8 +58,26 @@ test.describe('publish profile', () => {
     await expect(
       page.getByRole('heading', { name: 'Кася Тест' }),
     ).toBeVisible();
+    const photo = page.locator('[data-public-profile-photo] [data-work-frame]');
+    await expect(photo).toBeVisible();
+    await expect(photo).toHaveAttribute('data-still-src', /avatars/);
     await expect(page.getByText('Работа 1')).toBeVisible();
     await expect(page.getByText('Работа 5')).toBeVisible();
+
+    await page.goto('/');
+    const rail = page.getByRole('region', { name: 'Авторы' });
+    const railCard = rail.getByRole('link', { name: /Кася Тест/ });
+    await expect(railCard).toBeVisible();
+    const railSrc = await railCard
+      .locator('[data-work-frame]')
+      .getAttribute('data-still-src');
+    expect(railSrc ?? '').toMatch(/avatars/);
+    expect(railSrc ?? '').not.toMatch(/\/works\//);
+
+    await page.goto('/creators');
+    const catalogCard = page.getByRole('link', { name: /Кася Тест/ });
+    await expect(catalogCard.locator('[data-creator-portrait]')).toHaveCount(1);
+    await expect(catalogCard.locator('[data-creator-work]')).toHaveCount(4);
 
     await page.goto('/profile');
     await page.getByRole('button', { name: 'Скрыть' }).click();
