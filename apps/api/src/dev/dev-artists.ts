@@ -5,6 +5,7 @@ import type { CreatorDirection } from '@nechto/api-contract';
 export type DevArtistWork = {
   title: string;
   imageUrl: string;
+  description?: string;
 };
 
 export type DevArtist = {

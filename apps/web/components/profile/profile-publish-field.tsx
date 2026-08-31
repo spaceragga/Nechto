@@ -5,6 +5,7 @@ import type { Profile } from '@nechto/api-contract';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { Link } from '@/i18n/navigation';
+import { profilePath } from '@/lib/work-path';
 
 type ProfilePublishFieldProps = {
   profile: Profile;
@@ -35,7 +36,7 @@ export function ProfilePublishField({
           <p className="text-sm" role="status">
             {t('published')}
           </p>
-          <Link href={`/u/${profile.slug}`} className="text-sm underline">
+          <Link href={profilePath(profile.slug)} className="text-sm underline">
             {t('viewPublic')}
           </Link>
           <Button type="button" disabled={pending} onClick={onUnpublish}>

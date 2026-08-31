@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Query,
   UploadedFile,
@@ -14,8 +15,12 @@ import {
 import {
   createWorkFieldsSchema,
   cursorPageQuerySchema,
+  listPublishedWorksQuerySchema,
+  updateWorkFieldsSchema,
   type CreateWorkFields,
   type CursorPageQuery,
+  type ListPublishedWorksQuery,
+  type UpdateWorkFields,
 } from '@nechto/api-contract';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/decorators/current-user.decorator';
@@ -49,10 +54,15 @@ export class WorksController {
 
   @Get()
   listPublished(
-    @Query(new ZodValidationPipe(cursorPageQuerySchema))
-    query: CursorPageQuery,
+    @Query(new ZodValidationPipe(listPublishedWorksQuerySchema))
+    query: ListPublishedWorksQuery,
   ) {
     return this.worksService.listPublished(query);
+  }
+
+  @Get(':id')
+  getPublished(@Param('id') id: string) {
+    return this.worksService.getPublishedById(id);
   }
 
   @Post()
@@ -65,6 +75,17 @@ export class WorksController {
     fields: CreateWorkFields,
   ) {
     return this.worksService.createMine(user.id, file, fields);
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  updateMine(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateWorkFieldsSchema))
+    fields: UpdateWorkFields,
+  ) {
+    return this.worksService.updateMine(user.id, id, fields);
   }
 
   @Delete(':id')

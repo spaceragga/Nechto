@@ -1,8 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 import { HomeNowRow, type HomeNowItem } from '@/components/home/home-now-row';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
-import { loadPublishedCreators } from '@/lib/load-published-feed';
+import type { PublishedCreator } from '@/lib/load-published-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
+import { workPath, profilePath } from '@/lib/work-path';
 
 type NowItemSource = {
   author: string;
@@ -14,27 +15,33 @@ type NowItemSource = {
   }>;
 };
 
-export async function HomeNow() {
+type HomeNowProps = {
+  creators?: PublishedCreator[];
+};
+
+export async function HomeNow({ creators = [] }: HomeNowProps) {
   const t = await getTranslations('HomePage');
   const tCreators = await getTranslations('Creators');
-  const published = await loadPublishedCreators({ limit: 3 });
+  const published = creators.slice(0, 3);
 
   const items: HomeNowItem[] =
     published.length > 0
       ? published.map((creator) => ({
+          id: creator.slug,
           author: creator.displayName ?? creator.slug,
-          href: `/u/${creator.slug}`,
+          href: profilePath(creator.slug),
           directionLabel: creator.directions[0]
             ? tCreators(`directions.${creator.directions[0]}`)
             : '',
           avatarSrc: toUploadSrc(creator.avatarUrl),
           works: creator.latestWorks.map((work) => ({
             title: work.title,
-            href: `/u/${creator.slug}`,
+            href: workPath(creator.slug, work.id),
             src: toUploadSrc(work.imageUrl),
           })),
         }))
       : (t.raw('nowItems') as NowItemSource[]).map((item) => ({
+          id: `demo-${item.author}`,
           author: item.author,
           href: DEMO_PROFILE_HREF,
           directionLabel: tCreators(`directions.${item.direction}`),
@@ -55,7 +62,7 @@ export async function HomeNow() {
         {t('nowLabel')}
       </p>
       {items.map((item) => (
-        <HomeNowRow key={item.author} item={item} />
+        <HomeNowRow key={item.id} item={item} />
       ))}
     </aside>
   );

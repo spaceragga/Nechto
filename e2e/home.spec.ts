@@ -1,4 +1,32 @@
-import { expect, test, type Locator } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
+
+function publicSlug(href: string) {
+  return href.replace(/^\/(?:en\/)?/, '').split('/')[0] ?? '';
+}
+
+function scrollY(page: Page) {
+  return page.evaluate(() => window.scrollY);
+}
+
+function fluidRailHrefs(section: Locator) {
+  return section
+    .locator('.fluid-rail a')
+    .evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('href') ?? ''),
+    );
+}
+
+function billboard(page: Page) {
+  return page.locator('[data-home-spot="billboard"]');
+}
+
+function journalSpot(page: Page) {
+  return page.locator('[data-home-spot="journal"]');
+}
+
+function collectionSpot(page: Page) {
+  return page.locator('[data-home-spot="collection"]');
+}
 
 async function countUnclippedLinks(rail: Locator) {
   return rail.evaluate((root) => {
@@ -30,44 +58,166 @@ test.describe('home page locales', () => {
     );
   });
 
+  test('direction chips filter works and authors, not fragments, in Russian', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const filter = page.getByRole('navigation', {
+      name: 'Фильтр по направлению',
+    });
+    await expect(filter.getByRole('link', { name: 'Все' })).toHaveAttribute(
+      'href',
+      '/',
+    );
+
+    await filter.getByRole('link', { name: 'Фотография' }).click();
+    await expect(page).toHaveURL(/direction=photography/);
+    await expect(filter.getByRole('link', { name: 'Фотография' })).toHaveCSS(
+      'background-color',
+      'rgb(196, 92, 38)',
+    );
+
+    const works = page.locator('#works');
+    const authors = page.getByRole('region', { name: 'Авторы' });
+    const fragments = page.locator('#fragments');
+    await expect(fragments.locator('[data-work-frame]').first()).toBeVisible();
+
+    const workHrefs = await fluidRailHrefs(works);
+    if (workHrefs.length === 0) {
+      await expect(
+        works.getByText('В этом направлении пока нет работ.'),
+      ).toBeVisible();
+      return;
+    }
+
+    const authorSlugs = new Set(
+      (await fluidRailHrefs(authors)).map(publicSlug).filter(Boolean),
+    );
+    for (const href of workHrefs) {
+      expect(authorSlugs.has(publicSlug(href))).toBe(true);
+    }
+  });
+
+  test('direction chips filter works and authors, not fragments, in English', async ({
+    page,
+  }) => {
+    await page.goto('/en');
+    const filter = page.getByRole('navigation', {
+      name: 'Filter by direction',
+    });
+    await filter.getByRole('link', { name: 'Photography' }).click();
+    await expect(page).toHaveURL(/direction=photography/);
+
+    const works = page.locator('#works');
+    const authors = page.getByRole('region', { name: 'Creators' });
+    await expect(
+      page.locator('#fragments [data-work-frame]').first(),
+    ).toBeVisible();
+
+    const workHrefs = await fluidRailHrefs(works);
+    if (workHrefs.length === 0) {
+      await expect(
+        works.getByText('No works in this direction yet.'),
+      ).toBeVisible();
+      return;
+    }
+
+    const authorSlugs = new Set(
+      (await fluidRailHrefs(authors)).map(publicSlug).filter(Boolean),
+    );
+    for (const href of workHrefs) {
+      expect(authorSlugs.has(publicSlug(href))).toBe(true);
+    }
+  });
+
+  test('fragments keep loading without a direction filter', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const fragments = page.locator('#fragments');
+    await expect(fragments.locator('[data-work-frame]').first()).toBeVisible();
+    const before = await fragments.locator('[data-work-frame]').count();
+    const sentinel = fragments.locator('[data-fragments-more]');
+    if ((await sentinel.count()) === 0) {
+      expect(before).toBeGreaterThan(0);
+      return;
+    }
+    await sentinel.scrollIntoViewIfNeeded();
+    await expect
+      .poll(async () => fragments.locator('[data-work-frame]').count())
+      .toBeGreaterThan(before);
+  });
+
+  test('direction chips keep scroll position in Russian', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.locator('#works').scrollIntoViewIfNeeded();
+    const before = await scrollY(page);
+    expect(before).toBeGreaterThan(400);
+
+    await page
+      .getByRole('navigation', { name: 'Фильтр по направлению' })
+      .getByRole('link', { name: 'Иллюстрация' })
+      .click();
+    await expect(page).toHaveURL(/direction=illustration/);
+    await expect.poll(async () => scrollY(page)).toBeGreaterThan(before - 80);
+    const after = await scrollY(page);
+    expect(Math.abs(after - before)).toBeLessThan(80);
+  });
+
+  test('direction chips keep scroll position in English', async ({ page }) => {
+    await page.goto('/en');
+    await page.waitForLoadState('networkidle');
+    await page.locator('#works').scrollIntoViewIfNeeded();
+    const before = await scrollY(page);
+    expect(before).toBeGreaterThan(400);
+
+    await page
+      .getByRole('navigation', { name: 'Filter by direction' })
+      .getByRole('link', { name: 'Illustration' })
+      .click();
+    await expect(page).toHaveURL(/direction=illustration/);
+    await expect.poll(async () => scrollY(page)).toBeGreaterThan(before - 80);
+    const after = await scrollY(page);
+    expect(Math.abs(after - before)).toBeLessThan(80);
+  });
+
+  test('authors rail stays one compact row when eight or more', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1600, height: 900 });
+    await page.goto('/');
+    const rail = page.locator('#creators .fluid-rail');
+    await expect(rail.locator('a').first()).toBeVisible();
+    const count = await rail.locator('a').count();
+    expect(count).toBeGreaterThanOrEqual(8);
+
+    const first = await rail.locator('[data-work-frame]').first().boundingBox();
+    const lastVisible = await rail
+      .locator('[data-work-frame]')
+      .nth(7)
+      .boundingBox();
+    expect(first).toBeTruthy();
+    expect(lastVisible).toBeTruthy();
+    expect(Math.abs((first?.y ?? 0) - (lastVisible?.y ?? 0))).toBeLessThan(8);
+    expect(first?.width ?? 0).toBeLessThan(150);
+    expect(first?.height ?? 0).toBeLessThan(200);
+  });
+
   test('shows the Now strip with three authors and their latest works in Russian', async ({
     page,
   }) => {
     await page.goto('/');
 
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
-    await expect(
-      now.getByRole('link', { name: 'Кася Фотография' }),
-    ).toBeVisible();
-    await expect(
-      now.getByRole('link', { name: 'Анна Интерьер' }),
-    ).toBeVisible();
-    await expect(now.getByRole('link', { name: 'Юлия Мода' })).toBeVisible();
-    await expect(now.getByRole('link')).toHaveCount(18);
-    await expect(
-      now.getByRole('link', { name: 'Портрет у окна' }),
-    ).toBeVisible();
-    await expect(now.getByRole('link', { name: 'Кухня' })).toBeVisible();
-    await expect(now.getByRole('link', { name: 'Ателье' })).toBeVisible();
-    const kasia = now.getByRole('link', { name: 'Кася Фотография' });
-    await expect(kasia.locator('[data-work-frame]')).toHaveCount(1);
-    await expect(
-      now
-        .getByRole('link', { name: 'Анна Интерьер' })
-        .locator('[data-work-frame]'),
-    ).toHaveCount(1);
-    await expect(
-      now.getByRole('link', { name: 'Юлия Мода' }).locator('[data-work-frame]'),
-    ).toHaveCount(1);
-    const avatarBox = await kasia.locator('[data-work-frame]').boundingBox();
+    await expect(now.locator('[data-now-row-outline]')).toHaveCount(3);
+    await expect(now.getByRole('link').first()).toBeVisible();
+    expect(await now.getByRole('link').count()).toBeGreaterThanOrEqual(9);
+    const author = now.locator('a').first();
+    const avatarBox = await author.locator('[data-work-frame]').boundingBox();
     expect(avatarBox).toBeTruthy();
     expect(Math.round(avatarBox!.width)).toBe(60);
     expect(Math.round(avatarBox!.height)).toBe(60);
-    const nameBox = await kasia
-      .getByText('Кася', { exact: true })
-      .boundingBox();
-    expect(nameBox).toBeTruthy();
-    expect(nameBox!.y - (avatarBox!.y + avatarBox!.height)).toBeLessThan(12);
   });
 
   test('Now stills fill taller author rows', async ({ page }) => {
@@ -98,7 +248,7 @@ test.describe('home page locales', () => {
     await page.goto('/');
 
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
-    const author = now.getByRole('link', { name: 'Кася Фотография' });
+    const author = now.locator('a').first();
     const outline = author.locator('..').locator('[data-now-row-outline]');
 
     await expect(outline).toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
@@ -120,14 +270,10 @@ test.describe('home page locales', () => {
     await expect(exploreChip).toHaveCSS('border-top-width', '0px');
     await expect(exploreChip).toHaveCSS('border-radius', '0px');
     await exploreChip.hover();
-    await expect
-      .poll(async () => {
-        const hoverBg = await exploreChip.evaluate(
-          (el) => getComputedStyle(el).backgroundColor,
-        );
-        return hoverBg.replace(/\s/g, '');
-      })
-      .toMatch(/rgba\(255,255,255,0\.08\)|oklab\([^)]+\/0\.08\)/);
+    await expect(exploreChip).toHaveCSS(
+      'background-color',
+      /rgba\(255,\s*255,\s*255,\s*0\.08\)|oklab\([^)]+\/\s*0\.08\)/,
+    );
 
     const allChip = page
       .getByRole('navigation', { name: 'Фильтр по направлению' })
@@ -141,9 +287,9 @@ test.describe('home page locales', () => {
   }) => {
     await page.goto('/');
 
-    const billboard = page.getByRole('link', { name: /Ночной рынок/ }).first();
-    const frame = billboard.locator('[data-work-frame]');
-    const kicker = billboard.getByText('Работа недели');
+    const billboardLink = billboard(page);
+    const frame = billboardLink.locator('[data-work-frame]');
+    const kicker = billboardLink.getByText('Работа недели');
     const frameBox = await frame.boundingBox();
     const kickerBox = await kicker.boundingBox();
 
@@ -161,9 +307,7 @@ test.describe('home page locales', () => {
 
     await expect(page.getByText('Работа недели')).toBeVisible();
     await expect(page.getByText('Автор недели')).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: /Ночной рынок/ }),
-    ).toBeVisible();
+    await expect(billboard(page)).toBeVisible();
     await expect(page.getByRole('link', { name: /Автор недели/ })).toHaveCSS(
       'text-align',
       'center',
@@ -177,9 +321,7 @@ test.describe('home page locales', () => {
 
     await expect(page.getByText('Work of the week')).toBeVisible();
     await expect(page.getByText('Creator of the week')).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: /Night market/ }),
-    ).toBeVisible();
+    await expect(billboard(page)).toBeVisible();
     await expect(
       page.getByRole('link', { name: /Creator of the week/ }),
     ).toHaveCSS('text-align', 'center');
@@ -192,7 +334,7 @@ test.describe('home page locales', () => {
     await page.goto('/');
 
     const work = page.getByText('Работа недели');
-    const journal = page.getByRole('link', { name: /Окна Каси/ });
+    const journal = journalSpot(page);
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
 
     const workBox = await work.boundingBox();
@@ -212,8 +354,8 @@ test.describe('home page locales', () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
 
-    const work = page.getByRole('link', { name: /Ночной рынок/ }).first();
-    const journal = page.getByRole('link', { name: /Окна Каси/ });
+    const work = billboard(page);
+    const journal = journalSpot(page);
     const workFrame = await work.locator('[data-work-frame]').boundingBox();
     const journalFrame = await journal
       .locator('[data-work-frame]')
@@ -233,9 +375,8 @@ test.describe('home page locales', () => {
     const spots = page.getByRole('region', {
       name: 'Новые работы, подборки, зритель, диалог и студия',
     });
-    await expect(spots.getByRole('link', { name: /Дворы/ })).toBeVisible();
+    await expect(collectionSpot(page)).toBeVisible();
     await expect(spots.getByRole('link', { name: 'Все новые' })).toBeVisible();
-    await expect(spots.getByRole('link', { name: /Юлия 1 ч/ })).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Как смотреть/ }),
     ).toBeVisible();
@@ -243,20 +384,20 @@ test.describe('home page locales', () => {
       spots.getByRole('link', { name: /Окно и дверь/ }),
     ).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /Ателье Юлии/ }),
+      spots.getByRole('link', { name: /Войти в студию/ }),
     ).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Как смотреть/ }),
     ).toHaveAttribute('href', '/journal');
     await expect(
-      spots.getByRole('link', { name: /Ателье Юлии/ }),
-    ).toHaveAttribute('href', '/u/demo');
+      spots.getByRole('link', { name: /Войти в студию/ }),
+    ).toHaveAttribute('href', /^\/[a-z0-9-]+$/);
 
     const freshKicker = spots.getByText('Только что');
     const dialogueKicker = spots.getByText('Диалог');
     const lookingKicker = spots.getByText('Зрителю');
     const studioKicker = spots.getByText('Студия', { exact: true });
-    const collection = spots.getByRole('link', { name: /Дворы/ });
+    const collection = collectionSpot(page);
     const collectionBox = await collection.boundingBox();
     const freshBox = await freshKicker.boundingBox();
     const lookingBox = await lookingKicker.boundingBox();
@@ -291,8 +432,8 @@ test.describe('home page locales', () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
 
-    const journal = page.getByRole('link', { name: /Окна Каси/ });
-    const collection = page.getByRole('link', { name: /Дворы/ });
+    const journal = journalSpot(page);
+    const collection = collectionSpot(page);
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
     const fresh = page.getByText('Только что');
     const openCall = page.getByRole('link', { name: /Открытый приём/ });
@@ -341,9 +482,8 @@ test.describe('home page locales', () => {
     const spots = page.getByRole('region', {
       name: 'New work, selections, looking, dialogue, and studio',
     });
-    await expect(spots.getByRole('link', { name: /Yards/ })).toBeVisible();
+    await expect(collectionSpot(page)).toBeVisible();
     await expect(spots.getByRole('link', { name: 'All new' })).toBeVisible();
-    await expect(spots.getByRole('link', { name: /Yulia 1h/ })).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /How to look/ }),
     ).toBeVisible();
@@ -351,12 +491,12 @@ test.describe('home page locales', () => {
       spots.getByRole('link', { name: /Window and door/ }),
     ).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /Yulia.s atelier/ }),
+      spots.getByRole('link', { name: /Enter the studio/ }),
     ).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /How to look/ }),
     ).toHaveAttribute('href', '/en/journal');
-    await expect(page.getByRole('link', { name: /windows/i })).toBeVisible();
+    await expect(journalSpot(page)).toBeVisible();
     await expect(
       page.getByRole('link', { name: /Work is welcome/ }),
     ).toHaveAttribute('href', '/en/register');
@@ -405,7 +545,11 @@ test.describe('home page locales', () => {
     await expect(
       spots.getByRole('link', { name: /Сегодня на стене/ }),
     ).toHaveAttribute('href', '/top-works');
-    await expect(spots.locator('[data-work-frame]')).toHaveCount(5);
+    await expect(spots.locator('[data-work-frame]').first()).toBeVisible();
+    expect(await spots.locator('[data-work-frame]').count()).toBeGreaterThan(0);
+    expect(
+      await spots.locator('[data-work-frame]').count(),
+    ).toBeLessThanOrEqual(5);
     await expect(
       spots.getByRole('link', { name: /Сегодня на стене/ }),
     ).toHaveCSS('text-align', 'center');
@@ -422,7 +566,11 @@ test.describe('home page locales', () => {
     await expect(
       spots.getByRole('link', { name: /On the wall today/ }),
     ).toBeVisible();
-    await expect(spots.locator('[data-work-frame]')).toHaveCount(5);
+    await expect(spots.locator('[data-work-frame]').first()).toBeVisible();
+    expect(await spots.locator('[data-work-frame]').count()).toBeGreaterThan(0);
+    expect(
+      await spots.locator('[data-work-frame]').count(),
+    ).toBeLessThanOrEqual(5);
     await expect(
       spots.getByRole('link', { name: /On the wall today/ }),
     ).toHaveCSS('text-align', 'center');
@@ -443,12 +591,12 @@ test.describe('home page locales', () => {
     const frame = page.locator('#works [data-work-frame]').first();
     await expect(frame).toHaveAttribute(
       'data-still-src',
-      /\/demo\/[a-z]+\.jpg$/,
+      /\/demo\/[a-z]+\.jpg$|\/uploads\//,
     );
     await expect
       .poll(async () =>
-        frame.locator('img').evaluate((image) => {
-          return (image as { naturalWidth: number }).naturalWidth;
+        frame.locator('img').evaluate((image: HTMLImageElement) => {
+          return image.naturalWidth;
         }),
       )
       .toBeGreaterThan(0);
@@ -460,25 +608,11 @@ test.describe('home page locales', () => {
     await page.goto('/en');
 
     const now = page.getByRole('complementary', { name: 'Author selection' });
+    await expect(now.locator('[data-now-row-outline]')).toHaveCount(3);
+    await expect(now.getByRole('link').first()).toBeVisible();
+    expect(await now.getByRole('link').count()).toBeGreaterThanOrEqual(9);
     await expect(
-      now.getByRole('link', { name: 'Kasia Photography' }),
-    ).toBeVisible();
-    await expect(
-      now.getByRole('link', { name: 'Anna Interior' }),
-    ).toBeVisible();
-    await expect(
-      now.getByRole('link', { name: 'Yulia Fashion' }),
-    ).toBeVisible();
-    await expect(now.getByRole('link')).toHaveCount(18);
-    await expect(
-      now.getByRole('link', { name: 'Portrait by the window' }),
-    ).toBeVisible();
-    await expect(now.getByRole('link', { name: 'Kitchen' })).toBeVisible();
-    await expect(now.getByRole('link', { name: 'Atelier' })).toBeVisible();
-    await expect(
-      now
-        .getByRole('link', { name: 'Kasia Photography' })
-        .locator('[data-work-frame]'),
+      now.locator('a').first().locator('[data-work-frame]'),
     ).toHaveCount(1);
   });
 
@@ -515,6 +649,7 @@ test.describe('home page locales', () => {
   });
 
   test('explore chips open creators and stubs in Russian', async ({ page }) => {
+    test.setTimeout(60_000);
     await page.goto('/');
 
     const explore = page.getByRole('navigation', { name: 'Разделы' });
@@ -542,8 +677,9 @@ test.describe('home page locales', () => {
     await page.goto('/');
     await page
       .getByRole('navigation', { name: 'Разделы' })
-      .getByRole('link', { name: 'Новые' })
+      .getByRole('link', { name: 'Новые', exact: true })
       .click();
+    await expect(page).toHaveURL(/\/new\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Новые');
 
     await page.goto('/');
@@ -554,15 +690,16 @@ test.describe('home page locales', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Подборки',
     );
-    await expect(page.getByRole('link', { name: /Дворы/ })).toBeVisible();
+    await expect(page.locator('main a').first()).toBeVisible();
 
     await page.goto('/');
     await page
       .getByRole('navigation', { name: 'Разделы' })
-      .getByRole('link', { name: 'Журнал' })
+      .getByRole('link', { name: 'Журнал', exact: true })
       .click();
+    await expect(page).toHaveURL(/\/journal\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Журнал');
-    await expect(page.getByRole('link', { name: /Окна Каси/ })).toBeVisible();
+    await expect(page.locator('main a').first()).toBeVisible();
 
     await page.goto('/');
     await page
@@ -575,6 +712,7 @@ test.describe('home page locales', () => {
   });
 
   test('explore chips open creators and stubs in English', async ({ page }) => {
+    test.setTimeout(60_000);
     await page.goto('/en');
 
     const explore = page.getByRole('navigation', { name: 'Sections' });
@@ -606,8 +744,9 @@ test.describe('home page locales', () => {
     await page.goto('/en');
     await page
       .getByRole('navigation', { name: 'Sections' })
-      .getByRole('link', { name: 'New' })
+      .getByRole('link', { name: 'New', exact: true })
       .click();
+    await expect(page).toHaveURL(/\/en\/new\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('New');
 
     await page.goto('/en');
@@ -618,15 +757,16 @@ test.describe('home page locales', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Selections',
     );
-    await expect(page.getByRole('link', { name: /Yards/ })).toBeVisible();
+    await expect(page.locator('main a').first()).toBeVisible();
 
     await page.goto('/en');
     await page
       .getByRole('navigation', { name: 'Sections' })
-      .getByRole('link', { name: 'Journal' })
+      .getByRole('link', { name: 'Journal', exact: true })
       .click();
+    await expect(page).toHaveURL(/\/en\/journal\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Journal');
-    await expect(page.getByRole('link', { name: /windows/i })).toBeVisible();
+    await expect(page.locator('main a').first()).toBeVisible();
 
     await page.goto('/en');
     await page

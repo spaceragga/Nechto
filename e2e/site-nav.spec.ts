@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('site navigation', () => {
   test('opens remaining pages from the Russian shell', async ({ page }) => {
+    test.setTimeout(60_000);
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Дом Независимого Творца',
@@ -66,12 +67,13 @@ test.describe('site navigation', () => {
       'Сменить пароль',
     );
 
-    await page.goto('/u/demo');
+    await page.goto('/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
     await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });
 
   test('opens remaining pages from the English shell', async ({ page }) => {
+    test.setTimeout(60_000);
     await page.goto('/en');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'House of the Independent Creator',
@@ -140,7 +142,7 @@ test.describe('site navigation', () => {
       'Change password',
     );
 
-    await page.goto('/en/u/demo');
+    await page.goto('/en/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
     await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });

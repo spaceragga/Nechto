@@ -10,6 +10,9 @@ type HomeDialogueSpotProps = {
   rightTitle: string;
   rightMeta: string;
   cta: string;
+  href?: string;
+  leftSrc?: string | null;
+  rightSrc?: string | null;
 };
 
 export function HomeDialogueSpot({
@@ -21,18 +24,31 @@ export function HomeDialogueSpot({
   rightTitle,
   rightMeta,
   cta,
+  href = '/community',
+  leftSrc,
+  rightSrc,
 }: HomeDialogueSpotProps) {
   return (
     <article>
-      <Link href="/collections" className="flex min-w-0 flex-col">
+      <Link href={href} className="flex min-w-0 flex-col">
         <div className="grid grid-cols-2 gap-1">
           <div className="min-w-0">
-            <WorkFrame still="glass" alt={leftTitle} className="h-32 w-full" />
+            <WorkFrame
+              still={leftSrc ? undefined : 'glass'}
+              src={leftSrc}
+              alt={leftTitle}
+              className="h-32 w-full"
+            />
             <p className="mt-2 truncate font-serif text-sm">{leftTitle}</p>
             <p className="mt-0.5 font-serif text-xs opacity-70">{leftMeta}</p>
           </div>
           <div className="min-w-0">
-            <WorkFrame still="stair" alt={rightTitle} className="h-32 w-full" />
+            <WorkFrame
+              still={rightSrc ? undefined : 'stair'}
+              src={rightSrc}
+              alt={rightTitle}
+              className="h-32 w-full"
+            />
             <p className="mt-2 truncate font-serif text-sm">{rightTitle}</p>
             <p className="mt-0.5 font-serif text-xs opacity-70">{rightMeta}</p>
           </div>

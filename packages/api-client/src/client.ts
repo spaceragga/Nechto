@@ -14,6 +14,7 @@ import {
   type PublicProfileWithWorks,
   type RegisterDto,
   type UpdateProfileDto,
+  type UpdateWorkFields,
   type Work,
   type WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -128,7 +129,7 @@ export class ApiClient {
     return this.request<CursorPage<Work>>(`/works/me${toSearchParams(query)}`);
   }
 
-  listPublishedWorks(query: Partial<CursorPageQuery> = {}) {
+  listPublishedWorks(query: Partial<ListCreatorsQuery> = {}) {
     return this.request<CursorPage<WorkWithAuthor>>(
       `/works${toSearchParams(query)}`,
     );
@@ -140,13 +141,25 @@ export class ApiClient {
     );
   }
 
+  getWork(id: string) {
+    return this.request<WorkWithAuthor>(`/works/${encodeURIComponent(id)}`);
+  }
+
   uploadMyWork(file: Blob, fields: CreateWorkFields, fileName = 'work') {
     const body = new FormData();
     body.append('file', file, fileName);
     body.append('title', fields.title);
+    body.append('description', fields.description ?? '');
     return this.request<Work>('/works', {
       method: 'POST',
       body,
+    });
+  }
+
+  updateMyWork(workId: string, fields: UpdateWorkFields) {
+    return this.request<Work>(`/works/${encodeURIComponent(workId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(fields),
     });
   }
 

@@ -7,6 +7,8 @@ type HomeStudioSpotProps = {
   title: string;
   lede: string;
   cta: string;
+  href?: string;
+  src?: string | null;
 };
 
 export function HomeStudioSpot({
@@ -14,11 +16,22 @@ export function HomeStudioSpot({
   title,
   lede,
   cta,
+  href = DEMO_PROFILE_HREF,
+  src,
 }: HomeStudioSpotProps) {
   return (
     <article>
-      <Link href={DEMO_PROFILE_HREF} className="flex min-w-0 flex-col">
-        <WorkFrame still="coat" alt={title} className="h-40 w-full" />
+      <Link
+        href={href}
+        data-home-spot="studio"
+        className="flex min-w-0 flex-col"
+      >
+        <WorkFrame
+          still={src ? undefined : 'coat'}
+          src={src}
+          alt={title}
+          className="h-40 w-full"
+        />
         <p className="mt-2 font-sans text-xs tracking-[0.2em] uppercase opacity-80">
           {kicker}
         </p>

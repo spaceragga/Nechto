@@ -6,6 +6,8 @@ import {
   type CreateWorkFields,
   type CursorPage,
   type CursorPageQuery,
+  type ListPublishedWorksQuery,
+  type UpdateWorkFields,
   type Work,
   type WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -15,7 +17,18 @@ import { StorageService } from '../storage/storage.service';
 import { publishedProfileWhere } from '../profiles/published-profile';
 import { extensionForImageMime } from '../storage/image-file';
 import { assertWorkFile } from './work-file';
-import { toWorkView, toWorkWithAuthorView } from './work.mapper';
+import {
+  toWorkView,
+  toWorkWithAuthorView,
+  type WorkRecord,
+} from './work.mapper';
+
+const publishedAuthorSelect = {
+  slug: true,
+  displayName: true,
+  avatarKey: true,
+  directions: true,
+} as const;
 
 @Injectable()
 export class WorksService {
@@ -42,22 +55,21 @@ export class WorksService {
   }
 
   async listPublished(
-    query: CursorPageQuery,
+    query: ListPublishedWorksQuery,
   ): Promise<CursorPage<WorkWithAuthor>> {
     const rows = await this.prisma.work.findMany({
       where: {
-        profile: publishedProfileWhere,
+        profile: {
+          ...publishedProfileWhere,
+          ...(query.direction ? { directions: { has: query.direction } } : {}),
+        },
       },
       orderBy: { id: 'desc' },
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       take: query.limit + 1,
       include: {
         profile: {
-          select: {
-            slug: true,
-            displayName: true,
-            avatarKey: true,
-          },
+          select: publishedAuthorSelect,
         },
       },
     });
@@ -101,6 +113,31 @@ export class WorksService {
     return this.pageWorks(rows, query.limit);
   }
 
+  async getPublishedById(id: string): Promise<WorkWithAuthor> {
+    const row = await this.prisma.work.findFirst({
+      where: {
+        id,
+        profile: publishedProfileWhere,
+      },
+      include: {
+        profile: {
+          select: publishedAuthorSelect,
+        },
+      },
+    });
+
+    const view = row ? toWorkWithAuthorView(row, this.storage) : null;
+    if (!view) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.WORK_NOT_FOUND,
+        'Work not found',
+      );
+    }
+
+    return view;
+  }
+
   async createMine(
     userId: string,
     file: Express.Multer.File | undefined,
@@ -120,6 +157,7 @@ export class WorksService {
       data: {
         profileId: profile.id,
         title: fields.title,
+        description: fields.description,
         imageKey: key,
       },
     });
@@ -127,19 +165,28 @@ export class WorksService {
     return toWorkView(work, this.storage);
   }
 
-  async deleteMine(userId: string, workId: string): Promise<void> {
-    const profile = await this.requireProfile(userId);
-    const work = await this.prisma.work.findFirst({
-      where: { id: workId, profileId: profile.id },
+  async updateMine(
+    userId: string,
+    workId: string,
+    fields: UpdateWorkFields,
+  ): Promise<Work> {
+    const work = await this.requireOwnedWork(userId, workId);
+    const updated = await this.prisma.work.update({
+      where: { id: work.id },
+      data: {
+        ...(fields.title !== undefined ? { title: fields.title } : {}),
+        ...(fields.description !== undefined
+          ? { description: fields.description }
+          : {}),
+      },
     });
 
-    if (!work) {
-      throw new ApiHttpException(
-        HttpStatus.NOT_FOUND,
-        API_ERROR_CODES.WORK_NOT_FOUND,
-        'Work not found',
-      );
-    }
+    return toWorkView(updated, this.storage);
+  }
+
+  async deleteMine(userId: string, workId: string): Promise<void> {
+    const profile = await this.requireProfile(userId);
+    const work = await this.requireOwnedWork(userId, workId);
 
     await this.prisma.work.delete({ where: { id: work.id } });
 
@@ -164,21 +211,30 @@ export class WorksService {
     }
   }
 
-  private pageWorks(
-    rows: Array<{
-      id: string;
-      title: string;
-      imageKey: string;
-      createdAt: Date;
-    }>,
-    limit: number,
-  ): CursorPage<Work> {
+  private pageWorks(rows: WorkRecord[], limit: number): CursorPage<Work> {
     const hasMore = rows.length > limit;
     const slice = hasMore ? rows.slice(0, limit) : rows;
     return {
       items: slice.map((row) => toWorkView(row, this.storage)),
       nextCursor: hasMore ? (slice[slice.length - 1]?.id ?? null) : null,
     };
+  }
+
+  private async requireOwnedWork(userId: string, workId: string) {
+    const profile = await this.requireProfile(userId);
+    const work = await this.prisma.work.findFirst({
+      where: { id: workId, profileId: profile.id },
+    });
+
+    if (!work) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.WORK_NOT_FOUND,
+        'Work not found',
+      );
+    }
+
+    return work;
   }
 
   private async requireProfile(userId: string) {

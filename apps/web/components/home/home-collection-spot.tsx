@@ -26,21 +26,28 @@ type HomeCollectionSpotProps = {
   kicker: string;
   title: string;
   meta: string;
+  srcs?: Array<string | null>;
 };
 
 export function HomeCollectionSpot({
   kicker,
   title,
   meta,
+  srcs,
 }: HomeCollectionSpotProps) {
   return (
     <article className="flex h-full min-h-0 min-w-0 flex-col">
-      <Link href="/collections" className="flex h-full min-h-0 flex-col">
+      <Link
+        href="/collections"
+        data-home-spot="collection"
+        className="flex h-full min-h-0 flex-col"
+      >
         <div className="grid min-h-[12.5rem] flex-1 grid-cols-[1.15fr_0.9fr] grid-rows-[1.25fr_0.7fr_1fr_1.2fr] gap-x-5 gap-y-6 overflow-hidden">
-          {TILES.map((tile) => (
+          {TILES.map((tile, index) => (
             <WorkFrame
               key={tile.still}
-              still={tile.still}
+              still={srcs?.[index] ? undefined : tile.still}
+              src={srcs?.[index]}
               fit="cover"
               className={`h-full min-h-0 w-full ${tile.className}`}
             />

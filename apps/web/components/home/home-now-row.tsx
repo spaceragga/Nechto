@@ -11,6 +11,7 @@ export type HomeNowWork = {
 };
 
 export type HomeNowItem = {
+  id: string;
   author: string;
   href: string;
   directionLabel: string;
@@ -49,9 +50,9 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
         gap="0.25rem"
         className="min-h-0 min-w-0 flex-1"
       >
-        {item.works.map((work) => (
+        {item.works.map((work, index) => (
           <Link
-            key={work.title}
+            key={`${work.href}:${work.title}:${index}`}
             href={work.href}
             className="flex min-h-0 flex-col"
           >

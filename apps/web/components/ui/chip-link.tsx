@@ -1,16 +1,46 @@
-import type { ReactNode } from 'react';
-import { Link } from '@/i18n/navigation';
+'use client';
+
+import type { MouseEvent, ReactNode } from 'react';
+import { Link, useRouter } from '@/i18n/navigation';
+import { markPreserveScroll } from '@/lib/preserve-scroll';
 
 type ChipLinkProps = {
   href: string;
   children: ReactNode;
   active?: boolean;
+  scroll?: boolean;
 };
 
-export function ChipLink({ href, children, active = false }: ChipLinkProps) {
+export function ChipLink({
+  href,
+  children,
+  active = false,
+  scroll = true,
+}: ChipLinkProps) {
+  const router = useRouter();
+
+  function onClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (
+      scroll ||
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.shiftKey
+    ) {
+      return;
+    }
+    event.preventDefault();
+    markPreserveScroll();
+    router.push(href, { scroll: false });
+  }
+
   return (
     <Link
       href={href}
+      scroll={scroll}
+      onClick={onClick}
       className={`inline-flex items-center justify-center px-5 py-1 font-sans text-xl tracking-wide transition-colors duration-150 ${
         active
           ? 'bg-[var(--accent)] text-[var(--fg)]'

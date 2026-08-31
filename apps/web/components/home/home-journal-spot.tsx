@@ -6,6 +6,8 @@ type HomeJournalSpotProps = {
   title: string;
   lede: string;
   cta: string;
+  href?: string;
+  src?: string | null;
 };
 
 export function HomeJournalSpot({
@@ -13,10 +15,16 @@ export function HomeJournalSpot({
   title,
   lede,
   cta,
+  href = '/journal',
+  src,
 }: HomeJournalSpotProps) {
   return (
     <article>
-      <Link href="/journal" className="flex min-w-0 flex-col">
+      <Link
+        href={href}
+        data-home-spot="journal"
+        className="flex min-w-0 flex-col"
+      >
         <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-80">
           {kicker}
         </p>
@@ -27,7 +35,8 @@ export function HomeJournalSpot({
           {lede}
         </p>
         <WorkFrame
-          still="glass"
+          still={src ? undefined : 'glass'}
+          src={src}
           alt={title}
           fit="cover"
           className="mt-3 h-72 w-full md:h-[30rem]"

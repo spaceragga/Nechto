@@ -5,6 +5,7 @@ import { WorkFrame } from '@/components/ui/work-frame';
 import { PublicProfileView } from '@/components/profile/public-profile-view';
 import type { DemoStillKind } from '@/lib/demo-media';
 import { loadPublishedProfile } from '@/lib/load-published-feed';
+import { profilePath } from '@/lib/work-path';
 
 type PublicProfilePageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -66,7 +67,7 @@ async function DemoPublicProfile({ slug }: { slug: string }) {
         {works.map((work) => (
           <MediaTile
             key={work.title}
-            href={`/u/${slug}`}
+            href={profilePath(slug)}
             title={work.title}
             subtitle={work.author}
             still={work.still}

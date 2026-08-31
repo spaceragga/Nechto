@@ -6,16 +6,52 @@ import { HomeFragmentsRail } from '@/components/home/home-fragments-rail';
 import { HomeHangingSpot } from '@/components/home/home-hanging-spot';
 import { HomeStage } from '@/components/home/home-stage';
 import { HomeWorksGrid } from '@/components/home/home-works-grid';
+import { CREATOR_DIRECTION_IDS } from '@/lib/creator-directions';
+import {
+  loadPublishedCreators,
+  loadPublishedWorks,
+  loadPublishedWorksPage,
+} from '@/lib/load-published-feed';
+import { pickHomeFeed } from '@/lib/pick-home-feed';
+import { shuffled } from '@/lib/shuffle';
 
 type HomePageProps = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ direction?: string }>;
 };
 
-export default async function HomePage({ params }: HomePageProps) {
+export default async function HomePage({
+  params,
+  searchParams,
+}: HomePageProps) {
   const { locale } = await params;
+  const query = await searchParams;
   setRequestLocale(locale);
 
+  const direction = CREATOR_DIRECTION_IDS.find(
+    (item) => item === query.direction,
+  );
   const t = await getTranslations('HomePage');
+  const [
+    stageWorks,
+    stageCreators,
+    filteredWorksPage,
+    filteredCreators,
+    fragments,
+  ] = await Promise.all([
+    loadPublishedWorks(50),
+    loadPublishedCreators({ limit: 50 }),
+    direction
+      ? loadPublishedWorksPage({ limit: 24, direction })
+      : Promise.resolve(null),
+    direction
+      ? loadPublishedCreators({ limit: 12, direction })
+      : Promise.resolve(null),
+    loadPublishedWorksPage({ limit: 12 }),
+  ]);
+  const feed = pickHomeFeed(stageWorks, stageCreators);
+  const works = direction ? (filteredWorksPage?.items ?? []) : feed.railWorks;
+  const creators = direction ? (filteredCreators ?? []) : stageCreators;
 
   return (
     <main className="flex w-full flex-col gap-6 px-6 py-6">
@@ -30,15 +66,29 @@ export default async function HomePage({ params }: HomePageProps) {
           <HomeExploreNav />
         </header>
 
-        <HomeStage />
+        <HomeStage locale={locale} feed={feed} />
 
-        <HomeHangingSpot />
+        <HomeHangingSpot works={feed.hanging} />
 
-        <DirectionChips />
+        <DirectionChips active={direction} basePath="/" />
       </div>
-      <HomeWorksGrid />
-      <HomeCreatorsRail />
-      <HomeFragmentsRail />
+      <HomeWorksGrid
+        works={works}
+        empty={direction ? t('emptyWorks') : undefined}
+      />
+      <HomeCreatorsRail
+        creators={creators}
+        empty={direction ? t('emptyCreators') : undefined}
+        catalogHref={
+          direction ? `/creators?direction=${direction}` : '/creators'
+        }
+      />
+      <HomeFragmentsRail
+        feed={{
+          items: shuffled(fragments.items),
+          nextCursor: fragments.nextCursor,
+        }}
+      />
     </main>
   );
 }

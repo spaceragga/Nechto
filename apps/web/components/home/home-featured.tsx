@@ -4,7 +4,8 @@ import { Link } from '@/i18n/navigation';
 
 type HomeFeaturedProps = {
   href: string;
-  still: DemoStillKind;
+  still?: DemoStillKind;
+  src?: string | null;
   kicker: string;
   title: string;
   meta: string;
@@ -12,11 +13,13 @@ type HomeFeaturedProps = {
   fit?: 'contain' | 'cover';
   stillClassName?: string;
   align?: 'start' | 'center';
+  spot?: string;
 };
 
 export function HomeFeatured({
   href,
   still,
+  src,
   kicker,
   title,
   meta,
@@ -24,10 +27,12 @@ export function HomeFeatured({
   fit = 'contain',
   stillClassName = 'h-36 w-full md:h-44',
   align = 'start',
+  spot,
 }: HomeFeaturedProps) {
   return (
     <Link
       href={href}
+      data-home-spot={spot}
       className={
         align === 'center'
           ? 'flex min-w-0 flex-col text-center'
@@ -36,6 +41,7 @@ export function HomeFeatured({
     >
       <WorkFrame
         still={still}
+        src={src}
         alt={title}
         fit={fit}
         className={stillClassName}

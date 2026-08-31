@@ -4,6 +4,7 @@ import { DirectionChips } from '@/components/direction-chips';
 import { CREATOR_DIRECTION_IDS } from '@/lib/creator-directions';
 import { loadPublishedCreators } from '@/lib/load-published-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
+import { profilePath } from '@/lib/work-path';
 
 type CreatorsPageProps = {
   params: Promise<{ locale: string }>;
@@ -40,7 +41,7 @@ export default async function CreatorsPage({
           {creators.map((creator) => (
             <CreatorCard
               key={creator.slug}
-              href={`/u/${creator.slug}`}
+              href={profilePath(creator.slug)}
               name={creator.displayName ?? creator.slug}
               directionLabel={
                 creator.directions[0]

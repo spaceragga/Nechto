@@ -8,6 +8,7 @@ import type {
   Profile,
   RegisterDto,
   UpdateProfileDto,
+  UpdateWorkFields,
 } from '@nechto/api-contract';
 
 export type { AuthUser, Profile };
@@ -52,8 +53,18 @@ export function uploadMyWorkRequest(file: File, fields: CreateWorkFields) {
   return api.uploadMyWork(file, fields, file.name);
 }
 
+export function updateMyWorkRequest(workId: string, fields: UpdateWorkFields) {
+  return api.updateMyWork(workId, fields);
+}
+
 export function deleteMyWorkRequest(workId: string) {
   return api.deleteMyWork(workId);
+}
+
+export function listPublishedWorksRequest(
+  query: Partial<ListCreatorsQuery> = {},
+) {
+  return api.listPublishedWorks(query);
 }
 
 export function listCreatorsRequest(query: Partial<ListCreatorsQuery> = {}) {

@@ -29,9 +29,17 @@ export const RESERVED_PROFILE_SLUGS = [
   'journal',
   'collections',
   'community',
+  'community-guidelines',
   'uploads',
   'en',
   'ru',
+  'forgot-password',
+  'reset-password',
+  'change-password',
+  'terms',
+  'privacy',
+  'verify-email',
+  'top-works',
 ] as const;
 
 const reservedSlugs = new Set<string>(RESERVED_PROFILE_SLUGS);

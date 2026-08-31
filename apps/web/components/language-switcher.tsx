@@ -1,17 +1,33 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { routing, type AppLocale } from '@/i18n/routing';
+
+function hrefWithoutLocale(pathname: string, locale: string) {
+  if (locale === routing.defaultLocale) {
+    return pathname || '/';
+  }
+  const prefix = `/${locale}`;
+  if (pathname === prefix) {
+    return '/';
+  }
+  if (pathname.startsWith(`${prefix}/`)) {
+    return pathname.slice(prefix.length);
+  }
+  return pathname;
+}
 
 export function LanguageSwitcher() {
   const t = useTranslations('LanguageSwitcher');
   const locale = useLocale();
-  const pathname = usePathname();
   const router = useRouter();
 
   function onChange(nextLocale: string) {
-    router.replace(pathname, { locale: nextLocale as AppLocale });
+    // Read the browser URL at click time. usePathname() in the header layout
+    // can stay on the parent /[slug] after client-navigating into a work.
+    const href = hrefWithoutLocale(window.location.pathname, locale);
+    router.replace(href, { locale: nextLocale as AppLocale });
   }
 
   return (
