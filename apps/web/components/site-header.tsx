@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { getTranslations } from 'next-intl/server';
+import { BrandGlyph } from '@/components/brand-glyph';
 import { HomeAuthPanel } from '@/components/home-auth-panel';
-import { LanguageSwitcher } from '@/components/language-switcher';
 import { Link } from '@/i18n/navigation';
 
 export async function SiteHeader() {
@@ -11,8 +11,12 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-white/15 bg-[var(--bg)] px-6 py-2">
       <div className="flex w-full items-center gap-4">
-        <Link href="/" className="font-sans text-sm tracking-[0.14em]">
-          {t('brand')}
+        <Link
+          href="/"
+          aria-label={t('brand')}
+          className="inline-flex opacity-80 transition-opacity duration-150 hover:opacity-100"
+        >
+          <BrandGlyph />
         </Link>
         <div className="ml-auto flex items-center gap-4">
           <Suspense
@@ -22,13 +26,6 @@ export async function SiteHeader() {
           >
             <HomeAuthPanel />
           </Suspense>
-          <Link
-            href="/account"
-            className="font-sans text-sm opacity-80 hover:opacity-100"
-          >
-            {t('account')}
-          </Link>
-          <LanguageSwitcher />
         </div>
       </div>
     </header>

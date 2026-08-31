@@ -101,7 +101,10 @@ test.describe('publish profile', () => {
       await expect(page).toHaveURL(new RegExp(`/${slug}/[^/?#]+`));
       await expect(page.getByText('Дождь на асфальте.')).toBeVisible();
 
-      await page.getByRole('banner').getByRole('combobox').selectOption('en');
+      await page
+        .getByRole('contentinfo')
+        .getByRole('combobox')
+        .selectOption('en');
       await expect(page).toHaveURL(new RegExp(`/en/${slug}/[^/?#]+`));
       await expect(page.getByText('More from this creator')).toBeVisible();
       await expect(page.getByText('Дождь на асфальте.')).toBeVisible();

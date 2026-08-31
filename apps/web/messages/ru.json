@@ -7,8 +7,7 @@
     "community": "Сообщество"
   },
   "Site": {
-    "brand": "Nechto",
-    "account": "Аккаунт"
+    "brand": "Nechto"
   },
   "HomePage": {
     "title": "Дом Независимого Творца",
@@ -292,7 +291,7 @@
     "loginLink": "Войти",
     "registerLink": "Зарегистрироваться",
     "logout": "Выйти",
-    "signedInAs": "Вы вошли как",
+    "signedInAs": "Вы вошли как {email}",
     "checkingSession": "Проверяем сессию…",
     "profileLink": "Профиль",
     "forgotPassword": "Забыли пароль?"

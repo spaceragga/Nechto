@@ -798,13 +798,19 @@ test.describe('home page locales', () => {
   test('switches language from the locale select', async ({ page }) => {
     await page.goto('/');
 
-    await page.getByRole('banner').getByRole('combobox').selectOption('en');
+    await page
+      .getByRole('contentinfo')
+      .getByRole('combobox')
+      .selectOption('en');
     await expect(page).toHaveURL(/\/en\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'House of the Independent Creator',
     );
 
-    await page.getByRole('banner').getByRole('combobox').selectOption('ru');
+    await page
+      .getByRole('contentinfo')
+      .getByRole('combobox')
+      .selectOption('ru');
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Дом Независимого Творца',

@@ -3,8 +3,11 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { AuthUser } from '@nechto/api-contract';
-import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
+import { HoverTip } from '@/components/ui/hover-tip';
+import { LoginGlyph } from '@/components/login-glyph';
+import { LogoutGlyph } from '@/components/logout-glyph';
+import { ProfileGlyph } from '@/components/profile-glyph';
 import { Link, useRouter } from '@/i18n/navigation';
 import { logoutRequest } from '@/lib/api';
 
@@ -46,16 +49,27 @@ export function HomeAuthPanelClient({
 
   if (user) {
     return (
-      <div className="flex flex-wrap items-center gap-3 text-sm">
-        <p className="max-w-[14rem] truncate">
-          {t('signedInAs')} <span className="opacity-90">{user.email}</span>
-        </p>
-        <Link href="/profile" className="underline">
-          {t('profileLink')}
-        </Link>
-        <Button type="button" onClick={logout} disabled={pending}>
-          {t('logout')}
-        </Button>
+      <div className="flex flex-wrap items-center gap-4">
+        <HoverTip label={t('signedInAs', { email: user.email })}>
+          <Link
+            href="/profile"
+            aria-label={t('profileLink')}
+            className="inline-flex opacity-80 transition-opacity duration-150 hover:opacity-100"
+          >
+            <ProfileGlyph />
+          </Link>
+        </HoverTip>
+        <HoverTip label={t('logout')}>
+          <button
+            type="button"
+            aria-label={t('logout')}
+            onClick={logout}
+            disabled={pending}
+            className="inline-flex opacity-80 transition-opacity duration-150 hover:opacity-100 disabled:opacity-30"
+          >
+            <LogoutGlyph />
+          </button>
+        </HoverTip>
         {logoutError ? (
           <FormError>{tErrors('serviceUnavailable')}</FormError>
         ) : null}
@@ -64,13 +78,14 @@ export function HomeAuthPanelClient({
   }
 
   return (
-    <div className="flex gap-3 text-sm">
-      <Link href="/login" className="underline">
-        {t('loginLink')}
+    <HoverTip label={t('loginLink')}>
+      <Link
+        href="/login"
+        aria-label={t('loginLink')}
+        className="inline-flex opacity-80 transition-opacity duration-150 hover:opacity-100"
+      >
+        <LoginGlyph />
       </Link>
-      <Link href="/register" className="underline">
-        {t('registerLink')}
-      </Link>
-    </div>
+    </HoverTip>
   );
 }
