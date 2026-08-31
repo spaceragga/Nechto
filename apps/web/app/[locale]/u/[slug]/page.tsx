@@ -1,12 +1,15 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import { MediaTile } from '@/components/ui/media-tile';
+import { PublicProfileView } from '@/components/profile/public-profile-view';
 import type { DemoStillKind } from '@/lib/demo-media';
+import { loadPublishedProfile } from '@/lib/load-published-feed';
 
 type PublicProfilePageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
-type WorkCard = {
+type DemoWorkCard = {
   title: string;
   author: string;
   still?: DemoStillKind;
@@ -18,9 +21,24 @@ export default async function PublicProfilePage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
+  const published = await loadPublishedProfile(slug);
+  if (published) {
+    return (
+      <PublicProfileView profile={published.profile} works={published.works} />
+    );
+  }
+
+  if (slug === 'demo') {
+    return <DemoPublicProfile slug={slug} />;
+  }
+
+  notFound();
+}
+
+async function DemoPublicProfile({ slug }: { slug: string }) {
   const t = await getTranslations('PublicProfile');
   const tHome = await getTranslations('HomePage');
-  const works = tHome.raw('workCards') as WorkCard[];
+  const works = tHome.raw('workCards') as DemoWorkCard[];
 
   return (
     <main className="w-full px-6 py-12">

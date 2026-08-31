@@ -24,6 +24,14 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testIgnore: /publish-profile\.spec\.ts/,
+    },
+    {
+      // Publishes into the shared DB; run after home/catalog tests that need demo feeds.
+      name: 'publish-profile',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /publish-profile\.spec\.ts/,
+      dependencies: ['chromium'],
     },
   ],
   webServer: process.env.PLAYWRIGHT_SKIP_WEBSERVER

@@ -3,6 +3,8 @@ import { FluidRail } from '@/components/ui/fluid-rail';
 import { MediaTile } from '@/components/ui/media-tile';
 import type { DemoStillKind } from '@/lib/demo-media';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
+import { loadPublishedWorks } from '@/lib/load-published-feed';
+import { toUploadSrc } from '@/lib/to-upload-src';
 import { Link } from '@/i18n/navigation';
 
 type WorkCard = {
@@ -13,7 +15,7 @@ type WorkCard = {
 
 export async function HomeWorksGrid() {
   const t = await getTranslations('HomePage');
-  const cards = t.raw('workCards') as WorkCard[];
+  const published = await loadPublishedWorks(8);
 
   return (
     <section id="works" className="scroll-mt-20">
@@ -24,15 +26,25 @@ export async function HomeWorksGrid() {
         </Link>
       </div>
       <FluidRail minItem="16rem">
-        {cards.map((card) => (
-          <MediaTile
-            key={card.title}
-            href={DEMO_PROFILE_HREF}
-            title={card.title}
-            subtitle={card.author}
-            still={card.still}
-          />
-        ))}
+        {published.length > 0
+          ? published.map((work) => (
+              <MediaTile
+                key={work.id}
+                href={`/u/${work.author.slug}`}
+                title={work.title}
+                subtitle={work.author.displayName}
+                src={toUploadSrc(work.imageUrl)}
+              />
+            ))
+          : (t.raw('workCards') as WorkCard[]).map((card) => (
+              <MediaTile
+                key={card.title}
+                href={DEMO_PROFILE_HREF}
+                title={card.title}
+                subtitle={card.author}
+                still={card.still}
+              />
+            ))}
       </FluidRail>
     </section>
   );

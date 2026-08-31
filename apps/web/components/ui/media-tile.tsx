@@ -17,7 +17,7 @@ export function MediaTile({
   href,
   title,
   subtitle,
-  still = 'interior',
+  still,
   src,
   wellClassName = 'h-44 w-full',
   className = '',

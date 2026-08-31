@@ -1,0 +1,87 @@
+'use client';
+
+import { FormEvent, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import type { Work } from '@nechto/api-contract';
+import {
+  deleteMyWorkRequest,
+  listMyWorksRequest,
+  uploadMyWorkRequest,
+} from '@/lib/api';
+import { mapApiErrorMessage } from '@/lib/map-api-error';
+
+export function useMyWorks(initialWorks: Work[]) {
+  const tErrors = useTranslations('Errors');
+  const [works, setWorks] = useState(initialWorks);
+  const [title, setTitle] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [fileInputKey, setFileInputKey] = useState(0);
+  const [adding, setAdding] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  function selectFile(fileList: FileList | null) {
+    setFile(fileList?.[0] ?? null);
+    setError(null);
+  }
+
+  async function addWork(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!file || !title.trim()) {
+      return;
+    }
+
+    setAdding(true);
+    setError(null);
+
+    try {
+      const created = await uploadMyWorkRequest(file, { title: title.trim() });
+      setWorks((current) => [created, ...current]);
+      setTitle('');
+      setFile(null);
+      setFileInputKey((key) => key + 1);
+      return created;
+    } catch (addError) {
+      setError(mapApiErrorMessage(addError, tErrors));
+      return null;
+    } finally {
+      setAdding(false);
+    }
+  }
+
+  async function deleteWork(workId: string) {
+    setDeletingId(workId);
+    setError(null);
+
+    try {
+      await deleteMyWorkRequest(workId);
+      setWorks((current) => current.filter((work) => work.id !== workId));
+      return true;
+    } catch (deleteError) {
+      setError(mapApiErrorMessage(deleteError, tErrors));
+      return false;
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  async function refresh() {
+    const page = await listMyWorksRequest({ limit: 50 });
+    setWorks(page.items);
+  }
+
+  return {
+    works,
+    title,
+    setTitle,
+    file,
+    selectFile,
+    fileInputKey,
+    adding,
+    deletingId,
+    error,
+    addWork,
+    deleteWork,
+    refresh,
+  };
+}
