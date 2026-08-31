@@ -17,6 +17,7 @@ function toDirections(values: string[]): CreatorDirection[] {
 export type WorkRecord = {
   id: string;
   title: string;
+  description: string;
   imageKey: string;
   createdAt: Date;
 };
@@ -37,6 +38,7 @@ export function toWorkView(
   return {
     id: work.id,
     title: work.title,
+    description: work.description,
     imageUrl: storage.getPublicUrl(work.imageKey),
     createdAt: work.createdAt.toISOString(),
   };

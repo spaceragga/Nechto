@@ -36,6 +36,10 @@ describe('DEV_ARTISTS', () => {
         expect(work.imageUrl.startsWith('https://')).toBe(true);
         expect(work.title.length).toBeGreaterThan(0);
         expect(work.title.length).toBeLessThanOrEqual(80);
+        if (work.description) {
+          expect(work.description.length).toBeGreaterThan(0);
+          expect(work.description.length).toBeLessThanOrEqual(2000);
+        }
       }
     }
   });

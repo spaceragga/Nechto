@@ -121,6 +121,16 @@ async function signIn(email) {
   return cookie;
 }
 
+function workCopy(work, artist) {
+  const beat = artist.bio.split(/[.!?]/)[0]?.trim();
+  return {
+    title: work.title,
+    description:
+      work.description?.trim() ||
+      (beat ? `${work.title}. ${beat}.` : work.title),
+  };
+}
+
 async function replaceWorks(cookie, artist) {
   const listed = await expectOk(
     '/works/me',
@@ -137,9 +147,11 @@ async function replaceWorks(cookie, artist) {
   }
 
   for (const work of artist.works) {
+    const copy = workCopy(work, artist);
     const body = new FormData();
     body.append('file', await imageBlob(work.imageUrl), 'work.jpg');
-    body.append('title', work.title);
+    body.append('title', copy.title);
+    body.append('description', copy.description);
     await expectOk(
       '/works',
       await request('/works', { method: 'POST', body, cookie }),

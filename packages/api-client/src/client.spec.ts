@@ -93,6 +93,7 @@ describe('ApiClient', () => {
         JSON.stringify({
           id: 'w1',
           title: 'Yard',
+          description: 'Wet asphalt after rain.',
           imageUrl: 'http://localhost:3001/uploads/works/a.png',
           createdAt: '2026-08-31T00:00:00.000Z',
         }),
@@ -110,7 +111,7 @@ describe('ApiClient', () => {
 
     await client.uploadMyWork(
       new Blob(['png'], { type: 'image/png' }),
-      { title: 'Yard' },
+      { title: 'Yard', description: 'Wet asphalt after rain.' },
       'a.png',
     );
 
@@ -119,12 +120,50 @@ describe('ApiClient', () => {
     expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:3001/works');
   });
 
+  it('patches work copy as JSON', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 'w1',
+          title: 'Yard, evening',
+          description: 'Updated note.',
+          imageUrl: 'http://localhost:3001/uploads/works/a.png',
+          createdAt: '2026-08-31T00:00:00.000Z',
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.updateMyWork('w1', {
+      title: 'Yard, evening',
+      description: 'Updated note.',
+    });
+
+    expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:3001/works/w1');
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      method: 'PATCH',
+      body: JSON.stringify({
+        title: 'Yard, evening',
+        description: 'Updated note.',
+      }),
+    });
+  });
+
   it('loads a published work by id', async () => {
     fetchMock.mockResolvedValue(
       new Response(
         JSON.stringify({
           id: 'w1',
           title: 'Yard',
+          description: 'Wet asphalt after rain.',
           imageUrl: 'http://localhost:3001/uploads/works/a.png',
           createdAt: '2026-08-31T00:00:00.000Z',
           author: {

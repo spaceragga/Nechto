@@ -94,6 +94,7 @@ describe('WorksController (e2e)', () => {
         .post('/works')
         .set('Cookie', cookie)
         .field('title', `Work ${index + 1}`)
+        .field('description', `Note for work ${index + 1}.`)
         .attach('file', png, {
           filename: `work-${index}.png`,
           contentType: 'image/png',
@@ -101,6 +102,7 @@ describe('WorksController (e2e)', () => {
         .expect(201);
 
       expect(created.body.title).toBe(`Work ${index + 1}`);
+      expect(created.body.description).toBe(`Note for work ${index + 1}.`);
       expect(created.body.imageUrl).toMatch(/\/uploads\/works\//);
       workIds.push(created.body.id as string);
     }
@@ -176,12 +178,36 @@ describe('WorksController (e2e)', () => {
     expect(publishedWork.body).toMatchObject({
       id: workIds[0],
       title: 'Work 1',
+      description: 'Note for work 1.',
       author: {
         slug,
         displayName: 'Works Artist',
         directions: ['photography'],
       },
     });
+
+    await request(app.getHttpServer())
+      .patch(`/works/${workIds[0]}`)
+      .set('Cookie', cookie)
+      .send({
+        title: 'Work 1, evening',
+        description: 'Updated note.',
+      })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          id: workIds[0],
+          title: 'Work 1, evening',
+          description: 'Updated note.',
+        });
+      });
+
+    await request(app.getHttpServer())
+      .get(`/works/${workIds[0]}`)
+      .expect(200)
+      .then((response) => {
+        expect(response.body.description).toBe('Updated note.');
+      });
 
     await request(app.getHttpServer())
       .delete(`/works/${workIds[0]}`)

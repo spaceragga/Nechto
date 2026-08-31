@@ -146,13 +146,18 @@ function ProfileEditorForm({
       <ProfileWorksField
         works={works.works}
         title={works.title}
+        description={works.description}
         fileInputKey={works.fileInputKey}
         adding={works.adding}
+        hasFile={Boolean(works.file)}
+        savingId={works.savingId}
         deletingId={works.deletingId}
         error={works.error}
         onTitleChange={works.setTitle}
+        onDescriptionChange={works.setDescription}
         onFileChange={works.selectFile}
         onAdd={works.addWork}
+        onSave={works.updateWork}
         onDelete={async (workId) => {
           const remaining = works.works.length - 1;
           const ok = await works.deleteWork(workId);

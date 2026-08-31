@@ -16,6 +16,9 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
   const tCreators = await getTranslations('Creators');
   const src = toUploadSrc(work.imageUrl);
   const authorHref = `/u/${work.author.slug}`;
+  const direction = work.author.directions[0]
+    ? tCreators(`directions.${work.author.directions[0]}`)
+    : null;
 
   return (
     <main className="w-full px-6 py-12">
@@ -29,10 +32,13 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
         <Link href={authorHref} className="underline">
           {work.author.displayName}
         </Link>
-        {work.author.directions[0]
-          ? ` · ${tCreators(`directions.${work.author.directions[0]}`)}`
-          : ''}
+        {direction ? ` · ${direction}` : ''}
       </p>
+      {work.description ? (
+        <p className="mt-6 max-w-2xl font-serif text-base leading-relaxed opacity-90">
+          {work.description}
+        </p>
+      ) : null}
       {src ? (
         <WorkFrame
           src={src}

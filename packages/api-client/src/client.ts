@@ -14,6 +14,7 @@ import {
   type PublicProfileWithWorks,
   type RegisterDto,
   type UpdateProfileDto,
+  type UpdateWorkFields,
   type Work,
   type WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -148,9 +149,17 @@ export class ApiClient {
     const body = new FormData();
     body.append('file', file, fileName);
     body.append('title', fields.title);
+    body.append('description', fields.description);
     return this.request<Work>('/works', {
       method: 'POST',
       body,
+    });
+  }
+
+  updateMyWork(workId: string, fields: UpdateWorkFields) {
+    return this.request<Work>(`/works/${encodeURIComponent(workId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(fields),
     });
   }
 

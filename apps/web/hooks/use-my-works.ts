@@ -2,10 +2,10 @@
 
 import { FormEvent, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import type { Work } from '@nechto/api-contract';
+import type { UpdateWorkFields, Work } from '@nechto/api-contract';
 import {
   deleteMyWorkRequest,
-  listMyWorksRequest,
+  updateMyWorkRequest,
   uploadMyWorkRequest,
 } from '@/lib/api';
 import { mapApiErrorMessage } from '@/lib/map-api-error';
@@ -14,9 +14,11 @@ export function useMyWorks(initialWorks: Work[]) {
   const tErrors = useTranslations('Errors');
   const [works, setWorks] = useState(initialWorks);
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [fileInputKey, setFileInputKey] = useState(0);
   const [adding, setAdding] = useState(false);
+  const [savingId, setSavingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +29,7 @@ export function useMyWorks(initialWorks: Work[]) {
 
   async function addWork(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!file || !title.trim()) {
+    if (!file || !title.trim() || !description.trim()) {
       return;
     }
 
@@ -35,9 +37,13 @@ export function useMyWorks(initialWorks: Work[]) {
     setError(null);
 
     try {
-      const created = await uploadMyWorkRequest(file, { title: title.trim() });
+      const created = await uploadMyWorkRequest(file, {
+        title: title.trim(),
+        description: description.trim(),
+      });
       setWorks((current) => [created, ...current]);
       setTitle('');
+      setDescription('');
       setFile(null);
       setFileInputKey((key) => key + 1);
       return created;
@@ -46,6 +52,24 @@ export function useMyWorks(initialWorks: Work[]) {
       return null;
     } finally {
       setAdding(false);
+    }
+  }
+
+  async function updateWork(workId: string, fields: UpdateWorkFields) {
+    setSavingId(workId);
+    setError(null);
+
+    try {
+      const updated = await updateMyWorkRequest(workId, fields);
+      setWorks((current) =>
+        current.map((work) => (work.id === workId ? updated : work)),
+      );
+      return updated;
+    } catch (updateError) {
+      setError(mapApiErrorMessage(updateError, tErrors));
+      return null;
+    } finally {
+      setSavingId(null);
     }
   }
 
@@ -65,23 +89,21 @@ export function useMyWorks(initialWorks: Work[]) {
     }
   }
 
-  async function refresh() {
-    const page = await listMyWorksRequest({ limit: 50 });
-    setWorks(page.items);
-  }
-
   return {
     works,
     title,
     setTitle,
+    description,
+    setDescription,
     file,
     selectFile,
     fileInputKey,
     adding,
+    savingId,
     deletingId,
     error,
     addWork,
+    updateWork,
     deleteWork,
-    refresh,
   };
 }

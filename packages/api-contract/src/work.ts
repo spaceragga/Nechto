@@ -1,15 +1,39 @@
 import { z } from 'zod';
 import type { CreatorDirection } from './directions';
 
+const WORK_TITLE_MAX = 80;
+const WORK_DESCRIPTION_MAX = 2000;
+
+const workTitleSchema = z.string().trim().min(1).max(WORK_TITLE_MAX);
+const workDescriptionSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(WORK_DESCRIPTION_MAX);
+
 export const createWorkFieldsSchema = z.object({
-  title: z.string().trim().min(1).max(80),
+  title: workTitleSchema,
+  description: workDescriptionSchema,
 });
 
 export type CreateWorkFields = z.infer<typeof createWorkFieldsSchema>;
 
+export const updateWorkFieldsSchema = z
+  .object({
+    title: workTitleSchema.optional(),
+    description: workDescriptionSchema.optional(),
+  })
+  .refine(
+    (value) => value.title !== undefined || value.description !== undefined,
+    { message: 'At least one field is required' },
+  );
+
+export type UpdateWorkFields = z.infer<typeof updateWorkFieldsSchema>;
+
 export type Work = {
   id: string;
   title: string;
+  description: string;
   imageUrl: string;
   createdAt: string;
 };

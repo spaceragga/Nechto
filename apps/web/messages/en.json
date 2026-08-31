@@ -374,6 +374,9 @@
   "Works": {
     "title": "Works",
     "name": "Title",
+    "description": "Description",
+    "save": "Save",
+    "saving": "Saving…",
     "altText": "Image description",
     "caption": "Caption",
     "add": "Add work",

@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Query,
   UploadedFile,
@@ -15,9 +16,11 @@ import {
   createWorkFieldsSchema,
   cursorPageQuerySchema,
   listPublishedWorksQuerySchema,
+  updateWorkFieldsSchema,
   type CreateWorkFields,
   type CursorPageQuery,
   type ListPublishedWorksQuery,
+  type UpdateWorkFields,
 } from '@nechto/api-contract';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/decorators/current-user.decorator';
@@ -72,6 +75,17 @@ export class WorksController {
     fields: CreateWorkFields,
   ) {
     return this.worksService.createMine(user.id, file, fields);
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  updateMine(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateWorkFieldsSchema))
+    fields: UpdateWorkFields,
+  ) {
+    return this.worksService.updateMine(user.id, id, fields);
   }
 
   @Delete(':id')
