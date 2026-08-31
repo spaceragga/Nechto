@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { CreatorCard } from '@/components/creators/creator-card';
 import { DirectionChips } from '@/components/direction-chips';
-import { MediaTile } from '@/components/ui/media-tile';
 import { CREATOR_DIRECTION_IDS } from '@/lib/creator-directions';
 import { loadPublishedCreators } from '@/lib/load-published-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
@@ -36,23 +36,24 @@ export default async function CreatorsPage({
       {creators.length === 0 ? (
         <p className="mt-10 text-sm opacity-70">{t('empty')}</p>
       ) : (
-        <section className="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-          {creators.map((creator) => {
-            const cover = creator.latestWorks[0]?.imageUrl ?? creator.avatarUrl;
-            return (
-              <MediaTile
-                key={creator.slug}
-                href={`/u/${creator.slug}`}
-                title={creator.displayName ?? creator.slug}
-                subtitle={
-                  creator.directions[0]
-                    ? t(`directions.${creator.directions[0]}`)
-                    : undefined
-                }
-                src={toUploadSrc(cover)}
-              />
-            );
-          })}
+        <section className="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2">
+          {creators.map((creator) => (
+            <CreatorCard
+              key={creator.slug}
+              href={`/u/${creator.slug}`}
+              name={creator.displayName ?? creator.slug}
+              directionLabel={
+                creator.directions[0]
+                  ? t(`directions.${creator.directions[0]}`)
+                  : undefined
+              }
+              portraitSrc={toUploadSrc(creator.avatarUrl)}
+              works={creator.latestWorks.map((work) => ({
+                src: toUploadSrc(work.imageUrl),
+                alt: work.title,
+              }))}
+            />
+          ))}
         </section>
       )}
     </main>

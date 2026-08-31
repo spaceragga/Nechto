@@ -93,7 +93,7 @@ export class ProfilesService {
         ...profileInclude,
         works: {
           orderBy: { id: 'desc' },
-          take: 5,
+          take: 4,
         },
       },
     });
