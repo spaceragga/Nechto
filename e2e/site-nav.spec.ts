@@ -7,6 +7,11 @@ test.describe('site navigation', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Дом Независимого Творца',
     );
+    const brand = page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Nechto' });
+    await expect(brand.locator('svg')).toBeVisible();
+    expect((await brand.locator('svg').boundingBox())?.height).toBe(40);
 
     await page.goto('/creators');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Авторы');
@@ -41,28 +46,24 @@ test.describe('site navigation', () => {
     ).toHaveCount(0);
     await expect(footer.getByRole('link', { name: 'Профиль' })).toHaveCount(0);
 
-    await page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Аккаунт' })
-      .click();
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Данные аккаунта',
-    );
+    const banner = page.getByRole('banner');
+    await expect(banner.getByRole('link', { name: 'Аккаунт' })).toHaveCount(0);
+    await expect(banner.getByRole('combobox')).toHaveCount(0);
+    await expect(footer.getByRole('combobox')).toBeVisible();
+    await expect(
+      banner.getByRole('link', { name: 'Зарегистрироваться' }),
+    ).toHaveCount(0);
 
-    const account = page.getByRole('main');
-    await account.getByRole('link', { name: 'Восстановление пароля' }).click();
+    const login = banner.getByRole('link', { name: 'Войти' });
+    await login.hover();
+    await expect(page.getByRole('tooltip', { name: 'Войти' })).toBeVisible();
+    await login.click();
+    await page.getByRole('link', { name: 'Забыли пароль?' }).click();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Восстановление пароля',
     );
 
-    await page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Аккаунт' })
-      .click();
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: 'Сменить пароль' })
-      .click();
+    await page.goto('/change-password');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Сменить пароль',
     );
@@ -78,6 +79,11 @@ test.describe('site navigation', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'House of the Independent Creator',
     );
+    const brand = page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Nechto' });
+    await expect(brand.locator('svg')).toBeVisible();
+    expect((await brand.locator('svg').boundingBox())?.height).toBe(40);
 
     await page.goto('/en/creators');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
@@ -114,30 +120,22 @@ test.describe('site navigation', () => {
     ).toHaveCount(0);
     await expect(footer.getByRole('link', { name: 'Profile' })).toHaveCount(0);
 
-    await page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Account' })
-      .click();
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Account data',
-    );
+    const banner = page.getByRole('banner');
+    await expect(banner.getByRole('link', { name: 'Account' })).toHaveCount(0);
+    await expect(banner.getByRole('combobox')).toHaveCount(0);
+    await expect(footer.getByRole('combobox')).toBeVisible();
+    await expect(banner.getByRole('link', { name: 'Sign up' })).toHaveCount(0);
 
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: 'Reset password' })
-      .click();
+    const login = banner.getByRole('link', { name: 'Log in' });
+    await login.hover();
+    await expect(page.getByRole('tooltip', { name: 'Log in' })).toBeVisible();
+    await login.click();
+    await page.getByRole('link', { name: 'Forgot password?' }).click();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Reset password',
     );
 
-    await page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Account' })
-      .click();
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: 'Change password' })
-      .click();
+    await page.goto('/en/change-password');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Change password',
     );

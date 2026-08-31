@@ -3,9 +3,12 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { AuthUser } from '@nechto/api-contract';
-import { Button } from '@/components/ui/button';
+import { ChromeIconButton, ChromeIconLink } from '@/components/chrome-icon';
+import { DoorGlyph } from '@/components/glyphs/door-glyph';
+import { ProfileGlyph } from '@/components/glyphs/profile-glyph';
 import { FormError } from '@/components/ui/form-error';
-import { Link, useRouter } from '@/i18n/navigation';
+import { useHydrated } from '@/hooks/use-hydrated';
+import { useRouter } from '@/i18n/navigation';
 import { logoutRequest } from '@/lib/api';
 
 type HomeAuthPanelClientProps = {
@@ -22,6 +25,7 @@ export function HomeAuthPanelClient({
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [logoutError, setLogoutError] = useState(false);
+  const hydrated = useHydrated();
 
   async function logout() {
     setPending(true);
@@ -37,25 +41,30 @@ export function HomeAuthPanelClient({
   }
 
   if (unavailable) {
-    return (
-      <div>
-        <FormError>{tErrors('serviceUnavailable')}</FormError>
-      </div>
-    );
+    return <FormError>{tErrors('serviceUnavailable')}</FormError>;
   }
 
   if (user) {
     return (
-      <div className="flex flex-wrap items-center gap-3 text-sm">
-        <p className="max-w-[14rem] truncate">
-          {t('signedInAs')} <span className="opacity-90">{user.email}</span>
-        </p>
-        <Link href="/profile" className="underline">
-          {t('profileLink')}
-        </Link>
-        <Button type="button" onClick={logout} disabled={pending}>
-          {t('logout')}
-        </Button>
+      <div
+        className="flex flex-wrap items-center gap-4"
+        data-auth-hydrated={hydrated ? 'true' : 'false'}
+      >
+        <ChromeIconLink
+          href="/profile"
+          label={t('profileLink')}
+          tip={t('signedInAs', { email: user.email })}
+        >
+          <ProfileGlyph />
+        </ChromeIconLink>
+        <ChromeIconButton
+          label={t('logout')}
+          tip={t('logout')}
+          onClick={logout}
+          disabled={pending}
+        >
+          <DoorGlyph direction="out" />
+        </ChromeIconButton>
         {logoutError ? (
           <FormError>{tErrors('serviceUnavailable')}</FormError>
         ) : null}
@@ -64,13 +73,8 @@ export function HomeAuthPanelClient({
   }
 
   return (
-    <div className="flex gap-3 text-sm">
-      <Link href="/login" className="underline">
-        {t('loginLink')}
-      </Link>
-      <Link href="/register" className="underline">
-        {t('registerLink')}
-      </Link>
-    </div>
+    <ChromeIconLink href="/login" label={t('loginLink')} tip={t('loginLink')}>
+      <DoorGlyph direction="in" />
+    </ChromeIconLink>
   );
 }

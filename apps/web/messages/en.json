@@ -7,8 +7,7 @@
     "community": "Community"
   },
   "Site": {
-    "brand": "Nechto",
-    "account": "Account"
+    "brand": "Nechto"
   },
   "HomePage": {
     "title": "House of the Independent Creator",
@@ -305,7 +304,7 @@
     "loginLink": "Log in",
     "registerLink": "Sign up",
     "logout": "Log out",
-    "signedInAs": "Signed in as",
+    "signedInAs": "Signed in as {email}",
     "checkingSession": "Checking session…",
     "profileLink": "Profile",
     "forgotPassword": "Forgot password?"
@@ -369,7 +368,10 @@
     "uploading": "Uploading photo…",
     "loading": "Loading profile…",
     "signedInAs": "Account:",
-    "loginLink": "Log in"
+    "loginLink": "Log in",
+    "prevPane": "Back",
+    "nextPane": "Next",
+    "visibilityTitle": "Showcase"
   },
   "Works": {
     "title": "Works",

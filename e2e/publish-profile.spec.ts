@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import path from 'node:path';
+import { nextProfilePane, openProfileVisibilityPane } from './profile-panes';
 
 const avatarFixture = path.join(__dirname, 'fixtures', 'avatar.png');
 
@@ -26,7 +27,9 @@ test.describe('publish profile', () => {
         .getByRole('link', { name: 'Профиль' })
         .click();
 
-      await expect(page.getByRole('heading', { name: 'Работы' })).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: 'Профиль' }),
+      ).toBeVisible();
       await expect(page.getByTestId('profile-editor')).toHaveAttribute(
         'data-hydrated',
         'true',
@@ -40,6 +43,9 @@ test.describe('publish profile', () => {
         timeout: 15_000,
       });
       await page.getByRole('button', { name: 'Фотография' }).click();
+      await page.getByRole('button', { name: 'Сохранить' }).click();
+      await nextProfilePane(page);
+      await expect(page.getByRole('heading', { name: 'Работы' })).toBeVisible();
 
       const add = page.getByRole('form', { name: 'Добавить работу' });
       for (let index = 1; index <= 5; index += 1) {
@@ -61,6 +67,7 @@ test.describe('publish profile', () => {
         first.getByRole('button', { name: 'Сохранить' }),
       ).toBeEnabled();
 
+      await nextProfilePane(page);
       await page.getByRole('button', { name: 'Опубликовать профиль' }).click();
       await expect(page.getByText('Профиль опубликован')).toBeVisible();
 
@@ -94,7 +101,10 @@ test.describe('publish profile', () => {
       await expect(page).toHaveURL(new RegExp(`/${slug}/[^/?#]+`));
       await expect(page.getByText('Дождь на асфальте.')).toBeVisible();
 
-      await page.getByRole('banner').getByRole('combobox').selectOption('en');
+      await page
+        .getByRole('contentinfo')
+        .getByRole('combobox')
+        .selectOption('en');
       await expect(page).toHaveURL(new RegExp(`/en/${slug}/[^/?#]+`));
       await expect(page.getByText('More from this creator')).toBeVisible();
       await expect(page.getByText('Дождь на асфальте.')).toBeVisible();
@@ -117,15 +127,20 @@ test.describe('publish profile', () => {
       await expect(catalogCard.locator('[data-creator-work]')).toHaveCount(4);
 
       await page.goto('/profile');
+      await openProfileVisibilityPane(page);
       await page.getByRole('button', { name: 'Скрыть' }).click();
       await expect(
         page.getByRole('button', { name: 'Опубликовать профиль' }),
       ).toBeVisible();
     } finally {
       await page.goto('/profile');
-      const hide = page.getByRole('button', { name: 'Скрыть' });
-      if (await hide.isVisible()) {
-        await hide.click();
+      const editor = page.getByTestId('profile-editor');
+      if (await editor.isVisible()) {
+        await openProfileVisibilityPane(page);
+        const hide = page.getByRole('button', { name: 'Скрыть' });
+        if (await hide.isVisible()) {
+          await hide.click();
+        }
       }
     }
   });
