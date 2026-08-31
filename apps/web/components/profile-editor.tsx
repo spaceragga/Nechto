@@ -18,8 +18,7 @@ import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
 import { useMyProfile } from '@/hooks/use-my-profile';
 import { useMyWorks } from '@/hooks/use-my-works';
-import { publishMyProfileRequest, unpublishMyProfileRequest } from '@/lib/api';
-import { mapApiErrorMessage } from '@/lib/map-api-error';
+import { useProfilePublish } from '@/hooks/use-profile-publish';
 import { Link } from '@/i18n/navigation';
 
 type ProfileEditorProps = {
@@ -63,46 +62,11 @@ function ProfileEditorForm({
   initialWorks: Work[];
 }) {
   const t = useTranslations('Profile');
-  const tErrors = useTranslations('Errors');
   const details = useMyProfile(profile);
   const works = useMyWorks(initialWorks);
-  const [publishError, setPublishError] = useState<string | null>(null);
-  const [publishing, setPublishing] = useState(false);
+  const publish = useProfilePublish(details);
   const [pane, setPane] = useState(0);
   const hydrated = useHydrated();
-
-  async function publish() {
-    setPublishing(true);
-    setPublishError(null);
-    try {
-      if (details.dirty) {
-        const persisted = await details.persistProfile();
-        if (!persisted.ok) {
-          setPublishError(persisted.message);
-          return;
-        }
-      }
-      const updated = await publishMyProfileRequest();
-      details.setProfile(updated);
-    } catch (error) {
-      setPublishError(mapApiErrorMessage(error, tErrors));
-    } finally {
-      setPublishing(false);
-    }
-  }
-
-  async function unpublish() {
-    setPublishing(true);
-    setPublishError(null);
-    try {
-      const updated = await unpublishMyProfileRequest();
-      details.setProfile(updated);
-    } catch (error) {
-      setPublishError(mapApiErrorMessage(error, tErrors));
-    } finally {
-      setPublishing(false);
-    }
-  }
 
   return (
     <div
@@ -196,10 +160,10 @@ function ProfileEditorForm({
               acceptPolicies: details.acceptPolicies,
               workCount: works.works.length,
             })}
-            pending={publishing || details.saving}
-            error={publishError}
-            onPublish={publish}
-            onUnpublish={unpublish}
+            pending={publish.pending}
+            error={publish.publishError}
+            onPublish={publish.publish}
+            onUnpublish={publish.unpublish}
           />
         </section>
 

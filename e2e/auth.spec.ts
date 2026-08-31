@@ -1,4 +1,9 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+async function logoutFromHeader(page: Page) {
+  await expect(page.locator('[data-auth-hydrated="true"]')).toBeVisible();
+  await page.getByRole('button', { name: /^(Выйти|Log out)$/ }).click();
+}
 
 test.describe('auth flow', () => {
   test('registers a new user from the UI', async ({ page }) => {
@@ -37,12 +42,7 @@ test.describe('auth flow', () => {
     await page.getByLabel('Пароль').fill(password);
     await page.getByRole('button', { name: 'Создать аккаунт' }).click();
     await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
-    await Promise.all([
-      page.waitForResponse((response) =>
-        new URL(response.url()).pathname.endsWith('/auth/logout'),
-      ),
-      page.getByRole('banner').getByRole('button', { name: 'Выйти' }).click(),
-    ]);
+    await logoutFromHeader(page);
     await expect(
       page.getByRole('banner').getByRole('link', { name: 'Войти' }),
     ).toBeVisible();
@@ -74,7 +74,7 @@ test.describe('auth flow', () => {
     await page.getByLabel('Пароль').fill(password);
     await page.getByRole('button', { name: 'Создать аккаунт' }).click();
     await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
-    await page.getByRole('button', { name: 'Выйти' }).click();
+    await logoutFromHeader(page);
 
     await page.goto('/register');
     await page.getByLabel('Email').fill(email);
@@ -126,7 +126,7 @@ test.describe('auth flow', () => {
     await page.getByLabel('Пароль').fill(password);
     await page.getByRole('button', { name: 'Создать аккаунт' }).click();
     await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
-    await page.getByRole('button', { name: 'Выйти' }).click();
+    await logoutFromHeader(page);
 
     await page.goto('/login');
     await page.getByLabel('Email').fill(email);

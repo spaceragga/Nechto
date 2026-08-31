@@ -14,7 +14,7 @@ function PagerChevron({ direction }: { direction: 'prev' | 'next' }) {
   return (
     <svg
       viewBox="0 0 16 48"
-      className="aspect-[1/3] h-[6.75rem] overflow-visible"
+      className="pointer-events-none aspect-[1/3] h-[6.75rem] overflow-visible"
       shapeRendering="geometricPrecision"
       aria-hidden
     >

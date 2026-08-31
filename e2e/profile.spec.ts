@@ -1,8 +1,18 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import path from 'node:path';
 import { nextProfilePane } from './profile-panes';
 
 const avatarFixture = path.join(__dirname, 'fixtures', 'avatar.png');
+
+async function registerEn(page: Page, email: string) {
+  await page.goto('/en/register');
+  await page.getByLabel('Email').fill(email);
+  await page.getByLabel('Password').fill('password123');
+  await page.getByRole('button', { name: 'Create account' }).click();
+  await expect(
+    page.getByRole('banner').getByRole('link', { name: 'Profile' }),
+  ).toBeVisible();
+}
 
 test.describe('profile', () => {
   test('updates profile and uploads an avatar', async ({ page }) => {
@@ -73,27 +83,15 @@ test.describe('profile', () => {
     await expect(page.getByRole('heading', { name: 'Витрина' })).toBeVisible();
   });
 
-  test('shows works copy in English', async ({ page }) => {
-    const email = `works-en-${Date.now()}@nechto.test`;
-    const password = 'password123';
+  test('shows signed-in header chrome in English', async ({ page }) => {
+    const email = `chrome-en-${Date.now()}@nechto.test`;
+    await registerEn(page, email);
 
-    await page.goto('/en/register');
-    await page.getByLabel('Email').fill(email);
-    await page.getByLabel('Password').fill(password);
-    await page.getByRole('button', { name: 'Create account' }).click();
-    await expect(
-      page.getByRole('banner').getByRole('link', { name: 'Profile' }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('banner').getByRole('link', { name: 'Account' }),
-    ).toHaveCount(0);
+    const banner = page.getByRole('banner');
+    await expect(banner.getByRole('link', { name: 'Account' })).toHaveCount(0);
 
-    const profileLink = page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Profile' });
-    const logout = page
-      .getByRole('banner')
-      .getByRole('button', { name: 'Log out' });
+    const profileLink = banner.getByRole('link', { name: 'Profile' });
+    const logout = banner.getByRole('button', { name: 'Log out' });
     await expect(profileLink).toHaveCSS('text-decoration-line', 'none');
     await expect(profileLink).toHaveCSS('opacity', '0.8');
     await expect(profileLink.locator('svg')).toBeVisible();
@@ -112,8 +110,14 @@ test.describe('profile', () => {
     expect(profileBox && logoutBox ? profileBox.x < logoutBox.x : false).toBe(
       true,
     );
+  });
 
-    await profileLink.click();
+  test('pages through profile panes in English', async ({ page }) => {
+    await registerEn(page, `panes-en-${Date.now()}@nechto.test`);
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Profile' })
+      .click();
 
     await expect(page.getByRole('heading', { name: 'Profile' })).toBeVisible();
     await expect(page.getByTestId('profile-editor')).toHaveAttribute(
