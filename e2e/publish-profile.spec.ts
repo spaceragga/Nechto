@@ -91,9 +91,11 @@ test.describe('publish profile', () => {
 
       await page.goto(`/u/${slug}`);
       await page.getByRole('link', { name: 'Работа 1' }).click();
+      await expect(page).toHaveURL(new RegExp(`/u/${slug}/[^/?#]+`));
       await expect(page.getByText('Дождь на асфальте.')).toBeVisible();
 
       await page.getByRole('banner').getByRole('combobox').selectOption('en');
+      await expect(page).toHaveURL(new RegExp(`/en/u/${slug}/[^/?#]+`));
       await expect(page.getByText('More from this creator')).toBeVisible();
       await expect(page.getByText('Дождь на асфальте.')).toBeVisible();
 
