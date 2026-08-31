@@ -16,6 +16,9 @@ test.describe('profile', () => {
     await expect(
       page.getByRole('banner').getByRole('link', { name: 'Профиль' }),
     ).toBeVisible();
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Аккаунт' }),
+    ).toHaveCount(0);
 
     await page
       .getByRole('banner')
@@ -56,11 +59,18 @@ test.describe('profile', () => {
     await expect(page.getByRole('heading', { name: 'Работы' })).toBeVisible();
     await nextProfilePane(page);
     await expect(page.getByRole('heading', { name: 'Витрина' })).toBeVisible();
+    await nextProfilePane(page);
+    await expect(
+      page.getByRole('heading', { name: 'Данные аккаунта' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Сменить пароль' }),
+    ).toBeVisible();
     await page
       .getByTestId('profile-editor')
       .getByRole('button', { name: 'Назад' })
       .click();
-    await expect(page.getByRole('heading', { name: 'Работы' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Витрина' })).toBeVisible();
   });
 
   test('shows works copy in English', async ({ page }) => {
@@ -74,11 +84,36 @@ test.describe('profile', () => {
     await expect(
       page.getByRole('banner').getByRole('link', { name: 'Profile' }),
     ).toBeVisible();
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Account' }),
+    ).toHaveCount(0);
 
-    await page
+    const profileLink = page
       .getByRole('banner')
-      .getByRole('link', { name: 'Profile' })
-      .click();
+      .getByRole('link', { name: 'Profile' });
+    const logout = page
+      .getByRole('banner')
+      .getByRole('button', { name: 'Log out' });
+    await expect(profileLink).toHaveCSS('text-decoration-line', 'none');
+    await expect(profileLink).toHaveCSS('opacity', '0.8');
+    await expect(profileLink.locator('svg')).toBeVisible();
+    await expect(profileLink).toHaveText('');
+    await expect(logout.locator('svg')).toBeVisible();
+    await expect(logout).toHaveText('');
+    await profileLink.hover();
+    await expect(profileLink).toHaveCSS('opacity', '1');
+    await expect(
+      page.getByRole('tooltip', { name: `Signed in as ${email}` }),
+    ).toBeVisible();
+    await logout.hover();
+    await expect(page.getByRole('tooltip', { name: 'Log out' })).toBeVisible();
+    const profileBox = await profileLink.boundingBox();
+    const logoutBox = await logout.boundingBox();
+    expect(profileBox && logoutBox ? profileBox.x < logoutBox.x : false).toBe(
+      true,
+    );
+
+    await profileLink.click();
 
     await expect(page.getByRole('heading', { name: 'Profile' })).toBeVisible();
     await expect(page.getByTestId('profile-editor')).toHaveAttribute(
@@ -129,6 +164,14 @@ test.describe('profile', () => {
     await expect(
       page.getByRole('button', { name: 'Publish profile' }),
     ).toBeDisabled();
+
+    await nextProfilePane(page);
+    await expect(
+      page.getByRole('heading', { name: 'Account data' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Change password' }),
+    ).toBeVisible();
     await expect(
       page.getByTestId('profile-editor').getByRole('button', { name: 'Next' }),
     ).toBeDisabled();

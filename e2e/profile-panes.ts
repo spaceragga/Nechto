@@ -7,12 +7,16 @@ export async function nextProfilePane(page: Page) {
     .click();
 }
 
-export async function openProfileVisibilityPane(page: Page) {
+export async function openProfilePane(page: Page, pane: number) {
   const editor = page.getByTestId('profile-editor');
-  for (let step = 0; step < 2; step += 1) {
-    if ((await editor.getAttribute('data-profile-pane')) === '2') {
+  for (let step = 0; step < 4; step += 1) {
+    if ((await editor.getAttribute('data-profile-pane')) === String(pane)) {
       return;
     }
     await nextProfilePane(page);
   }
+}
+
+export async function openProfileVisibilityPane(page: Page) {
+  await openProfilePane(page, 2);
 }

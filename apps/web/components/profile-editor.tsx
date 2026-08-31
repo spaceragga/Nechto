@@ -8,6 +8,7 @@ import {
   type Profile,
   type Work,
 } from '@nechto/api-contract';
+import { ProfileAccountField } from '@/components/profile/profile-account-field';
 import { ProfileAvatarField } from '@/components/profile/profile-avatar-field';
 import { ProfileDetailsForm } from '@/components/profile/profile-details-form';
 import { ProfilePager } from '@/components/profile/profile-pager';
@@ -201,6 +202,8 @@ function ProfileEditorForm({
             onUnpublish={unpublish}
           />
         </section>
+
+        <ProfileAccountField />
       </ProfilePager>
     </div>
   );
