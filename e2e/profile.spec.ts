@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const avatarFixture = path.join(__dirname, 'fixtures', 'avatar.png');
 
-test.describe('profile photo', () => {
+test.describe('profile', () => {
   test('updates profile and uploads an avatar', async ({ page }) => {
     const email = `profile-${Date.now()}@nechto.test`;
     const password = 'password123';
@@ -21,6 +21,10 @@ test.describe('profile photo', () => {
       .getByRole('link', { name: 'Профиль' })
       .click();
     await expect(page.getByRole('heading', { name: 'Профиль' })).toBeVisible();
+    await expect(page.getByTestId('profile-editor')).toHaveAttribute(
+      'data-hydrated',
+      'true',
+    );
 
     await page.getByLabel('Имя').fill('Тестовый художник');
     await page.getByLabel('О себе').fill('Минск, фото');
@@ -44,5 +48,35 @@ test.describe('profile photo', () => {
         }),
       )
       .toBeGreaterThan(0);
+  });
+
+  test('shows works copy in English', async ({ page }) => {
+    const email = `works-en-${Date.now()}@nechto.test`;
+    const password = 'password123';
+
+    await page.goto('/en/register');
+    await page.getByLabel('Email').fill(email);
+    await page.getByLabel('Password').fill(password);
+    await page.getByRole('button', { name: 'Create account' }).click();
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Profile' }),
+    ).toBeVisible();
+
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Profile' })
+      .click();
+
+    await expect(page.getByRole('heading', { name: 'Works' })).toBeVisible();
+    await expect(page.getByTestId('profile-editor')).toHaveAttribute(
+      'data-hydrated',
+      'true',
+    );
+    await expect(
+      page.getByText('Complete your profile and publish at least five works.'),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Publish profile' }),
+    ).toBeDisabled();
   });
 });

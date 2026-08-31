@@ -6,8 +6,12 @@ import { ApiHttpException } from '../errors/api-http-exception';
 export class ZodValidationPipe implements PipeTransform {
   constructor(private readonly schema: ZodTypeAny) {}
 
-  transform(value: unknown, _metadata: ArgumentMetadata) {
-    const parsed = this.schema.safeParse(value);
+  transform(value: unknown, metadata: ArgumentMetadata) {
+    const input =
+      metadata.type === 'query' && (value === undefined || value === null)
+        ? {}
+        : value;
+    const parsed = this.schema.safeParse(input);
 
     if (!parsed.success) {
       throw new ApiHttpException(

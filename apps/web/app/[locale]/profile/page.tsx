@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProfileEditor } from '@/components/profile-editor';
-import { loadMyProfile } from '@/lib/session';
+import { loadMyProfile, loadMyWorks } from '@/lib/session';
 
 type ProfilePageProps = {
   params: Promise<{ locale: string }>;
@@ -14,7 +14,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const t = await getTranslations('Profile');
 
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-16">
+    <main className="flex flex-1 items-start justify-center px-6 py-16">
       <Suspense
         fallback={
           <div className="mx-auto flex w-full max-w-md flex-col gap-6">
@@ -31,10 +31,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
 async function ProfilePageContent() {
   const result = await loadMyProfile();
+  const works = result.ok ? await loadMyWorks() : [];
 
   if (!result.ok) {
     return <ProfileEditor profile={null} errorStatus={result.status} />;
   }
 
-  return <ProfileEditor profile={result.profile} />;
+  return <ProfileEditor profile={result.profile} works={works} />;
 }

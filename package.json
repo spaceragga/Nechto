@@ -25,15 +25,20 @@
     "test:e2e:install": "playwright install chromium",
     "db:generate": "npm run prisma:generate -w @nechto/api",
     "db:migrate": "npm run prisma:migrate -w @nechto/api",
-    "db:deploy": "npm run prisma:deploy -w @nechto/api"
+    "db:deploy": "npm run prisma:deploy -w @nechto/api",
+    "db:seed:dev": "node apps/api/scripts/seed-dev-artists.cjs"
   },
   "engines": {
     "node": ">=22.18"
+  },
+  "overrides": {
+    "deepmerge-ts": "$deepmerge-ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.51.1",
     "@types/node": "^22.13.10",
+    "deepmerge-ts": "8.0.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.1",
     "eslint-config-prettier": "^10.1.8",

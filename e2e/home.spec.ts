@@ -482,6 +482,38 @@ test.describe('home page locales', () => {
     ).toHaveCount(1);
   });
 
+  test('creators rail shows author portraits, not works, in Russian', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const rail = page.getByRole('region', { name: 'Авторы' });
+    const frames = rail.locator('[data-work-frame]');
+    await expect(frames.first()).toBeVisible();
+    const count = await frames.count();
+    expect(count).toBeGreaterThan(0);
+    for (let index = 0; index < count; index += 1) {
+      const src = await frames.nth(index).getAttribute('data-still-src');
+      expect(src ?? '').not.toMatch(/\/works\//);
+      expect(src ?? '').toMatch(/portrait|avatars/);
+    }
+  });
+
+  test('creators rail shows author portraits, not works, in English', async ({
+    page,
+  }) => {
+    await page.goto('/en');
+    const rail = page.getByRole('region', { name: 'Creators' });
+    const frames = rail.locator('[data-work-frame]');
+    await expect(frames.first()).toBeVisible();
+    const count = await frames.count();
+    expect(count).toBeGreaterThan(0);
+    for (let index = 0; index < count; index += 1) {
+      const src = await frames.nth(index).getAttribute('data-still-src');
+      expect(src ?? '').not.toMatch(/\/works\//);
+      expect(src ?? '').toMatch(/portrait|avatars/);
+    }
+  });
+
   test('explore chips open creators and stubs in Russian', async ({ page }) => {
     await page.goto('/');
 

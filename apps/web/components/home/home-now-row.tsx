@@ -1,18 +1,21 @@
 import { type DemoStillKind } from '@/lib/demo-media';
 import { FluidRail } from '@/components/ui/fluid-rail';
 import { WorkFrame } from '@/components/ui/work-frame';
-import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import { Link } from '@/i18n/navigation';
 
 export type HomeNowWork = {
   title: string;
-  still: DemoStillKind;
+  href: string;
+  still?: DemoStillKind;
+  src?: string | null;
 };
 
 export type HomeNowItem = {
   author: string;
+  href: string;
   directionLabel: string;
-  avatar: DemoStillKind;
+  avatarStill?: DemoStillKind;
+  avatarSrc?: string | null;
   works: HomeNowWork[];
 };
 
@@ -24,11 +27,12 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
   return (
     <div className="relative flex h-36 shrink-0 gap-1 overflow-hidden">
       <Link
-        href={DEMO_PROFILE_HREF}
+        href={item.href}
         className="peer/author flex w-28 shrink-0 flex-col px-1 py-1"
       >
         <WorkFrame
-          still={item.avatar}
+          still={item.avatarStill}
+          src={item.avatarSrc}
           alt=""
           fit="cover"
           className="size-[60px] shrink-0"
@@ -48,11 +52,12 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
         {item.works.map((work) => (
           <Link
             key={work.title}
-            href={DEMO_PROFILE_HREF}
+            href={work.href}
             className="flex min-h-0 flex-col"
           >
             <WorkFrame
               still={work.still}
+              src={work.src}
               alt={work.title}
               fit="cover"
               className="min-h-0 w-full flex-1"

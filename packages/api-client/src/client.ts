@@ -1,13 +1,21 @@
 import {
   API_ERROR_CODES,
   type AuthUserResponse,
+  type CreateWorkFields,
+  type CursorPage,
+  type CursorPageQuery,
   type HealthResponse,
   type HelloResponse,
+  type ListCreatorsQuery,
   type LoginDto,
   type LogoutResponse,
   type Profile,
+  type PublicProfile,
+  type PublicProfileWithWorks,
   type RegisterDto,
   type UpdateProfileDto,
+  type Work,
+  type WorkWithAuthor,
 } from '@nechto/api-contract';
 import { ApiError, parseApiErrorResponse } from './api-error';
 
@@ -77,7 +85,7 @@ export class ApiClient {
   }
 
   getProfile(userId: string) {
-    return this.request<Profile>(`/profiles/${userId}`);
+    return this.request<PublicProfile>(`/profiles/${userId}`);
   }
 
   updateMyProfile(input: UpdateProfileDto) {
@@ -93,6 +101,58 @@ export class ApiClient {
     return this.request<Profile>('/profiles/me/avatar', {
       method: 'POST',
       body,
+    });
+  }
+
+  publishMyProfile() {
+    return this.request<Profile>('/profiles/me/publish', { method: 'POST' });
+  }
+
+  unpublishMyProfile() {
+    return this.request<Profile>('/profiles/me/unpublish', { method: 'POST' });
+  }
+
+  getProfileBySlug(slug: string) {
+    return this.request<PublicProfile>(
+      `/profiles/by-slug/${encodeURIComponent(slug)}`,
+    );
+  }
+
+  listCreators(query: Partial<ListCreatorsQuery> = {}) {
+    return this.request<CursorPage<PublicProfileWithWorks>>(
+      `/profiles${toSearchParams(query)}`,
+    );
+  }
+
+  listMyWorks(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<Work>>(`/works/me${toSearchParams(query)}`);
+  }
+
+  listPublishedWorks(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<WorkWithAuthor>>(
+      `/works${toSearchParams(query)}`,
+    );
+  }
+
+  listWorksBySlug(slug: string, query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<Work>>(
+      `/works/profile/${encodeURIComponent(slug)}${toSearchParams(query)}`,
+    );
+  }
+
+  uploadMyWork(file: Blob, fields: CreateWorkFields, fileName = 'work') {
+    const body = new FormData();
+    body.append('file', file, fileName);
+    body.append('title', fields.title);
+    return this.request<Work>('/works', {
+      method: 'POST',
+      body,
+    });
+  }
+
+  deleteMyWork(workId: string) {
+    return this.request<void>(`/works/${encodeURIComponent(workId)}`, {
+      method: 'DELETE',
     });
   }
 
@@ -144,4 +204,23 @@ export class ApiClient {
 
 export function createApiClient(options: ApiClientOptions): ApiClient {
   return new ApiClient(options);
+}
+
+function toSearchParams(query: {
+  cursor?: string;
+  limit?: number;
+  direction?: string;
+}): string {
+  const params = new URLSearchParams();
+  if (query.cursor) {
+    params.set('cursor', query.cursor);
+  }
+  if (query.limit != null) {
+    params.set('limit', String(query.limit));
+  }
+  if (query.direction) {
+    params.set('direction', query.direction);
+  }
+  const serialized = params.toString();
+  return serialized ? `?${serialized}` : '';
 }

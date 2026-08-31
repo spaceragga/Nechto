@@ -11,16 +11,18 @@ type MediaTileProps = {
   src?: string | null;
   wellClassName?: string;
   className?: string;
+  fit?: 'contain' | 'cover';
 };
 
 export function MediaTile({
   href,
   title,
   subtitle,
-  still = 'interior',
+  still,
   src,
   wellClassName = 'h-44 w-full',
   className = '',
+  fit,
 }: MediaTileProps) {
   return (
     <Link href={href} className={`block min-w-0 ${className}`.trim()}>
@@ -29,6 +31,7 @@ export function MediaTile({
         still={still}
         alt={title ?? ''}
         className={wellClassName}
+        fit={fit}
       />
       <WorkCaption title={title} meta={subtitle} />
     </Link>

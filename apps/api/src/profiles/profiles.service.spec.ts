@@ -1,14 +1,34 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
+import { API_ERROR_CODES, canPublishProfile } from '@nechto/api-contract';
 import { ProfilesService } from './profiles.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
+import { ApiHttpException } from '../common/errors/api-http-exception';
+
+const baseProfile = {
+  id: 'p1',
+  userId: 'u1',
+  displayName: null as string | null,
+  bio: null as string | null,
+  avatarKey: null as string | null,
+  slug: null as string | null,
+  directions: [] as string[],
+  websiteUrl: null as string | null,
+  instagramUrl: null as string | null,
+  telegramUrl: null as string | null,
+  acceptPolicies: false,
+  publishedAt: null as Date | null,
+  user: { email: 'a@nechto.test' },
+  _count: { works: 0 },
+};
 
 describe('ProfilesService', () => {
   let service: ProfilesService;
   const prisma = {
     profile: {
       findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     },
@@ -39,21 +59,11 @@ describe('ProfilesService', () => {
   });
 
   it('updates display name and bio', async () => {
-    prisma.profile.findUnique.mockResolvedValue({
-      id: 'p1',
-      userId: 'u1',
-      displayName: null,
-      bio: null,
-      avatarKey: null,
-      user: { email: 'a@nechto.test' },
-    });
+    prisma.profile.findUnique.mockResolvedValue(baseProfile);
     prisma.profile.update.mockResolvedValue({
-      id: 'p1',
-      userId: 'u1',
+      ...baseProfile,
       displayName: 'Artist',
       bio: 'Hello',
-      avatarKey: null,
-      user: { email: 'a@nechto.test' },
     });
 
     const view = await service.updateMine('u1', {
@@ -64,22 +74,69 @@ describe('ProfilesService', () => {
     expect(view.displayName).toBe('Artist');
     expect(view.bio).toBe('Hello');
     expect(view.avatarUrl).toBeNull();
+    expect(view.slug).toBeNull();
+  });
+
+  it('rejects publish when the profile is incomplete', async () => {
+    prisma.profile.findUnique.mockResolvedValue(baseProfile);
+
+    await expect(service.publishMine('u1')).rejects.toBeInstanceOf(
+      ApiHttpException,
+    );
+
+    try {
+      await service.publishMine('u1');
+    } catch (error) {
+      expect((error as ApiHttpException).getResponse()).toMatchObject({
+        code: API_ERROR_CODES.PUBLISH_REQUIREMENTS_NOT_MET,
+      });
+    }
+  });
+
+  it('publishes when name, slug, policies, and five works are set', async () => {
+    const ready = {
+      ...baseProfile,
+      displayName: 'Artist',
+      slug: 'artist',
+      acceptPolicies: true,
+      _count: { works: 5 },
+    };
+    prisma.profile.findUnique.mockResolvedValue(ready);
+    prisma.profile.update.mockResolvedValue({
+      ...ready,
+      publishedAt: new Date('2026-08-31T00:00:00.000Z'),
+    });
+
+    const view = await service.publishMine('u1');
+
+    expect(view.publishedAt).toBe('2026-08-31T00:00:00.000Z');
+    expect(view.workCount).toBe(5);
+  });
+
+  it('canPublishProfile requires name, slug, policies, and five works', () => {
+    const ready = {
+      displayName: 'Artist',
+      slug: 'artist',
+      acceptPolicies: true,
+      workCount: 5,
+    };
+
+    expect(canPublishProfile(ready)).toBe(true);
+    expect(canPublishProfile({ ...ready, displayName: '  ' })).toBe(false);
+    expect(canPublishProfile({ ...ready, workCount: 4 })).toBe(false);
+    expect(canPublishProfile({ ...ready, acceptPolicies: false })).toBe(false);
   });
 
   it('rejects missing avatar file', async () => {
     await expect(service.uploadAvatar('u1', undefined)).rejects.toBeInstanceOf(
-      BadRequestException,
+      ApiHttpException,
     );
   });
 
   it('stores avatar and replaces previous key after DB update', async () => {
     prisma.profile.findUnique.mockResolvedValue({
-      id: 'p1',
-      userId: 'u1',
-      displayName: null,
-      bio: null,
+      ...baseProfile,
       avatarKey: 'avatars/u1/old.png',
-      user: { email: 'a@nechto.test' },
     });
     storage.put.mockResolvedValue({
       key: 'avatars/u1/new.png',
@@ -87,12 +144,8 @@ describe('ProfilesService', () => {
       size: 4,
     });
     prisma.profile.update.mockResolvedValue({
-      id: 'p1',
-      userId: 'u1',
-      displayName: null,
-      bio: null,
+      ...baseProfile,
       avatarKey: 'avatars/u1/new.png',
-      user: { email: 'a@nechto.test' },
     });
 
     const view = await service.uploadAvatar('u1', {

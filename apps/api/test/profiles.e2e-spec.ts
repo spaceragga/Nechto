@@ -88,6 +88,7 @@ describe('ProfilesController (e2e)', () => {
 
     expect(publicProfile.body.displayName).toBe('Nechto Artist');
     expect(publicProfile.body.avatarUrl).toBe(avatarResponse.body.avatarUrl);
+    expect(publicProfile.body.email).toBeUndefined();
 
     const avatarPath = new URL(avatarResponse.body.avatarUrl as string)
       .pathname;
