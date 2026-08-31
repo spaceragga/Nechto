@@ -3,7 +3,7 @@ import { HomeNowRow, type HomeNowItem } from '@/components/home/home-now-row';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import type { PublishedCreator } from '@/lib/load-published-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { workPath } from '@/lib/work-path';
+import { workPath, profilePath } from '@/lib/work-path';
 
 type NowItemSource = {
   author: string;
@@ -29,7 +29,7 @@ export async function HomeNow({ creators = [] }: HomeNowProps) {
       ? published.map((creator) => ({
           id: creator.slug,
           author: creator.displayName ?? creator.slug,
-          href: `/u/${creator.slug}`,
+          href: profilePath(creator.slug),
           directionLabel: creator.directions[0]
             ? tCreators(`directions.${creator.directions[0]}`)
             : '',

@@ -4,7 +4,7 @@ import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { excerpt } from '@/lib/excerpt';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { workPath } from '@/lib/work-path';
+import { workPath, profilePath } from '@/lib/work-path';
 import { Link } from '@/i18n/navigation';
 
 type PublicWorkViewProps = {
@@ -16,7 +16,7 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
   const t = await getTranslations('WorkPage');
   const tCreators = await getTranslations('Creators');
   const src = toUploadSrc(work.imageUrl);
-  const authorHref = `/u/${work.author.slug}`;
+  const authorHref = profilePath(work.author.slug);
   const direction = work.author.directions[0]
     ? tCreators(`directions.${work.author.directions[0]}`)
     : null;

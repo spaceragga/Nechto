@@ -4,6 +4,7 @@ import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { excerpt } from '@/lib/excerpt';
 import { toUploadSrc } from '@/lib/to-upload-src';
+import { workPath } from '@/lib/work-path';
 
 type PublicProfileViewProps = {
   profile: PublicProfile;
@@ -61,7 +62,7 @@ export async function PublicProfileView({
           {works.map((work) => (
             <MediaTile
               key={work.id}
-              href={`/u/${profile.slug}/${work.id}`}
+              href={workPath(profile.slug ?? '', work.id)}
               title={work.title}
               subtitle={
                 work.description ? excerpt(work.description, 110) : undefined

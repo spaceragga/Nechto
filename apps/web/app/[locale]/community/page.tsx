@@ -6,6 +6,7 @@ import {
   loadPublishedWorks,
 } from '@/lib/load-published-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
+import { profilePath } from '@/lib/work-path';
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -29,7 +30,7 @@ export default async function CommunityFeedPage({ params }: PageProps) {
       wallLabel={t('wall')}
       empty={t('empty')}
       people={creators.map((creator) => ({
-        href: `/u/${creator.slug}`,
+        href: profilePath(creator.slug),
         name: creator.displayName ?? creator.slug,
         lede: excerpt(creator.bio, 140),
         src: toUploadSrc(creator.avatarUrl),

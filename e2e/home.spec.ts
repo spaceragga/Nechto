@@ -1,5 +1,21 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
+function publicSlug(href: string) {
+  return href.replace(/^\/(?:en\/)?/, '').split('/')[0] ?? '';
+}
+
+function scrollY(page: Page) {
+  return page.evaluate(() => window.scrollY);
+}
+
+function fluidRailHrefs(section: Locator) {
+  return section
+    .locator('.fluid-rail a')
+    .evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('href') ?? ''),
+    );
+}
+
 function billboard(page: Page) {
   return page.locator('[data-home-spot="billboard"]');
 }
@@ -66,11 +82,7 @@ test.describe('home page locales', () => {
     const fragments = page.locator('#fragments');
     await expect(fragments.locator('[data-work-frame]').first()).toBeVisible();
 
-    const workHrefs = await works
-      .locator('a[href*="/u/"]')
-      .evaluateAll((nodes) =>
-        nodes.map((node) => node.getAttribute('href') ?? ''),
-      );
+    const workHrefs = await fluidRailHrefs(works);
     if (workHrefs.length === 0) {
       await expect(
         works.getByText('В этом направлении пока нет работ.'),
@@ -78,19 +90,11 @@ test.describe('home page locales', () => {
       return;
     }
 
-    const authorHrefs = await authors
-      .locator('a[href^="/u/"]')
-      .evaluateAll((nodes) =>
-        nodes.map((node) => node.getAttribute('href') ?? ''),
-      );
     const authorSlugs = new Set(
-      authorHrefs
-        .map((href) => href.replace(/^\/u\//, '').split('/')[0])
-        .filter(Boolean),
+      (await fluidRailHrefs(authors)).map(publicSlug).filter(Boolean),
     );
     for (const href of workHrefs) {
-      const slug = href.replace(/^\/(?:en\/)?u\//, '').split('/')[0];
-      expect(authorSlugs.has(slug)).toBe(true);
+      expect(authorSlugs.has(publicSlug(href))).toBe(true);
     }
   });
 
@@ -110,11 +114,7 @@ test.describe('home page locales', () => {
       page.locator('#fragments [data-work-frame]').first(),
     ).toBeVisible();
 
-    const workHrefs = await works
-      .locator('a[href*="/u/"]')
-      .evaluateAll((nodes) =>
-        nodes.map((node) => node.getAttribute('href') ?? ''),
-      );
+    const workHrefs = await fluidRailHrefs(works);
     if (workHrefs.length === 0) {
       await expect(
         works.getByText('No works in this direction yet.'),
@@ -122,19 +122,11 @@ test.describe('home page locales', () => {
       return;
     }
 
-    const authorHrefs = await authors
-      .locator('a[href*="/u/"]')
-      .evaluateAll((nodes) =>
-        nodes.map((node) => node.getAttribute('href') ?? ''),
-      );
     const authorSlugs = new Set(
-      authorHrefs
-        .map((href) => href.replace(/^\/(?:en\/)?u\//, '').split('/')[0])
-        .filter(Boolean),
+      (await fluidRailHrefs(authors)).map(publicSlug).filter(Boolean),
     );
     for (const href of workHrefs) {
-      const slug = href.replace(/^\/(?:en\/)?u\//, '').split('/')[0];
-      expect(authorSlugs.has(slug)).toBe(true);
+      expect(authorSlugs.has(publicSlug(href))).toBe(true);
     }
   });
 
@@ -160,7 +152,7 @@ test.describe('home page locales', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.locator('#works').scrollIntoViewIfNeeded();
-    const before = await page.evaluate(() => window.scrollY);
+    const before = await scrollY(page);
     expect(before).toBeGreaterThan(400);
 
     await page
@@ -168,10 +160,8 @@ test.describe('home page locales', () => {
       .getByRole('link', { name: 'Иллюстрация' })
       .click();
     await expect(page).toHaveURL(/direction=illustration/);
-    await expect
-      .poll(async () => page.evaluate(() => window.scrollY))
-      .toBeGreaterThan(before - 80);
-    const after = await page.evaluate(() => window.scrollY);
+    await expect.poll(async () => scrollY(page)).toBeGreaterThan(before - 80);
+    const after = await scrollY(page);
     expect(Math.abs(after - before)).toBeLessThan(80);
   });
 
@@ -179,7 +169,7 @@ test.describe('home page locales', () => {
     await page.goto('/en');
     await page.waitForLoadState('networkidle');
     await page.locator('#works').scrollIntoViewIfNeeded();
-    const before = await page.evaluate(() => window.scrollY);
+    const before = await scrollY(page);
     expect(before).toBeGreaterThan(400);
 
     await page
@@ -187,10 +177,8 @@ test.describe('home page locales', () => {
       .getByRole('link', { name: 'Illustration' })
       .click();
     await expect(page).toHaveURL(/direction=illustration/);
-    await expect
-      .poll(async () => page.evaluate(() => window.scrollY))
-      .toBeGreaterThan(before - 80);
-    const after = await page.evaluate(() => window.scrollY);
+    await expect.poll(async () => scrollY(page)).toBeGreaterThan(before - 80);
+    const after = await scrollY(page);
     expect(Math.abs(after - before)).toBeLessThan(80);
   });
 
@@ -282,14 +270,10 @@ test.describe('home page locales', () => {
     await expect(exploreChip).toHaveCSS('border-top-width', '0px');
     await expect(exploreChip).toHaveCSS('border-radius', '0px');
     await exploreChip.hover();
-    await expect
-      .poll(async () => {
-        const hoverBg = await exploreChip.evaluate(
-          (el) => getComputedStyle(el).backgroundColor,
-        );
-        return hoverBg.replace(/\s/g, '');
-      })
-      .toMatch(/rgba\(255,255,255,0\.08\)|oklab\([^)]+\/0\.08\)/);
+    await expect(exploreChip).toHaveCSS(
+      'background-color',
+      /rgba\(255,\s*255,\s*255,\s*0\.08\)|oklab\([^)]+\/\s*0\.08\)/,
+    );
 
     const allChip = page
       .getByRole('navigation', { name: 'Фильтр по направлению' })
@@ -407,7 +391,7 @@ test.describe('home page locales', () => {
     ).toHaveAttribute('href', '/journal');
     await expect(
       spots.getByRole('link', { name: /Войти в студию/ }),
-    ).toHaveAttribute('href', /\/u\//);
+    ).toHaveAttribute('href', /^\/[a-z0-9-]+$/);
 
     const freshKicker = spots.getByText('Только что');
     const dialogueKicker = spots.getByText('Диалог');
@@ -611,8 +595,8 @@ test.describe('home page locales', () => {
     );
     await expect
       .poll(async () =>
-        frame.locator('img').evaluate((image) => {
-          return (image as { naturalWidth: number }).naturalWidth;
+        frame.locator('img').evaluate((image: HTMLImageElement) => {
+          return image.naturalWidth;
         }),
       )
       .toBeGreaterThan(0);

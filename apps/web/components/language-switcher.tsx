@@ -25,7 +25,7 @@ export function LanguageSwitcher() {
 
   function onChange(nextLocale: string) {
     // Read the browser URL at click time. usePathname() in the header layout
-    // can stay on the parent /u/[slug] after client-navigating into a work.
+    // can stay on the parent /[slug] after client-navigating into a work.
     const href = hrefWithoutLocale(window.location.pathname, locale);
     router.replace(href, { locale: nextLocale as AppLocale });
   }

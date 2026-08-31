@@ -79,7 +79,7 @@ test.describe('publish profile', () => {
       await expect(page.getByText('Работа 5')).toBeVisible();
 
       await page.getByRole('link', { name: 'Работа 5' }).click();
-      await expect(page).toHaveURL(new RegExp(`/u/${slug}/`));
+      await expect(page).toHaveURL(new RegExp(`/${slug}/`));
       await expect(
         page.getByRole('heading', { name: 'Работа 5' }),
       ).toBeVisible();
@@ -89,19 +89,19 @@ test.describe('publish profile', () => {
       ).toBeVisible();
       await expect(page.getByText('Ещё у автора')).toBeVisible();
 
-      await page.goto(`/u/${slug}`);
+      await page.goto(`/${slug}`);
       await page.getByRole('link', { name: 'Работа 1' }).click();
-      await expect(page).toHaveURL(new RegExp(`/u/${slug}/[^/?#]+`));
+      await expect(page).toHaveURL(new RegExp(`/${slug}/[^/?#]+`));
       await expect(page.getByText('Дождь на асфальте.')).toBeVisible();
 
       await page.getByRole('banner').getByRole('combobox').selectOption('en');
-      await expect(page).toHaveURL(new RegExp(`/en/u/${slug}/[^/?#]+`));
+      await expect(page).toHaveURL(new RegExp(`/en/${slug}/[^/?#]+`));
       await expect(page.getByText('More from this creator')).toBeVisible();
       await expect(page.getByText('Дождь на асфальте.')).toBeVisible();
 
       await page.goto('/');
       const rail = page.getByRole('region', { name: 'Авторы' });
-      const railCard = rail.locator(`a[href="/u/${slug}"]`);
+      const railCard = rail.locator(`a[href="/${slug}"]`);
       await expect(railCard).toBeVisible();
       const railSrc = await railCard
         .locator('[data-work-frame]')
@@ -110,7 +110,7 @@ test.describe('publish profile', () => {
       expect(railSrc ?? '').not.toMatch(/\/works\//);
 
       await page.goto('/creators');
-      const catalogCard = page.locator(`a[href="/u/${slug}"]`);
+      const catalogCard = page.locator(`a[href="/${slug}"]`);
       await expect(catalogCard.locator('[data-creator-portrait]')).toHaveCount(
         1,
       );

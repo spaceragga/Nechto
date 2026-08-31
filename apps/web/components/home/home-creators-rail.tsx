@@ -5,6 +5,7 @@ import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import type { PublishedCreator } from '@/lib/load-published-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { Link } from '@/i18n/navigation';
+import { profilePath } from '@/lib/work-path';
 
 type CreatorCard = {
   name: string;
@@ -39,7 +40,7 @@ export async function HomeCreatorsRail({
           {creators.map((creator) => (
             <MediaTile
               key={creator.slug}
-              href={`/u/${creator.slug}`}
+              href={profilePath(creator.slug)}
               title={creator.displayName ?? creator.slug}
               subtitle={
                 creator.directions[0]

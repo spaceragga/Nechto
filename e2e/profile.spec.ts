@@ -43,9 +43,11 @@ test.describe('profile', () => {
     );
     await expect
       .poll(async () =>
-        page.getByTestId('profile-avatar').evaluate((image) => {
-          return (image as { naturalWidth: number }).naturalWidth;
-        }),
+        page
+          .getByTestId('profile-avatar')
+          .evaluate((image: HTMLImageElement) => {
+            return image.naturalWidth;
+          }),
       )
       .toBeGreaterThan(0);
   });

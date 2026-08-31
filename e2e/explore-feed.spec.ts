@@ -51,13 +51,16 @@ test.describe('explore feeds', () => {
     page,
   }) => {
     await page.goto('/new');
-    const tile = page.locator('main a[href*="/u/"]').first();
+    const tile = page
+      .locator('main a')
+      .filter({ has: page.locator('[data-work-frame]') })
+      .first();
     if ((await tile.count()) === 0) {
       test.skip();
       return;
     }
     const href = await tile.getAttribute('href');
-    expect(href).toMatch(/\/u\/[^/]+\/[^/]+/);
+    expect(href).toMatch(/^\/(?:en\/)?[^/]+\/[^/]+$/);
     await tile.click();
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator('main [data-work-frame]').first()).toBeVisible();

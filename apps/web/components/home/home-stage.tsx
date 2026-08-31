@@ -15,7 +15,7 @@ import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import { excerpt } from '@/lib/excerpt';
 import { type HomeFeedSlices } from '@/lib/pick-home-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { workPath } from '@/lib/work-path';
+import { workPath, profilePath } from '@/lib/work-path';
 
 type HomeStageProps = {
   locale: string;
@@ -40,7 +40,7 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
     ? workPath(feed.billboard.author.slug, feed.billboard.id)
     : DEMO_PROFILE_HREF;
   const creatorHref = feed.creatorOfWeek
-    ? `/u/${feed.creatorOfWeek.slug}`
+    ? profilePath(feed.creatorOfWeek.slug)
     : DEMO_PROFILE_HREF;
   const collectionDirection =
     feed.collection[0]?.author.directions[0] ?? 'photography';
@@ -198,7 +198,7 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
             title={feed.studio?.displayName ?? t('studioSpot.title')}
             lede={excerpt(feed.studio?.bio, 140) || t('studioSpot.lede')}
             cta={t('studioSpot.cta')}
-            href={feed.studio ? `/u/${feed.studio.slug}` : undefined}
+            href={feed.studio ? profilePath(feed.studio.slug) : undefined}
             src={studioWork ? toUploadSrc(studioWork.imageUrl) : undefined}
           />
         </div>

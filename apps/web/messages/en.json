@@ -344,7 +344,7 @@
     "displayName": "Display name",
     "bio": "Bio",
     "slug": "Profile address",
-    "slugHint": "Letters, numbers, and hyphens. Your page will be /u/address",
+    "slugHint": "Letters, numbers, and hyphens. Your page will be /address",
     "directions": "Directions (up to three)",
     "websiteUrl": "Website",
     "instagramUrl": "Instagram",

@@ -67,7 +67,7 @@ test.describe('site navigation', () => {
       'Сменить пароль',
     );
 
-    await page.goto('/u/demo');
+    await page.goto('/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
     await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });
@@ -142,7 +142,7 @@ test.describe('site navigation', () => {
       'Change password',
     );
 
-    await page.goto('/en/u/demo');
+    await page.goto('/en/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
     await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });
