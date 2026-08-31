@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server';
-import type { WorkWithAuthor } from '@nechto/api-contract';
 import { HomeCollectionSpot } from '@/components/home/home-collection-spot';
 import { HomeDialogueSpot } from '@/components/home/home-dialogue-spot';
 import { HomeFeatured } from '@/components/home/home-featured';
@@ -14,15 +13,13 @@ import { HomeOpenCallSpot } from '@/components/home/home-open-call-spot';
 import { HomeStudioSpot } from '@/components/home/home-studio-spot';
 import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import { excerpt } from '@/lib/excerpt';
-import type { PublishedCreator } from '@/lib/load-published-feed';
-import { pickHomeFeed } from '@/lib/pick-home-feed';
+import { type HomeFeedSlices } from '@/lib/pick-home-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { workPath } from '@/lib/work-path';
 
 type HomeStageProps = {
   locale: string;
-  works: WorkWithAuthor[];
-  creators: PublishedCreator[];
+  feed: HomeFeedSlices;
 };
 
 function formatFreshTime(iso: string, locale: string): string {
@@ -32,10 +29,9 @@ function formatFreshTime(iso: string, locale: string): string {
   });
 }
 
-export async function HomeStage({ locale, works, creators }: HomeStageProps) {
+export async function HomeStage({ locale, feed }: HomeStageProps) {
   const t = await getTranslations('HomePage');
   const tCreators = await getTranslations('Creators');
-  const feed = pickHomeFeed(works, creators);
   const demoFresh = t.raw('freshSpot.items') as Array<
     HomeFreshItem & { still: NonNullable<HomeFreshItem['still']> }
   >;
@@ -168,7 +164,7 @@ export async function HomeStage({ locale, works, creators }: HomeStageProps) {
           </div>
         </div>
         <div className="flex min-w-0 flex-col gap-25">
-          <HomeNow creators={creators} />
+          <HomeNow creators={feed.nowCreators} />
           <HomeFreshSpot
             kicker={t('freshSpot.kicker')}
             seeAll={t('freshSpot.seeAll')}

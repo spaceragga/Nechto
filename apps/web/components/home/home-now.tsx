@@ -27,6 +27,7 @@ export async function HomeNow({ creators = [] }: HomeNowProps) {
   const items: HomeNowItem[] =
     published.length > 0
       ? published.map((creator) => ({
+          id: creator.slug,
           author: creator.displayName ?? creator.slug,
           href: `/u/${creator.slug}`,
           directionLabel: creator.directions[0]
@@ -40,6 +41,7 @@ export async function HomeNow({ creators = [] }: HomeNowProps) {
           })),
         }))
       : (t.raw('nowItems') as NowItemSource[]).map((item) => ({
+          id: `demo-${item.author}`,
           author: item.author,
           href: DEMO_PROFILE_HREF,
           directionLabel: tCreators(`directions.${item.direction}`),
@@ -60,7 +62,7 @@ export async function HomeNow({ creators = [] }: HomeNowProps) {
         {t('nowLabel')}
       </p>
       {items.map((item) => (
-        <HomeNowRow key={item.author} item={item} />
+        <HomeNowRow key={item.id} item={item} />
       ))}
     </aside>
   );

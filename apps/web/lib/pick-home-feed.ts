@@ -3,7 +3,7 @@ import type {
   Work,
   WorkWithAuthor,
 } from '@nechto/api-contract';
-import type { PublishedCreator } from '@/lib/load-published-feed';
+import type { PublishedCreator } from './load-published-feed';
 
 const STUDIO_DIRECTIONS: CreatorDirection[] = ['craft', 'interior', 'fashion'];
 
@@ -79,8 +79,9 @@ export function pickCollectionWorks(
   return pool.slice(0, 4);
 }
 
-export function hangingFromCreators(
+export function worksFromCreators(
   creators: PublishedCreator[],
+  limit?: number,
 ): WorkWithAuthor[] {
   const works: WorkWithAuthor[] = [];
 
@@ -98,7 +99,7 @@ export function hangingFromCreators(
         directions: creator.directions,
       },
     });
-    if (works.length === 5) {
+    if (limit !== undefined && works.length >= limit) {
       break;
     }
   }
@@ -106,16 +107,46 @@ export function hangingFromCreators(
   return works;
 }
 
+export function hangingFromCreators(
+  creators: PublishedCreator[],
+): WorkWithAuthor[] {
+  return worksFromCreators(creators, 5);
+}
+
 export function latestWorkOf(creator: PublishedCreator): Work | null {
   return creator.latestWorks[0] ?? null;
+}
+
+function hasProfileCopy(creator: PublishedCreator): boolean {
+  return Boolean(creator.bio?.trim());
+}
+
+/** Prefer profiles with a bio so incomplete publishes do not take over the house. */
+export function featuredCreators(
+  creators: PublishedCreator[],
+): PublishedCreator[] {
+  const withCopy = creators.filter(hasProfileCopy);
+  return withCopy.length > 0 ? withCopy : creators;
+}
+
+export function worksByCreators(
+  works: WorkWithAuthor[],
+  creators: PublishedCreator[],
+): WorkWithAuthor[] {
+  const slugs = new Set(creators.map((creator) => creator.slug));
+  if (slugs.size === 0) {
+    return works;
+  }
+  return works.filter((work) => slugs.has(work.author.slug));
 }
 
 export type HomeFeedSlices = {
   billboard: WorkWithAuthor | null;
   creatorOfWeek: PublishedCreator | null;
+  nowCreators: PublishedCreator[];
+  railWorks: WorkWithAuthor[];
   fresh: WorkWithAuthor[];
   hanging: WorkWithAuthor[];
-  fragments: WorkWithAuthor[];
   journal: { creator: PublishedCreator; work: Work } | null;
   collection: WorkWithAuthor[];
   dialogue: [WorkWithAuthor, WorkWithAuthor] | null;
@@ -127,26 +158,33 @@ export function pickHomeFeed(
   works: WorkWithAuthor[],
   creators: PublishedCreator[],
 ): HomeFeedSlices {
-  const hanging = hangingFromCreators(creators);
+  const spotlight = featuredCreators(creators);
+  const fromFeed = worksByCreators(works, spotlight);
+  const fromProfiles = worksFromCreators(spotlight);
+  const spotlightWorks = fromFeed.length > 0 ? fromFeed : fromProfiles;
+  const hanging = hangingFromCreators(spotlight);
   const journalCreator =
-    creators.find((creator) => creator.bio && creator.latestWorks[0]) ??
-    creators.find((creator) => creator.latestWorks[0]) ??
+    spotlight.find(
+      (creator) => hasProfileCopy(creator) && creator.latestWorks[0],
+    ) ??
+    spotlight.find((creator) => creator.latestWorks[0]) ??
     null;
   const journalWork = journalCreator ? latestWorkOf(journalCreator) : null;
 
   return {
-    billboard: works[0] ?? null,
-    creatorOfWeek: creators[0] ?? null,
-    fresh: works.slice(0, 3),
+    billboard: spotlightWorks[0] ?? null,
+    creatorOfWeek: spotlight[0] ?? null,
+    nowCreators: spotlight.slice(0, 3),
+    railWorks: spotlightWorks,
+    fresh: spotlightWorks.slice(0, 3),
     hanging,
-    fragments: works.slice(3, 11),
     journal:
       journalCreator && journalWork
         ? { creator: journalCreator, work: journalWork }
         : null,
-    collection: pickCollectionWorks(works),
-    dialogue: pairFromDifferentAuthors(works),
-    studio: pickStudioCreator(creators),
-    openCall: works[1] ?? works[0] ?? null,
+    collection: pickCollectionWorks(spotlightWorks),
+    dialogue: pairFromDifferentAuthors(spotlightWorks),
+    studio: pickStudioCreator(spotlight),
+    openCall: spotlightWorks[1] ?? spotlightWorks[0] ?? null,
   };
 }

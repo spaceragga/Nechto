@@ -32,20 +32,25 @@ export default async function HomePage({
     (item) => item === query.direction,
   );
   const t = await getTranslations('HomePage');
-  const [stageWorks, stageCreators, railWorks, filteredCreators, fragments] =
-    await Promise.all([
-      loadPublishedWorks(24),
-      loadPublishedCreators({ limit: 12 }),
-      direction
-        ? loadPublishedWorksPage({ limit: 24, direction })
-        : Promise.resolve(null),
-      direction
-        ? loadPublishedCreators({ limit: 12, direction })
-        : Promise.resolve(null),
-      loadPublishedWorksPage({ limit: 12 }),
-    ]);
+  const [
+    stageWorks,
+    stageCreators,
+    filteredWorksPage,
+    filteredCreators,
+    fragments,
+  ] = await Promise.all([
+    loadPublishedWorks(50),
+    loadPublishedCreators({ limit: 50 }),
+    direction
+      ? loadPublishedWorksPage({ limit: 24, direction })
+      : Promise.resolve(null),
+    direction
+      ? loadPublishedCreators({ limit: 12, direction })
+      : Promise.resolve(null),
+    loadPublishedWorksPage({ limit: 12 }),
+  ]);
   const feed = pickHomeFeed(stageWorks, stageCreators);
-  const works = direction ? (railWorks?.items ?? []) : stageWorks;
+  const works = direction ? (filteredWorksPage?.items ?? []) : feed.railWorks;
   const creators = direction ? (filteredCreators ?? []) : stageCreators;
 
   return (
@@ -61,11 +66,7 @@ export default async function HomePage({
           <HomeExploreNav />
         </header>
 
-        <HomeStage
-          locale={locale}
-          works={stageWorks}
-          creators={stageCreators}
-        />
+        <HomeStage locale={locale} feed={feed} />
 
         <HomeHangingSpot works={feed.hanging} />
 
