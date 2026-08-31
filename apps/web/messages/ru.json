@@ -356,7 +356,10 @@
     "uploading": "Загружаем фото…",
     "loading": "Загружаем профиль…",
     "signedInAs": "Аккаунт:",
-    "loginLink": "Войти"
+    "loginLink": "Войти",
+    "prevPane": "Назад",
+    "nextPane": "Дальше",
+    "visibilityTitle": "Витрина"
   },
   "Works": {
     "title": "Работы",

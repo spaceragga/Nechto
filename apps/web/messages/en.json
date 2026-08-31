@@ -369,7 +369,10 @@
     "uploading": "Uploading photo…",
     "loading": "Loading profile…",
     "signedInAs": "Account:",
-    "loginLink": "Log in"
+    "loginLink": "Log in",
+    "prevPane": "Back",
+    "nextPane": "Next",
+    "visibilityTitle": "Showcase"
   },
   "Works": {
     "title": "Works",
