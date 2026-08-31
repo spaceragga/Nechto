@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { PublicProfile, Work } from '@nechto/api-contract';
 import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
+import { excerpt } from '@/lib/excerpt';
 import { toUploadSrc } from '@/lib/to-upload-src';
 
 type PublicProfileViewProps = {
@@ -62,7 +63,9 @@ export async function PublicProfileView({
               key={work.id}
               href={`/u/${profile.slug}/${work.id}`}
               title={work.title}
-              subtitle={title}
+              subtitle={
+                work.description ? excerpt(work.description, 110) : undefined
+              }
               src={toUploadSrc(work.imageUrl)}
             />
           ))}

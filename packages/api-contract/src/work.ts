@@ -5,15 +5,11 @@ const WORK_TITLE_MAX = 80;
 const WORK_DESCRIPTION_MAX = 2000;
 
 const workTitleSchema = z.string().trim().min(1).max(WORK_TITLE_MAX);
-const workDescriptionSchema = z
-  .string()
-  .trim()
-  .min(1)
-  .max(WORK_DESCRIPTION_MAX);
+const workDescriptionSchema = z.string().trim().max(WORK_DESCRIPTION_MAX);
 
 export const createWorkFieldsSchema = z.object({
   title: workTitleSchema,
-  description: workDescriptionSchema,
+  description: workDescriptionSchema.optional().default(''),
 });
 
 export type CreateWorkFields = z.infer<typeof createWorkFieldsSchema>;

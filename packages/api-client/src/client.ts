@@ -149,7 +149,7 @@ export class ApiClient {
     const body = new FormData();
     body.append('file', file, fileName);
     body.append('title', fields.title);
-    body.append('description', fields.description);
+    body.append('description', fields.description ?? '');
     return this.request<Work>('/works', {
       method: 'POST',
       body,

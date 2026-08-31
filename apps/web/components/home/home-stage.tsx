@@ -131,7 +131,11 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
           <HomeJournalSpot
             kicker={t('journalSpot.kicker')}
             title={feed.journal?.work.title ?? t('journalSpot.title')}
-            lede={excerpt(feed.journal?.creator.bio) || t('journalSpot.lede')}
+            lede={
+              excerpt(feed.journal?.work.description) ||
+              excerpt(feed.journal?.creator.bio) ||
+              t('journalSpot.lede')
+            }
             cta={t('journalSpot.cta')}
             href={journalHref}
             src={

@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { Work, WorkWithAuthor } from '@nechto/api-contract';
 import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
+import { excerpt } from '@/lib/excerpt';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { workPath } from '@/lib/work-path';
 import { Link } from '@/i18n/navigation';
@@ -56,7 +57,11 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
                 key={item.id}
                 href={workPath(work.author.slug, item.id)}
                 title={item.title}
-                subtitle={work.author.displayName}
+                subtitle={
+                  item.description
+                    ? excerpt(item.description, 110)
+                    : work.author.displayName
+                }
                 src={toUploadSrc(item.imageUrl)}
               />
             ))}

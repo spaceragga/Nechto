@@ -121,13 +121,11 @@ async function signIn(email) {
   return cookie;
 }
 
-function workCopy(work, artist) {
-  const beat = artist.bio.split(/[.!?]/)[0]?.trim();
+function workCopy(work) {
   return {
     title: work.title,
     description:
-      work.description?.trim() ||
-      (beat ? `${work.title}. ${beat}.` : work.title),
+      typeof work.description === 'string' ? work.description.trim() : '',
   };
 }
 
@@ -147,7 +145,7 @@ async function replaceWorks(cookie, artist) {
   }
 
   for (const work of artist.works) {
-    const copy = workCopy(work, artist);
+    const copy = workCopy(work);
     const body = new FormData();
     body.append('file', await imageBlob(work.imageUrl), 'work.jpg');
     body.append('title', copy.title);
