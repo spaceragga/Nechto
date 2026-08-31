@@ -1,21 +1,26 @@
 import {
+  Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  Body,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
+import {
+  listCreatorsQuerySchema,
+  type ListCreatorsQuery,
+} from '@nechto/api-contract';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/decorators/current-user.decorator';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { AVATAR_MAX_BYTES } from '../config/avatar-limits';
+import { imageUploadInterceptor } from '../storage/image-upload.interceptor';
 import { updateProfileSchema, type UpdateProfileDto } from './dto/profile.dto';
 import { ProfilesService } from './profiles.service';
 
@@ -40,17 +45,39 @@ export class ProfilesController {
 
   @Post('me/avatar')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: memoryStorage(),
-      limits: { fileSize: AVATAR_MAX_BYTES },
-    }),
-  )
+  @UseInterceptors(imageUploadInterceptor())
   uploadAvatar(
     @CurrentUser() user: AuthUser,
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.profilesService.uploadAvatar(user.id, file);
+  }
+
+  @Post('me/publish')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  publishMine(@CurrentUser() user: AuthUser) {
+    return this.profilesService.publishMine(user.id);
+  }
+
+  @Post('me/unpublish')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  unpublishMine(@CurrentUser() user: AuthUser) {
+    return this.profilesService.unpublishMine(user.id);
+  }
+
+  @Get()
+  listPublished(
+    @Query(new ZodValidationPipe(listCreatorsQuerySchema))
+    query: ListCreatorsQuery,
+  ) {
+    return this.profilesService.listPublished(query);
+  }
+
+  @Get('by-slug/:slug')
+  getBySlug(@Param('slug') slug: string) {
+    return this.profilesService.getPublishedBySlug(slug);
   }
 
   @Get(':userId')

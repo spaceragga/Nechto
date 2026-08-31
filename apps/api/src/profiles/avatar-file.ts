@@ -1,38 +1,29 @@
-import { BadRequestException } from '@nestjs/common';
-import { extname } from 'node:path';
+import { API_ERROR_CODES } from '@nechto/api-contract';
 import {
-  AVATAR_ALLOWED_MIME_TYPES,
-  AVATAR_MAX_BYTES,
-  type AvatarMimeType,
-} from '../config/avatar-limits';
+  assertImageFile,
+  extensionForImageMime,
+  type ImageFileErrors,
+} from '../storage/image-file';
+
+const AVATAR_FILE_ERRORS: ImageFileErrors = {
+  required: {
+    code: API_ERROR_CODES.AVATAR_REQUIRED,
+    message: 'Avatar file is required',
+  },
+  tooLarge: {
+    code: API_ERROR_CODES.AVATAR_TOO_LARGE,
+    message: 'Avatar file is too large',
+  },
+  invalidType: {
+    code: API_ERROR_CODES.AVATAR_INVALID_TYPE,
+    message: 'Avatar must be JPEG, PNG, or WebP',
+  },
+};
 
 export function assertAvatarFile(
   file: Express.Multer.File | undefined,
 ): Express.Multer.File {
-  if (!file) {
-    throw new BadRequestException('Avatar file is required');
-  }
-
-  if (file.size > AVATAR_MAX_BYTES) {
-    throw new BadRequestException('Avatar file is too large');
-  }
-
-  if (!AVATAR_ALLOWED_MIME_TYPES.includes(file.mimetype as AvatarMimeType)) {
-    throw new BadRequestException('Avatar must be JPEG, PNG, or WebP');
-  }
-
-  return file;
+  return assertImageFile(file, AVATAR_FILE_ERRORS);
 }
 
-export function extensionForAvatarMime(mimeType: string): string {
-  switch (mimeType) {
-    case 'image/jpeg':
-      return '.jpg';
-    case 'image/png':
-      return '.png';
-    case 'image/webp':
-      return '.webp';
-    default:
-      return extname(mimeType) || '.bin';
-  }
-}
+export { extensionForImageMime as extensionForAvatarMime };

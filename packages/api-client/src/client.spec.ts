@@ -56,6 +56,14 @@ describe('ApiClient', () => {
           displayName: null,
           bio: null,
           avatarUrl: 'http://localhost:3001/uploads/a.png',
+          slug: null,
+          directions: [],
+          websiteUrl: null,
+          instagramUrl: null,
+          telegramUrl: null,
+          publishedAt: null,
+          workCount: 0,
+          acceptPolicies: false,
         }),
         {
           status: 201,
@@ -77,6 +85,38 @@ describe('ApiClient', () => {
     const init = fetchMock.mock.calls[0]?.[1];
     expect(init?.body).toBeInstanceOf(FormData);
     expect(new Headers(init?.headers).get('Content-Type')).toBeNull();
+  });
+
+  it('uploads a work as multipart with a title field', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 'w1',
+          title: 'Yard',
+          imageUrl: 'http://localhost:3001/uploads/works/a.png',
+          createdAt: '2026-08-31T00:00:00.000Z',
+        }),
+        {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.uploadMyWork(
+      new Blob(['png'], { type: 'image/png' }),
+      { title: 'Yard' },
+      'a.png',
+    );
+
+    const init = fetchMock.mock.calls[0]?.[1];
+    expect(init?.body).toBeInstanceOf(FormData);
+    expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:3001/works');
   });
 
   it('throws SERVICE_UNAVAILABLE when fetch cannot reach the API', async () => {
