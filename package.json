@@ -25,7 +25,8 @@
     "test:e2e:install": "playwright install chromium",
     "db:generate": "npm run prisma:generate -w @nechto/api",
     "db:migrate": "npm run prisma:migrate -w @nechto/api",
-    "db:deploy": "npm run prisma:deploy -w @nechto/api"
+    "db:deploy": "npm run prisma:deploy -w @nechto/api",
+    "db:seed:dev": "node apps/api/scripts/seed-dev-artists.cjs"
   },
   "engines": {
     "node": ">=22.18"

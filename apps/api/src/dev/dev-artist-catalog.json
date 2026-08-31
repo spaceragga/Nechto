@@ -1,0 +1,375 @@
+{
+  "password": "password123",
+  "artists": [
+    {
+      "email": "artist1@nechto.test",
+      "displayName": "Кася Войт",
+      "slug": "kasia-voit",
+      "bio": "Снимаю Минск с земли: дворы хрущёвок, окна после дождя, рынок в семь утра. Хожу с плёнкой и маленьким цифровиком, серии собираю годами. Сейчас дописываю «Дворы-2026» — про свет, который никто не ставил.",
+      "directions": ["photography"],
+      "websiteUrl": "https://example.com/kasia-voit",
+      "instagramUrl": "https://www.instagram.com/kasia.voit/",
+      "telegramUrl": "https://t.me/kasia_voit",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Европейская улица после дождя",
+          "imageUrl": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Город в час, когда гаснет витрина",
+          "imageUrl": "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Комаровка, суббота",
+          "imageUrl": "https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Панель и низкое небо",
+          "imageUrl": "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Переулок без адреса",
+          "imageUrl": "https://images.pexels.com/photos/1034662/pexels-photo-1034662.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Дом, в котором ещё горит окно",
+          "imageUrl": "https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    },
+    {
+      "email": "artist2@nechto.test",
+      "displayName": "Анна Русецкая",
+      "slug": "anna-rusetskaya",
+      "bio": "Интерьеры без «дизайна»: кухни, где чайник уже часть композиции, подъезды Гродно, квартиры после первого ремонта. Снимаю бытовой свет — тот, что уже лежит на стене, когда никто не просил.",
+      "directions": ["interior"],
+      "websiteUrl": "https://example.com/rusetskaya",
+      "instagramUrl": "https://www.instagram.com/anna.rusetskaya/",
+      "telegramUrl": "https://t.me/anna_rusetskaya",
+      "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Кухня, утро, третий этаж",
+          "imageUrl": "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Гостиная после ремонта",
+          "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Квартира с длинным светом",
+          "imageUrl": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Ниша и растение",
+          "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Лестничная клетка",
+          "imageUrl": "https://images.pexels.com/photos/2089698/pexels-photo-2089698.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Лампа в проёме",
+          "imageUrl": "https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        }
+      ]
+    },
+    {
+      "email": "artist3@nechto.test",
+      "displayName": "Юлия Нехай",
+      "slug": "yulia-nekhai",
+      "bio": "Шью маленькими тиражами: пальто, платья, куртки. Ткань сначала живёт в ателье на Зыбицкой, потом выходит на улицу. Не подиум — примерка, шов, вешалка и один готовый лук.",
+      "directions": ["fashion"],
+      "websiteUrl": "https://example.com/nekhai",
+      "instagramUrl": "https://www.instagram.com/yulia.nekhai/",
+      "telegramUrl": "https://t.me/yulia_nekhai",
+      "avatarUrl": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Линейка сезона",
+          "imageUrl": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Платье у моря",
+          "imageUrl": "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Куртка с примерки",
+          "imageUrl": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Сложенный тираж",
+          "imageUrl": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Швейная в ателье",
+          "imageUrl": "https://images.pexels.com/photos/7679460/pexels-photo-7679460.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Лук во дворе",
+          "imageUrl": "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    },
+    {
+      "email": "artist4@nechto.test",
+      "displayName": "Максим Борщ",
+      "slug": "maksim-borshch",
+      "bio": "Короткое видео из Бреста: неон заправки, мокрый асфальт, стоп-кадр, который держится дольше ролика. Снимаю ночь как материал, не как эффект. Монтирую сам, звук почти не трогаю.",
+      "directions": ["video"],
+      "websiteUrl": "https://example.com/borshch",
+      "instagramUrl": "https://www.instagram.com/maksim.borshch/",
+      "telegramUrl": "https://t.me/maksim_borshch",
+      "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Стоп-кадр в зале",
+          "imageUrl": "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Плёнка на свету",
+          "imageUrl": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Вывеска после часа",
+          "imageUrl": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Ночной проезд",
+          "imageUrl": "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Сцена и дым",
+          "imageUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Синтетика",
+          "imageUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    },
+    {
+      "email": "artist5@nechto.test",
+      "displayName": "Вольга Сідарэнка",
+      "slug": "volha-sidarenka",
+      "bio": "Рисую гуашью, карандашом и коллажем. Минск, мастерская на первом этаже: стол, бумага, банки. Предметы становятся персонажами — портрет, натюрморт, пятно, которое уже не бытовое.",
+      "directions": ["illustration"],
+      "websiteUrl": "https://example.com/sidarenka",
+      "instagramUrl": "https://www.instagram.com/volha.sidarenka/",
+      "telegramUrl": "https://t.me/volha_sidarenka",
+      "avatarUrl": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Портрет гуашью",
+          "imageUrl": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Абстракция на бумаге",
+          "imageUrl": "https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Карандашный лист",
+          "imageUrl": "https://images.pexels.com/photos/1646953/pexels-photo-1646953.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Цвет в мастерской",
+          "imageUrl": "https://images.pexels.com/photos/1762851/pexels-photo-1762851.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Живопись, крупно",
+          "imageUrl": "https://images.pexels.com/photos/1194420/pexels-photo-1194420.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Холст у стены",
+          "imageUrl": "https://images.pexels.com/photos/102127/pexels-photo-102127.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        }
+      ]
+    },
+    {
+      "email": "artist6@nechto.test",
+      "displayName": "Ігар Клімаў",
+      "slug": "igar-klimau",
+      "bio": "Графика для города: афиши, сетки, цвет как модуль. Витебск, иногда Минск на печать. Собираю макет с бумаги и экрана, потом смотрю, как он держится на стене, а не в макете.",
+      "directions": ["graphic-design"],
+      "websiteUrl": "https://example.com/klimau",
+      "instagramUrl": "https://www.instagram.com/igar.klimau/",
+      "telegramUrl": "https://t.me/igar_klimau",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Стол с макетами",
+          "imageUrl": "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Скетч сетки",
+          "imageUrl": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Вёрстка на экране",
+          "imageUrl": "https://images.pexels.com/photos/4348401/pexels-photo-4348401.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Слой на стене",
+          "imageUrl": "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Буква на планшете",
+          "imageUrl": "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Плейбук на столе",
+          "imageUrl": "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    },
+    {
+      "email": "artist7@nechto.test",
+      "displayName": "Лена Крыловіч",
+      "slug": "lena-krylovich",
+      "bio": "Глина. Гомель, мастерская в доме: круг, глазурь, полка. Делаю чашки, миски, вазы, которыми потом пользуются. Снимаю их там же, где они появились — на столе, ещё тёплые.",
+      "directions": ["craft"],
+      "websiteUrl": "https://example.com/krylovich",
+      "instagramUrl": "https://www.instagram.com/lena.krylovich/",
+      "telegramUrl": "https://t.me/lena_krylovich",
+      "avatarUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Чашки",
+          "imageUrl": "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Глазурь",
+          "imageUrl": "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Горшки до обжига",
+          "imageUrl": "https://images.pexels.com/photos/1094767/pexels-photo-1094767.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Керамика на полке",
+          "imageUrl": "https://images.pexels.com/photos/2162938/pexels-photo-2162938.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Вазы",
+          "imageUrl": "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Сырая партия",
+          "imageUrl": "https://images.pexels.com/photos/2162937/pexels-photo-2162937.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        }
+      ]
+    },
+    {
+      "email": "artist8@nechto.test",
+      "displayName": "Павел Рымашэўскі",
+      "slug": "pavel-rymasheuski",
+      "bio": "Бьюти и портрет в Минске. Лицо как поверхность света: влажная кожа, красный рот, стекло гримёрки. Работаю с независимыми визажистами, студия небольшая, свет один — и его хватает.",
+      "directions": ["beauty"],
+      "websiteUrl": "https://example.com/rymasheuski",
+      "instagramUrl": "https://www.instagram.com/pavel.rymasheuski/",
+      "telegramUrl": "https://t.me/pavel_rymasheuski",
+      "avatarUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Помада",
+          "imageUrl": "https://images.pexels.com/photos/1377034/pexels-photo-1377034.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Крупный план",
+          "imageUrl": "https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Глаз и свет",
+          "imageUrl": "https://images.pexels.com/photos/14982364/pexels-photo-14982364.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Гримёрка",
+          "imageUrl": "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Палитра",
+          "imageUrl": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Влажный свет",
+          "imageUrl": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    },
+    {
+      "email": "artist9@nechto.test",
+      "displayName": "Надзя Бусел",
+      "slug": "nadya-busel",
+      "bio": "Фото и короткое видео из Могилёва. Репортаж без задания: улица, двор, мост ночью. Кадр живёт и как фото, и как стоп в ролике — поэтому снимаю чуть длиннее, чем нужно для картинки.",
+      "directions": ["photography", "video"],
+      "websiteUrl": "https://example.com/busel",
+      "instagramUrl": "https://www.instagram.com/nadya.busel/",
+      "telegramUrl": "https://t.me/nadya_busel",
+      "avatarUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Улица без сюжета",
+          "imageUrl": "https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Двор, день",
+          "imageUrl": "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Мост ночью",
+          "imageUrl": "https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Городской кадр",
+          "imageUrl": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Ночная проходка",
+          "imageUrl": "https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        },
+        {
+          "title": "Стоп из ролика",
+          "imageUrl": "https://images.pexels.com/photos/1168940/pexels-photo-1168940.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        }
+      ]
+    },
+    {
+      "email": "artist10@nechto.test",
+      "displayName": "Тарас Літвін",
+      "slug": "taras-litvin",
+      "bio": "Столярка и предмет в комнате. Минск: стулья, столы, табуреты из ясеня. Сначала делаю вещь в мастерской, потом снимаю её там, где она остаётся жить — не на фоне, а в быту.",
+      "directions": ["interior", "craft"],
+      "websiteUrl": "https://example.com/litvin",
+      "instagramUrl": "https://www.instagram.com/taras.litvin/",
+      "telegramUrl": "https://t.me/taras_litvin",
+      "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80",
+      "works": [
+        {
+          "title": "Табурет",
+          "imageUrl": "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Диван в комнате",
+          "imageUrl": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Предмет в интерьере",
+          "imageUrl": "https://images.unsplash.com/photo-1532372320572-cda25653a26d?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Столярка",
+          "imageUrl": "https://images.unsplash.com/photo-1551298370-9d3d53740c72?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Мебель у стены",
+          "imageUrl": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "title": "Инструмент",
+          "imageUrl": "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    }
+  ]
+}
