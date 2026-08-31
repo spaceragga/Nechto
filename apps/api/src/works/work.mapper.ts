@@ -1,5 +1,18 @@
-import type { Work, WorkWithAuthor } from '@nechto/api-contract';
+import {
+  CREATOR_DIRECTIONS,
+  type CreatorDirection,
+  type Work,
+  type WorkWithAuthor,
+} from '@nechto/api-contract';
 import type { StorageService } from '../storage/storage.service';
+
+const directionSet = new Set<string>(CREATOR_DIRECTIONS);
+
+function toDirections(values: string[]): CreatorDirection[] {
+  return values.filter((value): value is CreatorDirection =>
+    directionSet.has(value),
+  );
+}
 
 export type WorkRecord = {
   id: string;
@@ -13,6 +26,7 @@ export type WorkWithProfileRecord = WorkRecord & {
     slug: string | null;
     displayName: string | null;
     avatarKey: string | null;
+    directions: string[];
   };
 };
 
@@ -44,6 +58,7 @@ export function toWorkWithAuthorView(
       avatarUrl: work.profile.avatarKey
         ? storage.getPublicUrl(work.profile.avatarKey)
         : null,
+      directions: toDirections(work.profile.directions ?? []),
     },
   };
 }

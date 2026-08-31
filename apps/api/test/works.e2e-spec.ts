@@ -136,11 +136,52 @@ describe('WorksController (e2e)', () => {
     ).toBe(true);
 
     const feed = await request(app.getHttpServer()).get('/works').expect(200);
+    const publishedItem = feed.body.items.find(
+      (item: { author: { slug: string } }) => item.author.slug === slug,
+    );
+    expect(publishedItem).toBeTruthy();
+    expect(publishedItem.author.directions).toEqual(['photography']);
+
+    const photographyFeed = await request(app.getHttpServer())
+      .get('/works?direction=photography')
+      .expect(200);
+
     expect(
-      feed.body.items.some(
+      photographyFeed.body.items.every(
+        (item: { author: { directions: string[] } }) =>
+          item.author.directions.includes('photography'),
+      ),
+    ).toBe(true);
+    expect(
+      photographyFeed.body.items.some(
         (item: { author: { slug: string } }) => item.author.slug === slug,
       ),
     ).toBe(true);
+
+    await request(app.getHttpServer())
+      .get('/works?direction=fashion')
+      .expect(200)
+      .then((response) => {
+        expect(
+          response.body.items.some(
+            (item: { author: { slug: string } }) => item.author.slug === slug,
+          ),
+        ).toBe(false);
+      });
+
+    const publishedWork = await request(app.getHttpServer())
+      .get(`/works/${workIds[0]}`)
+      .expect(200);
+
+    expect(publishedWork.body).toMatchObject({
+      id: workIds[0],
+      title: 'Work 1',
+      author: {
+        slug,
+        displayName: 'Works Artist',
+        directions: ['photography'],
+      },
+    });
 
     await request(app.getHttpServer())
       .delete(`/works/${workIds[0]}`)
@@ -154,5 +195,12 @@ describe('WorksController (e2e)', () => {
 
     expect(afterDelete.body.publishedAt).toBeNull();
     expect(afterDelete.body.workCount).toBe(4);
+
+    await request(app.getHttpServer())
+      .get(`/works/${workIds[1]}`)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.code).toBe(API_ERROR_CODES.WORK_NOT_FOUND);
+      });
   });
 });

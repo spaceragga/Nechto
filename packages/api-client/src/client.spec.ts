@@ -119,6 +119,59 @@ describe('ApiClient', () => {
     expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:3001/works');
   });
 
+  it('loads a published work by id', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 'w1',
+          title: 'Yard',
+          imageUrl: 'http://localhost:3001/uploads/works/a.png',
+          createdAt: '2026-08-31T00:00:00.000Z',
+          author: {
+            slug: 'kasia-voit',
+            displayName: 'Кася Войт',
+            avatarUrl: null,
+            directions: ['photography'],
+          },
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await expect(client.getWork('w1')).resolves.toMatchObject({
+      id: 'w1',
+      author: { slug: 'kasia-voit', directions: ['photography'] },
+    });
+    expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:3001/works/w1');
+  });
+
+  it('lists published works filtered by direction', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ items: [], nextCursor: null }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.listPublishedWorks({ direction: 'photography', limit: 12 });
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(
+      'http://localhost:3001/works?limit=12&direction=photography',
+    );
+  });
+
   it('throws SERVICE_UNAVAILABLE when fetch cannot reach the API', async () => {
     fetchMock.mockRejectedValue(new TypeError('fetch failed'));
 

@@ -6,6 +6,7 @@ import {
   type CreateWorkFields,
   type CursorPage,
   type CursorPageQuery,
+  type ListPublishedWorksQuery,
   type Work,
   type WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -16,6 +17,13 @@ import { publishedProfileWhere } from '../profiles/published-profile';
 import { extensionForImageMime } from '../storage/image-file';
 import { assertWorkFile } from './work-file';
 import { toWorkView, toWorkWithAuthorView } from './work.mapper';
+
+const publishedAuthorSelect = {
+  slug: true,
+  displayName: true,
+  avatarKey: true,
+  directions: true,
+} as const;
 
 @Injectable()
 export class WorksService {
@@ -42,22 +50,21 @@ export class WorksService {
   }
 
   async listPublished(
-    query: CursorPageQuery,
+    query: ListPublishedWorksQuery,
   ): Promise<CursorPage<WorkWithAuthor>> {
     const rows = await this.prisma.work.findMany({
       where: {
-        profile: publishedProfileWhere,
+        profile: {
+          ...publishedProfileWhere,
+          ...(query.direction ? { directions: { has: query.direction } } : {}),
+        },
       },
       orderBy: { id: 'desc' },
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       take: query.limit + 1,
       include: {
         profile: {
-          select: {
-            slug: true,
-            displayName: true,
-            avatarKey: true,
-          },
+          select: publishedAuthorSelect,
         },
       },
     });
@@ -99,6 +106,31 @@ export class WorksService {
     });
 
     return this.pageWorks(rows, query.limit);
+  }
+
+  async getPublishedById(id: string): Promise<WorkWithAuthor> {
+    const row = await this.prisma.work.findFirst({
+      where: {
+        id,
+        profile: publishedProfileWhere,
+      },
+      include: {
+        profile: {
+          select: publishedAuthorSelect,
+        },
+      },
+    });
+
+    const view = row ? toWorkWithAuthorView(row, this.storage) : null;
+    if (!view) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.WORK_NOT_FOUND,
+        'Work not found',
+      );
+    }
+
+    return view;
   }
 
   async createMine(

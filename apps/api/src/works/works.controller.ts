@@ -14,8 +14,10 @@ import {
 import {
   createWorkFieldsSchema,
   cursorPageQuerySchema,
+  listPublishedWorksQuerySchema,
   type CreateWorkFields,
   type CursorPageQuery,
+  type ListPublishedWorksQuery,
 } from '@nechto/api-contract';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/decorators/current-user.decorator';
@@ -49,10 +51,15 @@ export class WorksController {
 
   @Get()
   listPublished(
-    @Query(new ZodValidationPipe(cursorPageQuerySchema))
-    query: CursorPageQuery,
+    @Query(new ZodValidationPipe(listPublishedWorksQuerySchema))
+    query: ListPublishedWorksQuery,
   ) {
     return this.worksService.listPublished(query);
+  }
+
+  @Get(':id')
+  getPublished(@Param('id') id: string) {
+    return this.worksService.getPublishedById(id);
   }
 
   @Post()

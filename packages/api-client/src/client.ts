@@ -128,7 +128,7 @@ export class ApiClient {
     return this.request<CursorPage<Work>>(`/works/me${toSearchParams(query)}`);
   }
 
-  listPublishedWorks(query: Partial<CursorPageQuery> = {}) {
+  listPublishedWorks(query: Partial<ListCreatorsQuery> = {}) {
     return this.request<CursorPage<WorkWithAuthor>>(
       `/works${toSearchParams(query)}`,
     );
@@ -138,6 +138,10 @@ export class ApiClient {
     return this.request<CursorPage<Work>>(
       `/works/profile/${encodeURIComponent(slug)}${toSearchParams(query)}`,
     );
+  }
+
+  getWork(id: string) {
+    return this.request<WorkWithAuthor>(`/works/${encodeURIComponent(id)}`);
   }
 
   uploadMyWork(file: Blob, fields: CreateWorkFields, fileName = 'work') {

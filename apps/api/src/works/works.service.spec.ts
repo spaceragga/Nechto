@@ -120,4 +120,62 @@ describe('WorksService', () => {
       data: { publishedAt: null },
     });
   });
+
+  it('returns a published work by id with author directions', async () => {
+    prisma.work.findFirst.mockResolvedValue({
+      id: 'w1',
+      title: 'Yard',
+      imageKey: 'works/p1/a.png',
+      createdAt: new Date('2026-08-31T00:00:00.000Z'),
+      profile: {
+        slug: 'kasia-voit',
+        displayName: 'Кася Войт',
+        avatarKey: 'avatars/p1.png',
+        directions: ['photography'],
+      },
+    });
+
+    await expect(service.getPublishedById('w1')).resolves.toMatchObject({
+      id: 'w1',
+      title: 'Yard',
+      imageUrl: 'http://localhost:3001/uploads/works/p1/a.png',
+      author: {
+        slug: 'kasia-voit',
+        displayName: 'Кася Войт',
+        directions: ['photography'],
+      },
+    });
+  });
+
+  it('hides a work when the profile is unpublished', async () => {
+    prisma.work.findFirst.mockResolvedValue(null);
+
+    await expect(service.getPublishedById('w1')).rejects.toBeInstanceOf(
+      ApiHttpException,
+    );
+
+    try {
+      await service.getPublishedById('w1');
+    } catch (error) {
+      expect((error as ApiHttpException).getResponse()).toMatchObject({
+        code: API_ERROR_CODES.WORK_NOT_FOUND,
+      });
+    }
+  });
+
+  it('filters the published feed by creator direction', async () => {
+    prisma.work.findMany.mockResolvedValue([]);
+
+    await service.listPublished({ limit: 20, direction: 'photography' });
+
+    expect(prisma.work.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          profile: expect.objectContaining({
+            directions: { has: 'photography' },
+          }),
+        },
+      }),
+    );
+  });
 });
