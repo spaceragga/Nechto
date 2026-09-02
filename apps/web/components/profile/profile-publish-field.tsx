@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import type { Profile } from '@nechto/api-contract';
+import { EyeGlyph } from '@/components/glyphs/eye-glyph';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { Link } from '@/i18n/navigation';
@@ -26,23 +27,36 @@ export function ProfilePublishField({
 }: ProfilePublishFieldProps) {
   const t = useTranslations('Works');
   const published = Boolean(profile.publishedAt);
+  const suspended = Boolean(profile.suspendedAt);
+  const visible = published && !suspended;
 
   return (
     <section className="flex flex-col gap-3">
-      <p className="text-sm opacity-70">{t('publishHint')}</p>
+      <div className="flex items-center gap-3" role="status">
+        <EyeGlyph open={visible} />
+        <span>
+          {suspended
+            ? t('visibilitySuspended')
+            : visible
+              ? t('visibilityVisible')
+              : t('visibilityHidden')}
+        </span>
+      </div>
+      {!suspended ? (
+        <p className="text-sm opacity-70">
+          {t(visible ? 'publishVisibleHint' : 'publishHiddenHint')}
+        </p>
+      ) : null}
       {error ? <FormError>{error}</FormError> : null}
-      {published && profile.slug ? (
-        <>
-          <p className="text-sm" role="status">
-            {t('published')}
-          </p>
-          <Link href={profilePath(profile.slug)} className="text-sm underline">
-            {t('viewPublic')}
-          </Link>
-          <Button type="button" disabled={pending} onClick={onUnpublish}>
-            {t('unpublish')}
-          </Button>
-        </>
+      {visible && profile.slug ? (
+        <Link href={profilePath(profile.slug)} className="text-sm underline">
+          {t('viewPublic')}
+        </Link>
+      ) : null}
+      {published ? (
+        <Button type="button" disabled={pending} onClick={onUnpublish}>
+          {t('unpublish')}
+        </Button>
       ) : (
         <Button type="button" disabled={pending || !ready} onClick={onPublish}>
           {t('publishProfile')}

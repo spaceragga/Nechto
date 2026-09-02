@@ -82,14 +82,6 @@ describe('ProfilesController (e2e)', () => {
 
     expect(avatarResponse.body.avatarUrl).toMatch(/\/uploads\/avatars\//);
 
-    const publicProfile = await request(app.getHttpServer())
-      .get(`/profiles/${userId}`)
-      .expect(200);
-
-    expect(publicProfile.body.displayName).toBe('Nechto Artist');
-    expect(publicProfile.body.avatarUrl).toBe(avatarResponse.body.avatarUrl);
-    expect(publicProfile.body.email).toBeUndefined();
-
     const avatarPath = new URL(avatarResponse.body.avatarUrl as string)
       .pathname;
     const image = await request(app.getHttpServer())

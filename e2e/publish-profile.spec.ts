@@ -67,13 +67,29 @@ test.describe('publish profile', () => {
         first.getByRole('button', { name: 'Сохранить' }),
       ).toBeEnabled();
 
-      await nextProfilePane(page);
+      await openProfileVisibilityPane(page);
       await page.getByRole('button', { name: 'Опубликовать профиль' }).click();
-      await expect(page.getByText('Профиль опубликован')).toBeVisible();
+      await expect(page.getByRole('status')).toHaveText(
+        'Витрина опубликована и видна',
+      );
+      await expect(
+        page.getByText(
+          '«Скрыть» снимет публикацию. Чтобы вернуть витрину, её нужно будет опубликовать снова.',
+        ),
+      ).toBeVisible();
 
-      await page
-        .getByRole('link', { name: 'Открыть публичную страницу' })
-        .click();
+      const publicProfileLink = page.getByRole('link', {
+        name: 'Открыть публичную страницу',
+      });
+      await page.getByRole('button', { name: 'Приостановить аккаунт' }).click();
+      await expect(publicProfileLink).toHaveCount(0);
+      await expect(page.getByRole('status')).toHaveText(
+        'Аккаунт приостановлен — витрина скрыта',
+      );
+      await page.getByRole('button', { name: 'Возобновить аккаунт' }).click();
+      await expect(publicProfileLink).toBeVisible();
+
+      await publicProfileLink.click();
       await expect(
         page.getByRole('heading', { name: 'Кася Тест' }),
       ).toBeVisible();

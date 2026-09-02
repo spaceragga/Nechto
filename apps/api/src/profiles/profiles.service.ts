@@ -44,23 +44,6 @@ export class ProfilesService {
     return toProfileView(profile, this.storage);
   }
 
-  async getByUserId(userId: string): Promise<PublicProfile> {
-    const profile = await this.prisma.profile.findUnique({
-      where: { userId },
-      include: profileInclude,
-    });
-
-    if (!profile) {
-      throw new ApiHttpException(
-        HttpStatus.NOT_FOUND,
-        API_ERROR_CODES.PROFILE_NOT_FOUND,
-        'Profile not found',
-      );
-    }
-
-    return toPublicProfile(toProfileRecord(profile), this.storage);
-  }
-
   async getPublishedBySlug(slug: string): Promise<PublicProfile> {
     const profile = await this.prisma.profile.findFirst({
       where: { ...publishedProfileWhere, slug },

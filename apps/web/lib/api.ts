@@ -1,12 +1,16 @@
 import { createApiClient } from '@nechto/api-client';
 import type {
   AuthUser,
+  ChangePasswordDto,
   CreateWorkFields,
   CursorPageQuery,
+  DeleteAccountDto,
+  ForgotPasswordDto,
   ListCreatorsQuery,
   LoginDto,
   Profile,
   RegisterDto,
+  ResetPasswordDto,
   UpdateProfileDto,
   UpdateWorkFields,
 } from '@nechto/api-contract';
@@ -27,6 +31,30 @@ export function loginRequest(input: LoginDto) {
 
 export function logoutRequest() {
   return api.logout();
+}
+
+export function forgotPasswordRequest(input: ForgotPasswordDto) {
+  return api.forgotPassword(input);
+}
+
+export function resetPasswordRequest(input: ResetPasswordDto) {
+  return api.resetPassword(input);
+}
+
+export function changePasswordRequest(input: ChangePasswordDto) {
+  return api.changePassword(input);
+}
+
+export function suspendAccountRequest() {
+  return api.suspendAccount();
+}
+
+export function restoreAccountRequest() {
+  return api.restoreAccount();
+}
+
+export function deleteAccountRequest(input: DeleteAccountDto) {
+  return api.deleteAccount(input);
 }
 
 export function updateMyProfileRequest(input: UpdateProfileDto) {

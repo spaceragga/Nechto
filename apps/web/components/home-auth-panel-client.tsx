@@ -8,7 +8,7 @@ import { DoorGlyph } from '@/components/glyphs/door-glyph';
 import { ProfileGlyph } from '@/components/glyphs/profile-glyph';
 import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
-import { useRouter } from '@/i18n/navigation';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { logoutRequest } from '@/lib/api';
 
 type HomeAuthPanelClientProps = {
@@ -23,6 +23,7 @@ export function HomeAuthPanelClient({
   const t = useTranslations('Auth');
   const tErrors = useTranslations('Errors');
   const router = useRouter();
+  const pathname = usePathname();
   const [pending, setPending] = useState(false);
   const [logoutError, setLogoutError] = useState(false);
   const hydrated = useHydrated();
@@ -32,6 +33,16 @@ export function HomeAuthPanelClient({
     setLogoutError(false);
     try {
       await logoutRequest();
+      const fromProfileRecovery =
+        pathname === '/forgot-password' &&
+        new URLSearchParams(window.location.search).get('from') === 'profile';
+      if (
+        pathname === '/profile' ||
+        pathname === '/change-password' ||
+        fromProfileRecovery
+      ) {
+        router.replace('/');
+      }
       router.refresh();
     } catch {
       setLogoutError(true);

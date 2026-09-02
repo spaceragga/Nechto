@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { followLink, navigate } from './follow-link';
 
 test.describe('site navigation', () => {
   test('opens remaining pages from the Russian shell', async ({ page }) => {
     test.setTimeout(60_000);
-    await page.goto('/');
+    await navigate(page, '/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Дом Независимого Творца',
     );
@@ -13,29 +14,31 @@ test.describe('site navigation', () => {
     await expect(brand.locator('svg')).toBeVisible();
     expect((await brand.locator('svg').boundingBox())?.height).toBe(40);
 
-    await page.goto('/creators');
+    await navigate(page, '/creators');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Авторы');
 
-    await page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: 'Правила' })
-      .click();
+    await followLink(
+      page,
+      page.getByRole('contentinfo').getByRole('link', { name: 'Правила' }),
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Правила платформы',
     );
 
-    await page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: 'Конфиденциальность' })
-      .click();
+    await followLink(
+      page,
+      page
+        .getByRole('contentinfo')
+        .getByRole('link', { name: 'Конфиденциальность' }),
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Политика конфиденциальности',
     );
 
-    await page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: 'Сообщество' })
-      .click();
+    await followLink(
+      page,
+      page.getByRole('contentinfo').getByRole('link', { name: 'Сообщество' }),
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Правила сообщества',
     );
@@ -57,25 +60,32 @@ test.describe('site navigation', () => {
     const login = banner.getByRole('link', { name: 'Войти' });
     await login.hover();
     await expect(page.getByRole('tooltip', { name: 'Войти' })).toBeVisible();
-    await login.click();
-    await page.getByRole('link', { name: 'Забыли пароль?' }).click();
+    await followLink(page, login);
+    const forgotPassword = page.getByRole('link', {
+      name: 'Забыли пароль?',
+    });
+    await expect(forgotPassword).toHaveAttribute(
+      'href',
+      '/forgot-password?from=login',
+    );
+    await navigate(page, '/forgot-password?from=login');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Восстановление пароля',
     );
 
-    await page.goto('/change-password');
+    await navigate(page, '/change-password');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Сменить пароль',
+      'Дом Независимого Творца',
     );
 
-    await page.goto('/demo');
+    await navigate(page, '/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
     await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });
 
   test('opens remaining pages from the English shell', async ({ page }) => {
     test.setTimeout(60_000);
-    await page.goto('/en');
+    await navigate(page, '/en');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'House of the Independent Creator',
     );
@@ -85,31 +95,31 @@ test.describe('site navigation', () => {
     await expect(brand.locator('svg')).toBeVisible();
     expect((await brand.locator('svg').boundingBox())?.height).toBe(40);
 
-    await page.goto('/en/creators');
+    await navigate(page, '/en/creators');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Creators',
     );
 
-    await page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: 'Terms' })
-      .click();
+    await followLink(
+      page,
+      page.getByRole('contentinfo').getByRole('link', { name: 'Terms' }),
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Platform terms',
     );
 
-    await page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: 'Privacy' })
-      .click();
+    await followLink(
+      page,
+      page.getByRole('contentinfo').getByRole('link', { name: 'Privacy' }),
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Privacy notice',
     );
 
-    await page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: 'Community' })
-      .click();
+    await followLink(
+      page,
+      page.getByRole('contentinfo').getByRole('link', { name: 'Community' }),
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Community guidelines',
     );
@@ -129,18 +139,25 @@ test.describe('site navigation', () => {
     const login = banner.getByRole('link', { name: 'Log in' });
     await login.hover();
     await expect(page.getByRole('tooltip', { name: 'Log in' })).toBeVisible();
-    await login.click();
-    await page.getByRole('link', { name: 'Forgot password?' }).click();
+    await followLink(page, login);
+    const forgotPassword = page.getByRole('link', {
+      name: 'Forgot password?',
+    });
+    await expect(forgotPassword).toHaveAttribute(
+      'href',
+      '/en/forgot-password?from=login',
+    );
+    await navigate(page, '/en/forgot-password?from=login');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Reset password',
     );
 
-    await page.goto('/en/change-password');
+    await navigate(page, '/en/change-password');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Change password',
+      'House of the Independent Creator',
     );
 
-    await page.goto('/en/demo');
+    await navigate(page, '/en/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
     await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });

@@ -8,6 +8,8 @@ const CODE_KEYS: Partial<Record<ApiErrorCode, string>> = {
   [API_ERROR_CODES.SLUG_TAKEN]: 'slugTaken',
   [API_ERROR_CODES.PUBLISH_REQUIREMENTS_NOT_MET]: 'publishRequirements',
   [API_ERROR_CODES.INVALID_CREDENTIALS]: 'invalidCredentials',
+  [API_ERROR_CODES.CURRENT_PASSWORD_INVALID]: 'currentPasswordInvalid',
+  [API_ERROR_CODES.INVALID_RESET_TOKEN]: 'invalidResetToken',
   [API_ERROR_CODES.AVATAR_REQUIRED]: 'avatarRequired',
   [API_ERROR_CODES.AVATAR_TOO_LARGE]: 'avatarTooLarge',
   [API_ERROR_CODES.AVATAR_INVALID_TYPE]: 'avatarType',

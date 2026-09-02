@@ -1,6 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
+import { useHydrated } from '@/hooks/use-hydrated';
 import { useRouter } from '@/i18n/navigation';
 import { routing, type AppLocale } from '@/i18n/routing';
 
@@ -22,6 +23,7 @@ export function LanguageSwitcher() {
   const t = useTranslations('LanguageSwitcher');
   const locale = useLocale();
   const router = useRouter();
+  const hydrated = useHydrated();
 
   function onChange(nextLocale: string) {
     // Read the browser URL at click time. usePathname() in the chrome layout
@@ -36,6 +38,7 @@ export function LanguageSwitcher() {
       <select
         className="rounded border border-white/20 bg-transparent px-2 py-1"
         value={locale}
+        disabled={!hydrated}
         onChange={(event) => onChange(event.target.value)}
       >
         {routing.locales.map((item) => (

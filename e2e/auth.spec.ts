@@ -6,6 +6,24 @@ async function logoutFromHeader(page: Page) {
 }
 
 test.describe('auth flow', () => {
+  test('redirects anonymous users away from account-only pages', async ({
+    page,
+  }) => {
+    await page.goto('/profile');
+    await expect(page).toHaveURL(/\/$/);
+    await page.goto('/change-password');
+    await expect(page).toHaveURL(/\/$/);
+    await page.goto('/forgot-password');
+    await expect(page).toHaveURL(/\/login$/);
+
+    await page.goto('/en/profile');
+    await expect(page).toHaveURL(/\/en\/?$/);
+    await page.goto('/en/change-password');
+    await expect(page).toHaveURL(/\/en\/?$/);
+    await page.goto('/en/forgot-password');
+    await expect(page).toHaveURL(/\/en\/login$/);
+  });
+
   test('registers a new user from the UI', async ({ page }) => {
     const email = `artist-${Date.now()}@nechto.test`;
     const password = 'password123';
@@ -31,6 +49,23 @@ test.describe('auth flow', () => {
       page.getByRole('tooltip', { name: `Вы вошли как ${email}` }),
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
+  });
+
+  test('keeps the current public page after logout', async ({ page }) => {
+    await page.goto('/register');
+    await page
+      .getByLabel('Email')
+      .fill(`logout-location-${Date.now()}@nechto.test`);
+    await page.getByLabel('Пароль').fill('password123');
+    await page.getByRole('button', { name: 'Создать аккаунт' }).click();
+    await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
+
+    await page.goto('/terms');
+    await logoutFromHeader(page);
+    await expect(page).toHaveURL(/\/terms$/);
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Войти' }),
+    ).toBeVisible();
   });
 
   test('logs in an existing user from the English UI', async ({ page }) => {

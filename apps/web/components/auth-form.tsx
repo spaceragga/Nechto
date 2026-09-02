@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { Input } from '@/components/ui/input';
+import { useHydrated } from '@/hooks/use-hydrated';
 import { Link, getPathname } from '@/i18n/navigation';
 import type { AppLocale } from '@/i18n/routing';
 import { loginRequest, registerRequest } from '@/lib/api';
@@ -22,6 +23,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const hydrated = useHydrated();
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -82,7 +84,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
       {error ? <FormError>{error}</FormError> : null}
 
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" disabled={pending || !hydrated}>
         {pending
           ? t('submitting')
           : mode === 'login'
@@ -98,7 +100,13 @@ export function AuthForm({ mode }: AuthFormProps) {
               {t('registerLink')}
             </Link>
             <br />
-            <Link href="/forgot-password" className="underline">
+            <Link
+              href={{
+                pathname: '/forgot-password',
+                query: { from: 'login' },
+              }}
+              className="underline"
+            >
               {t('forgotPassword')}
             </Link>
           </>

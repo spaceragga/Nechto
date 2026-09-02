@@ -1,6 +1,7 @@
 'use client';
 
 import type { MouseEvent, ReactNode } from 'react';
+import { useHydrated } from '@/hooks/use-hydrated';
 import { Link, useRouter } from '@/i18n/navigation';
 import { markPreserveScroll } from '@/lib/preserve-scroll';
 
@@ -18,6 +19,7 @@ export function ChipLink({
   scroll = true,
 }: ChipLinkProps) {
   const router = useRouter();
+  const hydrated = useHydrated();
 
   function onClick(event: MouseEvent<HTMLAnchorElement>) {
     if (
@@ -41,6 +43,7 @@ export function ChipLink({
       href={href}
       scroll={scroll}
       onClick={onClick}
+      data-hydrated={hydrated ? 'true' : 'false'}
       className={`inline-flex items-center justify-center px-5 py-1 font-sans text-xl tracking-wide transition-colors duration-150 ${
         active
           ? 'bg-[var(--accent)] text-[var(--fg)]'
