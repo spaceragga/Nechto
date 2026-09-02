@@ -320,6 +320,8 @@
     "slugTaken": "This profile address is already taken",
     "publishRequirements": "Complete your profile, accept the policies, and publish at least five works",
     "invalidCredentials": "Invalid email or password",
+    "currentPasswordInvalid": "The current password is incorrect",
+    "invalidResetToken": "This reset link is invalid or has expired",
     "avatarRequired": "Please choose a photo file",
     "avatarTooLarge": "File is too large",
     "avatarType": "Use JPEG, PNG, or WebP",
@@ -371,7 +373,7 @@
     "loginLink": "Log in",
     "prevPane": "Back",
     "nextPane": "Next",
-    "visibilityTitle": "Showcase"
+    "visibilityTitle": "Showcase and account management"
   },
   "Works": {
     "title": "Works",
@@ -391,7 +393,10 @@
     "publishProfile": "Publish profile",
     "publishHint": "Complete your profile and publish at least five works.",
     "published": "Profile published",
-    "viewPublic": "Open public page"
+    "viewPublic": "Open public page",
+    "visibilityVisible": "Profile is visible",
+    "visibilityHidden": "Profile is not published",
+    "visibilitySuspended": "Account is suspended"
   },
   "Creators": {
     "title": "Creators",
@@ -449,7 +454,7 @@
       "paragraphs": [
         "We process email, profile data, uploaded work, technical logs, sessions, and aggregated views/contact clicks to operate and protect the service.",
         "Data is shared only with infrastructure, storage, and email providers needed to operate Nechto. We do not sell personal data.",
-        "Users can export their data and delete their account. Backups expire under the retention schedule; incident and complaint evidence may be retained longer when required by law or service protection.",
+        "Users can delete their account. Backups expire under the retention schedule; incident and complaint evidence may be retained longer when required by law or service protection.",
         "For access, correction, or deletion requests, contact support@nechto.by."
       ]
     },
@@ -482,6 +487,11 @@
   "Recovery": {
     "email": "Email",
     "password": "New password",
+    "currentPassword": "Current password",
+    "confirmPassword": "Confirm new password",
+    "passwordMismatch": "Passwords do not match",
+    "submitting": "Submitting…",
+    "login": "Log in",
     "forgot": {
       "title": "Reset password",
       "submit": "Send reset link",
@@ -492,19 +502,22 @@
       "submit": "Save password",
       "success": "Password updated. You can now sign in."
     },
-    "verify": {
-      "title": "Verify email",
-      "submit": "Verify email",
-      "success": "Email verified."
+    "change": {
+      "submit": "Change password",
+      "success": "Password changed"
     }
   },
   "Account": {
-    "title": "Account data",
-    "export": "Download my data",
-    "resendVerification": "Send email verification",
-    "verificationSent": "Email sent if the address is not verified yet.",
+    "title": "Account management",
+    "activeHint": "Suspending hides your profile and works while keeping editing access.",
+    "suspendedHint": "Your profile and works are hidden. Restoring returns the previous publication.",
+    "suspend": "Suspend account",
+    "restore": "Restore account",
     "changePassword": "Change password",
+    "currentPassword": "Current password",
     "delete": "Delete account",
-    "confirmDelete": "Delete the account and all works permanently?"
+    "confirmDelete": "The account, profile, works, and files will be permanently deleted.",
+    "deleting": "Deleting…",
+    "cancel": "Cancel"
   }
 }

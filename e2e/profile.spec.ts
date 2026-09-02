@@ -68,19 +68,25 @@ test.describe('profile', () => {
     await nextProfilePane(page);
     await expect(page.getByRole('heading', { name: 'Работы' })).toBeVisible();
     await nextProfilePane(page);
-    await expect(page.getByRole('heading', { name: 'Витрина' })).toBeVisible();
-    await nextProfilePane(page);
     await expect(
-      page.getByRole('heading', { name: 'Данные аккаунта' }),
+      page.getByRole('heading', {
+        name: 'Витрина и управление аккаунтом',
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', {
+        name: 'Управление аккаунтом',
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(
       page.getByRole('link', { name: 'Сменить пароль' }),
     ).toBeVisible();
-    await page
-      .getByTestId('profile-editor')
-      .getByRole('button', { name: 'Назад' })
-      .click();
-    await expect(page.getByRole('heading', { name: 'Витрина' })).toBeVisible();
+    await expect(page.getByRole('status')).toHaveText('Профиль не опубликован');
+    await page.getByRole('button', { name: 'Приостановить аккаунт' }).click();
+    await expect(page.getByRole('status')).toHaveText('Аккаунт приостановлен');
+    await page.getByRole('button', { name: 'Возобновить аккаунт' }).click();
+    await expect(page.getByRole('status')).toHaveText('Профиль не опубликован');
   });
 
   test('shows signed-in header chrome in English', async ({ page }) => {
@@ -161,7 +167,14 @@ test.describe('profile', () => {
     );
 
     await nextProfilePane(page);
-    await expect(page.getByRole('heading', { name: 'Showcase' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', {
+        name: 'Showcase and account management',
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Account management', exact: true }),
+    ).toBeVisible();
     await expect(
       page.getByText('Complete your profile and publish at least five works.'),
     ).toBeVisible();
@@ -169,10 +182,9 @@ test.describe('profile', () => {
       page.getByRole('button', { name: 'Publish profile' }),
     ).toBeDisabled();
 
-    await nextProfilePane(page);
-    await expect(
-      page.getByRole('heading', { name: 'Account data' }),
-    ).toBeVisible();
+    await expect(page.getByRole('status')).toHaveText(
+      'Profile is not published',
+    );
     await expect(
       page.getByRole('link', { name: 'Change password' }),
     ).toBeVisible();

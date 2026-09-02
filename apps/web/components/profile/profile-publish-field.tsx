@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import type { Profile } from '@nechto/api-contract';
+import { EyeGlyph } from '@/components/glyphs/eye-glyph';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { Link } from '@/i18n/navigation';
@@ -26,9 +27,21 @@ export function ProfilePublishField({
 }: ProfilePublishFieldProps) {
   const t = useTranslations('Works');
   const published = Boolean(profile.publishedAt);
+  const suspended = Boolean(profile.suspendedAt);
+  const visible = published && !suspended;
 
   return (
     <section className="flex flex-col gap-3">
+      <div className="flex items-center gap-3" role="status">
+        <EyeGlyph open={visible} />
+        <span>
+          {suspended
+            ? t('visibilitySuspended')
+            : visible
+              ? t('visibilityVisible')
+              : t('visibilityHidden')}
+        </span>
+      </div>
       <p className="text-sm opacity-70">{t('publishHint')}</p>
       {error ? <FormError>{error}</FormError> : null}
       {published && profile.slug ? (

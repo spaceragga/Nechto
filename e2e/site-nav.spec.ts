@@ -1,9 +1,23 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+async function navigate(page: Page, path: string) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+      return;
+    } catch (error) {
+      if (attempt === 1 || !String(error).includes('net::ERR_ABORTED')) {
+        throw error;
+      }
+    }
+  }
+}
 
 test.describe('site navigation', () => {
   test('opens remaining pages from the Russian shell', async ({ page }) => {
     test.setTimeout(60_000);
-    await page.goto('/');
+    await navigate(page, '/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Дом Независимого Творца',
     );
@@ -13,7 +27,7 @@ test.describe('site navigation', () => {
     await expect(brand.locator('svg')).toBeVisible();
     expect((await brand.locator('svg').boundingBox())?.height).toBe(40);
 
-    await page.goto('/creators');
+    await navigate(page, '/creators');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Авторы');
 
     await page
@@ -63,19 +77,19 @@ test.describe('site navigation', () => {
       'Восстановление пароля',
     );
 
-    await page.goto('/change-password');
+    await navigate(page, '/change-password');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Сменить пароль',
     );
 
-    await page.goto('/demo');
+    await navigate(page, '/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
     await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });
 
   test('opens remaining pages from the English shell', async ({ page }) => {
     test.setTimeout(60_000);
-    await page.goto('/en');
+    await navigate(page, '/en');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'House of the Independent Creator',
     );
@@ -85,7 +99,7 @@ test.describe('site navigation', () => {
     await expect(brand.locator('svg')).toBeVisible();
     expect((await brand.locator('svg').boundingBox())?.height).toBe(40);
 
-    await page.goto('/en/creators');
+    await navigate(page, '/en/creators');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Creators',
     );
@@ -135,12 +149,12 @@ test.describe('site navigation', () => {
       'Reset password',
     );
 
-    await page.goto('/en/change-password');
+    await navigate(page, '/en/change-password');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Change password',
     );
 
-    await page.goto('/en/demo');
+    await navigate(page, '/en/demo');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
     await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
   });
