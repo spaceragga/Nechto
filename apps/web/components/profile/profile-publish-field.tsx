@@ -42,13 +42,12 @@ export function ProfilePublishField({
               : t('visibilityHidden')}
         </span>
       </div>
-      <p className="text-sm opacity-70">{t('publishHint')}</p>
+      <p className="text-sm opacity-70">
+        {t(visible ? 'publishVisibleHint' : 'publishHiddenHint')}
+      </p>
       {error ? <FormError>{error}</FormError> : null}
       {published && profile.slug ? (
         <>
-          <p className="text-sm" role="status">
-            {t('published')}
-          </p>
           <Link href={profilePath(profile.slug)} className="text-sm underline">
             {t('viewPublic')}
           </Link>

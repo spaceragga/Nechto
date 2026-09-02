@@ -33,6 +33,23 @@ test.describe('auth flow', () => {
     await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
   });
 
+  test('keeps the current public page after logout', async ({ page }) => {
+    await page.goto('/register');
+    await page
+      .getByLabel('Email')
+      .fill(`logout-location-${Date.now()}@nechto.test`);
+    await page.getByLabel('Пароль').fill('password123');
+    await page.getByRole('button', { name: 'Создать аккаунт' }).click();
+    await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
+
+    await page.goto('/terms');
+    await logoutFromHeader(page);
+    await expect(page).toHaveURL(/\/terms$/);
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Войти' }),
+    ).toBeVisible();
+  });
+
   test('logs in an existing user from the English UI', async ({ page }) => {
     const email = `artist-en-${Date.now()}@nechto.test`;
     const password = 'password123';

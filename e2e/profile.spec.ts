@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import path from 'node:path';
-import { nextProfilePane } from './profile-panes';
+import { nextProfilePane, openProfileVisibilityPane } from './profile-panes';
 
 const avatarFixture = path.join(__dirname, 'fixtures', 'avatar.png');
 
@@ -67,7 +67,7 @@ test.describe('profile', () => {
 
     await nextProfilePane(page);
     await expect(page.getByRole('heading', { name: 'Работы' })).toBeVisible();
-    await nextProfilePane(page);
+    await openProfileVisibilityPane(page);
     await expect(
       page.getByRole('heading', {
         name: 'Витрина и управление аккаунтом',
@@ -82,11 +82,23 @@ test.describe('profile', () => {
     await expect(
       page.getByRole('link', { name: 'Сменить пароль' }),
     ).toBeVisible();
-    await expect(page.getByRole('status')).toHaveText('Профиль не опубликован');
+    await expect(
+      page.getByText(
+        'Заполните профиль, примите правила и добавьте минимум пять работ, чтобы опубликовать витрину.',
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        'Приостановка временно скрывает профиль и работы, сохраняя публикацию и доступ к редактированию. После возобновления витрина вернётся автоматически.',
+      ),
+    ).toBeVisible();
+    await expect(page.getByRole('status')).toHaveText('Витрина скрыта');
     await page.getByRole('button', { name: 'Приостановить аккаунт' }).click();
-    await expect(page.getByRole('status')).toHaveText('Аккаунт приостановлен');
+    await expect(page.getByRole('status')).toHaveText(
+      'Аккаунт приостановлен — витрина скрыта',
+    );
     await page.getByRole('button', { name: 'Возобновить аккаунт' }).click();
-    await expect(page.getByRole('status')).toHaveText('Профиль не опубликован');
+    await expect(page.getByRole('status')).toHaveText('Витрина скрыта');
   });
 
   test('shows signed-in header chrome in English', async ({ page }) => {
@@ -132,12 +144,14 @@ test.describe('profile', () => {
     );
     await expect(page.getByTestId('profile-editor')).toHaveAttribute(
       'data-profile-pane',
-      '0',
+      '1',
     );
 
     const editor = page.getByTestId('profile-editor');
     const next = editor.getByRole('button', { name: 'Next' });
     const prev = editor.getByRole('button', { name: 'Back' });
+    await expect(prev).toBeEnabled();
+    await expect(next).toBeEnabled();
     await expect(next).toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
     await next.hover();
     await expect(next).toHaveCSS(
@@ -145,7 +159,10 @@ test.describe('profile', () => {
       /rgba\(255,\s*255,\s*255,\s*0\.3\)|oklab\([^)]+\/\s*0\.3\)/,
     );
     await prev.hover();
-    await expect(prev).toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
+    await expect(prev).toHaveCSS(
+      'border-top-color',
+      /rgba\(255,\s*255,\s*255,\s*0\.3\)|oklab\([^)]+\/\s*0\.3\)/,
+    );
     const box = await next.boundingBox();
     expect(box?.height).toBe(144);
     const chevron = await next.locator('svg').boundingBox();
@@ -163,10 +180,11 @@ test.describe('profile', () => {
     await expect(page.getByRole('heading', { name: 'Works' })).toBeVisible();
     await expect(page.getByTestId('profile-editor')).toHaveAttribute(
       'data-profile-pane',
-      '1',
+      '2',
     );
+    await expect(next).toBeDisabled();
 
-    await nextProfilePane(page);
+    await openProfileVisibilityPane(page);
     await expect(
       page.getByRole('heading', {
         name: 'Showcase and account management',
@@ -176,20 +194,25 @@ test.describe('profile', () => {
       page.getByRole('heading', { name: 'Account management', exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByText('Complete your profile and publish at least five works.'),
+      page.getByText(
+        'Complete your profile, accept the policies, and add at least five works to publish the showcase.',
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        'Suspending temporarily hides your profile and works while preserving publication and editing access. Restoring brings the showcase back automatically.',
+      ),
     ).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Publish profile' }),
     ).toBeDisabled();
 
-    await expect(page.getByRole('status')).toHaveText(
-      'Profile is not published',
-    );
+    await expect(page.getByRole('status')).toHaveText('Showcase is hidden');
     await expect(
       page.getByRole('link', { name: 'Change password' }),
     ).toBeVisible();
     await expect(
-      page.getByTestId('profile-editor').getByRole('button', { name: 'Next' }),
+      page.getByTestId('profile-editor').getByRole('button', { name: 'Back' }),
     ).toBeDisabled();
   });
 });

@@ -368,11 +368,12 @@
     "saving": "Saving…",
     "saved": "Saved",
     "uploading": "Uploading photo…",
-    "loading": "Loading profile…",
     "signedInAs": "Account:",
     "loginLink": "Log in",
     "prevPane": "Back",
     "nextPane": "Next",
+    "back": "Back",
+    "backToAccount": "Back to showcase and account management",
     "visibilityTitle": "Showcase and account management"
   },
   "Works": {
@@ -391,12 +392,12 @@
     "unpublish": "Hide",
     "delete": "Delete",
     "publishProfile": "Publish profile",
-    "publishHint": "Complete your profile and publish at least five works.",
-    "published": "Profile published",
+    "publishVisibleHint": "“Hide” unpublishes the showcase. You will need to publish it again to bring it back.",
+    "publishHiddenHint": "Complete your profile, accept the policies, and add at least five works to publish the showcase.",
     "viewPublic": "Open public page",
-    "visibilityVisible": "Profile is visible",
-    "visibilityHidden": "Profile is not published",
-    "visibilitySuspended": "Account is suspended"
+    "visibilityVisible": "Showcase is published and visible",
+    "visibilityHidden": "Showcase is hidden",
+    "visibilitySuspended": "Account is suspended — showcase is hidden"
   },
   "Creators": {
     "title": "Creators",
@@ -509,7 +510,7 @@
   },
   "Account": {
     "title": "Account management",
-    "activeHint": "Suspending hides your profile and works while keeping editing access.",
+    "activeHint": "Suspending temporarily hides your profile and works while preserving publication and editing access. Restoring brings the showcase back automatically.",
     "suspendedHint": "Your profile and works are hidden. Restoring returns the previous publication.",
     "suspend": "Suspend account",
     "restore": "Restore account",

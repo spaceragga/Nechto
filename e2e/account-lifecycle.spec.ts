@@ -5,6 +5,10 @@ test.describe('account lifecycle', () => {
   test('submits password recovery forms in Russian and English', async ({
     page,
   }) => {
+    await page.goto('/login');
+    await page.goto('/forgot-password');
+    await page.getByRole('button', { name: 'Назад' }).click();
+    await expect(page).toHaveURL(/\/login$/);
     await page.goto('/forgot-password');
     await page.getByLabel('Email').fill(`missing-${Date.now()}@nechto.test`);
     await page.getByRole('button', { name: 'Отправить ссылку' }).click();
@@ -12,7 +16,9 @@ test.describe('account lifecycle', () => {
       'Если аккаунт существует, ссылка отправлена на email.',
     );
 
+    await page.goto('/en/login');
     await page.goto('/en/forgot-password');
+    await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
     await page.getByLabel('Email').fill(`missing-en-${Date.now()}@nechto.test`);
     await page.getByRole('button', { name: 'Send reset link' }).click();
     await expect(page.getByRole('status')).toHaveText(
@@ -31,6 +37,7 @@ test.describe('account lifecycle', () => {
     const token = 'a'.repeat(43);
 
     await page.goto(`/reset-password?token=${token}`);
+    await expect(page.getByRole('button', { name: 'Назад' })).toBeVisible();
     await page.getByLabel('Новый пароль', { exact: true }).fill('new-password');
     await page.getByLabel('Повторите новый пароль').fill('new-password');
     await page.getByRole('button', { name: 'Сохранить пароль' }).click();
@@ -39,6 +46,7 @@ test.describe('account lifecycle', () => {
     );
 
     await page.goto(`/en/reset-password?token=${token}`);
+    await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
     await page.getByLabel('New password', { exact: true }).fill('new-password');
     await page.getByLabel('Confirm new password').fill('new-password');
     await page.getByRole('button', { name: 'Save password' }).click();
@@ -59,7 +67,21 @@ test.describe('account lifecycle', () => {
     await expect(
       page.getByRole('banner').getByRole('link', { name: 'Профиль' }),
     ).toBeVisible();
-    await page.goto('/change-password');
+    const accountPaneResponse = await page.request.get('/profile?pane=account');
+    expect(await accountPaneResponse.text()).not.toContain('Загружаем профиль');
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Профиль' })
+      .click();
+    await expect(page.getByTestId('profile-editor')).toHaveAttribute(
+      'data-hydrated',
+      'true',
+    );
+    await openProfileVisibilityPane(page);
+    await expect(
+      page.getByRole('link', { name: 'Восстановление пароля' }),
+    ).toBeVisible();
+    await page.getByRole('link', { name: 'Сменить пароль' }).click();
     await page.getByLabel('Текущий пароль').fill('password123');
     await page
       .getByLabel('Новый пароль', { exact: true })
@@ -67,9 +89,20 @@ test.describe('account lifecycle', () => {
     await page.getByLabel('Повторите новый пароль').fill('new-password-1');
     await page.getByRole('button', { name: 'Изменить пароль' }).click();
     await expect(page.getByRole('status')).toHaveText('Пароль изменён');
+    await page
+      .getByRole('link', {
+        name: 'Назад к витрине и управлению аккаунтом',
+      })
+      .click();
+    await expect(page).toHaveURL(/\/profile\?pane=account$/);
+    await expect(page.getByTestId('profile-editor')).toHaveAttribute(
+      'data-profile-pane',
+      '0',
+    );
 
     await expect(page.locator('[data-auth-hydrated="true"]')).toBeVisible();
     await page.getByRole('button', { name: 'Выйти' }).click();
+    await expect(page).toHaveURL(/\/$/);
     await expect(
       page.getByRole('banner').getByRole('link', { name: 'Войти' }),
     ).toBeVisible();

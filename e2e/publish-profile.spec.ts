@@ -67,9 +67,16 @@ test.describe('publish profile', () => {
         first.getByRole('button', { name: 'Сохранить' }),
       ).toBeEnabled();
 
-      await nextProfilePane(page);
+      await openProfileVisibilityPane(page);
       await page.getByRole('button', { name: 'Опубликовать профиль' }).click();
-      await expect(page.getByText('Профиль опубликован')).toBeVisible();
+      await expect(page.getByRole('status')).toHaveText(
+        'Витрина опубликована и видна',
+      );
+      await expect(
+        page.getByText(
+          '«Скрыть» снимет публикацию. Чтобы вернуть витрину, её нужно будет опубликовать снова.',
+        ),
+      ).toBeVisible();
 
       await page
         .getByRole('link', { name: 'Открыть публичную страницу' })

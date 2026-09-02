@@ -48,10 +48,16 @@ export function ProfileAccountField({
       </div>
 
       <nav className="flex flex-col items-start gap-3 text-sm">
-        <Link href="/forgot-password" className="underline">
+        <Link
+          href={{ pathname: '/forgot-password', query: { from: 'profile' } }}
+          className="underline"
+        >
           {tRecovery('forgot.title')}
         </Link>
-        <Link href="/change-password" className="underline">
+        <Link
+          href={{ pathname: '/change-password', query: { from: 'profile' } }}
+          className="underline"
+        >
           {t('changePassword')}
         </Link>
       </nav>

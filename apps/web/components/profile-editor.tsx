@@ -25,12 +25,14 @@ type ProfileEditorProps = {
   profile: Profile | null;
   works?: Work[];
   errorStatus?: number | null;
+  initialPane?: number;
 };
 
 export function ProfileEditor({
   profile,
   works = [],
   errorStatus,
+  initialPane = 1,
 }: ProfileEditorProps) {
   const t = useTranslations('Profile');
   const tErrors = useTranslations('Errors');
@@ -51,21 +53,29 @@ export function ProfileEditor({
     );
   }
 
-  return <ProfileEditorForm profile={profile} initialWorks={works} />;
+  return (
+    <ProfileEditorForm
+      profile={profile}
+      initialWorks={works}
+      initialPane={initialPane}
+    />
+  );
 }
 
 function ProfileEditorForm({
   profile,
   initialWorks,
+  initialPane,
 }: {
   profile: Profile;
   initialWorks: Work[];
+  initialPane: number;
 }) {
   const t = useTranslations('Profile');
   const details = useMyProfile(profile);
   const works = useMyWorks(initialWorks);
   const publish = useProfilePublish(details);
-  const [pane, setPane] = useState(0);
+  const [pane, setPane] = useState(initialPane);
   const hydrated = useHydrated();
 
   return (
@@ -81,6 +91,31 @@ function ProfileEditorForm({
         nextLabel={t('nextPane')}
         onIndexChange={setPane}
       >
+        <div className="flex flex-col gap-10">
+          <section className="flex flex-col gap-4">
+            <h2 className="font-serif text-2xl tracking-wide">
+              {t('visibilityTitle')}
+            </h2>
+            <ProfilePublishField
+              profile={{ ...details.profile, workCount: works.works.length }}
+              ready={canPublishProfile({
+                displayName: details.displayName,
+                slug: details.slug,
+                acceptPolicies: details.acceptPolicies,
+                workCount: works.works.length,
+              })}
+              pending={publish.pending}
+              error={publish.publishError}
+              onPublish={publish.publish}
+              onUnpublish={publish.unpublish}
+            />
+          </section>
+          <ProfileAccountField
+            profile={details.profile}
+            onProfileChange={details.setProfile}
+          />
+        </div>
+
         <div className="flex flex-col gap-6">
           <div>
             <h1 className="font-serif text-3xl tracking-wide">{t('title')}</h1>
@@ -147,31 +182,6 @@ function ProfileEditorForm({
             }
           }}
         />
-
-        <div className="flex flex-col gap-10">
-          <section className="flex flex-col gap-4">
-            <h2 className="font-serif text-2xl tracking-wide">
-              {t('visibilityTitle')}
-            </h2>
-            <ProfilePublishField
-              profile={{ ...details.profile, workCount: works.works.length }}
-              ready={canPublishProfile({
-                displayName: details.displayName,
-                slug: details.slug,
-                acceptPolicies: details.acceptPolicies,
-                workCount: works.works.length,
-              })}
-              pending={publish.pending}
-              error={publish.publishError}
-              onPublish={publish.publish}
-              onUnpublish={publish.unpublish}
-            />
-          </section>
-          <ProfileAccountField
-            profile={details.profile}
-            onProfileChange={details.setProfile}
-          />
-        </div>
       </ProfilePager>
     </div>
   );
