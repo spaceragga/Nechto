@@ -1,49 +1,33 @@
 # AGENTS.md
 
-Instructions for AI agents working in this repository.
+Nechto is a Node >=22.18 monorepo: Next.js web, NestJS/Prisma API,
+`api-contract`, `api-client`, PostgreSQL, and Docker Compose.
 
-## Project
+## Work in phases
 
-**Nechto** — internet art-space. Public name: Дом Независимого Творца. Monorepo MVP: Next.js 16 + NestJS 11, auth/profiles, local-disk uploads, shared api-contract/api-client, Docker Compose.
+1. Implement the smallest complete change.
+2. During implementation, use changed-file diagnostics and targeted tests.
+3. Before commit, add required behavior tests and run checks for touched layers.
+4. Full suites belong to CI/merge readiness, not every edit.
 
-Node **>= 22.18** (`.nvmrc`). Docker bind-mounts package sources over the image. After `git pull` or package edits, run `npm run build:packages` on the host so `dist/` exists for the mounts.
+Do not launch broad audits/subagents, run full Playwright, or wait for CI unless
+the request/risk requires it. Auth, destructive actions, migrations, storage,
+security boundaries, and shared contracts require broader verification.
 
 ## Commands
 
 ```bash
-docker compose up --build   # web :3000, api :3001, postgres :5432 (runs migrations)
-npm run typecheck           # build packages + both apps
-npm run build:packages      # @nechto/api-contract + api-client
-npm run lint                # ESLint (root flat config)
-npm run format              # Prettier write
-npm run format:check        # Prettier check (CI)
-npm run test:packages       # Jest for shared api-client
-npm run test:api            # Jest unit (API)
-npm run test:api:e2e        # Jest HTTP e2e (API)
-npm run test:e2e            # Playwright UI
-npm test                    # packages + api + playwright
-# CI: quality → api-test ∥ web-e2e
-npm run db:migrate          # Prisma migrate dev
-npm run db:deploy           # Prisma migrate deploy
-npm run dev:web             # Next.js locally
-npm run dev:api             # NestJS locally
-# Docker: compose sets API_INTERNAL_URL=http://api:3001 for RSC→API
+npm run format:check   # before commit
+npm run lint           # before commit
+npm run typecheck      # TypeScript/shared changes
+npm run build:packages # contract/client changes or after branch switch
+npm run test:packages  # api-client
+npm run test:api       # API unit
+npm run test:api:e2e   # API HTTP
+npx playwright test <specs> --workers=1 # affected web flows
+npm test               # merge-ready/full local gate only
 ```
 
-## Rules
-
-Project Cursor rules live in `.cursor/rules/`:
-
-1. **english-comments** — all code comments must be English
-2. **i18n-bilingual** — all UI copy in Russian (primary) + English via next-intl
-3. **conventional-commits** — English Conventional Commits (`feat`/`fix`/`docs`/…)
-4. **testing** — Jest (API) + Playwright (UI); new behavior needs tests
-5. **nechto-project** — stack, layout, agent conventions
-6. **architecture-principles** — SOLID / DRY / KISS / SoC / YAGNI, boundaries, replaceability
-7. **file-decomposition** — extract helpers/hooks/use-cases into focused files; no mega-modules
-8. **frontend-components** — atomic UI, shared primitives, unidirectional data, render perf
-9. **backend-architecture** — layered Nest, fail-fast, idempotency, scale-out, query perf
-10. **quality-gate** — lint/typecheck/tests before push; no junk or dead code in diffs
-11. **git-pr-workflow** — implement uncommitted; commit/PR only when asked (commit ⇒ push); sync open PRs when `main` moves; user merges `main`
-
-Follow those rules on every change. Prefer small, verified diffs over broad rewrites.
+Follow scoped rules in `.cursor/rules/`. Keep diffs focused, comments English,
+UI copy ru+en, web/API interaction through shared packages, and commits
+uncreated until explicitly requested.

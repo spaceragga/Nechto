@@ -1,7 +1,7 @@
 ---
 description: All code comments must be written in English
 globs: "**/*.{ts,tsx,js,jsx,mjs,cjs,css,scss,sql,yml,yaml,Dockerfile,mdc}"
-alwaysApply: true
+alwaysApply: false
 ---
 
 # English-only code comments

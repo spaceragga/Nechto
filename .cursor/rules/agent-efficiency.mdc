@@ -1,0 +1,33 @@
+---
+description: Keep agent work scoped, incremental, and token-efficient
+alwaysApply: true
+---
+
+# Agent efficiency
+
+Optimize for fast feedback without lowering the merge bar.
+
+## Default execution
+
+1. Inspect only files and callers relevant to the request.
+2. Implement the smallest complete solution.
+3. Verify with changed-file diagnostics and targeted tests.
+4. Add required tests before commit, not before the first implementation pass.
+5. Use CI/full suites only at the merge-ready stage.
+
+## Avoid by default
+
+- Broad repository audits for narrow changes.
+- Subagents unless exploration is genuinely broad, CI failed, or the user asks for review/audit.
+- Full Playwright or `npm test` after every edit.
+- Re-reading files already understood unless they changed.
+- Todo lists for tasks that fit in one or two direct steps.
+- Waiting on GitHub checks unless asked to make the PR merge-ready.
+- Drive-by refactors, speculative abstractions, and unrelated fixes.
+
+## Escalate when risk requires it
+
+Use broader inspection and tests for auth, destructive actions, migrations,
+security boundaries, shared contracts, cross-cutting refactors, or repeated
+failures. Explain only material findings or blockers; keep routine progress
+silent.

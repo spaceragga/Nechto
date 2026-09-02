@@ -18,13 +18,16 @@ Do **not** `git commit`, `git push`, or `gh pr create` until the user explicitly
 Commit (Conventional Commits, English) **and push immediately**. Do not wait for a second push request. Do not open a PR unless they also asked for one.
 
 If the branch already has an open PR, edit that PR’s title and body so they match **every** commit and file on the branch (not only the latest).
+Run proportional pre-commit checks from `quality-gate.mdc`; do not run the full
+suite or wait for CI unless requested or the change is high-risk.
 
 ## When they ask for a PR
 
 1. Branch off current `main` (`feat/…` / `fix/…`) if not already on one. Do not commit on `main`.
 2. One concern per branch/PR. Split unrelated requests. Stack later PRs when they depend on an earlier branch.
 3. Commit (Conventional Commits, English). Push. Open a PR whose body covers **all** commits in the PR.
-4. Required checks: `quality`, `api-test`, `web-e2e`. Fix the PR if CI is red. Do not merge.
+4. Required checks: `quality`, `api-test`, `web-e2e`. Inspect/fix them only if
+   they report failure; do not poll/watch green CI by default.
 5. Stop. Tell the user the PR URL. They review and merge.
 
 Later commits on that PR: push, then edit the PR description so it stays consistent.
@@ -45,6 +48,7 @@ Fallback (this agent), if a PR is still behind or the Action skipped it: `git fe
 - Commit / push / open a PR unprompted (except merging `origin/main` into open PR heads)
 - `git push` to `main` / `master`
 - `gh pr merge`, merge-button equivalents, or “merge when green” loops
+- Repeated CI polling unless the user explicitly asks to wait
 - Force-push to `main`
 
 ## After they merge

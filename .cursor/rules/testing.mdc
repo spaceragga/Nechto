@@ -1,48 +1,34 @@
 ---
-description: Require Playwright and Jest coverage for new behavior
+description: Add proportional tests before commit and rely on CI for the full suite
 alwaysApply: true
 ---
 
-# Testing required
+# Testing
 
-Every behavior change must ship with automated tests. Do not merge feature/fix work without updating or adding tests.
+Behavior changes require tests in the same PR, but implementation comes first.
 
-## Stack
+## Workflow
 
-| Layer | Tool | Location |
-|-------|------|----------|
-| API unit | Jest | `apps/api/src/**/*.spec.ts` |
-| Shared client | Jest | `packages/api-client/src/**/*.spec.ts` |
-| API HTTP | Jest + Supertest | `apps/api/test/**/*.e2e-spec.ts` |
-| UI / flows | Playwright | `e2e/**/*.spec.ts` |
+- Implement the requested behavior before expanding tests.
+- During implementation, run only the smallest relevant existing test or typecheck.
+- Before commit, add/update tests for changed behavior and run affected suites.
+- Full `npm test` is a merge-ready/CI gate, not a per-edit or per-commit default.
 
-## Rules
+## Required coverage
 
-- New API endpoints/services → unit tests + HTTP e2e when the route is user/contract facing
-- New UI pages/flows/copy/i18n behavior → Playwright coverage for the happy path (and critical edge cases)
-- Bug fixes → regression test that fails without the fix
-- Refactors → keep existing tests green; add tests if behavior was previously untested
-- Do not rely on manual clicking as the only verification
-- Prefer focused tests over snapshot spam; use Playwright trace/screenshot on failure
-- Bilingual UI assertions must cover **ru** and **en** when the change is user-facing copy or routing
+- Bug fix: regression test.
+- API endpoint/service: unit test; add HTTP e2e for a public contract.
+- Shared client/contract: package test.
+- New user flow: focused Playwright happy path plus critical edge cases.
+- Refactor: existing tests must stay green; add tests only for uncovered changed behavior.
+- UI copy exists in ru+en. Test both locales only when locale behavior/routing differs; otherwise one locale is enough locally and CI covers the suite.
 
-## Commands
+## Test selection
 
-```bash
-npm run test:packages # Jest api-client
-npm run test:api      # Jest unit
-npm run test:api:e2e  # Jest API e2e
-npm run test:e2e      # Playwright
-npm test              # packages + api unit + api e2e + playwright
-```
-
-## Examples
-
-```ts
-// ✅ GOOD — new health field covered
-expect(service.getHealth()).toMatchObject({ status: 'ok' });
-
-// ❌ BAD — ship /profiles UI with zero Playwright specs
-```
-
-When asked to implement a feature, include tests in the same change set unless the user explicitly says otherwise.
+- `packages/api-client` / contracts → `npm run test:packages`
+- API logic → `npm run test:api`
+- HTTP/auth/routes → `npm run test:api:e2e`
+- Web flow → `npx playwright test <related specs> --workers=1`
+- Full local suite only when the user explicitly requests it, CI is unavailable,
+  or targeted coverage cannot establish safety; opening a PR relies on the full
+  CI matrix.

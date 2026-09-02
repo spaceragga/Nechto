@@ -1,70 +1,41 @@
 ---
-description: Pre-commit quality bar — format/lint/tests must pass; no junk diffs
+description: Proportional local verification with full CI before merge
 alwaysApply: true
 ---
 
-# Quality gate (before every commit / push)
+# Quality gate
 
-Agents must verify the **full CI quality bar** before committing. Do not rely on “it looked fine” or unit tests alone.
+Verification should match risk. Do not rerun expensive unaffected suites.
 
-## Mandatory before every commit
+## While implementing
 
-Run from repo root (even for docs/chore/cursor-only diffs):
+- Prefer changed-file lint/format and the smallest related test.
+- Run `npm run typecheck` after TypeScript, contracts, or shared package changes.
+- After contract/package source changes, run `npm run build:packages`.
+- Do not run full Playwright, full CI, or broad subagent audits by default.
 
-```bash
-npm run format:check
-npm run lint
-```
+## Before commit/push
 
-If `format:check` fails:
+- Always: `npm run format:check` and `npm run lint`.
+- TypeScript/shared code: `npm run typecheck`.
+- Behavior change: affected tests required by `testing.mdc`.
+- Docs/rules-only changes: format + lint are sufficient unless tooling behavior changed.
 
-```bash
-npm run format
-npm run format:check
-```
+## Before opening a PR or declaring merge-ready
 
-Then include the formatted files in the same commit. Never leave Prettier-dirty files staged or unstaged that CI will scan (`prettier --check .`).
+- Run all affected layer suites.
+- Let required GitHub checks (`quality`, `api-test`, `web-e2e`) execute the full matrix.
+- Run local `npm test` only when requested, CI is unavailable, or the change is broad/high-risk.
+- Do not wait/watch CI unless the user asks to make the PR merge-ready or a check fails.
 
-## Also run when the change touches that area
+## Escalate verification
 
-```bash
-npm run typecheck          # TS / packages / shared types
-npm run test:packages      # api-client / contract
-npm run test:api           # apps/api unit
-npm run test:api:e2e       # HTTP routes / auth / contracts
-npm run test:e2e           # user-facing web / i18n
-```
-
-Do not push with red lint, format, typecheck, or tests. Behavior change ⇒ tests in the same change set (see testing rule).
-
-## Why this exists
-
-CI job `quality` runs `format:check` → `lint` → `typecheck`. A single dirty file (including under `.cursor/`) fails the job and **skips** `api-test` / `web-e2e`. Local green unit tests do not mean CI green.
+- Auth, account deletion, migrations, storage, security boundaries: relevant unit + integration/e2e before commit.
+- Cross-cutting tooling or large refactors: full format/lint/typecheck and affected suites.
+- Bug fix: prove with a regression test.
 
 ## Diff hygiene — reject leftover process junk
 
-Remove before commit:
-
-- `console.log` / `debugger` / temporary scaffolding
-- Commented-out code and dead exports
-- Unused imports / speculative deps
-- Orphan experiment files
-- Secrets, `.env`, credentials, personal paths
-- Drive-by reformatting of unrelated files (except when fixing format:check)
-
-## Consistency
-
-- Match existing folder patterns
-- Same problem → same solution (auth, validation, storage, i18n, api-client)
-- After contract changes: `npm run build:packages` and update callers
-
-## Performance sanity
-
-- No unbounded `findMany` / unpaginated feeds
-- No repeated identical fetches in a loop
-- Images/files via StorageService / established upload paths
-
-## PR / commit shape
-
-- One concern per commit when practical (Conventional Commits)
-- Prefer small PRs over “redesign everything” dumps
+No debug logs, commented-out code, dead exports, speculative dependencies,
+experiment files, secrets, personal paths, generated artifacts, or unrelated
+reformatting. Never push with a known red relevant check.

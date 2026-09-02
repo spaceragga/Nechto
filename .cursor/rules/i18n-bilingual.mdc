@@ -1,6 +1,7 @@
 ---
 description: Bilingual UI copy — Russian primary, English secondary via next-intl
-alwaysApply: true
+globs: "apps/web/**/*.{ts,tsx,json}"
+alwaysApply: false
 ---
 
 # i18n — Russian + English
