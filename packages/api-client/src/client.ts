@@ -1,9 +1,14 @@
 import {
   API_ERROR_CODES,
+  type AccountActionResponse,
   type AuthUserResponse,
+  type AuthActionResponse,
+  type ChangePasswordDto,
   type CreateWorkFields,
   type CursorPage,
   type CursorPageQuery,
+  type DeleteAccountDto,
+  type ForgotPasswordDto,
   type HealthResponse,
   type HelloResponse,
   type ListCreatorsQuery,
@@ -13,6 +18,7 @@ import {
   type PublicProfile,
   type PublicProfileWithWorks,
   type RegisterDto,
+  type ResetPasswordDto,
   type UpdateProfileDto,
   type UpdateWorkFields,
   type Work,
@@ -81,12 +87,44 @@ export class ApiClient {
     return this.request<AuthUserResponse>('/auth/me');
   }
 
+  forgotPassword(input: ForgotPasswordDto) {
+    return this.request<AuthActionResponse>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  resetPassword(input: ResetPasswordDto) {
+    return this.request<AuthActionResponse>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  changePassword(input: ChangePasswordDto) {
+    return this.request<AuthActionResponse>('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
   getMyProfile() {
     return this.request<Profile>('/profiles/me');
   }
 
-  getProfile(userId: string) {
-    return this.request<PublicProfile>(`/profiles/${userId}`);
+  suspendAccount() {
+    return this.request<Profile>('/account/suspend', { method: 'POST' });
+  }
+
+  restoreAccount() {
+    return this.request<Profile>('/account/restore', { method: 'POST' });
+  }
+
+  deleteAccount(input: DeleteAccountDto) {
+    return this.request<AccountActionResponse>('/account', {
+      method: 'DELETE',
+      body: JSON.stringify(input),
+    });
   }
 
   updateMyProfile(input: UpdateProfileDto) {

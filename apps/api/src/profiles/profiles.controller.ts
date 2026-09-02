@@ -79,9 +79,4 @@ export class ProfilesController {
   getBySlug(@Param('slug') slug: string) {
     return this.profilesService.getPublishedBySlug(slug);
   }
-
-  @Get(':userId')
-  getByUserId(@Param('userId') userId: string) {
-    return this.profilesService.getByUserId(userId);
-  }
 }

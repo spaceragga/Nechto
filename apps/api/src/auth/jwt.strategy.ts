@@ -1,13 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import type { AuthUser } from '@nechto/api-contract';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ACCESS_TOKEN_COOKIE, env } from '../config/env';
+import { PrismaService } from '../prisma/prisma.service';
 
 type JwtPayload = {
   sub: string;
   email: string;
+  version?: number;
 };
 
 function extractJwtFromCookieOrHeader(request: Request): string | null {
@@ -21,7 +23,7 @@ function extractJwtFromCookieOrHeader(request: Request): string | null {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly prisma: PrismaService) {
     super({
       jwtFromRequest: extractJwtFromCookieOrHeader,
       ignoreExpiration: false,
@@ -29,10 +31,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: JwtPayload): AuthUser {
+  async validate(payload: JwtPayload): Promise<AuthUser> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: { id: true, email: true, authVersion: true },
+    });
+    if (!user || user.authVersion !== (payload.version ?? 0)) {
+      throw new UnauthorizedException('Session is no longer valid');
+    }
+
     return {
-      id: payload.sub,
-      email: payload.email,
+      id: user.id,
+      email: user.email,
     };
   }
 }

@@ -18,7 +18,7 @@ const baseProfile = {
   telegramUrl: null as string | null,
   acceptPolicies: false,
   publishedAt: null as Date | null,
-  user: { email: 'a@nechto.test' },
+  user: { email: 'a@nechto.test', suspendedAt: null as Date | null },
   _count: { works: 0 },
 };
 

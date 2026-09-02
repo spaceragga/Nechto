@@ -46,6 +46,40 @@ describe('ApiClient', () => {
     );
   });
 
+  it('sends account lifecycle and password requests to typed routes', async () => {
+    fetchMock.mockImplementation(async () => {
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.forgotPassword({
+      email: 'a@nechto.test',
+      locale: 'en',
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/auth/forgot-password',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ email: 'a@nechto.test', locale: 'en' }),
+      }),
+    );
+
+    await client.deleteAccount({ password: 'password123' });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/account',
+      expect.objectContaining({
+        method: 'DELETE',
+        body: JSON.stringify({ password: 'password123' }),
+      }),
+    );
+  });
+
   it('uploads avatar as multipart without forcing JSON content-type', async () => {
     fetchMock.mockResolvedValue(
       new Response(

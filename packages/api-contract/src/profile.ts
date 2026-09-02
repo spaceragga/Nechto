@@ -81,6 +81,7 @@ export type Profile = PublicProfile & {
   userId: string;
   email: string;
   acceptPolicies: boolean;
+  suspendedAt: string | null;
 };
 
 export type PublicProfileWithWorks = PublicProfile & {

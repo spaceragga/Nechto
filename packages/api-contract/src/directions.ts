@@ -38,7 +38,6 @@ export const RESERVED_PROFILE_SLUGS = [
   'change-password',
   'terms',
   'privacy',
-  'verify-email',
   'top-works',
 ] as const;
 

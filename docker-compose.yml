@@ -36,6 +36,15 @@ services:
       STORAGE_DRIVER: ${STORAGE_DRIVER:-local}
       STORAGE_LOCAL_ROOT: ${STORAGE_LOCAL_ROOT:-/workspace/apps/api/uploads}
       STORAGE_PUBLIC_BASE_URL: ${STORAGE_PUBLIC_BASE_URL:-http://localhost:3000/uploads}
+      WEB_PUBLIC_URL: ${WEB_PUBLIC_URL:-http://localhost:3000}
+      MAIL_TRANSPORT: ${MAIL_TRANSPORT:-json}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-Nechto <noreply@nechto.local>}
+      PASSWORD_RESET_TTL_MINUTES: ${PASSWORD_RESET_TTL_MINUTES:-30}
     ports:
       - '${API_PORT:-3001}:3001'
     volumes:

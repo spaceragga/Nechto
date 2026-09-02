@@ -7,7 +7,7 @@ import { CREATOR_DIRECTIONS } from '@nechto/api-contract';
 import type { StorageService } from '../storage/storage.service';
 
 export const profileInclude = {
-  user: { select: { email: true } },
+  user: { select: { email: true, suspendedAt: true } },
   _count: { select: { works: true } },
 } as const;
 
@@ -22,7 +22,7 @@ type ProfileRow = {
   websiteUrl: string | null;
   instagramUrl: string | null;
   telegramUrl: string | null;
-  user: { email: string };
+  user: { email: string; suspendedAt: Date | null };
   _count?: { works: number };
   createdAt: Date;
   updatedAt: Date;
@@ -94,5 +94,6 @@ export function toProfileView(
     userId: profile.userId,
     email: profile.user.email,
     acceptPolicies: profile.acceptPolicies,
+    suspendedAt: profile.user.suspendedAt?.toISOString() ?? null,
   };
 }
