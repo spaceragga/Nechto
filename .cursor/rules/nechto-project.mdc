@@ -5,50 +5,24 @@ alwaysApply: true
 
 # Nechto — agent context
 
-Art-space platform for the Belarus market (Дом Независимого Творца). Monorepo MVP: auth, profiles/avatars, shared contracts, Docker Compose.
-
-Node **>= 22.18**. After package source changes used with Docker bind mounts, run `npm run build:packages` on the host so `dist/` is available.
+Art-space platform for Belarus. Node **>= 22.18**.
 
 ## Stack
 
 - `apps/web` — Next.js 16 (App Router) + React 19 + Tailwind CSS 4 + TypeScript + next-intl (ru default, en)
 - `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`) + Prisma + Zod env
-- `packages/api-contract` — shared Zod request schemas + response types
-- `packages/api-client` — typed fetch client used by web
-- PostgreSQL 16 via Docker Compose (`prisma migrate deploy` on API start)
-- Local run: `docker compose up --build`
-- Shared TS: `tsconfig.base.json` (strict); no deprecated `baseUrl` / `moduleResolution: node`
+- `packages/api-contract` + `packages/api-client` — web/API boundary
+- PostgreSQL 16 and local storage via Docker Compose
 
-## Layout
+## Non-negotiable boundaries
 
-```
-apps/web                 # frontend (app/[locale], messages/, i18n/, lib/env.ts)
-apps/api                 # backend API (prisma/, config/env.ts)
-packages/api-contract    # shared API schemas/types
-packages/api-client      # shared typed HTTP client
-docker-compose.yml
-tsconfig.base.json
-```
-
-## Agent conventions
-
+- Web calls API through `@nechto/api-client`; request/response types live in `@nechto/api-contract`.
+- Auth uses JWT httpOnly cookies + `JwtAuthGuard`; never expose secrets or plaintext passwords.
+- RSC session reads use `lib/session.ts` + cookie forwarding in `lib/api-server.ts`.
+- Uploads use `StorageService`; no ad-hoc disk/cloud access in feature modules.
+- UI copy is ru+en through next-intl; source comments are English.
 - Keep changes scoped; no drive-by refactors
-- Prefer TypeScript everywhere (configs included when practical)
-- Do not add Kubernetes / LangChain / payments until product needs them
-- Verify with `npm run typecheck`, `npm run lint`, and `npm run format:check` when touching shared tooling or many files
 - Format with Prettier (`prettier.config.mjs`); do not fight it with manual style diffs
-- Auth uses JWT httpOnly cookies + `JwtAuthGuard`; never store passwords in plaintext
-- Web session reads (`me` / profile) load in RSC via `lib/session.ts` + cookie forwarding (`lib/api-server.ts`); Docker sets `API_INTERNAL_URL=http://api:3001`
-- File uploads go through `StorageService` (local disk); do not write ad-hoc disk or cloud SDK calls in feature modules
-- Put request/response contracts in `@nechto/api-contract` and call the API through `@nechto/api-client` from web; rebuild packages after contract changes (`npm run build:packages`)
-- Match IDE TypeScript strictness when relevant (CSS side-effect imports need `*.css` module declarations)
-- Comments: English only (see `english-comments` rule)
-- UI copy: Russian + English via next-intl (see `i18n-bilingual` rule)
-- Commits: English Conventional Commits (see `conventional-commits` rule)
-- Tests: Jest for API/packages, Playwright for UI; cover new behavior (see `testing` rule)
-- Architecture / SOLID: see `architecture-principles`
-- File size / extracts: see `file-decomposition` (helpers and hooks in their own files; no mega-modules)
-- Web UI decomposition: see `frontend-components` (`components/ui` primitives → features → pages)
-- API layering & reliability: see `backend-architecture`
-- Before push: see `quality-gate` (no junk, checks green)
-- Git: see `git-pr-workflow` (no commit/PR until asked; commit ⇒ push; sync open PRs when `main` moves; user merges `main`)
+
+After package edits or branch switches, run `npm run build:packages` so Docker
+bind mounts have current `dist/`.

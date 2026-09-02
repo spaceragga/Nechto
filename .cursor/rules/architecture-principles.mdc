@@ -1,6 +1,7 @@
 ---
 description: SOLID, DRY, KISS, SoC, YAGNI — core scalable design principles
-alwaysApply: true
+globs: "{apps,packages}/**/*.{ts,tsx}"
+alwaysApply: false
 ---
 
 # Architecture principles

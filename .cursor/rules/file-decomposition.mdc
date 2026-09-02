@@ -1,6 +1,7 @@
 ---
 description: Keep files small — extract helpers, hooks, and use-cases into focused modules
-alwaysApply: true
+globs: "{apps,packages}/**/*.{ts,tsx}"
+alwaysApply: false
 ---
 
 # File decomposition
