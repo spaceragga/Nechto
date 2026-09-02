@@ -1,4 +1,5 @@
 import { API_ERROR_CODES } from '@nechto/api-contract';
+import { Logger } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { AccountService } from './account.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -92,6 +93,7 @@ describe('AccountService', () => {
   });
 
   it('keeps deletion successful when a stored file is already missing', async () => {
+    const warn = jest.spyOn(Logger.prototype, 'warn').mockImplementation();
     prisma.user.findUnique.mockResolvedValue({
       passwordHash: 'hash',
       profile: {
@@ -106,5 +108,10 @@ describe('AccountService', () => {
       service.delete('user-1', { password: 'password123' }),
     ).resolves.toBeUndefined();
     expect(prisma.user.delete).toHaveBeenCalled();
+    expect(warn).toHaveBeenCalledWith(
+      'Failed to delete account storage key avatars/user-1/missing.png',
+      expect.any(String),
+    );
+    warn.mockRestore();
   });
 });

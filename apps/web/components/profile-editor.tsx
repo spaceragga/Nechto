@@ -19,19 +19,16 @@ import { useHydrated } from '@/hooks/use-hydrated';
 import { useMyProfile } from '@/hooks/use-my-profile';
 import { useMyWorks } from '@/hooks/use-my-works';
 import { useProfilePublish } from '@/hooks/use-profile-publish';
-import { Link } from '@/i18n/navigation';
 
 type ProfileEditorProps = {
   profile: Profile | null;
   works?: Work[];
-  errorStatus?: number | null;
   initialPane?: number;
 };
 
 export function ProfileEditor({
   profile,
   works = [],
-  errorStatus,
   initialPane = 1,
 }: ProfileEditorProps) {
   const t = useTranslations('Profile');
@@ -41,14 +38,7 @@ export function ProfileEditor({
     return (
       <div className="mx-auto flex w-full max-w-md flex-col gap-3 text-sm">
         <h1 className="font-serif text-3xl tracking-wide">{t('title')}</h1>
-        <FormError>
-          {errorStatus === 401 || errorStatus === 403
-            ? tErrors('unauthorized')
-            : tErrors('unknown')}
-        </FormError>
-        <Link href="/login" className="underline">
-          {t('loginLink')}
-        </Link>
+        <FormError>{tErrors('unknown')}</FormError>
       </div>
     );
   }

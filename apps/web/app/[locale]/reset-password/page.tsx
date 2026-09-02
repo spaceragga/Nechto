@@ -4,7 +4,7 @@ import { ResetPasswordForm } from '@/components/auth/reset-password-form';
 
 type RecoveryPageProps = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ token?: string; from?: string }>;
+  searchParams: Promise<{ token?: string }>;
 };
 
 export default async function ResetPasswordPage({
@@ -12,7 +12,7 @@ export default async function ResetPasswordPage({
   searchParams,
 }: RecoveryPageProps) {
   const { locale } = await params;
-  const { token, from } = await searchParams;
+  const { token } = await searchParams;
   setRequestLocale(locale);
   const [t, tProfile] = await Promise.all([
     getTranslations('Recovery.reset'),
@@ -22,12 +22,7 @@ export default async function ResetPasswordPage({
   return (
     <main className="flex flex-1 items-start justify-center px-6 py-16">
       <div className="flex w-full max-w-152 items-start gap-3">
-        <PasswordBackControl
-          label={
-            from === 'profile' ? tProfile('backToAccount') : tProfile('back')
-          }
-          returnToProfile={from === 'profile'}
-        />
+        <PasswordBackControl label={tProfile('back')} returnToProfile={false} />
         <div className="flex min-w-0 flex-1 flex-col gap-6">
           <h1 className="font-serif text-3xl tracking-wide">{t('title')}</h1>
           <ResetPasswordForm token={token ?? null} />

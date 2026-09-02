@@ -1,14 +1,15 @@
 import { expect, test } from '@playwright/test';
+import { navigate } from './follow-link';
 
 test.describe('explore feeds', () => {
   test('opens new, top works, and community in Russian', async ({ page }) => {
-    await page.goto('/new');
+    await navigate(page, '/new');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Новые');
     await expect(page.locator('main')).toContainText(
       /Свежие публикации|Пока нет опубликованных/,
     );
 
-    await page.goto('/top-works');
+    await navigate(page, '/top-works');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Топ работ',
     );
@@ -16,7 +17,7 @@ test.describe('explore feeds', () => {
       /Последняя работа|Пока нет опубликованных/,
     );
 
-    await page.goto('/community');
+    await navigate(page, '/community');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Сообщество',
     );
@@ -24,13 +25,13 @@ test.describe('explore feeds', () => {
   });
 
   test('opens new, top works, and community in English', async ({ page }) => {
-    await page.goto('/en/new');
+    await navigate(page, '/en/new');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('New');
     await expect(page.locator('main')).toContainText(
       /Fresh publications|No published works/,
     );
 
-    await page.goto('/en/top-works');
+    await navigate(page, '/en/top-works');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Top works',
     );
@@ -38,7 +39,7 @@ test.describe('explore feeds', () => {
       /The latest work|No published works/,
     );
 
-    await page.goto('/en/community');
+    await navigate(page, '/en/community');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Community',
     );
@@ -50,7 +51,7 @@ test.describe('explore feeds', () => {
   test('work tiles on new go to the work page when the feed is live', async ({
     page,
   }) => {
-    await page.goto('/new');
+    await navigate(page, '/new');
     const tile = page
       .locator('main a')
       .filter({ has: page.locator('[data-work-frame]') })

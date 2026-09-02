@@ -78,9 +78,18 @@ test.describe('publish profile', () => {
         ),
       ).toBeVisible();
 
-      await page
-        .getByRole('link', { name: 'Открыть публичную страницу' })
-        .click();
+      const publicProfileLink = page.getByRole('link', {
+        name: 'Открыть публичную страницу',
+      });
+      await page.getByRole('button', { name: 'Приостановить аккаунт' }).click();
+      await expect(publicProfileLink).toHaveCount(0);
+      await expect(page.getByRole('status')).toHaveText(
+        'Аккаунт приостановлен — витрина скрыта',
+      );
+      await page.getByRole('button', { name: 'Возобновить аккаунт' }).click();
+      await expect(publicProfileLink).toBeVisible();
+
+      await publicProfileLink.click();
       await expect(
         page.getByRole('heading', { name: 'Кася Тест' }),
       ).toBeVisible();

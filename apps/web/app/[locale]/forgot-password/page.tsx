@@ -1,6 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
 import { PasswordBackControl } from '@/components/auth/password-back-control';
+import { redirect } from '@/i18n/navigation';
+import type { AppLocale } from '@/i18n/routing';
+import { getCurrentUser } from '@/lib/session';
 
 type RecoveryPageProps = {
   params: Promise<{ locale: string }>;
@@ -14,6 +17,16 @@ export default async function ForgotPasswordPage({
   const { locale } = await params;
   const { from } = await searchParams;
   setRequestLocale(locale);
+
+  if (from === 'profile') {
+    const session = await getCurrentUser();
+    if (session.status === 'anonymous') {
+      redirect({ href: '/', locale: locale as AppLocale });
+    }
+  } else if (from !== 'login') {
+    redirect({ href: '/login', locale: locale as AppLocale });
+  }
+
   const [t, tProfile] = await Promise.all([
     getTranslations('Recovery.forgot'),
     getTranslations('Profile'),

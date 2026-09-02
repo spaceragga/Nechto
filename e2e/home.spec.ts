@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { followLink } from './follow-link';
 
 function publicSlug(href: string) {
   return href.replace(/^\/(?:en\/)?/, '').split('/')[0] ?? '';
@@ -155,10 +156,11 @@ test.describe('home page locales', () => {
     const before = await scrollY(page);
     expect(before).toBeGreaterThan(400);
 
-    await page
+    const illustration = page
       .getByRole('navigation', { name: 'Фильтр по направлению' })
-      .getByRole('link', { name: 'Иллюстрация' })
-      .click();
+      .getByRole('link', { name: 'Иллюстрация' });
+    await expect(illustration).toHaveAttribute('data-hydrated', 'true');
+    await illustration.click();
     await expect(page).toHaveURL(/direction=illustration/);
     await expect.poll(async () => scrollY(page)).toBeGreaterThan(before - 80);
     const after = await scrollY(page);
@@ -172,10 +174,11 @@ test.describe('home page locales', () => {
     const before = await scrollY(page);
     expect(before).toBeGreaterThan(400);
 
-    await page
+    const illustration = page
       .getByRole('navigation', { name: 'Filter by direction' })
-      .getByRole('link', { name: 'Illustration' })
-      .click();
+      .getByRole('link', { name: 'Illustration' });
+    await expect(illustration).toHaveAttribute('data-hydrated', 'true');
+    await illustration.click();
     await expect(page).toHaveURL(/direction=illustration/);
     await expect.poll(async () => scrollY(page)).toBeGreaterThan(before - 80);
     const after = await scrollY(page);
@@ -664,48 +667,54 @@ test.describe('home page locales', () => {
       explore.getByRole('link', { name: 'Сообщество' }),
     ).toBeVisible();
 
-    await explore.getByRole('link', { name: 'Авторы' }).click();
+    await followLink(page, explore.getByRole('link', { name: 'Авторы' }));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Авторы');
 
     await page.goto('/');
     const sections = page.getByRole('navigation', { name: 'Разделы' });
-    await sections.getByRole('link', { name: 'Топ работ' }).click();
+    await followLink(page, sections.getByRole('link', { name: 'Топ работ' }));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Топ работ',
     );
 
     await page.goto('/');
-    await page
-      .getByRole('navigation', { name: 'Разделы' })
-      .getByRole('link', { name: 'Новые', exact: true })
-      .click();
+    await followLink(
+      page,
+      page
+        .getByRole('navigation', { name: 'Разделы' })
+        .getByRole('link', { name: 'Новые', exact: true }),
+    );
     await expect(page).toHaveURL(/\/new\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Новые');
 
     await page.goto('/');
-    await page
+    const selections = page
       .getByRole('navigation', { name: 'Разделы' })
-      .getByRole('link', { name: 'Подборки' })
-      .click();
+      .getByRole('link', { name: 'Подборки' });
+    await followLink(page, selections);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Подборки',
     );
     await expect(page.locator('main a').first()).toBeVisible();
 
     await page.goto('/');
-    await page
-      .getByRole('navigation', { name: 'Разделы' })
-      .getByRole('link', { name: 'Журнал', exact: true })
-      .click();
+    await followLink(
+      page,
+      page
+        .getByRole('navigation', { name: 'Разделы' })
+        .getByRole('link', { name: 'Журнал', exact: true }),
+    );
     await expect(page).toHaveURL(/\/journal\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Журнал');
     await expect(page.locator('main a').first()).toBeVisible();
 
     await page.goto('/');
-    await page
-      .getByRole('navigation', { name: 'Разделы' })
-      .getByRole('link', { name: 'Сообщество' })
-      .click();
+    await followLink(
+      page,
+      page
+        .getByRole('navigation', { name: 'Разделы' })
+        .getByRole('link', { name: 'Сообщество' }),
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Сообщество',
     );
@@ -729,50 +738,56 @@ test.describe('home page locales', () => {
       explore.getByRole('link', { name: 'Community' }),
     ).toBeVisible();
 
-    await explore.getByRole('link', { name: 'Creators' }).click();
+    await followLink(page, explore.getByRole('link', { name: 'Creators' }));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Creators',
     );
 
     await page.goto('/en');
     const sections = page.getByRole('navigation', { name: 'Sections' });
-    await sections.getByRole('link', { name: 'Top works' }).click();
+    await followLink(page, sections.getByRole('link', { name: 'Top works' }));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Top works',
     );
 
     await page.goto('/en');
-    await page
-      .getByRole('navigation', { name: 'Sections' })
-      .getByRole('link', { name: 'New', exact: true })
-      .click();
+    await followLink(
+      page,
+      page
+        .getByRole('navigation', { name: 'Sections' })
+        .getByRole('link', { name: 'New', exact: true }),
+    );
     await expect(page).toHaveURL(/\/en\/new\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('New');
 
     await page.goto('/en');
-    await page
+    const selections = page
       .getByRole('navigation', { name: 'Sections' })
-      .getByRole('link', { name: 'Selections' })
-      .click();
+      .getByRole('link', { name: 'Selections' });
+    await followLink(page, selections);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Selections',
     );
     await expect(page.locator('main a').first()).toBeVisible();
 
     await page.goto('/en');
-    await page
-      .getByRole('navigation', { name: 'Sections' })
-      .getByRole('link', { name: 'Journal', exact: true })
-      .click();
+    await followLink(
+      page,
+      page
+        .getByRole('navigation', { name: 'Sections' })
+        .getByRole('link', { name: 'Journal', exact: true }),
+    );
     await expect(page).toHaveURL(/\/en\/journal\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Journal');
     await expect(page.locator('main a').first()).toBeVisible();
 
     await page.goto('/en');
-    await page
-      .getByRole('navigation', { name: 'Sections' })
-      .getByRole('link', { name: 'Community' })
-      .click();
+    await followLink(
+      page,
+      page
+        .getByRole('navigation', { name: 'Sections' })
+        .getByRole('link', { name: 'Community' }),
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Community',
     );

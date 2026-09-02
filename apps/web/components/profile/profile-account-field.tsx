@@ -36,7 +36,13 @@ export function ProfileAccountField({
       <h2 className="font-serif text-2xl tracking-wide">{t('title')}</h2>
       <div className="flex flex-col gap-3">
         <p className="text-sm opacity-70">
-          {profile.suspendedAt ? t('suspendedHint') : t('activeHint')}
+          {profile.suspendedAt
+            ? t(
+                profile.publishedAt
+                  ? 'suspendedPublishedHint'
+                  : 'suspendedHiddenHint',
+              )
+            : t('activeHint')}
         </p>
         <Button
           type="button"

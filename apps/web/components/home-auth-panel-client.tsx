@@ -33,7 +33,14 @@ export function HomeAuthPanelClient({
     setLogoutError(false);
     try {
       await logoutRequest();
-      if (pathname === '/profile') {
+      const fromProfileRecovery =
+        pathname === '/forgot-password' &&
+        new URLSearchParams(window.location.search).get('from') === 'profile';
+      if (
+        pathname === '/profile' ||
+        pathname === '/change-password' ||
+        fromProfileRecovery
+      ) {
         router.replace('/');
       }
       router.refresh();

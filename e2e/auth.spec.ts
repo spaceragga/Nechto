@@ -6,6 +6,24 @@ async function logoutFromHeader(page: Page) {
 }
 
 test.describe('auth flow', () => {
+  test('redirects anonymous users away from account-only pages', async ({
+    page,
+  }) => {
+    await page.goto('/profile');
+    await expect(page).toHaveURL(/\/$/);
+    await page.goto('/change-password');
+    await expect(page).toHaveURL(/\/$/);
+    await page.goto('/forgot-password');
+    await expect(page).toHaveURL(/\/login$/);
+
+    await page.goto('/en/profile');
+    await expect(page).toHaveURL(/\/en\/?$/);
+    await page.goto('/en/change-password');
+    await expect(page).toHaveURL(/\/en\/?$/);
+    await page.goto('/en/forgot-password');
+    await expect(page).toHaveURL(/\/en\/login$/);
+  });
+
   test('registers a new user from the UI', async ({ page }) => {
     const email = `artist-${Date.now()}@nechto.test`;
     const password = 'password123';

@@ -1,6 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ChangePasswordForm } from '@/components/auth/change-password-form';
 import { PasswordBackControl } from '@/components/auth/password-back-control';
+import { redirect } from '@/i18n/navigation';
+import type { AppLocale } from '@/i18n/routing';
+import { getCurrentUser } from '@/lib/session';
 
 type ChangePasswordPageProps = {
   params: Promise<{ locale: string }>;
@@ -14,6 +17,12 @@ export default async function ChangePasswordPage({
   const { locale } = await params;
   const { from } = await searchParams;
   setRequestLocale(locale);
+  const session = await getCurrentUser();
+
+  if (session.status === 'anonymous') {
+    redirect({ href: '/', locale: locale as AppLocale });
+  }
+
   const [t, tProfile] = await Promise.all([
     getTranslations('Account'),
     getTranslations('Profile'),

@@ -369,7 +369,6 @@
     "saved": "Saved",
     "uploading": "Uploading photo…",
     "signedInAs": "Account:",
-    "loginLink": "Log in",
     "prevPane": "Back",
     "nextPane": "Next",
     "back": "Back",
@@ -511,7 +510,8 @@
   "Account": {
     "title": "Account management",
     "activeHint": "Suspending temporarily hides your profile and works while preserving publication and editing access. Restoring brings the showcase back automatically.",
-    "suspendedHint": "Your profile and works are hidden. Restoring returns the previous publication.",
+    "suspendedPublishedHint": "Your profile and works are hidden. Restoring makes the published showcase visible again.",
+    "suspendedHiddenHint": "Your profile and works are hidden. After restoring, you can prepare and publish the showcase.",
     "suspend": "Suspend account",
     "restore": "Restore account",
     "changePassword": "Change password",

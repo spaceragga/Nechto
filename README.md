@@ -70,6 +70,11 @@ docker compose up --build
 - Health: `/health` (process + DB), `/live` (liveness), `/ready` (DB)
 - Postgres: `localhost:5432` (`nechto` / `nechto` / db `nechto`)
 
+Password recovery uses `MAIL_TRANSPORT=json` for local development. For real
+delivery, set `MAIL_TRANSPORT=smtp`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM`, and
+optionally the `SMTP_USER` / `SMTP_PASSWORD` pair in `.env`. Production requires
+the SMTP transport.
+
 ## Local (without Docker apps)
 
 ```bash

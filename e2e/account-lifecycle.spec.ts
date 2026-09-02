@@ -6,10 +6,10 @@ test.describe('account lifecycle', () => {
     page,
   }) => {
     await page.goto('/login');
-    await page.goto('/forgot-password');
+    await page.goto('/forgot-password?from=login');
     await page.getByRole('button', { name: 'Назад' }).click();
     await expect(page).toHaveURL(/\/login$/);
-    await page.goto('/forgot-password');
+    await page.goto('/forgot-password?from=login');
     await page.getByLabel('Email').fill(`missing-${Date.now()}@nechto.test`);
     await page.getByRole('button', { name: 'Отправить ссылку' }).click();
     await expect(page.getByRole('status')).toHaveText(
@@ -17,7 +17,7 @@ test.describe('account lifecycle', () => {
     );
 
     await page.goto('/en/login');
-    await page.goto('/en/forgot-password');
+    await page.goto('/en/forgot-password?from=login');
     await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
     await page.getByLabel('Email').fill(`missing-en-${Date.now()}@nechto.test`);
     await page.getByRole('button', { name: 'Send reset link' }).click();
@@ -53,6 +53,32 @@ test.describe('account lifecycle', () => {
     await expect(page.getByRole('status')).toHaveText(
       'Password updated. You can now sign in.',
     );
+  });
+
+  test('leaves profile password recovery for home on logout', async ({
+    page,
+  }) => {
+    await page.goto('/register');
+    await page
+      .getByLabel('Email')
+      .fill(`recovery-logout-${Date.now()}@nechto.test`);
+    await page.getByLabel('Пароль').fill('password123');
+    await page.getByRole('button', { name: 'Создать аккаунт' }).click();
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Профиль' })
+      .click();
+    await expect(page.getByTestId('profile-editor')).toHaveAttribute(
+      'data-hydrated',
+      'true',
+    );
+    await openProfileVisibilityPane(page);
+    await page.getByRole('link', { name: 'Восстановление пароля' }).click();
+    await expect(page).toHaveURL(/\/forgot-password\?from=profile$/);
+
+    await expect(page.locator('[data-auth-hydrated="true"]')).toBeVisible();
+    await page.getByRole('button', { name: 'Выйти' }).click();
+    await expect(page).toHaveURL(/\/$/);
   });
 
   test('changes the password and logs in with the new one', async ({

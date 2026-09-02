@@ -70,6 +70,48 @@ describe('ApiClient', () => {
       }),
     );
 
+    await client.resetPassword({
+      token: 'reset-token',
+      password: 'new-password',
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/auth/reset-password',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          token: 'reset-token',
+          password: 'new-password',
+        }),
+      }),
+    );
+
+    await client.changePassword({
+      currentPassword: 'password123',
+      newPassword: 'new-password',
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/auth/change-password',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          currentPassword: 'password123',
+          newPassword: 'new-password',
+        }),
+      }),
+    );
+
+    await client.suspendAccount();
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/account/suspend',
+      expect.objectContaining({ method: 'POST' }),
+    );
+
+    await client.restoreAccount();
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/account/restore',
+      expect.objectContaining({ method: 'POST' }),
+    );
+
     await client.deleteAccount({ password: 'password123' });
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:3001/account',

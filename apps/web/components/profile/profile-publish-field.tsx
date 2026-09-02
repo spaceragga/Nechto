@@ -42,19 +42,21 @@ export function ProfilePublishField({
               : t('visibilityHidden')}
         </span>
       </div>
-      <p className="text-sm opacity-70">
-        {t(visible ? 'publishVisibleHint' : 'publishHiddenHint')}
-      </p>
+      {!suspended ? (
+        <p className="text-sm opacity-70">
+          {t(visible ? 'publishVisibleHint' : 'publishHiddenHint')}
+        </p>
+      ) : null}
       {error ? <FormError>{error}</FormError> : null}
-      {published && profile.slug ? (
-        <>
-          <Link href={profilePath(profile.slug)} className="text-sm underline">
-            {t('viewPublic')}
-          </Link>
-          <Button type="button" disabled={pending} onClick={onUnpublish}>
-            {t('unpublish')}
-          </Button>
-        </>
+      {visible && profile.slug ? (
+        <Link href={profilePath(profile.slug)} className="text-sm underline">
+          {t('viewPublic')}
+        </Link>
+      ) : null}
+      {published ? (
+        <Button type="button" disabled={pending} onClick={onUnpublish}>
+          {t('unpublish')}
+        </Button>
       ) : (
         <Button type="button" disabled={pending || !ready} onClick={onPublish}>
           {t('publishProfile')}
