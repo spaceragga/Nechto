@@ -1,10 +1,11 @@
-import { mkdir, unlink, writeFile } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { dirname, extname, join, resolve } from 'node:path';
 import { Injectable } from '@nestjs/common';
 import { env } from '../config/env';
 import {
   type PutObjectInput,
   type StoredObject,
+  type StoredObjectBody,
   StorageService,
 } from './storage.service';
 
@@ -46,6 +47,27 @@ export class LocalDiskStorageService extends StorageService {
     return `${base}/${normalizedKey}`;
   }
 
+  async read(key: string): Promise<StoredObjectBody | null> {
+    const absolutePath = this.resolveKeyPath(key);
+
+    try {
+      const body = await readFile(absolutePath);
+      return {
+        body,
+        contentType: contentTypeForKey(key),
+      };
+    } catch (error) {
+      const code =
+        error && typeof error === 'object' && 'code' in error
+          ? (error as { code?: string }).code
+          : undefined;
+      if (code === 'ENOENT') {
+        return null;
+      }
+      throw error;
+    }
+  }
+
   getRootDir(): string {
     return this.rootDir;
   }
@@ -53,5 +75,19 @@ export class LocalDiskStorageService extends StorageService {
   private resolveKeyPath(key: string): string {
     const normalizedKey = key.replace(/^\/+/, '').replace(/\.\./g, '');
     return join(this.rootDir, normalizedKey);
+  }
+}
+
+function contentTypeForKey(key: string): string {
+  switch (extname(key).toLowerCase()) {
+    case '.jpg':
+    case '.jpeg':
+      return 'image/jpeg';
+    case '.png':
+      return 'image/png';
+    case '.webp':
+      return 'image/webp';
+    default:
+      return 'application/octet-stream';
   }
 }

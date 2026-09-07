@@ -21,3 +21,10 @@ export const CurrentUser = createParamDecorator(
     return request.user;
   },
 );
+
+export const OptionalUser = createParamDecorator(
+  (_data: unknown, context: ExecutionContext): AuthUser | null => {
+    const request = context.switchToHttp().getRequest<RequestWithUser>();
+    return request.user ?? null;
+  },
+);

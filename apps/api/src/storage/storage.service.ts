@@ -10,6 +10,11 @@ export type StoredObject = {
   size: number;
 };
 
+export type StoredObjectBody = {
+  body: Buffer;
+  contentType: string;
+};
+
 /**
  * Storage backend contract. Production uses local disk (hoster.by).
  * Keep upload callers on this interface so the backend can change
@@ -19,6 +24,7 @@ export abstract class StorageService {
   abstract put(input: PutObjectInput): Promise<StoredObject>;
   abstract delete(key: string): Promise<void>;
   abstract getPublicUrl(key: string): string;
+  abstract read(key: string): Promise<StoredObjectBody | null>;
 }
 
 export const STORAGE_SERVICE = Symbol('STORAGE_SERVICE');
