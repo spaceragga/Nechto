@@ -113,10 +113,6 @@ export function hangingFromCreators(
   return worksFromCreators(creators, 5);
 }
 
-export function latestWorkOf(creator: PublishedCreator): Work | null {
-  return creator.latestWorks[0] ?? null;
-}
-
 function hasProfileCopy(creator: PublishedCreator): boolean {
   return Boolean(creator.bio?.trim());
 }
@@ -154,6 +150,57 @@ export type HomeFeedSlices = {
   openCall: WorkWithAuthor | null;
 };
 
+function hasWorkCopy(work: Work): boolean {
+  return Boolean(work.description?.trim());
+}
+
+function uniqueWorks(works: WorkWithAuthor[]): WorkWithAuthor[] {
+  const seen = new Set<string>();
+  const ordered: WorkWithAuthor[] = [];
+  for (const work of works) {
+    if (seen.has(work.id)) {
+      continue;
+    }
+    seen.add(work.id);
+    ordered.push(work);
+  }
+  return ordered;
+}
+
+function unusedWorks(
+  pool: WorkWithAuthor[],
+  used: Set<string>,
+): WorkWithAuthor[] {
+  return pool.filter((work) => !used.has(work.id));
+}
+
+function takeUnusedWorks(
+  pool: WorkWithAuthor[],
+  used: Set<string>,
+  count: number,
+  predicate?: (work: WorkWithAuthor) => boolean,
+): WorkWithAuthor[] {
+  const picked: WorkWithAuthor[] = [];
+  for (const work of pool) {
+    if (used.has(work.id) || (predicate && !predicate(work))) {
+      continue;
+    }
+    used.add(work.id);
+    picked.push(work);
+    if (picked.length >= count) {
+      break;
+    }
+  }
+  return picked;
+}
+
+function creatorBySlug(
+  creators: PublishedCreator[],
+  slug: string,
+): PublishedCreator | null {
+  return creators.find((creator) => creator.slug === slug) ?? null;
+}
+
 export function pickHomeFeed(
   works: WorkWithAuthor[],
   creators: PublishedCreator[],
@@ -162,29 +209,58 @@ export function pickHomeFeed(
   const fromFeed = worksByCreators(works, spotlight);
   const fromProfiles = worksFromCreators(spotlight);
   const spotlightWorks = fromFeed.length > 0 ? fromFeed : fromProfiles;
-  const hanging = hangingFromCreators(spotlight);
-  const journalCreator =
-    spotlight.find(
-      (creator) => hasProfileCopy(creator) && creator.latestWorks[0],
-    ) ??
-    spotlight.find((creator) => creator.latestWorks[0]) ??
+  const rest = uniqueWorks([...spotlightWorks, ...works]);
+  const used = new Set<string>();
+
+  const billboard = takeUnusedWorks(spotlightWorks, used, 1)[0] ?? null;
+  const creatorOfWeek = spotlight[0] ?? null;
+  const nowCreators = spotlight.slice(0, 3);
+
+  const journalWork =
+    takeUnusedWorks(spotlightWorks, used, 1, (work) => hasWorkCopy(work))[0] ??
     null;
-  const journalWork = journalCreator ? latestWorkOf(journalCreator) : null;
+  const journalCreator = journalWork
+    ? creatorBySlug(creators, journalWork.author.slug)
+    : null;
+
+  const dialogue = pairFromDifferentAuthors(unusedWorks(rest, used));
+  if (dialogue) {
+    used.add(dialogue[0].id);
+    used.add(dialogue[1].id);
+  }
+
+  const collection = pickCollectionWorks(unusedWorks(rest, used));
+  for (const work of collection) {
+    used.add(work.id);
+  }
+
+  const hanging = takeUnusedWorks(
+    uniqueWorks([...hangingFromCreators(spotlight), ...rest]),
+    used,
+    5,
+  );
+  const fresh = takeUnusedWorks(works.length > 0 ? works : rest, used, 3);
+  const openCall = takeUnusedWorks(rest, used, 1)[0] ?? null;
+
+  const studioPool = spotlight.filter(
+    (creator) => creator.slug !== creatorOfWeek?.slug,
+  );
+  const studio = pickStudioCreator(studioPool) ?? pickStudioCreator(spotlight);
 
   return {
-    billboard: spotlightWorks[0] ?? null,
-    creatorOfWeek: spotlight[0] ?? null,
-    nowCreators: spotlight.slice(0, 3),
+    billboard,
+    creatorOfWeek,
+    nowCreators,
     railWorks: spotlightWorks,
-    fresh: spotlightWorks.slice(0, 3),
+    fresh,
     hanging,
     journal:
       journalCreator && journalWork
         ? { creator: journalCreator, work: journalWork }
         : null,
-    collection: pickCollectionWorks(spotlightWorks),
-    dialogue: pairFromDifferentAuthors(spotlightWorks),
-    studio: pickStudioCreator(spotlight),
-    openCall: spotlightWorks[1] ?? spotlightWorks[0] ?? null,
+    collection,
+    dialogue,
+    studio,
+    openCall,
   };
 }

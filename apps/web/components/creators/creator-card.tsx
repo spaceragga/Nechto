@@ -1,4 +1,3 @@
-import { type DemoStillKind } from '@/lib/demo-media';
 import { WorkCaption } from '@/components/ui/work-caption';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
@@ -7,7 +6,6 @@ export const CREATOR_CARD_WORK_SLOTS = 4;
 
 export type CreatorCardWork = {
   src?: string | null;
-  still?: DemoStillKind;
   alt?: string;
 };
 
@@ -16,7 +14,6 @@ type CreatorCardProps = {
   name: string;
   directionLabel?: string;
   portraitSrc?: string | null;
-  portraitStill?: DemoStillKind;
   works: CreatorCardWork[];
 };
 
@@ -33,7 +30,6 @@ export function CreatorCard({
   name,
   directionLabel,
   portraitSrc,
-  portraitStill,
   works,
 }: CreatorCardProps) {
   return (
@@ -42,7 +38,6 @@ export function CreatorCard({
         <div data-creator-portrait className="min-h-0">
           <WorkFrame
             src={portraitSrc}
-            still={portraitStill}
             alt={name}
             fit="cover"
             className="h-full w-full"
@@ -53,7 +48,6 @@ export function CreatorCard({
             <div key={index} data-creator-work className="min-h-0">
               <WorkFrame
                 src={work.src}
-                still={work.still}
                 alt={work.alt ?? ''}
                 fit="cover"
                 className="h-full w-full"

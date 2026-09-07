@@ -9,15 +9,9 @@ export async function SiteFooter() {
     <footer className="mt-auto border-t border-white/15 px-6 py-8 text-sm">
       <div className="flex flex-wrap items-center justify-center gap-4">
         <nav className="flex flex-wrap justify-center gap-4">
-          <Link href="/terms" className="underline">
-            {t('terms')}
-          </Link>
-          <Link href="/privacy" className="underline">
-            {t('privacy')}
-          </Link>
-          <Link href="/community-guidelines" className="underline">
-            {t('community')}
-          </Link>
+          <Link href="/terms">{t('terms')}</Link>
+          <Link href="/privacy">{t('privacy')}</Link>
+          <Link href="/community-guidelines">{t('community')}</Link>
         </nav>
         <LanguageSwitcher />
       </div>

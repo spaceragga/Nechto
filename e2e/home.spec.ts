@@ -292,7 +292,7 @@ test.describe('home page locales', () => {
 
     const billboardLink = billboard(page);
     const frame = billboardLink.locator('[data-work-frame]');
-    const kicker = billboardLink.getByText('Работа недели');
+    const kicker = billboardLink.getByText('Свежая работа');
     const frameBox = await frame.boundingBox();
     const kickerBox = await kicker.boundingBox();
 
@@ -308,10 +308,14 @@ test.describe('home page locales', () => {
   }) => {
     await page.goto('/');
 
-    await expect(page.getByText('Работа недели')).toBeVisible();
-    await expect(page.getByText('Автор недели')).toBeVisible();
+    await expect(page.getByText('Свежая работа')).toBeVisible();
+    await expect(
+      page.locator('[data-home-spot="creator-week"]').getByText('Автор', {
+        exact: true,
+      }),
+    ).toBeVisible();
     await expect(billboard(page)).toBeVisible();
-    await expect(page.getByRole('link', { name: /Автор недели/ })).toHaveCSS(
+    await expect(page.locator('[data-home-spot="creator-week"]')).toHaveCSS(
       'text-align',
       'center',
     );
@@ -322,12 +326,17 @@ test.describe('home page locales', () => {
   }) => {
     await page.goto('/en');
 
-    await expect(page.getByText('Work of the week')).toBeVisible();
-    await expect(page.getByText('Creator of the week')).toBeVisible();
-    await expect(billboard(page)).toBeVisible();
+    await expect(page.getByText('Latest work')).toBeVisible();
     await expect(
-      page.getByRole('link', { name: /Creator of the week/ }),
-    ).toHaveCSS('text-align', 'center');
+      page.locator('[data-home-spot="creator-week"]').getByText('Creator', {
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(billboard(page)).toBeVisible();
+    await expect(page.locator('[data-home-spot="creator-week"]')).toHaveCSS(
+      'text-align',
+      'center',
+    );
   });
 
   test('shows journal between the work of the week and the author selection', async ({
@@ -336,7 +345,7 @@ test.describe('home page locales', () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
 
-    const work = page.getByText('Работа недели');
+    const work = page.getByText('Свежая работа');
     const journal = journalSpot(page);
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
 
@@ -383,9 +392,7 @@ test.describe('home page locales', () => {
     await expect(
       spots.getByRole('link', { name: /Как смотреть/ }),
     ).toBeVisible();
-    await expect(
-      spots.getByRole('link', { name: /Окно и дверь/ }),
-    ).toBeVisible();
+    await expect(spots.locator('[data-home-spot="dialogue"]')).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Войти в студию/ }),
     ).toBeVisible();
@@ -407,7 +414,7 @@ test.describe('home page locales', () => {
     const dialogueBox = await dialogueKicker.boundingBox();
     const studioBox = await studioKicker.boundingBox();
 
-    const author = page.getByRole('link', { name: /Автор недели/ });
+    const author = page.locator('[data-home-spot="creator-week"]');
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
     const authorBox = await author.boundingBox();
     const nowBox = await now.boundingBox();
@@ -490,9 +497,7 @@ test.describe('home page locales', () => {
     await expect(
       spots.getByRole('link', { name: /How to look/ }),
     ).toBeVisible();
-    await expect(
-      spots.getByRole('link', { name: /Window and door/ }),
-    ).toBeVisible();
+    await expect(spots.locator('[data-home-spot="dialogue"]')).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Enter the studio/ }),
     ).toBeVisible();
@@ -588,14 +593,14 @@ test.describe('home page locales', () => {
     );
   });
 
-  test('demo works load public still URLs into the frame', async ({ page }) => {
+  test('work frames load live images, not demo stills', async ({ page }) => {
     await page.goto('/');
 
     const frame = page.locator('#works [data-work-frame]').first();
-    await expect(frame).toHaveAttribute(
-      'data-still-src',
-      /\/demo\/[a-z]+\.jpg$|\/uploads\//,
-    );
+    await expect(frame).toBeVisible();
+    const src = await frame.getAttribute('data-still-src');
+    expect(src ?? '').not.toMatch(/\/demo\//);
+    expect(src ?? '').toMatch(/\S/);
     await expect
       .poll(async () =>
         frame.locator('img').evaluate((image: HTMLImageElement) => {
@@ -631,7 +636,8 @@ test.describe('home page locales', () => {
     for (let index = 0; index < count; index += 1) {
       const src = await frames.nth(index).getAttribute('data-still-src');
       expect(src ?? '').not.toMatch(/\/works\//);
-      expect(src ?? '').toMatch(/portrait|avatars/);
+      expect(src ?? '').not.toMatch(/\/demo\//);
+      expect(src ?? '').toMatch(/\S/);
     }
   });
 
@@ -647,11 +653,14 @@ test.describe('home page locales', () => {
     for (let index = 0; index < count; index += 1) {
       const src = await frames.nth(index).getAttribute('data-still-src');
       expect(src ?? '').not.toMatch(/\/works\//);
-      expect(src ?? '').toMatch(/portrait|avatars/);
+      expect(src ?? '').not.toMatch(/\/demo\//);
+      expect(src ?? '').toMatch(/\S/);
     }
   });
 
-  test('explore chips open creators and stubs in Russian', async ({ page }) => {
+  test('explore chips open creators and live sections in Russian', async ({
+    page,
+  }) => {
     test.setTimeout(60_000);
     await page.goto('/');
 
@@ -720,7 +729,9 @@ test.describe('home page locales', () => {
     );
   });
 
-  test('explore chips open creators and stubs in English', async ({ page }) => {
+  test('explore chips open creators and live sections in English', async ({
+    page,
+  }) => {
     test.setTimeout(60_000);
     await page.goto('/en');
 

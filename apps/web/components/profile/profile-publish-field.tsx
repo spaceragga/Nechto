@@ -49,7 +49,7 @@ export function ProfilePublishField({
       ) : null}
       {error ? <FormError>{error}</FormError> : null}
       {visible && profile.slug ? (
-        <Link href={profilePath(profile.slug)} className="text-sm underline">
+        <Link href={profilePath(profile.slug)} className="text-sm">
           {t('viewPublic')}
         </Link>
       ) : null}

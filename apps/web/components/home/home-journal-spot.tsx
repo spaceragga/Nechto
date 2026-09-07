@@ -1,12 +1,12 @@
 import { WorkFrame } from '@/components/ui/work-frame';
-import { Link } from '@/i18n/navigation';
+import { HomeSpotRoot } from '@/components/home/home-spot-root';
 
 type HomeJournalSpotProps = {
   kicker: string;
   title: string;
   lede: string;
   cta: string;
-  href?: string;
+  href?: string | null;
   src?: string | null;
 };
 
@@ -20,9 +20,9 @@ export function HomeJournalSpot({
 }: HomeJournalSpotProps) {
   return (
     <article>
-      <Link
+      <HomeSpotRoot
         href={href}
-        data-home-spot="journal"
+        spot="journal"
         className="flex min-w-0 flex-col"
       >
         <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-80">
@@ -35,7 +35,6 @@ export function HomeJournalSpot({
           {lede}
         </p>
         <WorkFrame
-          still={src ? undefined : 'glass'}
           src={src}
           alt={title}
           fit="cover"
@@ -44,7 +43,7 @@ export function HomeJournalSpot({
         <span className="mt-2 font-sans text-sm text-[var(--accent)]">
           {cta}
         </span>
-      </Link>
+      </HomeSpotRoot>
     </article>
   );
 }

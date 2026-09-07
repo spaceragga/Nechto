@@ -1,4 +1,3 @@
-import { type DemoStillKind } from '@/lib/demo-media';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 
@@ -7,17 +6,22 @@ export type HomeFreshItem = {
   author: string;
   time: string;
   href: string;
-  still?: DemoStillKind;
   src?: string | null;
 };
 
 type HomeFreshSpotProps = {
   kicker: string;
   seeAll: string;
+  pending: string;
   items: HomeFreshItem[];
 };
 
-export function HomeFreshSpot({ kicker, seeAll, items }: HomeFreshSpotProps) {
+export function HomeFreshSpot({
+  kicker,
+  seeAll,
+  pending,
+  items,
+}: HomeFreshSpotProps) {
   return (
     <article>
       <div className="mb-2 flex items-baseline justify-between gap-3">
@@ -28,32 +32,35 @@ export function HomeFreshSpot({ kicker, seeAll, items }: HomeFreshSpotProps) {
           {seeAll}
         </Link>
       </div>
-      <ul className="flex flex-col">
-        {items.map((item, index) => (
-          <li
-            key={`${item.href}-${item.title}`}
-            className={index === 0 ? '' : 'border-t border-white/15'}
-          >
-            <Link href={item.href} className="flex items-center gap-3 py-2">
-              <WorkFrame
-                still={item.still}
-                src={item.src}
-                alt={item.title}
-                className="h-12 w-14 shrink-0"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-serif text-sm">{item.title}</p>
-                <p className="mt-0.5 font-serif text-xs opacity-70">
-                  {item.author}
-                </p>
-              </div>
-              <span className="shrink-0 font-sans text-xs opacity-50">
-                {item.time}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {items.length > 0 ? (
+        <ul className="flex flex-col">
+          {items.map((item, index) => (
+            <li
+              key={`${item.href}-${item.title}`}
+              className={index === 0 ? '' : 'border-t border-white/15'}
+            >
+              <Link href={item.href} className="flex items-center gap-3 py-2">
+                <WorkFrame
+                  src={item.src}
+                  alt={item.title}
+                  className="h-12 w-14 shrink-0"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-serif text-sm">{item.title}</p>
+                  <p className="mt-0.5 font-serif text-xs opacity-70">
+                    {item.author}
+                  </p>
+                </div>
+                <span className="shrink-0 font-sans text-xs opacity-50">
+                  {item.time}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="font-serif text-sm opacity-70">{pending}</p>
+      )}
     </article>
   );
 }

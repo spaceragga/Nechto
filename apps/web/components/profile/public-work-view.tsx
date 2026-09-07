@@ -30,9 +30,7 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
         {work.title}
       </h1>
       <p className="mt-3 font-serif text-sm opacity-70">
-        <Link href={authorHref} className="underline">
-          {work.author.displayName}
-        </Link>
+        <Link href={authorHref}>{work.author.displayName}</Link>
         {direction ? ` · ${direction}` : ''}
       </p>
       {work.description ? (

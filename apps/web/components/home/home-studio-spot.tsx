@@ -1,13 +1,12 @@
 import { WorkFrame } from '@/components/ui/work-frame';
-import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
-import { Link } from '@/i18n/navigation';
+import { HomeSpotRoot } from '@/components/home/home-spot-root';
 
 type HomeStudioSpotProps = {
   kicker: string;
   title: string;
   lede: string;
   cta: string;
-  href?: string;
+  href?: string | null;
   src?: string | null;
 };
 
@@ -16,22 +15,13 @@ export function HomeStudioSpot({
   title,
   lede,
   cta,
-  href = DEMO_PROFILE_HREF,
+  href,
   src,
 }: HomeStudioSpotProps) {
   return (
     <article>
-      <Link
-        href={href}
-        data-home-spot="studio"
-        className="flex min-w-0 flex-col"
-      >
-        <WorkFrame
-          still={src ? undefined : 'coat'}
-          src={src}
-          alt={title}
-          className="h-40 w-full"
-        />
+      <HomeSpotRoot href={href} spot="studio" className="flex min-w-0 flex-col">
+        <WorkFrame src={src} alt={title} className="h-40 w-full" />
         <p className="mt-2 font-sans text-xs tracking-[0.2em] uppercase opacity-80">
           {kicker}
         </p>
@@ -40,7 +30,7 @@ export function HomeStudioSpot({
         <span className="mt-2 font-sans text-sm text-[var(--accent)]">
           {cta}
         </span>
-      </Link>
+      </HomeSpotRoot>
     </article>
   );
 }

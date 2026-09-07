@@ -18,7 +18,8 @@ test.describe('creators page', () => {
     const portrait = card.locator('[data-creator-portrait] [data-work-frame]');
     const src = await portrait.getAttribute('data-still-src');
     expect(src ?? '').not.toMatch(/\/works\//);
-    expect(src ?? '').toMatch(/portrait|avatars/);
+    expect(src ?? '').not.toMatch(/\/demo\//);
+    expect(src ?? '').toMatch(/\S/);
   });
 
   test('cards pair a portrait with four works in English', async ({ page }) => {

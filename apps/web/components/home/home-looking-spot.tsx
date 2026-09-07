@@ -1,4 +1,4 @@
-import { Link } from '@/i18n/navigation';
+import { HomeSpotRoot } from '@/components/home/home-spot-root';
 
 type HomeLookingSpotProps = {
   kicker: string;
@@ -15,9 +15,9 @@ export function HomeLookingSpot({
 }: HomeLookingSpotProps) {
   return (
     <article>
-      <Link
+      <HomeSpotRoot
         href="/journal"
-        data-home-spot="looking"
+        spot="looking"
         className="flex min-w-0 flex-col"
       >
         <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-80">
@@ -32,7 +32,7 @@ export function HomeLookingSpot({
         <span className="mt-3 font-sans text-sm text-[var(--accent)]">
           {cta}
         </span>
-      </Link>
+      </HomeSpotRoot>
     </article>
   );
 }

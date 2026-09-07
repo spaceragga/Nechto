@@ -1,11 +1,9 @@
 import { MediaTile } from '@/components/ui/media-tile';
-import type { DemoStillKind } from '@/lib/demo-media';
 
 export type CollectionChannel = {
   href: string;
   title: string;
   meta: string;
-  still?: DemoStillKind;
   src?: string | null;
 };
 
@@ -40,7 +38,6 @@ export function CollectionsGrid({
               href={channel.href}
               title={channel.title}
               subtitle={channel.meta}
-              still={channel.still}
               src={channel.src}
               wellClassName="aspect-square w-full"
             />

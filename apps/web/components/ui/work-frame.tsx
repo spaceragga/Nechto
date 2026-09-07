@@ -1,9 +1,7 @@
-import { type DemoStillKind, demoMediaSrc } from '@/lib/demo-media';
 import { toUploadSrc } from '@/lib/to-upload-src';
 
 type WorkFrameProps = {
   src?: string | null;
-  still?: DemoStillKind;
   alt?: string;
   className?: string;
   fit?: 'contain' | 'cover';
@@ -11,13 +9,11 @@ type WorkFrameProps = {
 
 export function WorkFrame({
   src,
-  still,
   alt = '',
   className = '',
   fit = 'contain',
 }: WorkFrameProps) {
-  const resolved = src ?? (still ? demoMediaSrc(still) : null);
-  const imageSrc = resolved ? (toUploadSrc(resolved) ?? resolved) : null;
+  const imageSrc = src ? (toUploadSrc(src) ?? src) : null;
 
   return (
     <div

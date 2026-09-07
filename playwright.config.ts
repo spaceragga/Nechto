@@ -27,7 +27,7 @@ export default defineConfig({
       testIgnore: /publish-profile\.spec\.ts/,
     },
     {
-      // Publishes into the shared DB; run after home/catalog tests that need demo feeds.
+      // Publishes into the shared DB; run after home/catalog tests that need published feeds.
       name: 'publish-profile',
       use: { ...devices['Desktop Chrome'] },
       testMatch: /publish-profile\.spec\.ts/,

@@ -1,4 +1,3 @@
-import { type DemoStillKind } from '@/lib/demo-media';
 import { FluidRail } from '@/components/ui/fluid-rail';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
@@ -6,7 +5,6 @@ import { Link } from '@/i18n/navigation';
 export type HomeNowWork = {
   title: string;
   href: string;
-  still?: DemoStillKind;
   src?: string | null;
 };
 
@@ -15,7 +13,6 @@ export type HomeNowItem = {
   author: string;
   href: string;
   directionLabel: string;
-  avatarStill?: DemoStillKind;
   avatarSrc?: string | null;
   works: HomeNowWork[];
 };
@@ -32,7 +29,6 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
         className="peer/author flex w-28 shrink-0 flex-col px-1 py-1"
       >
         <WorkFrame
-          still={item.avatarStill}
           src={item.avatarSrc}
           alt=""
           fit="cover"
@@ -57,7 +53,6 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
             className="flex min-h-0 flex-col"
           >
             <WorkFrame
-              still={work.still}
               src={work.src}
               alt={work.title}
               fit="cover"
