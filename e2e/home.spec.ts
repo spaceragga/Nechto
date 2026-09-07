@@ -308,7 +308,9 @@ test.describe('home page locales', () => {
   }) => {
     await page.goto('/');
 
-    await expect(page.getByText('Свежая работа')).toBeVisible();
+    await expect(
+      billboard(page).getByText('Свежая работа', { exact: true }),
+    ).toBeVisible();
     await expect(
       page.locator('[data-home-spot="creator-week"]').getByText('Автор', {
         exact: true,
@@ -326,7 +328,9 @@ test.describe('home page locales', () => {
   }) => {
     await page.goto('/en');
 
-    await expect(page.getByText('Latest work')).toBeVisible();
+    await expect(
+      billboard(page).getByText('Latest work', { exact: true }),
+    ).toBeVisible();
     await expect(
       page.locator('[data-home-spot="creator-week"]').getByText('Creator', {
         exact: true,
