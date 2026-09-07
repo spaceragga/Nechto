@@ -5,5 +5,3 @@ import {
 
 export const CREATOR_DIRECTION_IDS = CREATOR_DIRECTIONS;
 export type CreatorDirectionId = CreatorDirection;
-
-export const DEMO_PROFILE_HREF = '/demo';

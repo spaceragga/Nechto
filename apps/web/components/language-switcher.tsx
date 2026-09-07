@@ -36,7 +36,8 @@ export function LanguageSwitcher() {
     <label className="flex items-center gap-2 text-sm tracking-wide opacity-80">
       <span className="sr-only">{t('label')}</span>
       <select
-        className="rounded border border-white/20 bg-transparent px-2 py-1"
+        data-language-switch
+        className="bg-transparent py-1"
         value={locale}
         disabled={!hydrated}
         onChange={(event) => onChange(event.target.value)}

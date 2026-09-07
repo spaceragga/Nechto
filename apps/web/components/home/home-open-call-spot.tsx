@@ -20,7 +20,6 @@ export function HomeOpenCallSpot({
     <article className="-mx-6">
       <Link href="/register" className="relative block overflow-hidden">
         <WorkFrame
-          still={src ? undefined : 'paper'}
           src={src}
           alt={title}
           fit="cover"

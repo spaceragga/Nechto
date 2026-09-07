@@ -1,5 +1,5 @@
 import { WorkFrame } from '@/components/ui/work-frame';
-import { Link } from '@/i18n/navigation';
+import { HomeSpotRoot } from '@/components/home/home-spot-root';
 
 type HomeDialogueSpotProps = {
   kicker: string;
@@ -10,7 +10,7 @@ type HomeDialogueSpotProps = {
   rightTitle: string;
   rightMeta: string;
   cta: string;
-  href?: string;
+  href?: string | null;
   leftSrc?: string | null;
   rightSrc?: string | null;
 };
@@ -30,21 +30,19 @@ export function HomeDialogueSpot({
 }: HomeDialogueSpotProps) {
   return (
     <article>
-      <Link href={href} className="flex min-w-0 flex-col">
+      <HomeSpotRoot
+        href={href}
+        spot="dialogue"
+        className="flex min-w-0 flex-col"
+      >
         <div className="grid grid-cols-2 gap-1">
           <div className="min-w-0">
-            <WorkFrame
-              still={leftSrc ? undefined : 'glass'}
-              src={leftSrc}
-              alt={leftTitle}
-              className="h-32 w-full"
-            />
+            <WorkFrame src={leftSrc} alt={leftTitle} className="h-32 w-full" />
             <p className="mt-2 truncate font-serif text-sm">{leftTitle}</p>
             <p className="mt-0.5 font-serif text-xs opacity-70">{leftMeta}</p>
           </div>
           <div className="min-w-0">
             <WorkFrame
-              still={rightSrc ? undefined : 'stair'}
               src={rightSrc}
               alt={rightTitle}
               className="h-32 w-full"
@@ -61,7 +59,7 @@ export function HomeDialogueSpot({
         <span className="mt-2 font-sans text-sm text-[var(--accent)]">
           {cta}
         </span>
-      </Link>
+      </HomeSpotRoot>
     </article>
   );
 }

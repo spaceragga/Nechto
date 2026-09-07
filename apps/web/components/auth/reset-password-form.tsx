@@ -47,9 +47,7 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
     return (
       <div className="flex flex-col items-start gap-3">
         <p role="status">{t('reset.success')}</p>
-        <Link href="/login" className="underline">
-          {t('login')}
-        </Link>
+        <Link href="/login">{t('login')}</Link>
       </div>
     );
   }

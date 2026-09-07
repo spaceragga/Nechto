@@ -4,7 +4,6 @@ import {
   CollectionsGrid,
   type CollectionChannel,
 } from '@/components/collections/collections-grid';
-import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import { loadPublishedWorks } from '@/lib/load-published-feed';
 import { worksByDirection } from '@/lib/pick-home-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
@@ -20,31 +19,23 @@ export default async function CollectionsPage({ params }: PageProps) {
   const tCreators = await getTranslations('Creators');
   const grouped = worksByDirection(await loadPublishedWorks(50));
 
-  const live: CollectionChannel[] = CREATOR_DIRECTIONS.flatMap((direction) => {
-    const works = grouped.get(direction);
-    const cover = works?.[0];
-    if (!works?.length || !cover) {
-      return [];
-    }
-    return [
-      {
-        href: `/creators?direction=${direction}`,
-        title: tCreators(`directions.${direction}`),
-        meta: t('worksCount', { count: works.length }),
-        src: toUploadSrc(cover.imageUrl),
-      },
-    ];
-  });
-
-  const channels =
-    live.length > 0
-      ? live
-      : (t.raw('channels') as Array<Omit<CollectionChannel, 'href'>>).map(
-          (channel) => ({
-            ...channel,
-            href: DEMO_PROFILE_HREF,
-          }),
-        );
+  const channels: CollectionChannel[] = CREATOR_DIRECTIONS.flatMap(
+    (direction) => {
+      const works = grouped.get(direction);
+      const cover = works?.[0];
+      if (!works?.length || !cover) {
+        return [];
+      }
+      return [
+        {
+          href: `/creators?direction=${direction}`,
+          title: tCreators(`directions.${direction}`),
+          meta: t('worksCount', { count: works.length }),
+          src: toUploadSrc(cover.imageUrl),
+        },
+      ];
+    },
+  );
 
   return (
     <CollectionsGrid

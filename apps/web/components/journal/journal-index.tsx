@@ -1,12 +1,10 @@
 import { MediaTile } from '@/components/ui/media-tile';
-import type { DemoStillKind } from '@/lib/demo-media';
 
 export type JournalIssue = {
   href: string;
   kicker: string;
   title: string;
   meta: string;
-  still?: DemoStillKind;
   src?: string | null;
 };
 
@@ -37,7 +35,6 @@ export function JournalIndex({
           href={featured.href}
           title={featured.title}
           subtitle={`${featured.kicker} · ${featured.meta}`}
-          still={featured.still}
           src={featured.src}
           wellClassName="h-64 w-full md:h-80"
         />
@@ -53,7 +50,6 @@ export function JournalIndex({
               href={issue.href}
               title={issue.title}
               subtitle={`${issue.kicker} · ${issue.meta}`}
-              still={issue.still}
               src={issue.src}
             />
           ))}

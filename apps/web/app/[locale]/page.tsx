@@ -74,11 +74,11 @@ export default async function HomePage({
       </div>
       <HomeWorksGrid
         works={works}
-        empty={direction ? t('emptyWorks') : undefined}
+        empty={direction ? t('emptyWorks') : t('pending')}
       />
       <HomeCreatorsRail
         creators={creators}
-        empty={direction ? t('emptyCreators') : undefined}
+        empty={direction ? t('emptyCreators') : t('pending')}
         catalogHref={
           direction ? `/creators?direction=${direction}` : '/creators'
         }

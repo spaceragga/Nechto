@@ -43,7 +43,7 @@ export function ExploreWorksPage({
         </section>
       )}
       {nextHref && more ? (
-        <Link href={nextHref} className="font-sans text-sm underline">
+        <Link href={nextHref} className="font-sans text-sm">
           {more}
         </Link>
       ) : null}

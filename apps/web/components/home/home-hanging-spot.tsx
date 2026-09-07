@@ -1,17 +1,9 @@
 import { getTranslations } from 'next-intl/server';
-import { type DemoStillKind } from '@/lib/demo-media';
 import { WorkFrame } from '@/components/ui/work-frame';
-import { DEMO_PROFILE_HREF } from '@/lib/creator-directions';
 import type { WorkWithAuthor } from '@nechto/api-contract';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { workPath } from '@/lib/work-path';
 import { Link } from '@/i18n/navigation';
-
-type HomeHangingItem = {
-  title: string;
-  author: string;
-  still: DemoStillKind;
-};
 
 type HomeHangingSpotProps = {
   works?: WorkWithAuthor[];
@@ -19,7 +11,6 @@ type HomeHangingSpotProps = {
 
 export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
   const t = await getTranslations('HomePage');
-  const demoItems = t.raw('hangingSpot.items') as HomeHangingItem[];
   const live = works.slice(0, 5);
 
   return (
@@ -47,25 +38,16 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
                   </p>
                 </Link>
               ))
-            : demoItems.map((item) => (
-                <Link
-                  key={item.title}
-                  href={DEMO_PROFILE_HREF}
-                  className="flex min-w-0 flex-col"
-                >
+            : Array.from({ length: 5 }, (_, index) => (
+                <div key={index} className="flex min-w-0 flex-col">
                   <WorkFrame
-                    still={item.still}
-                    alt={item.title}
                     fit="cover"
                     className="aspect-[3/4] w-full shrink-0"
                   />
-                  <p className="mt-1 truncate font-serif text-[11px] leading-tight">
-                    {item.title}
+                  <p className="mt-1 font-serif text-[11px] leading-tight opacity-70">
+                    {t('pending')}
                   </p>
-                  <p className="mt-0.5 truncate font-serif text-[11px] opacity-70">
-                    {item.author}
-                  </p>
-                </Link>
+                </div>
               ))}
         </div>
         <Link href="/top-works" className="mt-2 flex flex-col text-center">

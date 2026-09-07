@@ -53,6 +53,14 @@ test.describe('site navigation', () => {
     await expect(banner.getByRole('link', { name: 'Аккаунт' })).toHaveCount(0);
     await expect(banner.getByRole('combobox')).toHaveCount(0);
     await expect(footer.getByRole('combobox')).toBeVisible();
+    await expect(footer.getByRole('link', { name: 'Правила' })).toHaveCSS(
+      'text-decoration-line',
+      'none',
+    );
+    await expect(footer.getByRole('combobox')).toHaveCSS(
+      'border-top-width',
+      '0px',
+    );
     await expect(
       banner.getByRole('link', { name: 'Зарегистрироваться' }),
     ).toHaveCount(0);
@@ -79,8 +87,9 @@ test.describe('site navigation', () => {
     );
 
     await navigate(page, '/demo');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
-    await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Страница не найдена',
+    );
   });
 
   test('opens remaining pages from the English shell', async ({ page }) => {
@@ -134,6 +143,14 @@ test.describe('site navigation', () => {
     await expect(banner.getByRole('link', { name: 'Account' })).toHaveCount(0);
     await expect(banner.getByRole('combobox')).toHaveCount(0);
     await expect(footer.getByRole('combobox')).toBeVisible();
+    await expect(footer.getByRole('link', { name: 'Terms' })).toHaveCSS(
+      'text-decoration-line',
+      'none',
+    );
+    await expect(footer.getByRole('combobox')).toHaveCSS(
+      'border-top-width',
+      '0px',
+    );
     await expect(banner.getByRole('link', { name: 'Sign up' })).toHaveCount(0);
 
     const login = banner.getByRole('link', { name: 'Log in' });
@@ -158,7 +175,8 @@ test.describe('site navigation', () => {
     );
 
     await navigate(page, '/en/demo');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('demo');
-    await expect(page.locator('[data-public-profile-photo]')).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Page not found',
+    );
   });
 });

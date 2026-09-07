@@ -1,5 +1,6 @@
 'use strict';
 
+const { readFile } = require('node:fs/promises');
 const catalog = require('../src/dev/dev-artist-catalog.json');
 
 const apiBaseUrl = (
@@ -66,6 +67,12 @@ function imageMime(rawType) {
 }
 
 async function imageBlob(url) {
+  const fixture = process.env.SEED_FIXTURE_IMAGE;
+  if (fixture) {
+    const bytes = await readFile(fixture);
+    return new Blob([bytes], { type: 'image/png' });
+  }
+
   const response = await fetch(url, {
     headers: {
       'User-Agent': 'NechtoDevSeed/1.0',

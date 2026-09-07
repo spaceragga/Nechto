@@ -7,6 +7,7 @@ const apiBaseUrl = process.env.PLAYWRIGHT_API_URL ?? 'http://localhost:3001';
 
 export default defineConfig({
   testDir: './e2e',
+  globalSetup: './e2e/global-setup.ts',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
@@ -27,7 +28,7 @@ export default defineConfig({
       testIgnore: /publish-profile\.spec\.ts/,
     },
     {
-      // Publishes into the shared DB; run after home/catalog tests that need demo feeds.
+      // Publishes into the shared DB; run after home/catalog tests that need published feeds.
       name: 'publish-profile',
       use: { ...devices['Desktop Chrome'] },
       testMatch: /publish-profile\.spec\.ts/,
