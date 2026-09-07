@@ -17,9 +17,7 @@ async function bootstrap() {
   configureApp(app);
 
   if (env.STORAGE_DRIVER === 'local') {
-    const uploadsRoot = resolve(env.STORAGE_LOCAL_ROOT);
-    await mkdir(uploadsRoot, { recursive: true });
-    app.useStaticAssets(uploadsRoot, { prefix: '/uploads/' });
+    await mkdir(resolve(env.STORAGE_LOCAL_ROOT), { recursive: true });
   }
 
   await app.listen(env.PORT);

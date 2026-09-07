@@ -31,9 +31,6 @@ describe('WorksController (e2e)', () => {
 
     app = moduleRef.createNestApplication<NestExpressApplication>();
     configureApp(app);
-    app.useStaticAssets(uploadsRoot, {
-      prefix: '/uploads/',
-    });
     await app.init();
 
     prisma = app.get(PrismaService);

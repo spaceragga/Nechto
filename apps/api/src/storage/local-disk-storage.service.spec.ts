@@ -50,7 +50,13 @@ describe('LocalDiskStorageService', () => {
       'http://localhost:3001/uploads/avatars/user-1/photo.png',
     );
 
+    await expect(storage.read('avatars/user-1/photo.png')).resolves.toEqual({
+      body: Buffer.from('png-bytes'),
+      contentType: 'image/png',
+    });
+
     await storage.delete(stored.key);
+    await expect(storage.read(stored.key)).resolves.toBeNull();
     await expect(storage.delete(stored.key)).resolves.toBeUndefined();
   });
 });
