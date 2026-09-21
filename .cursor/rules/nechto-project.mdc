@@ -10,7 +10,9 @@ Art-space platform for Belarus. Node **>= 22.18**.
 ## Stack
 
 - `apps/web` — Next.js 16 (App Router) + React 19 + Tailwind CSS 4 + TypeScript + next-intl (ru default, en)
-- `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`) + Prisma + Zod env
+- `apps/api` — NestJS 11 + TypeScript (`module`/`moduleResolution`: `nodenext`) + Prisma + Zod env.
+  Bump `@nestjs/common`, `core`, `platform-express`, and `testing` **in lockstep** (same version).
+  After Prisma schema/migration edits run `npx prisma generate` in `apps/api` before trusting types.
 - `packages/api-contract` + `packages/api-client` — web/API boundary
 - PostgreSQL 16 and local storage via Docker Compose
 
@@ -23,6 +25,8 @@ Art-space platform for Belarus. Node **>= 22.18**.
 - UI copy is ru+en through next-intl; source comments are English.
 - Keep changes scoped; no drive-by refactors
 - Format with Prettier (`prettier.config.mjs`); do not fight it with manual style diffs
+- Lockfile/`npm install` that changes `package-lock.json`: **Node 22.18 via Docker**,
+  never the Windows host npm (CI `npm ci` will disagree)
 
 After package edits or branch switches, run `npm run build:packages` so Docker
 bind mounts have current `dist/`.

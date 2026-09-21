@@ -1,33 +1,34 @@
 ---
-description: Keep agent work scoped, incremental, and token-efficient
+description: Scoped work, no extra tests, cheap CI diagnosis, Node 22 lockfile
 alwaysApply: true
 ---
 
 # Agent efficiency
 
-Optimize for fast feedback without lowering the merge bar.
+Inspect only relevant files. Smallest complete change. Changed-file diagnostics,
+not suites. No drive-by refactors, todo lists for 1–2 steps, or subagents unless
+the search is broad, CI failed, or the user asked.
 
-## Default execution
+## Tests
 
-1. Inspect only files and callers relevant to the request.
-2. Implement the smallest complete solution.
-3. Verify with changed-file diagnostics and targeted tests.
-4. Add required tests before commit, not before the first implementation pass.
-5. Use CI/full suites only at the merge-ready stage.
+Do not write or run tests unless the user asks, or they ask for a PR. Then
+follow `testing.mdc` once. Do not rerun green suites. Do not debug by running
+tests that do not exist yet.
 
-## Avoid by default
+## Failed GitHub checks
 
-- Broad repository audits for narrow changes.
-- Subagents unless exploration is genuinely broad, CI failed, or the user asks for review/audit.
-- Full Playwright or `npm test` after every edit.
-- Re-reading files already understood unless they changed.
-- Todo lists for tasks that fit in one or two direct steps.
-- Waiting on GitHub checks unless asked to make the PR merge-ready.
-- Drive-by refactors, speculative abstractions, and unrelated fixes.
+Do not dump `gh run view --log-failed`. Take the failing job, grep
+`FAIL|Error:|Cannot find module|ELIFECYCLE`. Read only the matching hunk.
+One red check → one hypothesis → one fix → push. Do not mix lockfile edits,
+Docker, and drive-by deletes in the same pass. Do not poll green CI.
 
-## Escalate when risk requires it
+If the stack already names a missing module or file, do not open Context7,
+library docs, or web search.
 
-Use broader inspection and tests for auth, destructive actions, migrations,
-security boundaries, shared contracts, cross-cutting refactors, or repeated
-failures. Explain only material findings or blockers; keep routine progress
-silent.
+## Lockfile / deps
+
+Host Node may be 20; CI is **22.18**. Never regenerate `package-lock.json` with
+Windows npm. Use `node:22.18` (Docker). Do not read the lockfile — `npm ls` or
+grep a package key. Feature PRs must not mix audit/lockfile churn; split deps.
+
+Keep progress silent except blockers.

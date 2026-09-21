@@ -1,60 +1,47 @@
 ---
-description: Implement first; commit/PR only when asked; sync open PRs with main; user merges main
+description: Implement first; commit/PR only when asked; sync open PRs with main
 alwaysApply: true
 ---
 
 # Git — implement first, PR only on request
 
-The user owns `main`. The agent never lands work there.
+The user owns `main`. Never land work there. Never merge PRs.
 
-## Default (every prompt)
+## Default
 
-Implement the change. Leave it **uncommitted**.
+Implement. Leave **uncommitted**. No `commit` / `push` / `gh pr create` until
+asked. “PR” means open one, not merge.
 
-Do **not** `git commit`, `git push`, or `gh pr create` until the user explicitly asks. Asking for a PR means open a PR — never merge.
+## Commit
 
-## When they ask to commit
+Conventional Commits (English) **and push immediately**. No PR unless asked.
+If a PR is already open, edit title/body for **every** commit on the branch.
+No test suites on commit unless this is the user’s test pass.
 
-Commit (Conventional Commits, English) **and push immediately**. Do not wait for a second push request. Do not open a PR unless they also asked for one.
+## PR
 
-If the branch already has an open PR, edit that PR’s title and body so they match **every** commit and file on the branch (not only the latest).
-Run proportional pre-commit checks from `quality-gate.mdc`; do not run the full
-suite or wait for CI unless requested or the change is high-risk.
+1. Branch off `main` (`feat/…` / `fix/…`). Not on `main`. One concern per PR.
+2. Missing behavior tests → `testing.mdc`, run once. Then commit, push, open
+   a PR whose body covers all commits.
+3. Checks: `quality`, `api-test`, `web-e2e`. Diagnose failures per
+   `agent-efficiency.mdc`. Do not watch green CI.
+4. Stop. Give the PR URL.
 
-## When they ask for a PR
+Later commits: push and refresh the PR body.
 
-1. Branch off current `main` (`feat/…` / `fix/…`) if not already on one. Do not commit on `main`.
-2. One concern per branch/PR. Split unrelated requests. Stack later PRs when they depend on an earlier branch.
-3. Commit (Conventional Commits, English). Push. Open a PR whose body covers **all** commits in the PR.
-4. Required checks: `quality`, `api-test`, `web-e2e`. Inspect/fix them only if
-   they report failure; do not poll/watch green CI by default.
-5. Stop. Tell the user the PR URL. They review and merge.
+## `main` updates
 
-Later commits on that PR: push, then edit the PR description so it stays consistent.
-
-## When `main` updates
-
-Primary: GitHub Action `update-open-prs.yml` (push to `main`) calls the Update branch API on every same-repo open PR.
-
-Fallback (this agent), if a PR is still behind or the Action skipped it: `git fetch origin`, merge `origin/main` into that PR head, push. Do this without waiting to be asked (exception to “no unprompted push”).
-
-- Merge `origin/main` into the PR head. Do not rebase. Do not force-push.
-- Skip the branch that was just merged (GitHub deletes it).
-- If a merge conflicts, stop on that PR and tell the user. Continue the others.
-- Do not fast-forward local `main` unless they ask.
+`update-open-prs.yml` updates same-repo PR heads. Fallback: fetch, **merge**
+`origin/main` into the PR head, push (no rebase, no force). Skip the branch
+that just merged. Conflicts: stop that PR, continue others. Do not fast-forward
+local `main` unless asked.
 
 ## Never
 
-- Commit / push / open a PR unprompted (except merging `origin/main` into open PR heads)
-- `git push` to `main` / `master`
-- `gh pr merge`, merge-button equivalents, or “merge when green” loops
-- Repeated CI polling unless the user explicitly asks to wait
-- Force-push to `main`
+Unprompted commit/push/PR (except merging `origin/main` into open PR heads).
+No push to `main`. No `gh pr merge`. No force-push to `main`.
 
 ## After they merge
 
-GitHub **deletes the PR head branch** (`delete_branch_on_merge`). Do not recreate it. The merge commit and the PR keep the history.
-
-Then sync remaining open PRs with `origin/main` (see above). Local leftover: `git fetch --prune` and delete the local branch if it still exists.
-
-After `git pull` / branch switch: `npm run build:packages` (`dist/` is gitignored; stale types kill the API watch).
+Do not recreate the deleted head. Sync remaining PRs. `git fetch --prune` and
+delete the local branch if it remains. After pull/switch: `npm run build:packages`.

@@ -1,34 +1,27 @@
 ---
-description: Add proportional tests before commit and rely on CI for the full suite
-alwaysApply: true
+description: What to add when a test pass is requested or a PR is opened
+globs: "{apps,packages,e2e}/**/*.{spec,e2e-spec,test}.ts"
+alwaysApply: false
 ---
 
 # Testing
 
-Behavior changes require tests in the same PR, but implementation comes first.
+Write tests only when the user asked this turn, or they asked to open a PR
+(see `agent-efficiency.mdc`). Then add coverage and run each suite **once**.
 
-## Workflow
-
-- Implement the requested behavior before expanding tests.
-- During implementation, run only the smallest relevant existing test or typecheck.
-- Before commit, add/update tests for changed behavior and run affected suites.
-- Full `npm test` is a merge-ready/CI gate, not a per-edit or per-commit default.
-
-## Required coverage
+## Coverage
 
 - Bug fix: regression test.
-- API endpoint/service: unit test; add HTTP e2e for a public contract.
+- API endpoint/service: unit test; HTTP e2e for a public contract.
 - Shared client/contract: package test.
-- New user flow: focused Playwright happy path plus critical edge cases.
-- Refactor: existing tests must stay green; add tests only for uncovered changed behavior.
-- UI copy exists in ru+en. Test both locales only when locale behavior/routing differs; otherwise one locale is enough locally and CI covers the suite.
+- New user flow: Playwright happy path + critical edges.
+- Refactor: add tests only for uncovered changed behavior.
+- Locales: both ru+en only when routing/behavior differs.
 
-## Test selection
+## Commands
 
-- `packages/api-client` / contracts → `npm run test:packages`
-- API logic → `npm run test:api`
-- HTTP/auth/routes → `npm run test:api:e2e`
-- Web flow → `npx playwright test <related specs> --workers=1`
-- Full local suite only when the user explicitly requests it, CI is unavailable,
-  or targeted coverage cannot establish safety; opening a PR relies on the full
-  CI matrix.
+- `npm run test:packages` — api-client / contracts
+- `npm run test:api` — API unit
+- `npm run test:api:e2e` — HTTP
+- `npx playwright test <specs> --workers=1` — web
+- `npm test` — only if asked, CI down, or high-risk
