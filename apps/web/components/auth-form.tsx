@@ -37,7 +37,12 @@ export function AuthForm({ mode }: AuthFormProps) {
         await loginRequest({ email, password });
       }
       // Full navigation so RSC loaders see the new auth cookie.
-      window.location.assign(getPathname({ locale, href: '/' }));
+      window.location.assign(
+        getPathname({
+          locale,
+          href: mode === 'register' ? '/profile' : '/',
+        }),
+      );
     } catch (submitError) {
       setError(mapAuthFormError(submitError, tErrors));
     } finally {

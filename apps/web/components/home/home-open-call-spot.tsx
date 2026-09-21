@@ -6,6 +6,7 @@ type HomeOpenCallSpotProps = {
   title: string;
   lede: string;
   cta: string;
+  href?: string;
   src?: string | null;
 };
 
@@ -14,11 +15,12 @@ export function HomeOpenCallSpot({
   title,
   lede,
   cta,
+  href = '/register',
   src,
 }: HomeOpenCallSpotProps) {
   return (
     <article className="-mx-6">
-      <Link href="/register" className="relative block overflow-hidden">
+      <Link href={href} className="relative block overflow-hidden">
         <WorkFrame
           src={src}
           alt={title}

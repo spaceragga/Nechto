@@ -20,8 +20,12 @@ import { createHash, randomBytes } from 'node:crypto';
 import { ApiHttpException } from '../common/errors/api-http-exception';
 import { env } from '../config/env';
 import { MailService } from '../mail/mail.service';
-import { isUniqueConstraintError } from '../prisma/is-unique-constraint-error';
+import {
+  isUniqueConstraintError,
+  isUniqueConstraintOn,
+} from '../prisma/is-unique-constraint-error';
 import { PrismaService } from '../prisma/prisma.service';
+import { createProvisionalSlug } from '../profiles/provisional-slug';
 
 export type AuthResponse = {
   user: AuthUser;
@@ -48,7 +52,7 @@ export class AuthService {
           email,
           passwordHash,
           profile: {
-            create: {},
+            create: { slug: createProvisionalSlug() },
           },
         },
         select: {
@@ -60,7 +64,10 @@ export class AuthService {
 
       return this.buildAuthResponse(user);
     } catch (error) {
-      if (isUniqueConstraintError(error)) {
+      if (
+        isUniqueConstraintError(error) &&
+        !isUniqueConstraintOn(error, 'slug')
+      ) {
         throw new ApiHttpException(
           HttpStatus.CONFLICT,
           API_ERROR_CODES.EMAIL_TAKEN,
