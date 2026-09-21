@@ -20,6 +20,9 @@ describe('WorksService', () => {
       delete: jest.fn(),
       count: jest.fn(),
     },
+    projectBlock: {
+      count: jest.fn(),
+    },
   };
   const storage = {
     put: jest.fn(),
@@ -51,6 +54,7 @@ describe('WorksService', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     prisma.profile.findUnique.mockResolvedValue(profile);
+    prisma.projectBlock.count.mockResolvedValue(0);
 
     const moduleRef: TestingModule = await Test.createTestingModule({
       providers: [
@@ -168,6 +172,28 @@ describe('WorksService', () => {
     });
   });
 
+  it('refuses to delete a work used in a project', async () => {
+    prisma.work.findFirst.mockResolvedValue({
+      id: 'w1',
+      profileId: 'p1',
+      imageKey: 'works/p1/a.png',
+    });
+    prisma.projectBlock.count.mockResolvedValue(1);
+
+    await expect(service.deleteMine('u1', 'w1')).rejects.toBeInstanceOf(
+      ApiHttpException,
+    );
+
+    try {
+      await service.deleteMine('u1', 'w1');
+    } catch (error) {
+      expect((error as ApiHttpException).getResponse()).toMatchObject({
+        code: API_ERROR_CODES.WORK_IN_PROJECT,
+      });
+    }
+    expect(prisma.work.delete).not.toHaveBeenCalled();
+  });
+
   it('returns a published work by id with author directions', async () => {
     prisma.work.findFirst.mockResolvedValue({
       id: 'w1',
@@ -220,6 +246,7 @@ describe('WorksService', () => {
     expect(prisma.work.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
+          hidden: false,
           profile: expect.objectContaining({
             directions: { has: 'photography' },
           }),

@@ -3,12 +3,14 @@ import { QueryScrollLock } from '@/components/query-scroll-lock';
 import { ChipLink } from '@/components/ui/chip-link';
 import { CREATOR_DIRECTION_IDS } from '@/lib/creator-directions';
 
+export type DirectionChipPath = '/' | '/creators' | '/projects' | '/works';
+
 type DirectionChipsProps = {
   active?: string;
-  basePath?: '/' | '/creators';
+  basePath?: DirectionChipPath;
 };
 
-function chipHref(basePath: '/' | '/creators', direction?: string): string {
+function chipHref(basePath: DirectionChipPath, direction?: string): string {
   if (!direction) {
     return basePath;
   }

@@ -268,6 +268,109 @@ describe('ApiClient', () => {
     expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:3001/works/w1');
   });
 
+  it('creates a project and replaces blocks', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 'pr1',
+          title: 'Yards',
+          description: '',
+          createdAt: '2026-08-31T00:00:00.000Z',
+          blocks: [],
+        }),
+        {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.createMyProject({
+      title: 'Yards',
+      description: '',
+      blocks: [],
+    });
+    expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:3001/projects');
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      method: 'POST',
+      body: JSON.stringify({
+        title: 'Yards',
+        description: '',
+        blocks: [],
+      }),
+    });
+
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 'pr1',
+          title: 'Yards',
+          description: '',
+          createdAt: '2026-08-31T00:00:00.000Z',
+          blocks: [{ kind: 'text', body: 'After rain.' }],
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+
+    await client.replaceMyProjectBlocks('pr1', {
+      blocks: [{ kind: 'text', body: 'After rain.' }],
+    });
+    expect(fetchMock.mock.calls[1]?.[0]).toBe(
+      'http://localhost:3001/projects/pr1/blocks',
+    );
+    expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({ method: 'PUT' });
+  });
+
+  it('lists published series for the house', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ items: [], nextCursor: null }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.listPublishedProjects({ limit: 12 });
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(
+      'http://localhost:3001/projects?limit=12',
+    );
+  });
+
+  it('lists published series filtered by direction', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ items: [], nextCursor: null }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.listPublishedProjects({
+      direction: 'photography',
+      limit: 12,
+    });
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(
+      'http://localhost:3001/projects?limit=12&direction=photography',
+    );
+  });
+
   it('lists published works filtered by direction', async () => {
     fetchMock.mockResolvedValue(
       new Response(JSON.stringify({ items: [], nextCursor: null }), {

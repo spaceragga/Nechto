@@ -11,10 +11,12 @@ export const listCreatorsQuerySchema = cursorPageQuerySchema.extend({
 });
 
 export const listPublishedWorksQuerySchema = listCreatorsQuerySchema;
+export const listPublishedProjectsQuerySchema = listCreatorsQuerySchema;
 
 export type CursorPageQuery = z.infer<typeof cursorPageQuerySchema>;
 export type ListCreatorsQuery = z.infer<typeof listCreatorsQuerySchema>;
 export type ListPublishedWorksQuery = ListCreatorsQuery;
+export type ListPublishedProjectsQuery = ListCreatorsQuery;
 
 export type CursorPage<T> = {
   items: T[];

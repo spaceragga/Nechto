@@ -30,10 +30,10 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
                     fit="cover"
                     className="aspect-[3/4] w-full shrink-0"
                   />
-                  <p className="mt-1 truncate font-serif text-[11px] leading-tight">
+                  <p className="mt-1 truncate text-center font-serif text-[11px] leading-tight">
                     {work.title}
                   </p>
-                  <p className="mt-0.5 truncate font-serif text-[11px] opacity-70">
+                  <p className="mt-0.5 truncate text-center font-serif text-[11px] opacity-70">
                     {work.author.displayName}
                   </p>
                 </Link>

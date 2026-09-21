@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { CreatorCard } from '@/components/creators/creator-card';
 import { DirectionChips } from '@/components/direction-chips';
-import { CREATOR_DIRECTION_IDS } from '@/lib/creator-directions';
+import { parseCatalogDirection } from '@/lib/catalog-query';
 import { loadPublishedCreators } from '@/lib/load-published-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { profilePath } from '@/lib/work-path';
@@ -19,9 +19,7 @@ export default async function CreatorsPage({
   const query = await searchParams;
   setRequestLocale(locale);
 
-  const direction = CREATOR_DIRECTION_IDS.find(
-    (item) => item === query.direction,
-  );
+  const direction = parseCatalogDirection(query.direction);
   const t = await getTranslations('Creators');
   const creators = await loadPublishedCreators({
     direction,

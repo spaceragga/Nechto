@@ -1,5 +1,6 @@
 import type {
   CreatorDirection,
+  ProjectSummary,
   Work,
   WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -68,15 +69,12 @@ export function pickStudioCreator(
   );
 }
 
-export function pickCollectionWorks(
-  works: WorkWithAuthor[],
-  preferred: CreatorDirection = 'photography',
-): WorkWithAuthor[] {
-  const inDirection = works.filter((work) =>
-    work.author.directions.includes(preferred),
+export function pickHomeSeries(
+  series: ProjectSummary[],
+): ProjectSummary | null {
+  return (
+    series.find((item) => item.frameImageUrls.length > 0) ?? series[0] ?? null
   );
-  const pool = inDirection.length >= 4 ? inDirection : works;
-  return pool.slice(0, 4);
 }
 
 export function worksFromCreators(
@@ -144,10 +142,10 @@ export type HomeFeedSlices = {
   fresh: WorkWithAuthor[];
   hanging: WorkWithAuthor[];
   journal: { creator: PublishedCreator; work: Work } | null;
-  collection: WorkWithAuthor[];
   dialogue: [WorkWithAuthor, WorkWithAuthor] | null;
   studio: PublishedCreator | null;
   openCall: WorkWithAuthor | null;
+  series: ProjectSummary | null;
 };
 
 function hasWorkCopy(work: Work): boolean {
@@ -204,6 +202,7 @@ function creatorBySlug(
 export function pickHomeFeed(
   works: WorkWithAuthor[],
   creators: PublishedCreator[],
+  series: ProjectSummary[] = [],
 ): HomeFeedSlices {
   const spotlight = featuredCreators(creators);
   const fromFeed = worksByCreators(works, spotlight);
@@ -227,11 +226,6 @@ export function pickHomeFeed(
   if (dialogue) {
     used.add(dialogue[0].id);
     used.add(dialogue[1].id);
-  }
-
-  const collection = pickCollectionWorks(unusedWorks(rest, used));
-  for (const work of collection) {
-    used.add(work.id);
   }
 
   const hanging = takeUnusedWorks(
@@ -258,7 +252,7 @@ export function pickHomeFeed(
       journalCreator && journalWork
         ? { creator: journalCreator, work: journalWork }
         : null,
-    collection,
+    series: pickHomeSeries(series),
     dialogue,
     studio,
     openCall,

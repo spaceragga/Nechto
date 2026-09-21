@@ -5,3 +5,7 @@ export function profilePath(slug: string): string {
 export function workPath(slug: string, workId: string): string {
   return `${profilePath(slug)}/${workId}`;
 }
+
+export function projectPath(slug: string, projectId: string): string {
+  return `${profilePath(slug)}/p/${projectId}`;
+}

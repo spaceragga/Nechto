@@ -5,19 +5,23 @@ import { useTranslations } from 'next-intl';
 import type { AuthUser } from '@nechto/api-contract';
 import { ChromeIconButton, ChromeIconLink } from '@/components/chrome-icon';
 import { DoorGlyph } from '@/components/glyphs/door-glyph';
+import { GearGlyph } from '@/components/glyphs/gear-glyph';
 import { ProfileGlyph } from '@/components/glyphs/profile-glyph';
 import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { logoutRequest } from '@/lib/api';
+import { profilePath } from '@/lib/work-path';
 
 type HomeAuthPanelClientProps = {
   user: AuthUser | null;
+  vitrineSlug: string | null;
   unavailable: boolean;
 };
 
 export function HomeAuthPanelClient({
   user,
+  vitrineSlug,
   unavailable,
 }: HomeAuthPanelClientProps) {
   const t = useTranslations('Auth');
@@ -61,12 +65,21 @@ export function HomeAuthPanelClient({
         className="flex flex-wrap items-center gap-4"
         data-auth-hydrated={hydrated ? 'true' : 'false'}
       >
+        {vitrineSlug ? (
+          <ChromeIconLink
+            href={profilePath(vitrineSlug)}
+            label={t('vitrineLink')}
+            tip={t('vitrineLink')}
+          >
+            <ProfileGlyph />
+          </ChromeIconLink>
+        ) : null}
         <ChromeIconLink
           href="/profile"
           label={t('profileLink')}
-          tip={t('signedInAs', { email: user.email })}
+          tip={t('profileLink')}
         >
-          <ProfileGlyph />
+          <GearGlyph />
         </ChromeIconLink>
         <ChromeIconButton
           label={t('logout')}

@@ -9,6 +9,8 @@ describe('profileSlugSchema', () => {
     expect(profileSlugSchema.safeParse('profile').success).toBe(false);
     expect(profileSlugSchema.safeParse('creators').success).toBe(false);
     expect(profileSlugSchema.safeParse('top-works').success).toBe(false);
+    expect(profileSlugSchema.safeParse('projects').success).toBe(false);
+    expect(profileSlugSchema.safeParse('works').success).toBe(false);
     expect(profileSlugSchema.safeParse('forgot-password').success).toBe(false);
     expect(profileSlugSchema.safeParse('community-guidelines').success).toBe(
       false,

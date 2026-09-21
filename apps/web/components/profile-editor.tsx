@@ -6,6 +6,7 @@ import {
   canPublishProfile,
   PUBLISH_MIN_WORKS,
   type Profile,
+  type Project,
   type Work,
 } from '@nechto/api-contract';
 import { ProfileAccountField } from '@/components/profile/profile-account-field';
@@ -13,22 +14,26 @@ import { ProfileAvatarField } from '@/components/profile/profile-avatar-field';
 import { ProfileDetailsForm } from '@/components/profile/profile-details-form';
 import { ProfilePager } from '@/components/profile/profile-pager';
 import { ProfilePublishField } from '@/components/profile/profile-publish-field';
+import { ProfileProjectsField } from '@/components/profile/profile-projects-field';
 import { ProfileWorksField } from '@/components/profile/profile-works-field';
 import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
 import { useMyProfile } from '@/hooks/use-my-profile';
+import { useMyProjects } from '@/hooks/use-my-projects';
 import { useMyWorks } from '@/hooks/use-my-works';
 import { useProfilePublish } from '@/hooks/use-profile-publish';
 
 type ProfileEditorProps = {
   profile: Profile | null;
   works?: Work[];
+  projects?: Project[];
   initialPane?: number;
 };
 
 export function ProfileEditor({
   profile,
   works = [],
+  projects = [],
   initialPane = 1,
 }: ProfileEditorProps) {
   const t = useTranslations('Profile');
@@ -47,6 +52,7 @@ export function ProfileEditor({
     <ProfileEditorForm
       profile={profile}
       initialWorks={works}
+      initialProjects={projects}
       initialPane={initialPane}
     />
   );
@@ -55,15 +61,18 @@ export function ProfileEditor({
 function ProfileEditorForm({
   profile,
   initialWorks,
+  initialProjects,
   initialPane,
 }: {
   profile: Profile;
   initialWorks: Work[];
+  initialProjects: Project[];
   initialPane: number;
 }) {
   const t = useTranslations('Profile');
   const details = useMyProfile(profile);
   const works = useMyWorks(initialWorks);
+  const projects = useMyProjects(initialProjects);
   const publish = useProfilePublish(details);
   const [pane, setPane] = useState(initialPane);
   const hydrated = useHydrated();
@@ -145,31 +154,53 @@ function ProfileEditorForm({
           </p>
         </div>
 
-        <ProfileWorksField
+        <div className="flex flex-col gap-10">
+          <ProfileWorksField
+            works={works.works}
+            title={works.title}
+            description={works.description}
+            fileInputKey={works.fileInputKey}
+            adding={works.adding}
+            hasFile={Boolean(works.file)}
+            savingId={works.savingId}
+            deletingId={works.deletingId}
+            error={works.error}
+            onTitleChange={works.setTitle}
+            onDescriptionChange={works.setDescription}
+            onFileChange={works.selectFile}
+            onAdd={works.addWork}
+            onSave={works.updateWork}
+            onDelete={async (workId) => {
+              const remaining = works.works.length - 1;
+              const ok = await works.deleteWork(workId);
+              if (ok && remaining < PUBLISH_MIN_WORKS) {
+                details.setProfile({
+                  ...details.profile,
+                  publishedAt: null,
+                  workCount: remaining,
+                });
+              }
+            }}
+          />
+        </div>
+
+        <ProfileProjectsField
+          projects={projects.projects}
           works={works.works}
-          title={works.title}
-          description={works.description}
-          fileInputKey={works.fileInputKey}
-          adding={works.adding}
-          hasFile={Boolean(works.file)}
-          savingId={works.savingId}
-          deletingId={works.deletingId}
-          error={works.error}
-          onTitleChange={works.setTitle}
-          onDescriptionChange={works.setDescription}
-          onFileChange={works.selectFile}
-          onAdd={works.addWork}
-          onSave={works.updateWork}
-          onDelete={async (workId) => {
-            const remaining = works.works.length - 1;
-            const ok = await works.deleteWork(workId);
-            if (ok && remaining < PUBLISH_MIN_WORKS) {
-              details.setProfile({
-                ...details.profile,
-                publishedAt: null,
-                workCount: remaining,
-              });
-            }
+          title={projects.title}
+          description={projects.description}
+          adding={projects.adding}
+          savingId={projects.savingId}
+          deletingId={projects.deletingId}
+          error={projects.error}
+          onTitleChange={projects.setTitle}
+          onDescriptionChange={projects.setDescription}
+          onAdd={projects.addProject}
+          onSave={(projectId, title, description, blocks) =>
+            projects.saveProject(projectId, { title, description, blocks })
+          }
+          onDelete={(projectId) => {
+            void projects.deleteProject(projectId);
           }}
         />
       </ProfilePager>

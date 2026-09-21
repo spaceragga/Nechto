@@ -2,6 +2,7 @@
 
 const { readFile } = require('node:fs/promises');
 const catalog = require('../src/dev/dev-artist-catalog.json');
+const seriesByEmail = require('../src/dev/dev-artist-series.json');
 
 const apiBaseUrl = (
   process.env.SEED_API_URL ?? 'http://localhost:3001'
@@ -136,6 +137,96 @@ function workCopy(work) {
   };
 }
 
+async function deleteMyProjects(cookie) {
+  const listed = await expectOk(
+    '/projects/me',
+    await request('/projects/me?limit=50', { cookie }),
+  );
+  for (const project of listed.items ?? []) {
+    await expectOk(
+      `/projects/${project.id}`,
+      await request(`/projects/${encodeURIComponent(project.id)}`, {
+        method: 'DELETE',
+        cookie,
+      }),
+    );
+  }
+}
+
+async function createOneSeries(cookie, series) {
+  const blocks = [];
+  for (const block of series.blocks) {
+    if (block.kind === 'text' && typeof block.body === 'string') {
+      const body = block.body.trim();
+      if (body) {
+        blocks.push({ kind: 'text', body: body.slice(0, 2000) });
+      }
+      continue;
+    }
+    if (block.kind !== 'image' || typeof block.imageUrl !== 'string') {
+      continue;
+    }
+
+    const copy = workCopy(block);
+    const form = new FormData();
+    form.append('file', await imageBlob(block.imageUrl), 'series.jpg');
+    form.append('title', copy.title);
+    form.append('description', copy.description);
+    const created = await expectOk(
+      '/works',
+      await request('/works', { method: 'POST', body: form, cookie }),
+    );
+    await expectOk(
+      `/works/${created.id}`,
+      await request(`/works/${encodeURIComponent(created.id)}`, {
+        method: 'PATCH',
+        cookie,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hidden: true }),
+      }),
+    );
+    blocks.push({
+      kind: 'image',
+      workId: created.id,
+      showTitle: block.showTitle !== false,
+    });
+  }
+
+  if (!blocks.some((block) => block.kind === 'image')) {
+    return;
+  }
+
+  await expectOk(
+    '/projects',
+    await request('/projects', {
+      method: 'POST',
+      cookie,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: series.title,
+        description:
+          typeof series.description === 'string' ? series.description : '',
+        blocks,
+      }),
+    }),
+  );
+}
+
+async function createSeries(cookie, artist) {
+  const raw = seriesByEmail[artist.email];
+  const list = Array.isArray(raw) ? raw : raw ? [raw] : [];
+  for (const series of list) {
+    if (
+      !series ||
+      !Array.isArray(series.blocks) ||
+      series.blocks.length === 0
+    ) {
+      continue;
+    }
+    await createOneSeries(cookie, series);
+  }
+}
+
 async function replaceWorks(cookie, artist) {
   const listed = await expectOk(
     '/works/me',
@@ -197,7 +288,9 @@ async function seedArtist(artist) {
     }),
   );
 
+  await deleteMyProjects(cookie);
   await replaceWorks(cookie, artist);
+  await createSeries(cookie, artist);
 
   await expectOk(
     '/profiles/me/publish',

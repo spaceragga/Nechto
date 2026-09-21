@@ -28,6 +28,8 @@ export const RESERVED_PROFILE_SLUGS = [
   'creators',
   'journal',
   'collections',
+  'projects',
+  'works',
   'community',
   'community-guidelines',
   'uploads',

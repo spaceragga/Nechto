@@ -27,10 +27,10 @@
       "cta": "Read"
     },
     "collectionSpot": {
-      "kicker": "By direction",
+      "kicker": "Series",
       "title": "Selections",
-      "meta": "Curated channels are still ahead.",
-      "countMeta": "{count} works · by direction"
+      "meta": "No published series yet.",
+      "countMeta": "{author} · {count} frames"
     },
     "freshSpot": {
       "kicker": "Just in",
@@ -73,10 +73,12 @@
     },
     "nowLabel": "Author selection",
     "works": "Works",
+    "projects": "Projects",
     "creators": "Creators",
     "fragments": "Fragments",
     "seeAll": "All",
     "emptyWorks": "No works in this direction yet.",
+    "emptyProjects": "No projects in this direction yet.",
     "emptyCreators": "No creators in this direction yet.",
     "exploreNav": {
       "label": "Sections",
@@ -109,9 +111,13 @@
   },
   "Collections": {
     "title": "Selections",
-    "lede": "By direction. Curated channels are still ahead.",
-    "empty": "No published works for selections yet.",
-    "worksCount": "{count} works"
+    "lede": "Author series and rooms by direction.",
+    "empty": "No published works for directions yet.",
+    "emptySeries": "No published series yet.",
+    "series": "Series",
+    "directions": "By direction",
+    "worksCount": "{count} works",
+    "seriesCount": "{author} · {count} frames"
   },
   "CommunityFeed": {
     "title": "Community",
@@ -141,9 +147,9 @@
     "loginLink": "Log in",
     "registerLink": "Sign up",
     "logout": "Log out",
-    "signedInAs": "Signed in as {email}",
     "checkingSession": "Checking session…",
     "profileLink": "Profile",
+    "vitrineLink": "My page",
     "forgotPassword": "Forgot password?"
   },
   "Errors": {
@@ -163,6 +169,7 @@
     "avatarTooLarge": "File is too large",
     "avatarType": "Use JPEG, PNG, or WebP",
     "workFileRequired": "Please choose a work file",
+    "workInProject": "Remove the work from the project first",
     "workTooLarge": "Work file is too large",
     "workType": "Use JPEG, PNG, or WebP",
     "rateLimited": "Too many attempts. Try again later",
@@ -214,6 +221,10 @@
   },
   "Works": {
     "title": "Works",
+    "lede": "Publications in the order they appeared in the house.",
+    "emptyCatalog": "No published works yet.",
+    "emptyDirection": "No works in this direction yet.",
+    "more": "More",
     "name": "Title",
     "description": "Description",
     "save": "Save",
@@ -227,6 +238,8 @@
     "publish": "Publish",
     "unpublish": "Hide",
     "delete": "Delete",
+    "hideOnPage": "Hide on page",
+    "showOnPage": "Show on page",
     "publishProfile": "Publish profile",
     "publishVisibleHint": "“Hide” unpublishes the showcase. You will need to publish it again to bring it back.",
     "publishHiddenHint": "Complete your profile, accept the policies, and add at least five works to publish the showcase.",
@@ -234,6 +247,36 @@
     "visibilityVisible": "Showcase is published and visible",
     "visibilityHidden": "Showcase is hidden",
     "visibilitySuspended": "Account is suspended — showcase is hidden"
+  },
+  "Projects": {
+    "title": "Projects",
+    "lede": "Author series in the order they appeared in the house.",
+    "emptyCatalog": "No published projects yet.",
+    "emptyDirection": "No projects in this direction yet.",
+    "more": "More",
+    "name": "Series title",
+    "description": "Short text",
+    "add": "Create project",
+    "adding": "Creating…",
+    "empty": "No projects yet",
+    "needWorks": "Add works on the previous pane, then pick frames here",
+    "save": "Save",
+    "saving": "Saving…",
+    "delete": "Delete project",
+    "addText": "Insert text",
+    "chooseWork": "Add a frame",
+    "text": "Text between frames",
+    "moveUp": "Up",
+    "moveDown": "Down",
+    "removeBlock": "Remove",
+    "hideTitle": "Hide title",
+    "showTitle": "Show title",
+    "saveBlocks": "Save series",
+    "saved": "Series saved",
+    "needFrame": "Need at least one frame"
+  },
+  "ProjectPage": {
+    "kicker": "Series"
   },
   "Creators": {
     "title": "Creators",
@@ -255,7 +298,10 @@
   "PublicProfile": {
     "kicker": "Creator",
     "works": "Works",
+    "projects": "Projects",
+    "pane": "Works and projects",
     "empty": "No published works yet",
+    "emptyProjects": "No series yet",
     "website": "Website",
     "instagram": "Instagram",
     "telegram": "Telegram",

@@ -45,9 +45,7 @@ test.describe('auth flow', () => {
       .getByRole('banner')
       .getByRole('link', { name: 'Профиль' });
     await profile.hover();
-    await expect(
-      page.getByRole('tooltip', { name: `Вы вошли как ${email}` }),
-    ).toBeVisible();
+    await expect(page.getByRole('tooltip', { name: 'Профиль' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Выйти' })).toBeVisible();
   });
 
@@ -92,9 +90,7 @@ test.describe('auth flow', () => {
       .getByRole('banner')
       .getByRole('link', { name: 'Profile' });
     await profile.hover();
-    await expect(
-      page.getByRole('tooltip', { name: `Signed in as ${email}` }),
-    ).toBeVisible();
+    await expect(page.getByRole('tooltip', { name: 'Profile' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();
   });
 
