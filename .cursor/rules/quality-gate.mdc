@@ -1,41 +1,26 @@
 ---
-description: Proportional local verification with full CI before merge
+description: Typecheck and hygiene while implementing; no test loops
 alwaysApply: true
 ---
 
 # Quality gate
 
-Verification should match risk. Do not rerun expensive unaffected suites.
+No test runs here (`testing.mdc` / `agent-efficiency.mdc`).
 
-## While implementing
+## Implementing
 
-- Prefer changed-file lint/format and the smallest related test.
-- Run `npm run typecheck` after TypeScript, contracts, or shared package changes.
-- After contract/package source changes, run `npm run build:packages`.
-- Do not run full Playwright, full CI, or broad subagent audits by default.
+- TypeScript / contracts / shared packages: `npm run typecheck`.
+- After contract/client source changes: `npm run build:packages`.
+- Skip local `format:check` / `lint` (Windows CRLF false reds). GitHub `quality`
+  is the format/lint gate. If that check fails, fix from the CI log grep.
 
-## Before commit/push
+## Commit / PR
 
-- Always: `npm run format:check` and `npm run lint`.
-- TypeScript/shared code: `npm run typecheck`.
-- Behavior change: affected tests required by `testing.mdc`.
-- Docs/rules-only changes: format + lint are sufficient unless tooling behavior changed.
+- Docs/rules-only: nothing else.
+- PR: if behavior tests are missing, add them then run affected suites once.
+- Do not locally run `npm test` or Playwright unless this is that test pass.
+- Never push known-red relevant checks. No debug logs, secrets, dead exports,
+  generated junk, or unrelated reformat.
 
-## Before opening a PR or declaring merge-ready
-
-- Run all affected layer suites.
-- Let required GitHub checks (`quality`, `api-test`, `web-e2e`) execute the full matrix.
-- Run local `npm test` only when requested, CI is unavailable, or the change is broad/high-risk.
-- Do not wait/watch CI unless the user asks to make the PR merge-ready or a check fails.
-
-## Escalate verification
-
-- Auth, account deletion, migrations, storage, security boundaries: relevant unit + integration/e2e before commit.
-- Cross-cutting tooling or large refactors: full format/lint/typecheck and affected suites.
-- Bug fix: prove with a regression test.
-
-## Diff hygiene — reject leftover process junk
-
-No debug logs, commented-out code, dead exports, speculative dependencies,
-experiment files, secrets, personal paths, generated artifacts, or unrelated
-reformatting. Never push with a known red relevant check.
+Auth, migrations, storage, security, shared contracts: broader **file**
+inspection, not extra suites.
