@@ -29,10 +29,7 @@ import {
   type ProfileWrite,
 } from './profile.mapper';
 import { publishedProfileWhere } from './published-profile';
-import {
-  createProvisionalSlug,
-  retryUniqueSlug,
-} from './provisional-slug';
+import { createProvisionalSlug, retryUniqueSlug } from './provisional-slug';
 
 @Injectable()
 export class ProfilesService {

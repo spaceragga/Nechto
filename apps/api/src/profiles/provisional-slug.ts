@@ -8,7 +8,9 @@ export function createProvisionalSlug(): string {
   return `n${randomBytes(5).toString('hex')}`;
 }
 
-export async function retryUniqueSlug<T>(attempt: () => Promise<T>): Promise<T> {
+export async function retryUniqueSlug<T>(
+  attempt: () => Promise<T>,
+): Promise<T> {
   let lastError: unknown;
   for (let i = 0; i < SLUG_ATTEMPTS; i += 1) {
     try {
