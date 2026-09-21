@@ -37,10 +37,10 @@
       "seeAll": "All new"
     },
     "openCallSpot": {
-      "kicker": "Open call",
-      "title": "Work is welcome",
-      "lede": "Registration is live. The series intake is still ahead — no shop window, no likes.",
-      "cta": "Submit work"
+      "kicker": "For authors",
+      "title": "Publish your profile",
+      "lede": "Enter your name, upload a work, and publish your page. You can change the profile address in settings.",
+      "cta": "Publish profile"
     },
     "dialogueSpot": {
       "kicker": "Dialogue",
@@ -136,7 +136,7 @@
     "loginTitle": "Log in",
     "registerTitle": "Create account",
     "loginSubtitle": "Sign in to manage your profile.",
-    "registerSubtitle": "Create an account to start sharing your work.",
+    "registerSubtitle": "After you register, complete your profile and upload a work to publish your page.",
     "email": "Email",
     "password": "Password",
     "loginSubmit": "Log in",
@@ -161,7 +161,7 @@
     "validation": "Check the entered data",
     "emailTaken": "This email is already registered",
     "slugTaken": "This profile address is already taken",
-    "publishRequirements": "Complete your profile, accept the policies, and publish at least five works",
+    "publishRequirements": "To publish your profile, enter a name, accept the terms, and upload at least one work",
     "invalidCredentials": "Invalid email or password",
     "currentPasswordInvalid": "The current password is incorrect",
     "invalidResetToken": "This reset link is invalid or has expired",
@@ -185,7 +185,7 @@
   },
   "Profile": {
     "title": "Profile",
-    "subtitle": "Name, bio, and photo for your public page.",
+    "subtitle": "Enter your name, accept the terms, and upload at least one work.",
     "displayName": "Display name",
     "bio": "Bio",
     "slug": "Profile address",
@@ -242,7 +242,7 @@
     "showOnPage": "Show on page",
     "publishProfile": "Publish profile",
     "publishVisibleHint": "“Hide” unpublishes the showcase. You will need to publish it again to bring it back.",
-    "publishHiddenHint": "Complete your profile, accept the policies, and add at least five works to publish the showcase.",
+    "publishHiddenHint": "To publish your profile, enter a name, accept the terms, and upload at least one work.",
     "viewPublic": "Open public page",
     "visibilityVisible": "Showcase is published and visible",
     "visibilityHidden": "Showcase is hidden",

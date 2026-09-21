@@ -84,7 +84,7 @@ test.describe('profile', () => {
     ).toBeVisible();
     await expect(
       page.getByText(
-        'Заполните профиль, примите правила и добавьте минимум пять работ, чтобы опубликовать витрину.',
+        'Чтобы опубликовать профиль, укажите имя, примите правила и загрузите не менее одной работы.',
       ),
     ).toBeVisible();
     await expect(
@@ -201,7 +201,7 @@ test.describe('profile', () => {
     ).toBeVisible();
     await expect(
       page.getByText(
-        'Complete your profile, accept the policies, and add at least five works to publish the showcase.',
+        'To publish your profile, enter a name, accept the terms, and upload at least one work.',
       ),
     ).toBeVisible();
     await expect(

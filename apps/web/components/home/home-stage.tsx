@@ -9,6 +9,7 @@ import { HomeNow } from '@/components/home/home-now';
 import { HomeOpenCallSpot } from '@/components/home/home-open-call-spot';
 import { HomeStudioSpot } from '@/components/home/home-studio-spot';
 import { excerpt } from '@/lib/excerpt';
+import { getCurrentUser } from '@/lib/session';
 import { type HomeFeedSlices } from '@/lib/pick-home-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { workPath, profilePath, projectPath } from '@/lib/work-path';
@@ -29,6 +30,9 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
   const t = await getTranslations('HomePage');
   const tCreators = await getTranslations('Creators');
   const pending = t('pending');
+  const session = await getCurrentUser();
+  const openCallHref =
+    session.status === 'authenticated' ? '/profile' : '/register';
 
   const billboardHref = feed.billboard
     ? workPath(feed.billboard.author.slug, feed.billboard.id)
@@ -202,6 +206,7 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
         title={t('openCallSpot.title')}
         lede={t('openCallSpot.lede')}
         cta={t('openCallSpot.cta')}
+        href={openCallHref}
         src={feed.openCall ? toUploadSrc(feed.openCall.imageUrl) : undefined}
       />
     </section>

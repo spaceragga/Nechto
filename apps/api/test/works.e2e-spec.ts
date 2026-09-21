@@ -87,7 +87,7 @@ describe('WorksController (e2e)', () => {
       });
 
     const workIds: string[] = [];
-    for (let index = 0; index < 5; index += 1) {
+    for (let index = 0; index < 1; index += 1) {
       const created = await request(app.getHttpServer())
         .post('/works')
         .set('Cookie', cookie)
@@ -111,7 +111,7 @@ describe('WorksController (e2e)', () => {
       .expect(200)
       .then((response) => {
         expect(response.body.publishedAt).toBeTruthy();
-        expect(response.body.workCount).toBe(5);
+        expect(response.body.workCount).toBe(1);
       });
 
     const publicProfile = await request(app.getHttpServer())
@@ -125,7 +125,7 @@ describe('WorksController (e2e)', () => {
       .get(`/works/profile/${slug}`)
       .expect(200);
 
-    expect(listed.body.items).toHaveLength(5);
+    expect(listed.body.items).toHaveLength(1);
 
     const catalog = await request(app.getHttpServer())
       .get('/profiles?direction=photography')
@@ -218,10 +218,10 @@ describe('WorksController (e2e)', () => {
       .expect(200);
 
     expect(afterDelete.body.publishedAt).toBeNull();
-    expect(afterDelete.body.workCount).toBe(4);
+    expect(afterDelete.body.workCount).toBe(0);
 
     await request(app.getHttpServer())
-      .get(`/works/${workIds[1]}`)
+      .get(`/works/${workIds[0]}`)
       .expect(404)
       .then((response) => {
         expect(response.body.code).toBe(API_ERROR_CODES.WORK_NOT_FOUND);

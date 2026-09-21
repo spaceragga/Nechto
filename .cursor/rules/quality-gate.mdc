@@ -1,26 +1,40 @@
 ---
-description: Typecheck and hygiene while implementing; no test loops
+description: Local gates matching GitHub quality/api-test/web-e2e before a PR exists
 alwaysApply: true
 ---
 
 # Quality gate
 
-No test runs here (`testing.mdc` / `agent-efficiency.mdc`).
+No test runs while implementing (`testing.mdc`).
 
 ## Implementing
 
 - TypeScript / contracts / shared packages: `npm run typecheck`.
 - After contract/client source changes: `npm run build:packages`.
-- Skip local `format:check` / `lint` (Windows CRLF false reds). GitHub `quality`
-  is the format/lint gate. If that check fails, fix from the CI log grep.
 
-## Commit / PR
+## Before opening a PR (required)
 
-- Docs/rules-only: nothing else.
-- PR: if behavior tests are missing, add them then run affected suites once.
-- Do not locally run `npm test` or Playwright unless this is that test pass.
-- Never push known-red relevant checks. No debug logs, secrets, dead exports,
-  generated junk, or unrelated reformat.
+GitHub must not be the first time these run. Fix locally, then `gh pr create`.
 
-Auth, migrations, storage, security, shared contracts: broader **file**
-inspection, not extra suites.
+Do **not** run repo-wide `npm run format:check` on Windows (CRLF noise). Instead,
+on files in `git diff --name-only origin/main...HEAD` (plus unstaged):
+
+1. `npx prettier --write` those files; commit if Prettier changed them.
+2. `npm run lint` if JS/TS/CSS changed (or eslint on those paths).
+3. `npm run typecheck` if TypeScript/contracts changed.
+4. `npm run build` if the `quality` job would build what you touched.
+5. `npm run test:packages` if `packages/` changed.
+6. Behavior tests: `testing.mdc`, affected suites **once** (`test:api`,
+   `test:api:e2e`, Playwright specs). Skip a suite only if the machine cannot
+   run it (no DB / browsers) and say so in the PR body.
+
+`npm audit --audit-level=high` and lockfile regenerate only when deps changed
+(Node 22.18 Docker). Docs/rules-only: Prettier on those files is enough.
+
+Never `gh pr create` with a known-red `quality` / `api-test` / `web-e2e` cause.
+
+## After a check is already red
+
+Grep the job log (`agent-efficiency.mdc`). One fix, push.
+
+No debug logs, secrets, dead exports, generated junk, or unrelated reformat.

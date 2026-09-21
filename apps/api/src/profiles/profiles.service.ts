@@ -29,6 +29,7 @@ import {
   type ProfileWrite,
 } from './profile.mapper';
 import { publishedProfileWhere } from './published-profile';
+import { createProvisionalSlug, retryUniqueSlug } from './provisional-slug';
 
 @Injectable()
 export class ProfilesService {
@@ -127,7 +128,7 @@ export class ProfilesService {
       throw new ApiHttpException(
         HttpStatus.FORBIDDEN,
         API_ERROR_CODES.PUBLISH_REQUIREMENTS_NOT_MET,
-        'Complete your profile and publish at least five works',
+        'To publish your profile, enter a name, accept the terms, and upload at least one work',
       );
     }
 
@@ -194,7 +195,7 @@ export class ProfilesService {
         ? { displayName: dto.displayName }
         : {}),
       ...(dto.bio !== undefined ? { bio: dto.bio } : {}),
-      ...(dto.slug !== undefined ? { slug: dto.slug } : {}),
+      ...(dto.slug ? { slug: dto.slug } : {}),
       ...(dto.directions !== undefined
         ? { directions: uniqueDirections(dto.directions) }
         : {}),
@@ -218,7 +219,18 @@ export class ProfilesService {
     });
 
     if (existing) {
-      return toProfileRecord(existing);
+      if (existing.slug) {
+        return toProfileRecord(existing);
+      }
+
+      const filled = await retryUniqueSlug(() =>
+        this.prisma.profile.update({
+          where: { userId },
+          data: { slug: createProvisionalSlug() },
+          include: profileInclude,
+        }),
+      );
+      return toProfileRecord(filled);
     }
 
     const user = await this.prisma.user.findUnique({
@@ -236,10 +248,12 @@ export class ProfilesService {
 
     try {
       return toProfileRecord(
-        await this.prisma.profile.create({
-          data: { userId },
-          include: profileInclude,
-        }),
+        await retryUniqueSlug(() =>
+          this.prisma.profile.create({
+            data: { userId, slug: createProvisionalSlug() },
+            include: profileInclude,
+          }),
+        ),
       );
     } catch (error) {
       if (isUniqueConstraintError(error)) {

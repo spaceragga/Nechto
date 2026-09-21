@@ -21,10 +21,10 @@ No test suites on commit unless this is the user’s test pass.
 ## PR
 
 1. Branch off `main` (`feat/…` / `fix/…`). Not on `main`. One concern per PR.
-2. Missing behavior tests → `testing.mdc`, run once. Then commit, push, open
-   a PR whose body covers all commits.
-3. Checks: `quality`, `api-test`, `web-e2e`. Diagnose failures per
-   `agent-efficiency.mdc`. Do not watch green CI.
+2. Run `quality-gate.mdc` **Before opening a PR** and `testing.mdc` if behavior
+   changed. Fix everything those GitHub jobs (`quality`, `api-test`, `web-e2e`)
+   would catch. Then commit, push, open a PR whose body covers all commits.
+3. Inspect CI only if a job fails (`agent-efficiency.mdc`). Do not watch green.
 4. Stop. Give the PR URL.
 
 Later commits: push and refresh the PR body.

@@ -450,7 +450,7 @@ test.describe('home page locales', () => {
     const collection = collectionSpot(page);
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
     const fresh = page.getByText('Только что');
-    const openCall = page.getByRole('link', { name: /Открытый приём/ });
+    const openCall = page.getByRole('link', { name: /Публикация профиля/ });
     const frames = collection.locator('[data-work-frame]');
 
     await expect(frames).toHaveCount(4);
@@ -510,7 +510,7 @@ test.describe('home page locales', () => {
     ).toHaveAttribute('href', '/en/journal');
     await expect(journalSpot(page)).toBeVisible();
     await expect(
-      page.getByRole('link', { name: /Work is welcome/ }),
+      page.getByRole('link', { name: /Publish your profile/ }),
     ).toHaveAttribute('href', '/en/register');
   });
 
@@ -520,8 +520,8 @@ test.describe('home page locales', () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
 
-    const openCall = page.getByRole('link', { name: /Открытый приём/ });
-    const title = openCall.getByRole('heading', { name: 'Открытый приём' });
+    const openCall = page.getByRole('link', { name: /Публикация профиля/ });
+    const title = openCall.getByRole('heading', { name: 'Публикация профиля' });
     const frame = openCall.locator('[data-work-frame]');
 
     const openCallBox = await openCall.boundingBox();

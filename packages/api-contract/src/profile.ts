@@ -32,7 +32,7 @@ function optionalNullableSlug() {
     .transform(emptyToNull);
 }
 
-export const PUBLISH_MIN_WORKS = 5;
+export const PUBLISH_MIN_WORKS = 1;
 
 export type PublishProfileCheck = {
   displayName: string | null | undefined;

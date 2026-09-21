@@ -11,7 +11,7 @@ const baseProfile = {
   displayName: null as string | null,
   bio: null as string | null,
   avatarKey: null as string | null,
-  slug: null as string | null,
+  slug: 'n0a1b2c3d4e' as string | null,
   directions: [] as string[],
   websiteUrl: null as string | null,
   instagramUrl: null as string | null,
@@ -74,7 +74,7 @@ describe('ProfilesService', () => {
     expect(view.displayName).toBe('Artist');
     expect(view.bio).toBe('Hello');
     expect(view.avatarUrl).toBeNull();
-    expect(view.slug).toBeNull();
+    expect(view.slug).toBe('n0a1b2c3d4e');
   });
 
   it('rejects publish when the profile is incomplete', async () => {
@@ -93,13 +93,13 @@ describe('ProfilesService', () => {
     }
   });
 
-  it('publishes when name, slug, policies, and five works are set', async () => {
+  it('publishes when name, slug, policies, and one work are set', async () => {
     const ready = {
       ...baseProfile,
       displayName: 'Artist',
       slug: 'artist',
       acceptPolicies: true,
-      _count: { works: 5 },
+      _count: { works: 1 },
     };
     prisma.profile.findUnique.mockResolvedValue(ready);
     prisma.profile.update.mockResolvedValue({
@@ -110,20 +110,20 @@ describe('ProfilesService', () => {
     const view = await service.publishMine('u1');
 
     expect(view.publishedAt).toBe('2026-08-31T00:00:00.000Z');
-    expect(view.workCount).toBe(5);
+    expect(view.workCount).toBe(1);
   });
 
-  it('canPublishProfile requires name, slug, policies, and five works', () => {
+  it('canPublishProfile requires name, slug, policies, and one work', () => {
     const ready = {
       displayName: 'Artist',
       slug: 'artist',
       acceptPolicies: true,
-      workCount: 5,
+      workCount: 1,
     };
 
     expect(canPublishProfile(ready)).toBe(true);
     expect(canPublishProfile({ ...ready, displayName: '  ' })).toBe(false);
-    expect(canPublishProfile({ ...ready, workCount: 4 })).toBe(false);
+    expect(canPublishProfile({ ...ready, workCount: 0 })).toBe(false);
     expect(canPublishProfile({ ...ready, acceptPolicies: false })).toBe(false);
   });
 
