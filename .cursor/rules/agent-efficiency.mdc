@@ -13,7 +13,8 @@ the search is broad, CI failed, or the user asked.
 
 Do not write or run tests unless the user asks, or they ask for a PR. Then
 follow `testing.mdc` once. Do not rerun green suites. Do not debug by running
-tests that do not exist yet.
+tests that do not exist yet. Do not open a PR until `quality-gate.mdc` pre-PR
+steps are green.
 
 ## Failed GitHub checks
 

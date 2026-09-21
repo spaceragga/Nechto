@@ -7,7 +7,8 @@ alwaysApply: false
 # Testing
 
 Write tests only when the user asked this turn, or they asked to open a PR
-(see `agent-efficiency.mdc`). Then add coverage and run each suite **once**.
+(see `agent-efficiency.mdc`). Then add coverage and run each suite **once**
+**before** `gh pr create` (`quality-gate.mdc`).
 
 ## Coverage
 
