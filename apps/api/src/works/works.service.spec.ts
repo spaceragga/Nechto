@@ -150,7 +150,7 @@ describe('WorksService', () => {
     });
   });
 
-  it('deletes a work and unpublishes when fewer than five remain', async () => {
+  it('deletes a work and unpublishes when none remain', async () => {
     prisma.work.findFirst.mockResolvedValue({
       id: 'w1',
       profileId: 'p1',
@@ -160,7 +160,7 @@ describe('WorksService', () => {
       ...profile,
       publishedAt: new Date(),
     });
-    prisma.work.count.mockResolvedValue(4);
+    prisma.work.count.mockResolvedValue(0);
 
     await service.deleteMine('u1', 'w1');
 
