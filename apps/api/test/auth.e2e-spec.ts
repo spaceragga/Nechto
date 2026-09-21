@@ -1,4 +1,4 @@
-import type { INestApplication } from '@nestjs/common';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { API_ERROR_CODES } from '@nechto/api-contract';
 import { Test, TestingModule } from '@nestjs/testing';
 import cookieParser from 'cookie-parser';
@@ -8,7 +8,7 @@ import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('AuthController (e2e)', () => {
-  let app: INestApplication;
+  let app: NestExpressApplication;
   let prisma: PrismaService;
   const email = `artist-${Date.now()}@nechto.test`;
   const lifecycleEmail = `lifecycle-${Date.now()}@nechto.test`;
@@ -19,7 +19,7 @@ describe('AuthController (e2e)', () => {
       imports: [AppModule],
     }).compile();
 
-    app = moduleRef.createNestApplication();
+    app = moduleRef.createNestApplication<NestExpressApplication>();
     app.use(cookieParser());
     await app.init();
 

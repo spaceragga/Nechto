@@ -37,7 +37,7 @@ test.describe('auth flow', () => {
     await page.getByRole('button', { name: 'Создать аккаунт' }).click();
     const registrationResponse = await registration;
 
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/profile\/?$/);
     expect(new URL(registrationResponse.url()).origin).toBe(
       new URL(page.url()).origin,
     );

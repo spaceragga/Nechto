@@ -91,7 +91,7 @@ describe('AuthService', () => {
           email: 'artist@nechto.test',
           passwordHash: 'hashed',
           profile: {
-            create: {},
+            create: { slug: expect.stringMatching(/^n[a-f0-9]{10}$/) },
           },
         },
         select: { id: true, email: true, authVersion: true },
