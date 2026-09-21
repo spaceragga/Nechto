@@ -1,0 +1,292 @@
+{
+  "artist1@nechto.test": [
+    {
+      "title": "Как собирается двор",
+      "description": "Не лукбук города. Сначала контакт, потом мокрый двор, потом печать на кухонном столе — серия «Дворы-2026», как она вообще появляется.",
+      "blocks": [
+        {
+          "kind": "image",
+          "title": "Контакт на столе",
+          "imageUrl": "https://images.pexels.com/photos/1983037/pexels-photo-1983037.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "description": "Контакты с трёх плёнок, ещё не выбрала двор. Смотрю плотность, не «красивый кадр». Если ряд не держится на бумаге, на улицу не возвращаюсь."
+        },
+        {
+          "kind": "text",
+          "body": "Двор нельзя снять за один выход. Сначала проверяю, что плёнка вообще видит этот свет, потом хожу тем же маршрутом, пока окно не зажжётся само."
+        },
+        {
+          "kind": "image",
+          "title": "Тот же маршрут мокрым",
+          "imageUrl": "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=1200&q=80",
+          "description": "После дождя асфальт держит небо дольше, чем хочется стоять. Это не новая улица — тот же двор, другая вода. Серия собирается повтором, не открытиями."
+        },
+        {
+          "kind": "image",
+          "title": "Окно, которое не ставила",
+          "imageUrl": "https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=1200&q=80",
+          "showTitle": false
+        },
+        {
+          "kind": "image",
+          "title": "Печать на кухне",
+          "imageUrl": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80",
+          "description": "Отпечаток сушится рядом с чайником. Если кадр не живёт на кухонном столе, он не живёт и в серии. Камера здесь уже не нужна — нужна бумага."
+        }
+      ]
+    },
+    {
+      "title": "Жёлтое окно",
+      "description": "Одно окно на весь торец, остальные уже тёмные. Серия не про архитектуру — про то, как я жду этот прямоугольник, пока не станет поздно стоять во дворе.",
+      "blocks": [
+        {
+          "kind": "image",
+          "title": "Фасад до света",
+          "imageUrl": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80",
+          "description": "Ещё ни одного окна. Стояла у трансформаторной, пока не село. Небо в Минске часто ниже домов — это экспозиция, не метафора."
+        },
+        {
+          "kind": "image",
+          "title": "Первый прямоугольник",
+          "imageUrl": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80"
+        },
+        {
+          "kind": "text",
+          "body": "Не жду, пока кто-то выйдет. Мне нужен жёлтый прямоугольник и тишина двора. Две минуты у урны — и ушла."
+        },
+        {
+          "kind": "image",
+          "title": "Торец, уже ночь",
+          "imageUrl": "https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=1200&q=80",
+          "showTitle": false
+        },
+        {
+          "kind": "image",
+          "title": "Комната, которая светит наружу",
+          "imageUrl": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80",
+          "description": "Сняла не двор, а то, как окно выглядит изнутри чужой квартиры друзей. Чтобы серия не врала: свет, который я жду с улицы, кому-то просто лампа над столом."
+        }
+      ]
+    },
+    {
+      "title": "Комаровка до восьми",
+      "blocks": [
+        {
+          "kind": "image",
+          "title": "Ряды ещё собирают",
+          "imageUrl": "https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "description": "Пришла к семи, пока навесы пустые. Брала 400, потому что под крышей света мало, а вспышку здесь стыдно. Кадр про ящики, не про «рынок как открытку»."
+        },
+        {
+          "kind": "image",
+          "title": "Руки и вес",
+          "imageUrl": "https://images.pexels.com/photos/1656663/pexels-photo-1656663.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "showTitle": false
+        },
+        {
+          "kind": "text",
+          "body": "Рынок нельзя снять «вообще». Надо прийти, пока его ещё собирают, и уйти, пока не началась суббота для всех. Серия — это этот зазор."
+        },
+        {
+          "kind": "image",
+          "title": "Под навесом",
+          "imageUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80",
+          "description": "Свет дырявый, лица не ищу. Нужны ящики, конденсат, пластик. Если кадр пахнет витриной, он из другой серии."
+        },
+        {
+          "kind": "image",
+          "title": "Уже очередь",
+          "imageUrl": "https://images.pexels.com/photos/2255935/pexels-photo-2255935.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        }
+      ]
+    }
+  ],
+  "artist2@nechto.test": {
+    "title": "Чайник на своём месте",
+    "blocks": [
+      {
+        "kind": "image",
+        "title": "Утро, пока чайник ещё тёплый",
+        "imageUrl": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1200&q=80",
+        "description": "Не расставляла «для интерьера». Чайник стоит где греется, занавеска как висит. Бытовой свет в восемь — лучший софт, который у этой кухни есть."
+      },
+      {
+        "kind": "image",
+        "title": "Столешница после завтрака",
+        "imageUrl": "https://images.pexels.com/photos/1080721/pexels-photo-1080721.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      },
+      {
+        "kind": "image",
+        "title": "Комната, куда доходит тот же свет",
+        "imageUrl": "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&w=1200&q=80",
+        "description": "Предмет из кухни не обязан оставаться на кухне. Смотрю, держится ли лампа и стол, если их не «стилизовать». Интерьер без дизайна: вещь уже живёт."
+      },
+      {
+        "kind": "image",
+        "title": "Лампа, которую не трогала",
+        "imageUrl": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80",
+        "showTitle": false
+      }
+    ]
+  },
+  "artist3@nechto.test": {
+    "title": "Пальто с Зыбицкой",
+    "description": "Одна вещь от куска ткани до двора. Не лукбук: стол, машина, примерка, потом улица — чтобы было видно, откуда пальто вообще берётся.",
+    "blocks": [
+      {
+        "kind": "image",
+        "title": "Ткань до кроя",
+        "imageUrl": "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1200&q=80",
+        "description": "Ещё рулон, ещё нет плеча. Смотрю, как держится сгиб при свете с окна ателье. Если ткань врёт на столе, на человеке будет врать сильнее."
+      },
+      {
+        "kind": "image",
+        "title": "Машина, которой шьётся тираж",
+        "imageUrl": "https://images.pexels.com/photos/4620624/pexels-photo-4620624.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "description": "Не прячу швейную в кадр. Нитки, мелок, припуск. Пальто начинается здесь, а не на съёмке во дворе. Свет тот же, что и для примерок."
+      },
+      {
+        "kind": "text",
+        "body": "Маленький тираж — сколько влезает в мастерскую. Сначала вещь висит на плечиках, потом кто-то в ней выходит во двор. Третьего этапа нет."
+      },
+      {
+        "kind": "image",
+        "title": "На вешалке, ещё с булавкой",
+        "imageUrl": "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1200&q=80",
+        "showTitle": false
+      },
+      {
+        "kind": "image",
+        "title": "Уже на улице",
+        "imageUrl": "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=1200&q=80",
+        "description": "Вышли во двор в том, что только сняли с манекена. Асфальт мокрый, пальто тяжёлое. Один готовый лук — чтобы ткань наконец жила не на вешалке."
+      }
+    ]
+  },
+  "artist5@nechto.test": {
+    "title": "Портрет за один стол",
+    "description": "Как пятно становится лицом: стол в мастерской, карандаш, гуашь, потом лист уже на стене в комнате. Не выставка — один стол и одна стена.",
+    "blocks": [
+      {
+        "kind": "image",
+        "title": "Стол, пока банки открыты",
+        "imageUrl": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1200&q=80",
+        "description": "Гуашь, вода, обрезки. Снимала работу как стол после дня, не как картину. Если цвет ещё влажный, кадр честнее лака."
+      },
+      {
+        "kind": "image",
+        "title": "Лист до цвета",
+        "imageUrl": "https://images.pexels.com/photos/714258/pexels-photo-714258.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      },
+      {
+        "kind": "text",
+        "body": "Предмет становится персонажем, когда его перестаёшь поправлять. Портрет здесь не сходство, а пятно, которое уже нельзя вернуть в быт."
+      },
+      {
+        "kind": "image",
+        "title": "Гуашь, пока не встала",
+        "imageUrl": "https://images.unsplash.com/photo-1578301978018-3005759f48f7?auto=format&fit=crop&w=1200&q=80",
+        "description": "Крупно, чтобы была видна щетина, не сюжет. Свет с окна слева — поэтому край такой резкий. Это ещё не «работа на стену», это слой."
+      },
+      {
+        "kind": "image",
+        "title": "Уже в комнате",
+        "imageUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1200&q=80",
+        "description": "Лист повесила не в мастерской, а где живут. Если портрет не держится над комодом, он не держался и на столе. Интерьер проверяет работу жёстче выставки."
+      }
+    ]
+  },
+  "artist6@nechto.test": {
+    "title": "Афиша до стены",
+    "blocks": [
+      {
+        "kind": "image",
+        "title": "Макеты, пока не выбрала одну",
+        "imageUrl": "https://images.unsplash.com/photo-1587440871875-191322ee64b0?auto=format&fit=crop&w=1200&q=80",
+        "description": "Распечатки до выбора. Сетка с двух шагов, не из PDF. Если цвет врёт на дешёвой бумаге, на щите будет врать громче."
+      },
+      {
+        "kind": "image",
+        "title": "Сетка на экране",
+        "imageUrl": "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=1200&q=80",
+        "showTitle": false
+      },
+      {
+        "kind": "image",
+        "title": "Черновик в подъезде",
+        "imageUrl": "https://images.pexels.com/photos/3769138/pexels-photo-3769138.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "description": "Повесила на ночь там, где ходят. Утром чужое объявление уже залезло на край — так и надо. Макет должен выжить на стене, не в портфолио."
+      },
+      {
+        "kind": "image",
+        "title": "Уже как городской слой",
+        "imageUrl": "https://images.pexels.com/photos/6476589/pexels-photo-6476589.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      }
+    ]
+  },
+  "artist7@nechto.test": {
+    "title": "Ваза с круга",
+    "description": "Одна ваза от сырой глины до цветов на комоде. Круг, глазурь, полка в мастерской, потом уже чужая комната — чтобы было понятно, чем вещь была, пока ею не пользуются.",
+    "blocks": [
+      {
+        "kind": "image",
+        "title": "Ещё масса",
+        "imageUrl": "https://images.unsplash.com/photo-1565191999001-551c187427bb?auto=format&fit=crop&w=1200&q=80",
+        "description": "Глина до формы. Руки в кадре нарочно: если вазу потом поставят с цветами, пусть сначала будет виден вес. Гомель, тот же стол, где вечером чай."
+      },
+      {
+        "kind": "image",
+        "title": "На круге",
+        "imageUrl": "https://images.unsplash.com/photo-1610701596061-2ecf227e85b2?auto=format&fit=crop&w=1200&q=80",
+        "description": "Горловина ещё мягкая, снимала сразу, пока не заветрила. Это не «процесс для рилса», это момент, когда вещь ещё можно смять."
+      },
+      {
+        "kind": "text",
+        "body": "После круга — сушка, глазурь, печь. Цвет после обжига будет другим. Этот ряд не про готовый ассортимент, про то, как ваза вообще появляется в доме."
+      },
+      {
+        "kind": "image",
+        "title": "Глазурь до печи",
+        "imageUrl": "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?auto=format&fit=crop&w=1200&q=80",
+        "showTitle": false
+      },
+      {
+        "kind": "image",
+        "title": "Уже с цветами",
+        "imageUrl": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=1200&q=80",
+        "description": "Не мастерская: комод, скатерть, чужие цветы. Если ваза не держится в комнате, это ещё посуда, не вещь. Снимала там, где ею пользуются."
+      }
+    ]
+  },
+  "artist10@nechto.test": {
+    "title": "Табурет в быту",
+    "blocks": [
+      {
+        "kind": "image",
+        "title": "Пока ещё доска",
+        "imageUrl": "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=1200&q=80",
+        "description": "Ясень на верстаке, стружка не подметёна. Если вещь честная, инструмент не прячу. Этот кадр про мастерскую, не про каталог мебели."
+      },
+      {
+        "kind": "image",
+        "title": "Сборка, пока пахнет деревом",
+        "imageUrl": "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1200&q=80",
+        "description": "Сиденье уже вогнуто под вес, ноги ещё можно переставить. Снимала в мастерской: потом табурет уедет на чужую кухню, и этого запаха не будет."
+      },
+      {
+        "kind": "text",
+        "body": "Сначала делаю вещь там, где стружка. Потом снимаю там, где на ней сидят. Третьего кадра «на белом фоне» в этой серии нет."
+      },
+      {
+        "kind": "image",
+        "title": "На кухне, уже живёт",
+        "imageUrl": "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "kind": "image",
+        "title": "Стол из той же партии",
+        "imageUrl": "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "description": "Не студия: вилка, свет из окна, плинтус родной. Предмет должен читаться в быту. Если не держится у стены, это ещё столярка, не мебель."
+      }
+    ]
+  }
+}

@@ -13,6 +13,7 @@ function work(id: string, title: string): Work {
     title,
     description: title,
     imageUrl: `/uploads/${id}.jpg`,
+    hidden: false,
     createdAt: '2026-08-31T00:00:00.000Z',
   };
 }
@@ -188,7 +189,6 @@ test.describe('home feed pick', () => {
       feed.billboard?.id,
       feed.journal?.work.id,
       ...(feed.dialogue?.map((item) => item.id) ?? []),
-      ...feed.collection.map((item) => item.id),
       ...feed.hanging.map((item) => item.id),
       ...feed.fresh.map((item) => item.id),
       feed.openCall?.id,
@@ -196,5 +196,40 @@ test.describe('home feed pick', () => {
 
     expect(new Set(ids).size).toBe(ids.length);
     expect(feed.studio?.slug).not.toBe(feed.creatorOfWeek?.slug);
+  });
+
+  test('puts a published series on the house without taking works', () => {
+    const kasia = work('w-kasia-1', 'Двор');
+    const feed = pickHomeFeed(
+      [withAuthor(kasia, 'kasia', 'Кася')],
+      [
+        creator({
+          slug: 'kasia',
+          displayName: 'Кася',
+          bio: 'Плёнка.',
+          work: kasia,
+        }),
+      ],
+      [
+        {
+          id: 'pr1',
+          title: 'Дворы',
+          description: '',
+          createdAt: '2026-08-31T00:00:00.000Z',
+          coverImageUrl: '/uploads/w-kasia-1.jpg',
+          frameImageUrls: ['/uploads/w-kasia-1.jpg'],
+          blockCount: 3,
+          author: {
+            slug: 'kasia',
+            displayName: 'Кася',
+            avatarUrl: null,
+            directions: ['photography'],
+          },
+        },
+      ],
+    );
+
+    expect(feed.series?.id).toBe('pr1');
+    expect(feed.billboard?.id).toBe('w-kasia-1');
   });
 });

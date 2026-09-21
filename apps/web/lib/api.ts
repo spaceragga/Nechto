@@ -9,6 +9,9 @@ import type {
   ListCreatorsQuery,
   LoginDto,
   Profile,
+  CreateProjectFields,
+  ReplaceProjectBlocks,
+  UpdateProjectFields,
   RegisterDto,
   ResetPasswordDto,
   UpdateProfileDto,
@@ -87,6 +90,32 @@ export function updateMyWorkRequest(workId: string, fields: UpdateWorkFields) {
 
 export function deleteMyWorkRequest(workId: string) {
   return api.deleteMyWork(workId);
+}
+
+export function listMyProjectsRequest(query: Partial<CursorPageQuery> = {}) {
+  return api.listMyProjects(query);
+}
+
+export function createMyProjectRequest(fields: CreateProjectFields) {
+  return api.createMyProject(fields);
+}
+
+export function updateMyProjectRequest(
+  projectId: string,
+  fields: UpdateProjectFields,
+) {
+  return api.updateMyProject(projectId, fields);
+}
+
+export function replaceMyProjectBlocksRequest(
+  projectId: string,
+  fields: ReplaceProjectBlocks,
+) {
+  return api.replaceMyProjectBlocks(projectId, fields);
+}
+
+export function deleteMyProjectRequest(projectId: string) {
+  return api.deleteMyProject(projectId);
 }
 
 export function listPublishedWorksRequest(

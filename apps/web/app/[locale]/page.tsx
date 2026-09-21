@@ -5,10 +5,12 @@ import { HomeExploreNav } from '@/components/home/home-explore-nav';
 import { HomeFragmentsRail } from '@/components/home/home-fragments-rail';
 import { HomeHangingSpot } from '@/components/home/home-hanging-spot';
 import { HomeStage } from '@/components/home/home-stage';
+import { HomeProjectsRail } from '@/components/home/home-projects-rail';
 import { HomeWorksGrid } from '@/components/home/home-works-grid';
-import { CREATOR_DIRECTION_IDS } from '@/lib/creator-directions';
+import { catalogHref, parseCatalogDirection } from '@/lib/catalog-query';
 import {
   loadPublishedCreators,
+  loadPublishedProjects,
   loadPublishedWorks,
   loadPublishedWorksPage,
 } from '@/lib/load-published-feed';
@@ -28,29 +30,34 @@ export default async function HomePage({
   const query = await searchParams;
   setRequestLocale(locale);
 
-  const direction = CREATOR_DIRECTION_IDS.find(
-    (item) => item === query.direction,
-  );
+  const direction = parseCatalogDirection(query.direction);
   const t = await getTranslations('HomePage');
   const [
     stageWorks,
     stageCreators,
+    stageSeries,
     filteredWorksPage,
     filteredCreators,
+    filteredProjects,
     fragments,
   ] = await Promise.all([
     loadPublishedWorks(50),
     loadPublishedCreators({ limit: 50 }),
+    loadPublishedProjects({ limit: 24 }),
     direction
       ? loadPublishedWorksPage({ limit: 24, direction })
       : Promise.resolve(null),
     direction
       ? loadPublishedCreators({ limit: 12, direction })
       : Promise.resolve(null),
+    direction
+      ? loadPublishedProjects({ limit: 24, direction })
+      : Promise.resolve(null),
     loadPublishedWorksPage({ limit: 12 }),
   ]);
-  const feed = pickHomeFeed(stageWorks, stageCreators);
+  const feed = pickHomeFeed(stageWorks, stageCreators, stageSeries);
   const works = direction ? (filteredWorksPage?.items ?? []) : feed.railWorks;
+  const projects = direction ? (filteredProjects ?? []) : stageSeries;
   const creators = direction ? (filteredCreators ?? []) : stageCreators;
 
   return (
@@ -75,13 +82,17 @@ export default async function HomePage({
       <HomeWorksGrid
         works={works}
         empty={direction ? t('emptyWorks') : t('pending')}
+        catalogHref={catalogHref('/works', { direction })}
+      />
+      <HomeProjectsRail
+        projects={projects}
+        empty={direction ? t('emptyProjects') : t('pending')}
+        catalogHref={catalogHref('/projects', { direction })}
       />
       <HomeCreatorsRail
         creators={creators}
         empty={direction ? t('emptyCreators') : t('pending')}
-        catalogHref={
-          direction ? `/creators?direction=${direction}` : '/creators'
-        }
+        catalogHref={catalogHref('/creators', { direction })}
       />
       <HomeFragmentsRail
         feed={{

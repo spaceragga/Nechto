@@ -4,6 +4,8 @@ import type {
   CursorPage,
   PublicProfile,
   PublicProfileWithWorks,
+  ProjectSummary,
+  PublicProject,
   Work,
   WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -93,18 +95,62 @@ export async function loadPublishedWork(
   }
 }
 
-export async function loadPublishedProfile(
-  slug: string,
-): Promise<{ profile: PublicProfile; works: Work[] } | null> {
+export async function loadPublishedProfile(slug: string): Promise<{
+  profile: PublicProfile;
+  works: Work[];
+  projects: ProjectSummary[];
+} | null> {
   try {
     const api = await createServerApiClient();
     const profile = await api.getProfileBySlug(slug);
-    const works = await api.listWorksBySlug(slug, { limit: 50 });
-    return { profile, works: works.items };
+    const [works, projects] = await Promise.all([
+      api.listWorksBySlug(slug, { limit: 50 }).catch(() => ({ items: [] })),
+      api.listProjectsBySlug(slug, { limit: 50 }).catch(() => ({ items: [] })),
+    ]);
+    return { profile, works: works.items, projects: projects.items };
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       return null;
     }
     return null;
   }
+}
+
+export async function loadPublishedProject(
+  id: string,
+): Promise<PublicProject | null> {
+  try {
+    const api = await createServerApiClient();
+    return await api.getProject(id);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    return null;
+  }
+}
+
+export async function loadPublishedProjectsPage(options?: {
+  limit?: number;
+  cursor?: string;
+  direction?: string;
+}): Promise<CursorPage<ProjectSummary>> {
+  try {
+    const api = await createServerApiClient();
+    return await api.listPublishedProjects({
+      limit: options?.limit ?? 24,
+      cursor: options?.cursor,
+      direction: parseDirection(options?.direction),
+    });
+  } catch {
+    return { items: [], nextCursor: null };
+  }
+}
+
+export async function loadPublishedProjects(options?: {
+  limit?: number;
+  direction?: string;
+}): Promise<ProjectSummary[]> {
+  const page = await loadPublishedProjectsPage(options);
+  return page.items;
 }

@@ -11,7 +11,7 @@ import { HomeStudioSpot } from '@/components/home/home-studio-spot';
 import { excerpt } from '@/lib/excerpt';
 import { type HomeFeedSlices } from '@/lib/pick-home-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { workPath, profilePath } from '@/lib/work-path';
+import { workPath, profilePath, projectPath } from '@/lib/work-path';
 
 type HomeStageProps = {
   locale: string;
@@ -36,16 +36,14 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
   const creatorHref = feed.creatorOfWeek
     ? profilePath(feed.creatorOfWeek.slug)
     : null;
-  const collectionDirection =
-    feed.collection[0]?.author.directions[0] ?? 'photography';
   const journalHref = feed.journal
     ? workPath(feed.journal.creator.slug, feed.journal.work.id)
     : '/journal';
   const studioWork = feed.studio?.latestWorks[0];
 
   return (
-    <section aria-label={t('growthSpotsLabel')} className="flex flex-col gap-8">
-      <div className="grid items-stretch gap-4 overflow-hidden lg:grid-cols-3">
+    <section aria-label={t('growthSpotsLabel')} className="flex flex-col gap-4">
+      <div className="grid items-start gap-4 lg:grid-cols-3">
         <div className="flex min-w-0 flex-col gap-25">
           <div className="flex flex-col gap-8">
             <HomeFeatured
@@ -146,30 +144,28 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
               feed.journal ? toUploadSrc(feed.journal.work.imageUrl) : undefined
             }
           />
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-            <div className="flex h-3/4 min-h-0 flex-col">
-              <HomeCollectionSpot
-                kicker={t('collectionSpot.kicker')}
-                title={
-                  feed.collection.length > 0
-                    ? tCreators(`directions.${collectionDirection}`)
-                    : t('collectionSpot.title')
-                }
-                meta={
-                  feed.collection.length > 0
-                    ? t('collectionSpot.countMeta', {
-                        count: feed.collection.length,
-                      })
-                    : t('collectionSpot.meta')
-                }
-                srcs={
-                  feed.collection.length > 0
-                    ? feed.collection.map((work) => toUploadSrc(work.imageUrl))
-                    : undefined
-                }
-              />
-            </div>
-          </div>
+          <HomeCollectionSpot
+            href={
+              feed.series
+                ? projectPath(feed.series.author.slug, feed.series.id)
+                : '/collections'
+            }
+            kicker={t('collectionSpot.kicker')}
+            title={feed.series?.title ?? t('collectionSpot.title')}
+            meta={
+              feed.series
+                ? t('collectionSpot.countMeta', {
+                    author: feed.series.author.displayName,
+                    count: feed.series.blockCount,
+                  })
+                : t('collectionSpot.meta')
+            }
+            srcs={
+              feed.series
+                ? feed.series.frameImageUrls.map((src) => toUploadSrc(src))
+                : undefined
+            }
+          />
         </div>
         <div className="flex min-w-0 flex-col gap-25">
           <HomeNow creators={feed.nowCreators} />

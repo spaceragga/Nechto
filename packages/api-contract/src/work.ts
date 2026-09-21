@@ -18,9 +18,13 @@ export const updateWorkFieldsSchema = z
   .object({
     title: workTitleSchema.optional(),
     description: workDescriptionSchema.optional(),
+    hidden: z.boolean().optional(),
   })
   .refine(
-    (value) => value.title !== undefined || value.description !== undefined,
+    (value) =>
+      value.title !== undefined ||
+      value.description !== undefined ||
+      value.hidden !== undefined,
     { message: 'At least one field is required' },
   );
 
@@ -31,6 +35,7 @@ export type Work = {
   title: string;
   description: string;
   imageUrl: string;
+  hidden: boolean;
   createdAt: string;
 };
 

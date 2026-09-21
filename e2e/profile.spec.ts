@@ -118,9 +118,7 @@ test.describe('profile', () => {
     await expect(logout).toHaveText('');
     await profileLink.hover();
     await expect(profileLink).toHaveCSS('opacity', '1');
-    await expect(
-      page.getByRole('tooltip', { name: `Signed in as ${email}` }),
-    ).toBeVisible();
+    await expect(page.getByRole('tooltip', { name: 'Profile' })).toBeVisible();
     await logout.hover();
     await expect(page.getByRole('tooltip', { name: 'Log out' })).toBeVisible();
     const profileBox = await profileLink.boundingBox();
@@ -181,6 +179,14 @@ test.describe('profile', () => {
     await expect(page.getByTestId('profile-editor')).toHaveAttribute(
       'data-profile-pane',
       '2',
+    );
+    await expect(next).toBeEnabled();
+
+    await nextProfilePane(page);
+    await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible();
+    await expect(page.getByTestId('profile-editor')).toHaveAttribute(
+      'data-profile-pane',
+      '3',
     );
     await expect(next).toBeDisabled();
 

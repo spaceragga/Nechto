@@ -1,6 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { ExploreWorksPage } from '@/components/explore/explore-works-page';
+import { ExploreCatalogPage } from '@/components/explore/explore-catalog-page';
+import { catalogHref } from '@/lib/catalog-query';
 import { loadPublishedWorksPage } from '@/lib/load-published-feed';
+import { toUploadSrc } from '@/lib/to-upload-src';
+import { workPath } from '@/lib/work-path';
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -19,13 +22,23 @@ export default async function FreshPage({ params, searchParams }: PageProps) {
   });
 
   return (
-    <ExploreWorksPage
+    <ExploreCatalogPage
       title={t('title')}
       lede={t('lede')}
       empty={t('empty')}
       more={t('more')}
-      nextHref={page.nextCursor ? `/new?cursor=${page.nextCursor}` : null}
-      works={page.items}
+      nextHref={
+        page.nextCursor
+          ? catalogHref('/new', { cursor: page.nextCursor })
+          : null
+      }
+      items={page.items.map((work) => ({
+        id: work.id,
+        href: workPath(work.author.slug, work.id),
+        title: work.title,
+        subtitle: work.author.displayName,
+        src: toUploadSrc(work.imageUrl),
+      }))}
     />
   );
 }

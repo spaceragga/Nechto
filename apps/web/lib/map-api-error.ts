@@ -17,6 +17,8 @@ const CODE_KEYS: Partial<Record<ApiErrorCode, string>> = {
   [API_ERROR_CODES.WORK_FILE_TOO_LARGE]: 'workTooLarge',
   [API_ERROR_CODES.WORK_INVALID_TYPE]: 'workType',
   [API_ERROR_CODES.WORK_NOT_FOUND]: 'notFound',
+  [API_ERROR_CODES.WORK_IN_PROJECT]: 'workInProject',
+  [API_ERROR_CODES.PROJECT_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.PROFILE_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.USER_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.AUTHENTICATION_REQUIRED]: 'unauthorized',

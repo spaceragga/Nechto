@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfilesModule } from './profiles/profiles.module';
+import { ProjectsModule } from './projects/projects.module';
 import { StorageModule } from './storage/storage.module';
 import { WorksModule } from './works/works.module';
 
@@ -23,6 +24,7 @@ import { WorksModule } from './works/works.module';
     StorageModule,
     AuthModule,
     ProfilesModule,
+    ProjectsModule,
     WorksModule,
   ],
   controllers: [AppController],

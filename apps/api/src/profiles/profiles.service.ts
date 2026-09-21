@@ -75,6 +75,7 @@ export class ProfilesService {
       include: {
         ...profileInclude,
         works: {
+          where: { hidden: false },
           orderBy: { id: 'desc' },
           take: 4,
         },

@@ -17,6 +17,12 @@ import {
   type Profile,
   type PublicProfile,
   type PublicProfileWithWorks,
+  type Project,
+  type ProjectSummary,
+  type PublicProject,
+  type CreateProjectFields,
+  type ReplaceProjectBlocks,
+  type UpdateProjectFields,
   type RegisterDto,
   type ResetPasswordDto,
   type UpdateProfileDto,
@@ -203,6 +209,62 @@ export class ApiClient {
 
   deleteMyWork(workId: string) {
     return this.request<void>(`/works/${encodeURIComponent(workId)}`, {
+      method: 'DELETE',
+    });
+  }
+
+  listMyProjects(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<Project>>(
+      `/projects/me${toSearchParams(query)}`,
+    );
+  }
+
+  getMyProject(id: string) {
+    return this.request<Project>(`/projects/me/${encodeURIComponent(id)}`);
+  }
+
+  listProjectsBySlug(slug: string, query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<ProjectSummary>>(
+      `/projects/profile/${encodeURIComponent(slug)}${toSearchParams(query)}`,
+    );
+  }
+
+  listPublishedProjects(query: Partial<ListCreatorsQuery> = {}) {
+    return this.request<CursorPage<ProjectSummary>>(
+      `/projects${toSearchParams(query)}`,
+    );
+  }
+
+  getProject(id: string) {
+    return this.request<PublicProject>(`/projects/${encodeURIComponent(id)}`);
+  }
+
+  createMyProject(fields: CreateProjectFields) {
+    return this.request<Project>('/projects', {
+      method: 'POST',
+      body: JSON.stringify(fields),
+    });
+  }
+
+  updateMyProject(projectId: string, fields: UpdateProjectFields) {
+    return this.request<Project>(`/projects/${encodeURIComponent(projectId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(fields),
+    });
+  }
+
+  replaceMyProjectBlocks(projectId: string, fields: ReplaceProjectBlocks) {
+    return this.request<Project>(
+      `/projects/${encodeURIComponent(projectId)}/blocks`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(fields),
+      },
+    );
+  }
+
+  deleteMyProject(projectId: string) {
+    return this.request<void>(`/projects/${encodeURIComponent(projectId)}`, {
       method: 'DELETE',
     });
   }

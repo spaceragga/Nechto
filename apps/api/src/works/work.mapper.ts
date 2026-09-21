@@ -19,6 +19,7 @@ export type WorkRecord = {
   title: string;
   description: string;
   imageKey: string;
+  hidden?: boolean;
   createdAt: Date;
 };
 
@@ -40,6 +41,7 @@ export function toWorkView(
     title: work.title,
     description: work.description,
     imageUrl: storage.getPublicUrl(work.imageKey),
+    hidden: work.hidden ?? false,
     createdAt: work.createdAt.toISOString(),
   };
 }

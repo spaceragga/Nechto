@@ -2,10 +2,12 @@ import { setRequestLocale } from 'next-intl/server';
 import { ProfileEditor } from '@/components/profile-editor';
 import { redirect } from '@/i18n/navigation';
 import type { AppLocale } from '@/i18n/routing';
-import { loadMyProfile, loadMyWorks } from '@/lib/session';
+import { loadMyProfile, loadMyProjects, loadMyWorks } from '@/lib/session';
 
 const PROFILE_ACCOUNT_PANE_INDEX = 0;
 const PROFILE_DETAILS_PANE_INDEX = 1;
+const PROFILE_WORKS_PANE_INDEX = 2;
+const PROFILE_PROJECTS_PANE_INDEX = 3;
 
 type ProfilePageProps = {
   params: Promise<{ locale: string }>;
@@ -23,9 +25,14 @@ export default async function ProfilePage({
   const initialPane =
     pane === 'account'
       ? PROFILE_ACCOUNT_PANE_INDEX
-      : PROFILE_DETAILS_PANE_INDEX;
+      : pane === 'works'
+        ? PROFILE_WORKS_PANE_INDEX
+        : pane === 'projects'
+          ? PROFILE_PROJECTS_PANE_INDEX
+          : PROFILE_DETAILS_PANE_INDEX;
   const result = await loadMyProfile();
   const works = result.ok ? await loadMyWorks() : [];
+  const projects = result.ok ? await loadMyProjects() : [];
 
   if (!result.ok && (result.status === 401 || result.status === 403)) {
     redirect({ href: '/', locale: locale as AppLocale });
@@ -37,6 +44,7 @@ export default async function ProfilePage({
         <ProfileEditor
           profile={result.profile}
           works={works}
+          projects={projects}
           initialPane={initialPane}
         />
       ) : (

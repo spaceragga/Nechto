@@ -5,12 +5,15 @@ import { loadPublishedProfile } from '@/lib/load-published-feed';
 
 type PublicProfilePageProps = {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<{ pane?: string }>;
 };
 
 export default async function PublicProfilePage({
   params,
+  searchParams,
 }: PublicProfilePageProps) {
   const { locale, slug } = await params;
+  const { pane } = await searchParams;
   setRequestLocale(locale);
 
   const published = await loadPublishedProfile(slug);
@@ -19,6 +22,11 @@ export default async function PublicProfilePage({
   }
 
   return (
-    <PublicProfileView profile={published.profile} works={published.works} />
+    <PublicProfileView
+      profile={published.profile}
+      works={published.works}
+      projects={published.projects}
+      pane={pane}
+    />
   );
 }

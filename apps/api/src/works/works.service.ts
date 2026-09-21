@@ -59,6 +59,7 @@ export class WorksService {
   ): Promise<CursorPage<WorkWithAuthor>> {
     const rows = await this.prisma.work.findMany({
       where: {
+        hidden: false,
         profile: {
           ...publishedProfileWhere,
           ...(query.direction ? { directions: { has: query.direction } } : {}),
@@ -104,7 +105,7 @@ export class WorksService {
     }
 
     const rows = await this.prisma.work.findMany({
-      where: { profileId: profile.id },
+      where: { profileId: profile.id, hidden: false },
       orderBy: { id: 'desc' },
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       take: query.limit + 1,
@@ -178,6 +179,7 @@ export class WorksService {
         ...(fields.description !== undefined
           ? { description: fields.description }
           : {}),
+        ...(fields.hidden !== undefined ? { hidden: fields.hidden } : {}),
       },
     });
 
@@ -187,6 +189,17 @@ export class WorksService {
   async deleteMine(userId: string, workId: string): Promise<void> {
     const profile = await this.requireProfile(userId);
     const work = await this.requireOwnedWork(userId, workId);
+
+    const usedInProject = await this.prisma.projectBlock.count({
+      where: { workId: work.id },
+    });
+    if (usedInProject > 0) {
+      throw new ApiHttpException(
+        HttpStatus.CONFLICT,
+        API_ERROR_CODES.WORK_IN_PROJECT,
+        'Work is used in a project',
+      );
+    }
 
     await this.prisma.work.delete({ where: { id: work.id } });
 

@@ -9,7 +9,7 @@ export function WorkCaption({ title, meta }: WorkCaptionProps) {
   }
 
   return (
-    <div className="pt-2">
+    <div className="pt-2 text-center">
       {title ? (
         <p className="font-serif text-sm leading-snug">{title}</p>
       ) : null}

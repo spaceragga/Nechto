@@ -31,6 +31,7 @@ export function ChromeIconLink({
 type ChromeIconButtonProps = {
   label: string;
   tip: string;
+  tipAlign?: 'end' | 'center';
   disabled?: boolean;
   onClick: () => void;
   children: ReactNode;
@@ -39,12 +40,13 @@ type ChromeIconButtonProps = {
 export function ChromeIconButton({
   label,
   tip,
+  tipAlign,
   disabled,
   onClick,
   children,
 }: ChromeIconButtonProps) {
   return (
-    <HoverTip label={tip}>
+    <HoverTip label={tip} align={tipAlign}>
       <button
         type="button"
         aria-label={label}

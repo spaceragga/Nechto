@@ -8,6 +8,7 @@ import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/configure-app';
 import { env } from '../src/config/env';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { removeTestUser } from './remove-test-user';
 
 const png = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
@@ -47,7 +48,7 @@ describe('WorksController (e2e)', () => {
   });
 
   afterAll(async () => {
-    await prisma.user.deleteMany({ where: { email } });
+    await removeTestUser(prisma, email);
     await app.close();
   });
 

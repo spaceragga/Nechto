@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { UpdateWorkFields, Work } from '@nechto/api-contract';
+import { ChromeIconButton } from '@/components/chrome-icon';
+import { EyeGlyph } from '@/components/glyphs/eye-glyph';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,12 +44,36 @@ export function ProfileWorkEditor({
 
   return (
     <article aria-label={work.title} className="flex min-w-0 flex-col gap-2">
-      <WorkFrame
-        src={toUploadSrc(work.imageUrl)}
-        alt={work.title}
-        fit="cover"
-        className="aspect-3/4 w-full"
-      />
+      <div className="group relative">
+        <WorkFrame
+          src={toUploadSrc(work.imageUrl)}
+          alt={work.title}
+          fit="cover"
+          className="aspect-3/4 w-full"
+        />
+        <div
+          className={`absolute inset-0 flex items-center justify-center bg-black/55 transition-opacity ${
+            work.hidden
+              ? 'opacity-100'
+              : 'pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100'
+          }`}
+        >
+          <ChromeIconButton
+            label={work.hidden ? t('showOnPage') : t('hideOnPage')}
+            tip={work.hidden ? t('showOnPage') : t('hideOnPage')}
+            tipAlign="center"
+            disabled={saving || deleting}
+            onClick={() => {
+              void onSave({ hidden: !work.hidden });
+            }}
+          >
+            <EyeGlyph
+              open={!work.hidden}
+              className="h-20 w-20 text-[var(--fg)]"
+            />
+          </ChromeIconButton>
+        </div>
+      </div>
       <label
         className="flex flex-col gap-2 text-sm"
         htmlFor={`${prefix}-title`}

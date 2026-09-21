@@ -22,7 +22,7 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
     : null;
 
   return (
-    <main className="w-full px-6 py-12">
+    <main className="w-full px-6 py-12 text-center">
       <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
         {t('kicker')}
       </p>
@@ -34,7 +34,7 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
         {direction ? ` · ${direction}` : ''}
       </p>
       {work.description ? (
-        <p className="mt-6 max-w-2xl font-serif text-base leading-relaxed opacity-90">
+        <p className="mx-auto mt-6 max-w-2xl font-serif text-base leading-relaxed opacity-90">
           {work.description}
         </p>
       ) : null}
