@@ -316,7 +316,26 @@ async function main() {
   for (const artist of catalog.artists) {
     await seedArtist(artist);
   }
+  await grantArtist1Admin();
   console.log(`Password for all: ${password}`);
+}
+
+async function grantArtist1Admin() {
+  const { PrismaClient } = require('@prisma/client');
+  const prisma = new PrismaClient();
+  try {
+    const result = await prisma.user.updateMany({
+      where: { email: 'artist1@nechto.test' },
+      data: { isAdmin: true },
+    });
+    if (result.count === 0) {
+      console.warn('artist1@nechto.test not found; isAdmin was not set');
+      return;
+    }
+    console.log('  artist1@nechto.test isAdmin=true');
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 main().catch((error) => {

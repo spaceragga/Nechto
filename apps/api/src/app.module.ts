@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AccountModule } from './account/account.module';
+import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CurationModule } from './curation/curation.module';
+import { ModerationModule } from './moderation/moderation.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { ProjectsModule } from './projects/projects.module';
@@ -21,8 +24,11 @@ import { WorksModule } from './works/works.module';
     ]),
     PrismaModule,
     AccountModule,
+    AdminModule,
     StorageModule,
     AuthModule,
+    CurationModule,
+    ModerationModule,
     ProfilesModule,
     ProjectsModule,
     WorksModule,

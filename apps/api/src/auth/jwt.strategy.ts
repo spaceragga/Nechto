@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ACCESS_TOKEN_COOKIE, env } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
+import { AUTH_USER_SELECT, toAuthUser } from './to-auth-user';
 
 type JwtPayload = {
   sub: string;
@@ -34,15 +35,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: JwtPayload): Promise<AuthUser> {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
-      select: { id: true, email: true, authVersion: true },
+      select: {
+        ...AUTH_USER_SELECT,
+        authVersion: true,
+      },
     });
     if (!user || user.authVersion !== (payload.version ?? 0)) {
       throw new UnauthorizedException('Session is no longer valid');
     }
 
-    return {
-      id: user.id,
-      email: user.email,
-    };
+    return toAuthUser(user);
   }
 }

@@ -5,6 +5,7 @@ import {
   type AuthActionResponse,
   type ChangePasswordDto,
   type CreateWorkFields,
+  type CurationDesk,
   type CursorPage,
   type CursorPageQuery,
   type DeleteAccountDto,
@@ -14,6 +15,7 @@ import {
   type ListCreatorsQuery,
   type LoginDto,
   type LogoutResponse,
+  type ModerationDesk,
   type Profile,
   type PublicProfile,
   type PublicProfileWithWorks,
@@ -25,7 +27,10 @@ import {
   type UpdateProjectFields,
   type RegisterDto,
   type ResetPasswordDto,
+  type StaffUser,
+  type StaffUserList,
   type UpdateProfileDto,
+  type UpdateStaffAccessDto,
   type UpdateWorkFields,
   type Work,
   type WorkWithAuthor,
@@ -267,6 +272,28 @@ export class ApiClient {
     return this.request<void>(`/projects/${encodeURIComponent(projectId)}`, {
       method: 'DELETE',
     });
+  }
+
+  listAdminUsers() {
+    return this.request<StaffUserList>('/admin/users');
+  }
+
+  updateStaffAccess(userId: string, access: UpdateStaffAccessDto) {
+    return this.request<StaffUser>(
+      `/admin/users/${encodeURIComponent(userId)}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(access),
+      },
+    );
+  }
+
+  getModerationDesk() {
+    return this.request<ModerationDesk>('/moderation/desk');
+  }
+
+  getCurationDesk() {
+    return this.request<CurationDesk>('/curation/desk');
   }
 
   private async request<T>(path: string, init?: RequestInit): Promise<T> {

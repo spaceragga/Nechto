@@ -81,6 +81,9 @@ describe('UploadsService', () => {
       service.readPublicObject('avatars/owner/a.png', {
         id: 'owner',
         email: 'a@nechto.test',
+        isCurator: false,
+        isModerator: false,
+        isAdmin: false,
       }),
     ).resolves.toEqual({
       body: Buffer.from('png'),
