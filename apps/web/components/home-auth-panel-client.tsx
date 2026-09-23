@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { AuthUser } from '@nechto/api-contract';
 import { ChromeIconButton, ChromeIconLink } from '@/components/chrome-icon';
+import { AdminGlyph } from '@/components/glyphs/admin-glyph';
 import { CuratorGlyph } from '@/components/glyphs/curator-glyph';
 import { DoorGlyph } from '@/components/glyphs/door-glyph';
-import { EyeGlyph } from '@/components/glyphs/eye-glyph';
 import { GearGlyph } from '@/components/glyphs/gear-glyph';
 import { ProfileGlyph } from '@/components/glyphs/profile-glyph';
 import { ShieldGlyph } from '@/components/glyphs/shield-glyph';
@@ -100,7 +100,7 @@ export function HomeAuthPanelClient({
             label={tStaff('moderator')}
             tip={tStaff('moderator')}
           >
-            <EyeGlyph open className="h-10 w-10" />
+            <ShieldGlyph />
           </ChromeIconLink>
         ) : null}
         {user.isAdmin ? (
@@ -109,7 +109,7 @@ export function HomeAuthPanelClient({
             label={tStaff('admin')}
             tip={tStaff('admin')}
           >
-            <ShieldGlyph />
+            <AdminGlyph />
           </ChromeIconLink>
         ) : null}
         <ChromeIconButton
