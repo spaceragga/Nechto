@@ -50,6 +50,7 @@ services:
     volumes:
       - ./apps/api/src:/workspace/apps/api/src
       - ./apps/api/test:/workspace/apps/api/test
+      - ./apps/api/scripts:/workspace/apps/api/scripts
       - ./apps/api/prisma:/workspace/apps/api/prisma
       - ./apps/api/tsconfig.json:/workspace/apps/api/tsconfig.json:ro
       - ./apps/api/tsconfig.build.json:/workspace/apps/api/tsconfig.build.json:ro

@@ -3,6 +3,7 @@
 const { readFile } = require('node:fs/promises');
 const catalog = require('../src/dev/dev-artist-catalog.json');
 const seriesByEmail = require('../src/dev/dev-artist-series.json');
+const { purgeTestUsers } = require('./purge-test-users.cjs');
 
 const apiBaseUrl = (
   process.env.SEED_API_URL ?? 'http://localhost:3001'
@@ -312,6 +313,8 @@ async function main() {
     );
   }
 
+  const purged = await purgeTestUsers();
+  console.log(`Purged ${purged} leftover test user(s)`);
   console.log(`Seeding ${catalog.artists.length} artists via ${apiBaseUrl}`);
   for (const artist of catalog.artists) {
     await seedArtist(artist);

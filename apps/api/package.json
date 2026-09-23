@@ -19,6 +19,7 @@
     "prisma:deploy": "node ./scripts/with-env.cjs migrate deploy",
     "prisma:studio": "node ./scripts/with-env.cjs studio",
     "seed:dev": "node ./scripts/seed-dev-artists.cjs",
+    "purge:test-users": "node ./scripts/purge-test-users.cjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {
