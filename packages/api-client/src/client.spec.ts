@@ -122,6 +122,101 @@ describe('ApiClient', () => {
     );
   });
 
+  it('calls staff desk and admin user routes', async () => {
+    fetchMock.mockImplementation(async () => {
+      return new Response(JSON.stringify({ items: [] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.listAdminUsers();
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/admin/users',
+      expect.objectContaining({ credentials: 'include' }),
+    );
+
+    await client.listAdminUsers({ email: 'ad' });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/admin/users?email=ad',
+      expect.objectContaining({ credentials: 'include' }),
+    );
+
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 'u1',
+          email: 'a@nechto.test',
+          displayName: null,
+          isCurator: true,
+          isModerator: false,
+          isAdmin: false,
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+    await client.updateStaffAccess('u1', {
+      isCurator: true,
+      isModerator: false,
+      isAdmin: false,
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/admin/users/u1',
+      expect.objectContaining({
+        method: 'PATCH',
+        body: JSON.stringify({
+          isCurator: true,
+          isModerator: false,
+          isAdmin: false,
+        }),
+      }),
+    );
+
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ reports: [], hiddenWorks: [] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    await expect(client.getModerationDesk()).resolves.toEqual({
+      reports: [],
+      hiddenWorks: [],
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/moderation/desk',
+      expect.anything(),
+    );
+
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          pairings: [],
+          hangings: [],
+          issues: [],
+          channels: [],
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+    await expect(client.getCurationDesk()).resolves.toMatchObject({
+      pairings: [],
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/curation/desk',
+      expect.anything(),
+    );
+  });
+
   it('uploads avatar as multipart without forcing JSON content-type', async () => {
     fetchMock.mockResolvedValue(
       new Response(

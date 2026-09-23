@@ -3,6 +3,7 @@
 const { readFile } = require('node:fs/promises');
 const catalog = require('../src/dev/dev-artist-catalog.json');
 const seriesByEmail = require('../src/dev/dev-artist-series.json');
+const { purgeTestUsers } = require('./purge-test-users.cjs');
 
 const apiBaseUrl = (
   process.env.SEED_API_URL ?? 'http://localhost:3001'
@@ -312,11 +313,32 @@ async function main() {
     );
   }
 
+  const purged = await purgeTestUsers();
+  console.log(`Purged ${purged} leftover test user(s)`);
   console.log(`Seeding ${catalog.artists.length} artists via ${apiBaseUrl}`);
   for (const artist of catalog.artists) {
     await seedArtist(artist);
   }
+  await grantArtist1Admin();
   console.log(`Password for all: ${password}`);
+}
+
+async function grantArtist1Admin() {
+  const { PrismaClient } = require('@prisma/client');
+  const prisma = new PrismaClient();
+  try {
+    const result = await prisma.user.updateMany({
+      where: { email: 'artist1@nechto.test' },
+      data: { isAdmin: true },
+    });
+    if (result.count === 0) {
+      console.warn('artist1@nechto.test not found; isAdmin was not set');
+      return;
+    }
+    console.log('  artist1@nechto.test isAdmin=true');
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 main().catch((error) => {

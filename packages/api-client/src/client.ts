@@ -5,15 +5,18 @@ import {
   type AuthActionResponse,
   type ChangePasswordDto,
   type CreateWorkFields,
+  type CurationDesk,
   type CursorPage,
   type CursorPageQuery,
   type DeleteAccountDto,
   type ForgotPasswordDto,
   type HealthResponse,
   type HelloResponse,
+  type ListAdminUsersQuery,
   type ListCreatorsQuery,
   type LoginDto,
   type LogoutResponse,
+  type ModerationDesk,
   type Profile,
   type PublicProfile,
   type PublicProfileWithWorks,
@@ -25,7 +28,10 @@ import {
   type UpdateProjectFields,
   type RegisterDto,
   type ResetPasswordDto,
+  type StaffUser,
+  type StaffUserList,
   type UpdateProfileDto,
+  type UpdateStaffAccessDto,
   type UpdateWorkFields,
   type Work,
   type WorkWithAuthor,
@@ -269,6 +275,28 @@ export class ApiClient {
     });
   }
 
+  listAdminUsers(query: Partial<ListAdminUsersQuery> = {}) {
+    return this.request<StaffUserList>(`/admin/users${toSearchParams(query)}`);
+  }
+
+  updateStaffAccess(userId: string, access: UpdateStaffAccessDto) {
+    return this.request<StaffUser>(
+      `/admin/users/${encodeURIComponent(userId)}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(access),
+      },
+    );
+  }
+
+  getModerationDesk() {
+    return this.request<ModerationDesk>('/moderation/desk');
+  }
+
+  getCurationDesk() {
+    return this.request<CurationDesk>('/curation/desk');
+  }
+
   private async request<T>(path: string, init?: RequestInit): Promise<T> {
     const headers = new Headers(this.defaultHeaders);
     new Headers(init?.headers).forEach((value, key) => {
@@ -323,6 +351,8 @@ function toSearchParams(query: {
   cursor?: string;
   limit?: number;
   direction?: string;
+  name?: string;
+  email?: string;
 }): string {
   const params = new URLSearchParams();
   if (query.cursor) {
@@ -333,6 +363,12 @@ function toSearchParams(query: {
   }
   if (query.direction) {
     params.set('direction', query.direction);
+  }
+  if (query.name) {
+    params.set('name', query.name);
+  }
+  if (query.email) {
+    params.set('email', query.email);
   }
   const serialized = params.toString();
   return serialized ? `?${serialized}` : '';

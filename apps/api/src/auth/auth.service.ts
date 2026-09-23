@@ -26,6 +26,7 @@ import {
 } from '../prisma/is-unique-constraint-error';
 import { PrismaService } from '../prisma/prisma.service';
 import { createProvisionalSlug } from '../profiles/provisional-slug';
+import { toAuthUser, AUTH_USER_SELECT } from './to-auth-user';
 
 export type AuthResponse = {
   user: AuthUser;
@@ -56,8 +57,7 @@ export class AuthService {
           },
         },
         select: {
-          id: true,
-          email: true,
+          ...AUTH_USER_SELECT,
           authVersion: true,
         },
       });
@@ -83,8 +83,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { email },
       select: {
-        id: true,
-        email: true,
+        ...AUTH_USER_SELECT,
         passwordHash: true,
         authVersion: true,
       },
@@ -111,24 +110,20 @@ export class AuthService {
       );
     }
 
-    return this.buildAuthResponse({
-      id: user.id,
-      email: user.email,
-      authVersion: user.authVersion,
-    });
+    return this.buildAuthResponse(user);
   }
 
   async getProfile(userId: string): Promise<AuthUser> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true },
+      select: AUTH_USER_SELECT,
     });
 
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    return user;
+    return toAuthUser(user);
   }
 
   async forgotPassword(dto: ForgotPasswordDto): Promise<AuthActionResponse> {
@@ -252,7 +247,10 @@ export class AuthService {
         passwordHash,
         authVersion: { increment: 1 },
       },
-      select: { id: true, email: true, authVersion: true },
+      select: {
+        ...AUTH_USER_SELECT,
+        authVersion: true,
+      },
     });
     await this.prisma.passwordResetToken.deleteMany({
       where: { userId: user.id },
@@ -265,6 +263,9 @@ export class AuthService {
     id: string;
     email: string;
     authVersion: number;
+    isCurator?: boolean;
+    isModerator?: boolean;
+    isAdmin?: boolean;
   }): AuthResponse {
     const accessToken = this.jwtService.sign({
       sub: user.id,
@@ -273,7 +274,7 @@ export class AuthService {
     });
 
     return {
-      user: { id: user.id, email: user.email },
+      user: toAuthUser(user),
       accessToken,
     };
   }

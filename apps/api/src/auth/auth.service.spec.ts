@@ -82,7 +82,13 @@ describe('AuthService', () => {
           password: 'password123',
         }),
       ).resolves.toEqual({
-        user: { id: 'user-1', email: 'artist@nechto.test' },
+        user: {
+          id: 'user-1',
+          email: 'artist@nechto.test',
+          isCurator: false,
+          isModerator: false,
+          isAdmin: false,
+        },
         accessToken: 'test-token',
       });
 
@@ -94,7 +100,14 @@ describe('AuthService', () => {
             create: { slug: expect.stringMatching(/^n[a-f0-9]{10}$/) },
           },
         },
-        select: { id: true, email: true, authVersion: true },
+        select: {
+          id: true,
+          email: true,
+          isCurator: true,
+          isModerator: true,
+          isAdmin: true,
+          authVersion: true,
+        },
       });
     });
 
@@ -135,7 +148,13 @@ describe('AuthService', () => {
           password: 'password123',
         }),
       ).resolves.toEqual({
-        user: { id: 'user-1', email: 'artist@nechto.test' },
+        user: {
+          id: 'user-1',
+          email: 'artist@nechto.test',
+          isCurator: false,
+          isModerator: false,
+          isAdmin: false,
+        },
         accessToken: 'test-token',
       });
       expect(jwtService.sign).toHaveBeenCalledWith({
@@ -267,7 +286,13 @@ describe('AuthService', () => {
           newPassword: 'new-password',
         }),
       ).resolves.toEqual({
-        user: { id: 'user-1', email: 'artist@nechto.test' },
+        user: {
+          id: 'user-1',
+          email: 'artist@nechto.test',
+          isCurator: false,
+          isModerator: false,
+          isAdmin: false,
+        },
         accessToken: 'test-token',
       });
       expect(jwtService.sign).toHaveBeenLastCalledWith({

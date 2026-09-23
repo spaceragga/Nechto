@@ -37,6 +37,9 @@ export type ChangePasswordDto = z.infer<typeof changePasswordSchema>;
 export type AuthUser = {
   id: string;
   email: string;
+  isCurator: boolean;
+  isModerator: boolean;
+  isAdmin: boolean;
 };
 
 export type AuthUserResponse = {

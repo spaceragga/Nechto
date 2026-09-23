@@ -43,6 +43,9 @@ describe('AuthController (e2e)', () => {
       user: {
         id: expect.any(String),
         email,
+        isCurator: false,
+        isModerator: false,
+        isAdmin: false,
       },
     });
 
@@ -61,6 +64,9 @@ describe('AuthController (e2e)', () => {
       user: {
         id: registerResponse.body.user.id,
         email,
+        isCurator: false,
+        isModerator: false,
+        isAdmin: false,
       },
     });
 

@@ -4,9 +4,12 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { AuthUser } from '@nechto/api-contract';
 import { ChromeIconButton, ChromeIconLink } from '@/components/chrome-icon';
+import { AdminGlyph } from '@/components/glyphs/admin-glyph';
+import { CuratorGlyph } from '@/components/glyphs/curator-glyph';
 import { DoorGlyph } from '@/components/glyphs/door-glyph';
 import { GearGlyph } from '@/components/glyphs/gear-glyph';
 import { ProfileGlyph } from '@/components/glyphs/profile-glyph';
+import { ShieldGlyph } from '@/components/glyphs/shield-glyph';
 import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
 import { usePathname, useRouter } from '@/i18n/navigation';
@@ -25,6 +28,7 @@ export function HomeAuthPanelClient({
   unavailable,
 }: HomeAuthPanelClientProps) {
   const t = useTranslations('Auth');
+  const tStaff = useTranslations('Staff');
   const tErrors = useTranslations('Errors');
   const router = useRouter();
   const pathname = usePathname();
@@ -81,6 +85,33 @@ export function HomeAuthPanelClient({
         >
           <GearGlyph />
         </ChromeIconLink>
+        {user.isCurator ? (
+          <ChromeIconLink
+            href="/curation"
+            label={tStaff('curator')}
+            tip={tStaff('curator')}
+          >
+            <CuratorGlyph />
+          </ChromeIconLink>
+        ) : null}
+        {user.isModerator ? (
+          <ChromeIconLink
+            href="/moderation"
+            label={tStaff('moderator')}
+            tip={tStaff('moderator')}
+          >
+            <ShieldGlyph />
+          </ChromeIconLink>
+        ) : null}
+        {user.isAdmin ? (
+          <ChromeIconLink
+            href="/admin"
+            label={tStaff('admin')}
+            tip={tStaff('admin')}
+          >
+            <AdminGlyph />
+          </ChromeIconLink>
+        ) : null}
         <ChromeIconButton
           label={t('logout')}
           tip={t('logout')}

@@ -6,6 +6,7 @@ import type {
   CursorPageQuery,
   DeleteAccountDto,
   ForgotPasswordDto,
+  ListAdminUsersQuery,
   ListCreatorsQuery,
   LoginDto,
   Profile,
@@ -15,6 +16,7 @@ import type {
   RegisterDto,
   ResetPasswordDto,
   UpdateProfileDto,
+  UpdateStaffAccessDto,
   UpdateWorkFields,
 } from '@nechto/api-contract';
 
@@ -116,6 +118,19 @@ export function replaceMyProjectBlocksRequest(
 
 export function deleteMyProjectRequest(projectId: string) {
   return api.deleteMyProject(projectId);
+}
+
+export function listAdminUsersRequest(
+  query: Partial<ListAdminUsersQuery> = {},
+) {
+  return api.listAdminUsers(query);
+}
+
+export function updateStaffAccessRequest(
+  userId: string,
+  access: UpdateStaffAccessDto,
+) {
+  return api.updateStaffAccess(userId, access);
 }
 
 export function listPublishedWorksRequest(
