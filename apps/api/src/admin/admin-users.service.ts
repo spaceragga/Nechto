@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   API_ERROR_CODES,
+  type ListAdminUsersQuery,
   type StaffUser,
   type StaffUserList,
   type UpdateStaffAccessDto,
@@ -21,9 +22,23 @@ const staffUserSelect = {
 export class AdminUsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async list(): Promise<StaffUserList> {
+  async list(query: ListAdminUsersQuery = {}): Promise<StaffUserList> {
+    const filtering = Boolean(query.name || query.email);
     const users = await this.prisma.user.findMany({
+      where: {
+        ...(query.email
+          ? { email: { contains: query.email, mode: 'insensitive' } }
+          : {}),
+        ...(query.name
+          ? {
+              profile: {
+                displayName: { contains: query.name, mode: 'insensitive' },
+              },
+            }
+          : {}),
+      },
       orderBy: { email: 'asc' },
+      ...(filtering ? { take: 50 } : {}),
       select: staffUserSelect,
     });
 

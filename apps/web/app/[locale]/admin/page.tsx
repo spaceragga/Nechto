@@ -23,7 +23,7 @@ export default async function AdminPage({ params }: PageProps) {
       forbidden={t('forbidden')}
       allowed={result.ok}
     >
-      <AdminUsersTable users={result.ok ? result.data.items : []} />
+      <AdminUsersTable initial={result.ok ? result.data.items : []} />
     </StaffScreen>
   );
 }

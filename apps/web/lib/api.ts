@@ -6,6 +6,7 @@ import type {
   CursorPageQuery,
   DeleteAccountDto,
   ForgotPasswordDto,
+  ListAdminUsersQuery,
   ListCreatorsQuery,
   LoginDto,
   Profile,
@@ -117,6 +118,12 @@ export function replaceMyProjectBlocksRequest(
 
 export function deleteMyProjectRequest(projectId: string) {
   return api.deleteMyProject(projectId);
+}
+
+export function listAdminUsersRequest(
+  query: Partial<ListAdminUsersQuery> = {},
+) {
+  return api.listAdminUsers(query);
 }
 
 export function updateStaffAccessRequest(

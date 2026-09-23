@@ -1,26 +1,68 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import type { StaffUser } from '@nechto/api-contract';
+import {
+  STAFF_USER_SEARCH_MIN,
+  type StaffAccess,
+  type StaffUser,
+} from '@nechto/api-contract';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
+import { Input } from '@/components/ui/input';
 import { useRouter } from '@/i18n/navigation';
-import { updateStaffAccessRequest } from '@/lib/api';
+import { listAdminUsersRequest, updateStaffAccessRequest } from '@/lib/api';
 import { mapApiErrorMessage } from '@/lib/map-api-error';
 
+const SEARCH_DEBOUNCE_MS = 250;
+
+const FLAGS = ['isCurator', 'isModerator', 'isAdmin'] as const;
+
 type AdminUsersTableProps = {
-  users: StaffUser[];
+  initial?: StaffUser[];
 };
 
-export function AdminUsersTable({ users }: AdminUsersTableProps) {
+export function AdminUsersTable({ initial = [] }: AdminUsersTableProps) {
   const t = useTranslations('Staff');
   const tErrors = useTranslations('Errors');
   const router = useRouter();
-  const [rows, setRows] = useState(users);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [rows, setRows] = useState(initial);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [savedId, setSavedId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const nameFilter = searchValue(name);
+  const emailFilter = searchValue(email);
+  const filtering = Boolean(nameFilter || emailFilter);
+
+  useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      void listAdminUsersRequest({
+        ...(nameFilter ? { name: nameFilter } : {}),
+        ...(emailFilter ? { email: emailFilter } : {}),
+      })
+        .then((page) => {
+          if (!cancelled) {
+            setRows(page.items);
+            setError(null);
+          }
+        })
+        .catch((caught: unknown) => {
+          if (!cancelled) {
+            setRows([]);
+            setError(mapApiErrorMessage(caught, tErrors));
+          }
+        });
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [emailFilter, nameFilter, tErrors]);
 
   function patchRow(id: string, patch: Partial<StaffUser>) {
     setRows((current) =>
@@ -49,58 +91,65 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
   }
 
   return (
-    <div className="mt-10 overflow-x-auto">
-      <table className="w-full min-w-[40rem] text-left text-sm">
+    <div className="mt-10 overflow-x-auto p-0.5">
+      <table className="w-max min-w-full border-separate border-spacing-0 text-left text-sm">
         <thead>
-          <tr className="border-b border-white/15">
-            <th className="py-2 pr-4 font-normal opacity-70">{t('name')}</th>
-            <th className="py-2 pr-4 font-normal opacity-70">{t('email')}</th>
-            <th className="py-2 pr-4 font-normal opacity-70">{t('curator')}</th>
-            <th className="py-2 pr-4 font-normal opacity-70">
+          <tr>
+            <th className="overflow-visible py-2 pr-4 font-normal">
+              <Input
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder={t('searchName')}
+                aria-label={t('searchName')}
+                className="box-border w-40 appearance-none border-white/15 px-2 py-1"
+              />
+            </th>
+            <th className="overflow-visible py-2 pr-4 font-normal">
+              <Input
+                type="text"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder={t('searchEmail')}
+                aria-label={t('searchEmail')}
+                className="box-border w-56 appearance-none border-white/15 px-2 py-1"
+              />
+            </th>
+            <th className="whitespace-nowrap px-3 py-2 text-center font-normal opacity-70">
+              {t('curator')}
+            </th>
+            <th className="whitespace-nowrap px-3 py-2 text-center font-normal opacity-70">
               {t('moderator')}
             </th>
-            <th className="py-2 pr-4 font-normal opacity-70">{t('admin')}</th>
-            <th className="py-2 font-normal opacity-70">{t('save')}</th>
+            <th className="whitespace-nowrap px-3 py-2 text-center font-normal opacity-70">
+              {t('admin')}
+            </th>
+            <th className="py-2 pl-3 font-normal opacity-70">{t('save')}</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
             <tr key={row.id} className="border-b border-white/10">
-              <td className="py-3 pr-4">{row.displayName ?? t('unnamed')}</td>
-              <td className="py-3 pr-4">{row.email}</td>
-              <td className="py-3 pr-4">
-                <input
-                  type="checkbox"
-                  aria-label={t('curator')}
-                  checked={row.isCurator}
-                  onChange={(event) =>
-                    patchRow(row.id, { isCurator: event.target.checked })
-                  }
-                />
+              <td className="max-w-[14rem] truncate py-2 pr-4">
+                {row.displayName ?? t('unnamed')}
               </td>
-              <td className="py-3 pr-4">
-                <input
-                  type="checkbox"
-                  aria-label={t('moderator')}
-                  checked={row.isModerator}
-                  onChange={(event) =>
-                    patchRow(row.id, { isModerator: event.target.checked })
-                  }
-                />
-              </td>
-              <td className="py-3 pr-4">
-                <input
-                  type="checkbox"
-                  aria-label={t('admin')}
-                  checked={row.isAdmin}
-                  onChange={(event) =>
-                    patchRow(row.id, { isAdmin: event.target.checked })
-                  }
-                />
-              </td>
-              <td className="py-3">
+              <td className="py-2 pr-4 whitespace-nowrap">{row.email}</td>
+              {FLAGS.map((flag) => (
+                <td key={flag} className="px-3 py-2 text-center">
+                  <input
+                    type="checkbox"
+                    aria-label={t(flagLabel[flag])}
+                    checked={row[flag]}
+                    onChange={(event) =>
+                      patchRow(row.id, { [flag]: event.target.checked })
+                    }
+                  />
+                </td>
+              ))}
+              <td className="py-2 pl-3">
                 <Button
                   type="button"
+                  className="border-white/15 px-3 py-1"
                   disabled={pendingId === row.id}
                   onClick={() => void save(row)}
                 >
@@ -111,6 +160,9 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
           ))}
         </tbody>
       </table>
+      {filtering && rows.length === 0 && !error ? (
+        <p className="mt-4 text-sm opacity-70">{t('emptyUsers')}</p>
+      ) : null}
       {error ? (
         <div className="mt-4">
           <FormError>{error}</FormError>
@@ -118,4 +170,15 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
       ) : null}
     </div>
   );
+}
+
+const flagLabel = {
+  isCurator: 'curator',
+  isModerator: 'moderator',
+  isAdmin: 'admin',
+} as const satisfies Record<keyof StaffAccess, string>;
+
+function searchValue(raw: string) {
+  const value = raw.trim();
+  return value.length >= STAFF_USER_SEARCH_MIN ? value : undefined;
 }

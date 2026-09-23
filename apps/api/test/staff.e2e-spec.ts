@@ -93,6 +93,16 @@ describe('Staff access (e2e)', () => {
       ]),
     );
 
+    const filtered = await request(app.getHttpServer())
+      .get(`/admin/users?email=${encodeURIComponent(adminEmail.slice(0, 8))}`)
+      .set('Cookie', adminCookie)
+      .expect(200);
+    expect(filtered.body.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: adminId, email: adminEmail }),
+      ]),
+    );
+
     await request(app.getHttpServer())
       .get('/moderation/desk')
       .set('Cookie', adminCookie)

@@ -140,6 +140,12 @@ describe('ApiClient', () => {
       expect.objectContaining({ credentials: 'include' }),
     );
 
+    await client.listAdminUsers({ email: 'ad' });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/admin/users?email=ad',
+      expect.objectContaining({ credentials: 'include' }),
+    );
+
     fetchMock.mockResolvedValue(
       new Response(
         JSON.stringify({

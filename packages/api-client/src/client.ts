@@ -12,6 +12,7 @@ import {
   type ForgotPasswordDto,
   type HealthResponse,
   type HelloResponse,
+  type ListAdminUsersQuery,
   type ListCreatorsQuery,
   type LoginDto,
   type LogoutResponse,
@@ -274,8 +275,8 @@ export class ApiClient {
     });
   }
 
-  listAdminUsers() {
-    return this.request<StaffUserList>('/admin/users');
+  listAdminUsers(query: Partial<ListAdminUsersQuery> = {}) {
+    return this.request<StaffUserList>(`/admin/users${toSearchParams(query)}`);
   }
 
   updateStaffAccess(userId: string, access: UpdateStaffAccessDto) {
@@ -350,6 +351,8 @@ function toSearchParams(query: {
   cursor?: string;
   limit?: number;
   direction?: string;
+  name?: string;
+  email?: string;
 }): string {
   const params = new URLSearchParams();
   if (query.cursor) {
@@ -360,6 +363,12 @@ function toSearchParams(query: {
   }
   if (query.direction) {
     params.set('direction', query.direction);
+  }
+  if (query.name) {
+    params.set('name', query.name);
+  }
+  if (query.email) {
+    params.set('email', query.email);
   }
   const serialized = params.toString();
   return serialized ? `?${serialized}` : '';

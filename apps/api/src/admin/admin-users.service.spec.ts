@@ -17,7 +17,7 @@ describe('AdminUsersService', () => {
     service = new AdminUsersService(prisma as unknown as PrismaService);
   });
 
-  it('lists users with profile names and staff flags', async () => {
+  it('lists everyone until a name or email search is set', async () => {
     prisma.user.findMany.mockResolvedValue([
       {
         id: 'u1',
@@ -29,7 +29,7 @@ describe('AdminUsersService', () => {
       },
     ]);
 
-    await expect(service.list()).resolves.toEqual({
+    await expect(service.list({})).resolves.toEqual({
       items: [
         {
           id: 'u1',
@@ -41,6 +41,33 @@ describe('AdminUsersService', () => {
         },
       ],
     });
+    expect(prisma.user.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {},
+      }),
+    );
+    expect(prisma.user.findMany.mock.calls[0][0]).not.toHaveProperty('take');
+
+    await expect(service.list({ email: 'a@' })).resolves.toEqual({
+      items: [
+        {
+          id: 'u1',
+          email: 'a@nechto.test',
+          displayName: 'Ada',
+          isCurator: false,
+          isModerator: true,
+          isAdmin: false,
+        },
+      ],
+    });
+    expect(prisma.user.findMany).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        where: {
+          email: { contains: 'a@', mode: 'insensitive' },
+        },
+        take: 50,
+      }),
+    );
   });
 
   it('updates flags and rejects missing users', async () => {

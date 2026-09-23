@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import {
+  listAdminUsersQuerySchema,
   updateStaffAccessSchema,
+  type ListAdminUsersQuery,
   type StaffUser,
   type StaffUserList,
   type UpdateStaffAccessDto,
@@ -15,8 +17,11 @@ export class AdminUsersController {
   constructor(private readonly adminUsers: AdminUsersService) {}
 
   @Get()
-  list(): Promise<StaffUserList> {
-    return this.adminUsers.list();
+  list(
+    @Query(new ZodValidationPipe(listAdminUsersQuerySchema))
+    query: ListAdminUsersQuery,
+  ): Promise<StaffUserList> {
+    return this.adminUsers.list(query);
   }
 
   @Patch(':id')
