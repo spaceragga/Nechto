@@ -188,6 +188,14 @@ test.describe('profile', () => {
       'data-profile-pane',
       '3',
     );
+    await expect(next).toBeEnabled();
+
+    await nextProfilePane(page);
+    await expect(page.getByRole('heading', { name: 'Journal' })).toBeVisible();
+    await expect(page.getByTestId('profile-editor')).toHaveAttribute(
+      'data-profile-pane',
+      '4',
+    );
     await expect(next).toBeDisabled();
 
     await openProfileVisibilityPane(page);
