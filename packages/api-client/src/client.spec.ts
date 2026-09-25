@@ -180,14 +180,24 @@ describe('ApiClient', () => {
     );
 
     fetchMock.mockResolvedValue(
-      new Response(JSON.stringify({ reports: [], hiddenWorks: [] }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }),
+      new Response(
+        JSON.stringify({
+          reports: [],
+          hiddenWorks: [],
+          liveArticles: [],
+          hiddenArticles: [],
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
     );
     await expect(client.getModerationDesk()).resolves.toEqual({
       reports: [],
       hiddenWorks: [],
+      liveArticles: [],
+      hiddenArticles: [],
     });
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:3001/moderation/desk',
@@ -201,6 +211,7 @@ describe('ApiClient', () => {
           hangings: [],
           issues: [],
           channels: [],
+          featuredArticle: null,
         }),
         {
           status: 200,
@@ -210,6 +221,7 @@ describe('ApiClient', () => {
     );
     await expect(client.getCurationDesk()).resolves.toMatchObject({
       pairings: [],
+      featuredArticle: null,
     });
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:3001/curation/desk',
@@ -441,6 +453,95 @@ describe('ApiClient', () => {
     await client.listPublishedProjects({ limit: 12 });
     expect(fetchMock.mock.calls[0]?.[0]).toBe(
       'http://localhost:3001/projects?limit=12',
+    );
+  });
+
+  it('calls article author and public routes', async () => {
+    fetchMock.mockImplementation(async (url) => {
+      const href = String(url);
+      if (href.includes('/curation/') || href.includes('/moderation/')) {
+        return new Response(
+          JSON.stringify({
+            id: 'a1',
+            title: 'Двор',
+            lede: '',
+            coverImageUrl: null,
+            publishedAt: '2026-09-25T00:00:00.000Z',
+            featuredAt: null,
+            author: {
+              slug: 'kasia-voit',
+              displayName: 'Кася',
+              avatarUrl: null,
+              directions: [],
+            },
+          }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
+      }
+      if (
+        href.includes('/articles/profile/') ||
+        href.endsWith('/articles?limit=12')
+      ) {
+        return new Response(JSON.stringify({ items: [], nextCursor: null }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      return new Response(
+        JSON.stringify({
+          id: 'a1',
+          title: 'Двор',
+          lede: '',
+          body: 'x'.repeat(400),
+          coverImageUrl: null,
+          coverWorkId: null,
+          publishedAt: null,
+          featuredAt: null,
+          hidden: false,
+          createdAt: '2026-09-25T00:00:00.000Z',
+        }),
+        {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+    });
+
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await client.createMyArticle({
+      title: 'Двор',
+      lede: '',
+      body: 'x'.repeat(400),
+    });
+    expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:3001/articles');
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({ method: 'POST' });
+
+    await client.listArticlesBySlug('kasia-voit', { limit: 12 });
+    expect(fetchMock.mock.calls[1]?.[0]).toBe(
+      'http://localhost:3001/articles/profile/kasia-voit?limit=12',
+    );
+
+    await client.listPublishedArticles({ limit: 12 });
+    expect(fetchMock.mock.calls[2]?.[0]).toBe(
+      'http://localhost:3001/articles?limit=12',
+    );
+
+    await client.featureArticle('a1');
+    expect(fetchMock.mock.calls[3]?.[0]).toBe(
+      'http://localhost:3001/curation/articles/a1/feature',
+    );
+    expect(fetchMock.mock.calls[3]?.[1]).toMatchObject({ method: 'POST' });
+
+    await client.hideArticle('a1');
+    expect(fetchMock.mock.calls[4]?.[0]).toBe(
+      'http://localhost:3001/moderation/articles/a1/hide',
     );
   });
 

@@ -103,7 +103,7 @@ test.describe('home feed pick', () => {
     expect(feed.creatorOfWeek?.slug).toBe('artist-1');
   });
 
-  test('leaves journal empty when no work has a description', () => {
+  test('leaves journal empty when no article is passed', () => {
     const silent = work('w-silent', 'Тишина');
     silent.description = '';
     const feed = pickHomeFeed(
@@ -120,6 +120,39 @@ test.describe('home feed pick', () => {
 
     expect(feed.billboard?.id).toBe('w-silent');
     expect(feed.journal).toBeNull();
+  });
+
+  test('uses the passed journal article on the home spot', () => {
+    const frame = work('w-frame', 'Кадр');
+    const feed = pickHomeFeed(
+      [withAuthor(frame, 'artist-1', 'Кася')],
+      [
+        creator({
+          slug: 'artist-1',
+          displayName: 'Кася',
+          bio: 'Био.',
+          work: frame,
+        }),
+      ],
+      [],
+      {
+        id: 'a1',
+        title: 'Как смотреть двор',
+        lede: 'Про лужи и свет.',
+        coverImageUrl: '/uploads/cover.jpg',
+        publishedAt: '2026-09-25T00:00:00.000Z',
+        featuredAt: '2026-09-25T00:00:00.000Z',
+        author: {
+          slug: 'artist-1',
+          displayName: 'Кася',
+          avatarUrl: null,
+          directions: ['photography'],
+        },
+      },
+    );
+
+    expect(feed.journal?.id).toBe('a1');
+    expect(feed.journal?.title).toBe('Как смотреть двор');
   });
 
   test('does not reuse a work across house spots', () => {
@@ -187,7 +220,6 @@ test.describe('home feed pick', () => {
 
     const ids = [
       feed.billboard?.id,
-      feed.journal?.work.id,
       ...(feed.dialogue?.map((item) => item.id) ?? []),
       ...feed.hanging.map((item) => item.id),
       ...feed.fresh.map((item) => item.id),
@@ -195,6 +227,7 @@ test.describe('home feed pick', () => {
     ].filter((id): id is string => Boolean(id));
 
     expect(new Set(ids).size).toBe(ids.length);
+    expect(feed.journal).toBeNull();
     expect(feed.studio?.slug).not.toBe(feed.creatorOfWeek?.slug);
   });
 
