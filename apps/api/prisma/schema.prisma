@@ -52,6 +52,7 @@ model Profile {
   updatedAt      DateTime  @updatedAt
   works          Work[]
   projects       Project[]
+  articles       Article[]
 
   @@index([publishedAt])
 }
@@ -67,9 +68,30 @@ model Work {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   projectBlocks ProjectBlock[]
+  articleCovers Article[]
 
   @@index([profileId, createdAt])
   @@index([createdAt])
+}
+
+model Article {
+  id          String    @id @default(cuid())
+  profileId   String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title       String
+  lede        String    @default("")
+  body        String
+  coverWorkId String?
+  coverWork   Work?     @relation(fields: [coverWorkId], references: [id], onDelete: SetNull)
+  publishedAt DateTime?
+  featuredAt  DateTime?
+  hidden      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([profileId, createdAt])
+  @@index([publishedAt])
+  @@index([featuredAt])
 }
 
 model Project {
