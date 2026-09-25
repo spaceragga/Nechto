@@ -26,6 +26,7 @@ export default async function PublicProfilePage({
       profile={published.profile}
       works={published.works}
       projects={published.projects}
+      articles={published.articles}
       pane={pane}
     />
   );

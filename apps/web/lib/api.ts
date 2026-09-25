@@ -2,6 +2,7 @@ import { createApiClient } from '@nechto/api-client';
 import type {
   AuthUser,
   ChangePasswordDto,
+  CreateArticleFields,
   CreateWorkFields,
   CursorPageQuery,
   DeleteAccountDto,
@@ -12,6 +13,7 @@ import type {
   Profile,
   CreateProjectFields,
   ReplaceProjectBlocks,
+  UpdateArticleFields,
   UpdateProjectFields,
   RegisterDto,
   ResetPasswordDto,
@@ -118,6 +120,49 @@ export function replaceMyProjectBlocksRequest(
 
 export function deleteMyProjectRequest(projectId: string) {
   return api.deleteMyProject(projectId);
+}
+
+export function listMyArticlesRequest(query: Partial<CursorPageQuery> = {}) {
+  return api.listMyArticles(query);
+}
+
+export function createMyArticleRequest(fields: CreateArticleFields) {
+  return api.createMyArticle(fields);
+}
+
+export function updateMyArticleRequest(
+  articleId: string,
+  fields: UpdateArticleFields,
+) {
+  return api.updateMyArticle(articleId, fields);
+}
+
+export function publishMyArticleRequest(articleId: string) {
+  return api.publishMyArticle(articleId);
+}
+
+export function unpublishMyArticleRequest(articleId: string) {
+  return api.unpublishMyArticle(articleId);
+}
+
+export function deleteMyArticleRequest(articleId: string) {
+  return api.deleteMyArticle(articleId);
+}
+
+export function featureArticleRequest(articleId: string) {
+  return api.featureArticle(articleId);
+}
+
+export function unfeatureArticleRequest(articleId: string) {
+  return api.unfeatureArticle(articleId);
+}
+
+export function hideArticleRequest(articleId: string) {
+  return api.hideArticle(articleId);
+}
+
+export function unhideArticleRequest(articleId: string) {
+  return api.unhideArticle(articleId);
 }
 
 export function listAdminUsersRequest(

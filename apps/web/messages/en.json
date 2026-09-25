@@ -23,7 +23,7 @@
     "journalSpot": {
       "kicker": "Journal",
       "title": "The journal is still taking shape",
-      "lede": "A work with writing will land here. Separate issues are still ahead.",
+      "lede": "An author’s article will land here — writing for a reader, not a caption on a work.",
       "cta": "Read"
     },
     "collectionSpot": {
@@ -92,9 +92,20 @@
   },
   "Journal": {
     "title": "Journal",
-    "lede": "Works with writing. Separate issues are still ahead.",
-    "kicker": "Close look",
-    "empty": "No published profiles for the journal yet."
+    "lede": "Articles by authors of the house: slow reading about work, place, and looking. Not a feed and not a caption on a frame.",
+    "kicker": "Article",
+    "empty": "No published articles yet.",
+    "toAuthor": "To the author: {name}"
+  },
+  "Looking": {
+    "title": "How to look",
+    "updated": "Voice of the house",
+    "paragraphs": [
+      "There are no likes, rankings, or counters in the house. Look at one work, read the caption, pause.",
+      "The journal is separate articles by authors for a reader. It is not a jpeg caption and not an editorial blog.",
+      "Selections and series are whole stories. New is what just arrived. Top here is not a scoreboard.",
+      "If you need someone for a job, look for a profile and a studio, not a feed. An author steps into the light when they publish their page."
+    ]
   },
   "TopWorks": {
     "title": "Top works",
@@ -159,9 +170,9 @@
     "adminTitle": "Users",
     "adminLede": "Access is independent: curator, moderator, and admin can be granted separately or together.",
     "moderatorTitle": "Reports",
-    "moderatorLede": "Reports and hidden works will land here. Skeleton only for now.",
+    "moderatorLede": "Reports, hidden works, and journal articles land here.",
     "curatorTitle": "Selections",
-    "curatorLede": "Pairs, hangings, issues, and channels. Skeleton only for now.",
+    "curatorLede": "Pairs, hangings, and channels are still ahead. The home journal spot is ready: pick an article for it.",
     "searchName": "Name",
     "searchEmail": "Email",
     "emptyUsers": "No users found.",
@@ -175,9 +186,21 @@
     "emptyHidden": "No hidden works yet.",
     "pairings": "Pairs",
     "hangings": "Hanging",
-    "issues": "Issues",
+    "issues": "Journal",
+    "issuesLede": "Published articles. One can sit on the home journal spot.",
+    "featuredNow": "On the home",
+    "featuredNone": "Nothing featured yet — the latest article is shown.",
+    "featuredBadge": "on home",
+    "featureHome": "Feature on home",
+    "unfeature": "Remove from home",
+    "journalLive": "Journal articles",
+    "emptyJournalLive": "No published articles yet.",
+    "hiddenArticles": "Hidden articles",
+    "emptyHiddenArticles": "No hidden articles.",
+    "hideArticle": "Hide",
+    "unhideArticle": "Restore",
     "channels": "Channels",
-    "emptyCuration": "No selections yet."
+    "emptyCuration": "No articles to feature yet."
   },
   "Errors": {
     "unknown": "Something went wrong",
@@ -197,6 +220,7 @@
     "avatarType": "Use JPEG, PNG, or WebP",
     "workFileRequired": "Please choose a work file",
     "workInProject": "Remove the work from the project first",
+    "articlePublishRequirements": "To publish an article, publish your profile and write at least 400 characters",
     "workTooLarge": "Work file is too large",
     "workType": "Use JPEG, PNG, or WebP",
     "rateLimited": "Too many attempts. Try again later",
@@ -302,6 +326,29 @@
     "saved": "Series saved",
     "needFrame": "Need at least one frame"
   },
+  "Articles": {
+    "title": "Journal",
+    "ledeHint": "An article for a reader, not a caption on a work. Your profile must be published to go live.",
+    "name": "Title",
+    "lede": "Lead",
+    "body": "Body",
+    "bodyHint": "{current} of at least {min} characters to publish",
+    "cover": "Cover (your work)",
+    "coverNone": "No cover",
+    "add": "Create draft",
+    "adding": "Creating…",
+    "empty": "No articles yet",
+    "needPublish": "Publish your profile to put an article in the journal.",
+    "save": "Save",
+    "saving": "Saving…",
+    "publish": "Publish to journal",
+    "unpublish": "Unpublish",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "statusDraft": "Draft",
+    "statusPublished": "In the journal",
+    "statusFeatured": "On the home"
+  },
   "ProjectPage": {
     "kicker": "Series"
   },
@@ -326,9 +373,11 @@
     "kicker": "Creator",
     "works": "Works",
     "projects": "Projects",
-    "pane": "Works and projects",
+    "journal": "Journal",
+    "pane": "Works, projects, and journal",
     "empty": "No published works yet",
     "emptyProjects": "No series yet",
+    "emptyJournal": "No articles yet",
     "website": "Website",
     "instagram": "Instagram",
     "telegram": "Telegram",

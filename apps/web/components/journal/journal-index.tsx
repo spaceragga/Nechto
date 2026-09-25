@@ -1,10 +1,11 @@
 import { MediaTile } from '@/components/ui/media-tile';
+import { excerpt } from '@/lib/excerpt';
 
-export type JournalIssue = {
+export type JournalCard = {
   href: string;
-  kicker: string;
   title: string;
   meta: string;
+  lede: string;
   src?: string | null;
 };
 
@@ -12,16 +13,16 @@ type JournalIndexProps = {
   title: string;
   lede: string;
   empty?: string;
-  issues: JournalIssue[];
+  articles: JournalCard[];
 };
 
 export function JournalIndex({
   title,
   lede,
   empty,
-  issues,
+  articles,
 }: JournalIndexProps) {
-  const [featured, ...rest] = issues;
+  const [featured, ...rest] = articles;
 
   return (
     <main className="flex w-full flex-col gap-10 px-6 py-12">
@@ -31,26 +32,38 @@ export function JournalIndex({
       </header>
 
       {featured ? (
-        <MediaTile
-          href={featured.href}
-          title={featured.title}
-          subtitle={`${featured.kicker} · ${featured.meta}`}
-          src={featured.src}
-          wellClassName="h-64 w-full md:h-80"
-        />
+        <article className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <MediaTile
+            href={featured.href}
+            title={featured.title}
+            subtitle={featured.meta}
+            src={featured.src}
+            wellClassName="h-72 w-full md:h-[28rem]"
+          />
+          <div className="max-w-md">
+            <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
+              {featured.meta}
+            </p>
+            <p className="mt-4 font-serif text-base leading-relaxed opacity-90">
+              {excerpt(featured.lede, 220) || featured.title}
+            </p>
+          </div>
+        </article>
       ) : empty ? (
         <p className="text-sm opacity-70">{empty}</p>
       ) : null}
 
       {rest.length > 0 ? (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {rest.map((issue) => (
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          {rest.map((article) => (
             <MediaTile
-              key={issue.href}
-              href={issue.href}
-              title={issue.title}
-              subtitle={`${issue.kicker} · ${issue.meta}`}
-              src={issue.src}
+              key={article.href}
+              href={article.href}
+              title={article.title}
+              subtitle={`${article.meta}${
+                article.lede ? ` · ${excerpt(article.lede, 80)}` : ''
+              }`}
+              src={article.src}
             />
           ))}
         </div>

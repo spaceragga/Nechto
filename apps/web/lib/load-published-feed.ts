@@ -1,7 +1,9 @@
 import { ApiError } from '@nechto/api-client';
 import type {
+  ArticleSummary,
   CreatorDirection,
   CursorPage,
+  PublicArticle,
   PublicProfile,
   PublicProfileWithWorks,
   ProjectSummary,
@@ -99,15 +101,22 @@ export async function loadPublishedProfile(slug: string): Promise<{
   profile: PublicProfile;
   works: Work[];
   projects: ProjectSummary[];
+  articles: ArticleSummary[];
 } | null> {
   try {
     const api = await createServerApiClient();
     const profile = await api.getProfileBySlug(slug);
-    const [works, projects] = await Promise.all([
+    const [works, projects, articles] = await Promise.all([
       api.listWorksBySlug(slug, { limit: 50 }).catch(() => ({ items: [] })),
       api.listProjectsBySlug(slug, { limit: 50 }).catch(() => ({ items: [] })),
+      api.listArticlesBySlug(slug, { limit: 50 }).catch(() => ({ items: [] })),
     ]);
-    return { profile, works: works.items, projects: projects.items };
+    return {
+      profile,
+      works: works.items,
+      projects: projects.items,
+      articles: articles.items,
+    };
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       return null;
@@ -153,4 +162,45 @@ export async function loadPublishedProjects(options?: {
 }): Promise<ProjectSummary[]> {
   const page = await loadPublishedProjectsPage(options);
   return page.items;
+}
+
+export async function loadPublishedArticlesPage(options?: {
+  limit?: number;
+  cursor?: string;
+}): Promise<CursorPage<ArticleSummary>> {
+  try {
+    const api = await createServerApiClient();
+    return await api.listPublishedArticles({
+      limit: options?.limit ?? 24,
+      cursor: options?.cursor,
+    });
+  } catch {
+    return { items: [], nextCursor: null };
+  }
+}
+
+export async function loadPublishedArticles(
+  limit = 24,
+): Promise<ArticleSummary[]> {
+  const page = await loadPublishedArticlesPage({ limit });
+  return page.items;
+}
+
+export async function loadHomeJournalArticle(): Promise<ArticleSummary | null> {
+  const articles = await loadPublishedArticles(12);
+  return articles.find((item) => item.featuredAt) ?? articles[0] ?? null;
+}
+
+export async function loadPublishedArticle(
+  id: string,
+): Promise<PublicArticle | null> {
+  try {
+    const api = await createServerApiClient();
+    return await api.getArticle(id);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    return null;
+  }
 }

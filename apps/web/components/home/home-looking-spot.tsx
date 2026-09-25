@@ -16,7 +16,7 @@ export function HomeLookingSpot({
   return (
     <article>
       <HomeSpotRoot
-        href="/journal"
+        href="/looking"
         spot="looking"
         className="flex min-w-0 flex-col"
       >

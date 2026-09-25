@@ -1,7 +1,7 @@
 import type {
+  ArticleSummary,
   CreatorDirection,
   ProjectSummary,
-  Work,
   WorkWithAuthor,
 } from '@nechto/api-contract';
 import type { PublishedCreator } from './load-published-feed';
@@ -141,16 +141,12 @@ export type HomeFeedSlices = {
   railWorks: WorkWithAuthor[];
   fresh: WorkWithAuthor[];
   hanging: WorkWithAuthor[];
-  journal: { creator: PublishedCreator; work: Work } | null;
+  journal: ArticleSummary | null;
   dialogue: [WorkWithAuthor, WorkWithAuthor] | null;
   studio: PublishedCreator | null;
   openCall: WorkWithAuthor | null;
   series: ProjectSummary | null;
 };
-
-function hasWorkCopy(work: Work): boolean {
-  return Boolean(work.description?.trim());
-}
 
 function uniqueWorks(works: WorkWithAuthor[]): WorkWithAuthor[] {
   const seen = new Set<string>();
@@ -192,17 +188,11 @@ function takeUnusedWorks(
   return picked;
 }
 
-function creatorBySlug(
-  creators: PublishedCreator[],
-  slug: string,
-): PublishedCreator | null {
-  return creators.find((creator) => creator.slug === slug) ?? null;
-}
-
 export function pickHomeFeed(
   works: WorkWithAuthor[],
   creators: PublishedCreator[],
   series: ProjectSummary[] = [],
+  journal: ArticleSummary | null = null,
 ): HomeFeedSlices {
   const spotlight = featuredCreators(creators);
   const fromFeed = worksByCreators(works, spotlight);
@@ -214,13 +204,6 @@ export function pickHomeFeed(
   const billboard = takeUnusedWorks(spotlightWorks, used, 1)[0] ?? null;
   const creatorOfWeek = spotlight[0] ?? null;
   const nowCreators = spotlight.slice(0, 3);
-
-  const journalWork =
-    takeUnusedWorks(spotlightWorks, used, 1, (work) => hasWorkCopy(work))[0] ??
-    null;
-  const journalCreator = journalWork
-    ? creatorBySlug(creators, journalWork.author.slug)
-    : null;
 
   const dialogue = pairFromDifferentAuthors(unusedWorks(rest, used));
   if (dialogue) {
@@ -248,10 +231,7 @@ export function pickHomeFeed(
     railWorks: spotlightWorks,
     fresh,
     hanging,
-    journal:
-      journalCreator && journalWork
-        ? { creator: journalCreator, work: journalWork }
-        : null,
+    journal,
     series: pickHomeSeries(series),
     dialogue,
     studio,

@@ -5,11 +5,13 @@ import { useTranslations } from 'next-intl';
 import {
   canPublishProfile,
   PUBLISH_MIN_WORKS,
+  type Article,
   type Profile,
   type Project,
   type Work,
 } from '@nechto/api-contract';
 import { ProfileAccountField } from '@/components/profile/profile-account-field';
+import { ProfileArticlesField } from '@/components/profile/profile-articles-field';
 import { ProfileAvatarField } from '@/components/profile/profile-avatar-field';
 import { ProfileDetailsForm } from '@/components/profile/profile-details-form';
 import { ProfilePager } from '@/components/profile/profile-pager';
@@ -18,6 +20,7 @@ import { ProfileProjectsField } from '@/components/profile/profile-projects-fiel
 import { ProfileWorksField } from '@/components/profile/profile-works-field';
 import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
+import { useMyArticles } from '@/hooks/use-my-articles';
 import { useMyProfile } from '@/hooks/use-my-profile';
 import { useMyProjects } from '@/hooks/use-my-projects';
 import { useMyWorks } from '@/hooks/use-my-works';
@@ -27,6 +30,7 @@ type ProfileEditorProps = {
   profile: Profile | null;
   works?: Work[];
   projects?: Project[];
+  articles?: Article[];
   initialPane?: number;
 };
 
@@ -34,6 +38,7 @@ export function ProfileEditor({
   profile,
   works = [],
   projects = [],
+  articles = [],
   initialPane = 1,
 }: ProfileEditorProps) {
   const t = useTranslations('Profile');
@@ -53,6 +58,7 @@ export function ProfileEditor({
       profile={profile}
       initialWorks={works}
       initialProjects={projects}
+      initialArticles={articles}
       initialPane={initialPane}
     />
   );
@@ -62,17 +68,20 @@ function ProfileEditorForm({
   profile,
   initialWorks,
   initialProjects,
+  initialArticles,
   initialPane,
 }: {
   profile: Profile;
   initialWorks: Work[];
   initialProjects: Project[];
+  initialArticles: Article[];
   initialPane: number;
 }) {
   const t = useTranslations('Profile');
   const details = useMyProfile(profile);
   const works = useMyWorks(initialWorks);
   const projects = useMyProjects(initialProjects);
+  const articles = useMyArticles(initialArticles);
   const publish = useProfilePublish(details);
   const [pane, setPane] = useState(initialPane);
   const hydrated = useHydrated();
@@ -201,6 +210,31 @@ function ProfileEditorForm({
           }
           onDelete={(projectId) => {
             void projects.deleteProject(projectId);
+          }}
+        />
+
+        <ProfileArticlesField
+          articles={articles.articles}
+          works={works.works}
+          profilePublished={Boolean(details.profile.publishedAt)}
+          title={articles.title}
+          lede={articles.lede}
+          body={articles.body}
+          adding={articles.adding}
+          savingId={articles.savingId}
+          deletingId={articles.deletingId}
+          error={articles.error}
+          onTitleChange={articles.setTitle}
+          onLedeChange={articles.setLede}
+          onBodyChange={articles.setBody}
+          onAdd={articles.addArticle}
+          onSave={(articleId, fields) =>
+            articles.saveArticle(articleId, fields)
+          }
+          onPublish={(articleId) => articles.publishArticle(articleId)}
+          onUnpublish={(articleId) => articles.unpublishArticle(articleId)}
+          onDelete={(articleId) => {
+            void articles.deleteArticle(articleId);
           }}
         />
       </ProfilePager>
