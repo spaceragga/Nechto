@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { ArticleSummary } from './article';
 
 export const STAFF_USER_SEARCH_MIN = 2;
 
@@ -43,13 +44,16 @@ export type StaffUserList = {
 export type ModerationDesk = {
   reports: [];
   hiddenWorks: [];
+  liveArticles: ArticleSummary[];
+  hiddenArticles: ArticleSummary[];
 };
 
 export type CurationDesk = {
   pairings: [];
   hangings: [];
-  issues: [];
+  issues: ArticleSummary[];
   channels: [];
+  featuredArticle: ArticleSummary | null;
 };
 
 export function emptyStaffAccess(): StaffAccess {

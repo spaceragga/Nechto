@@ -1,9 +1,12 @@
 import {
   API_ERROR_CODES,
   type AccountActionResponse,
+  type Article,
+  type ArticleSummary,
   type AuthUserResponse,
   type AuthActionResponse,
   type ChangePasswordDto,
+  type CreateArticleFields,
   type CreateWorkFields,
   type CurationDesk,
   type CursorPage,
@@ -18,6 +21,7 @@ import {
   type LogoutResponse,
   type ModerationDesk,
   type Profile,
+  type PublicArticle,
   type PublicProfile,
   type PublicProfileWithWorks,
   type Project,
@@ -30,6 +34,7 @@ import {
   type ResetPasswordDto,
   type StaffUser,
   type StaffUserList,
+  type UpdateArticleFields,
   type UpdateProfileDto,
   type UpdateStaffAccessDto,
   type UpdateWorkFields,
@@ -273,6 +278,94 @@ export class ApiClient {
     return this.request<void>(`/projects/${encodeURIComponent(projectId)}`, {
       method: 'DELETE',
     });
+  }
+
+  listMyArticles(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<Article>>(
+      `/articles/me${toSearchParams(query)}`,
+    );
+  }
+
+  getMyArticle(id: string) {
+    return this.request<Article>(`/articles/me/${encodeURIComponent(id)}`);
+  }
+
+  listPublishedArticles(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<ArticleSummary>>(
+      `/articles${toSearchParams(query)}`,
+    );
+  }
+
+  listArticlesBySlug(slug: string, query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<ArticleSummary>>(
+      `/articles/profile/${encodeURIComponent(slug)}${toSearchParams(query)}`,
+    );
+  }
+
+  getArticle(id: string) {
+    return this.request<PublicArticle>(`/articles/${encodeURIComponent(id)}`);
+  }
+
+  createMyArticle(fields: CreateArticleFields) {
+    return this.request<Article>('/articles', {
+      method: 'POST',
+      body: JSON.stringify(fields),
+    });
+  }
+
+  updateMyArticle(articleId: string, fields: UpdateArticleFields) {
+    return this.request<Article>(`/articles/${encodeURIComponent(articleId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(fields),
+    });
+  }
+
+  publishMyArticle(articleId: string) {
+    return this.request<Article>(
+      `/articles/${encodeURIComponent(articleId)}/publish`,
+      { method: 'POST' },
+    );
+  }
+
+  unpublishMyArticle(articleId: string) {
+    return this.request<Article>(
+      `/articles/${encodeURIComponent(articleId)}/unpublish`,
+      { method: 'POST' },
+    );
+  }
+
+  deleteMyArticle(articleId: string) {
+    return this.request<void>(`/articles/${encodeURIComponent(articleId)}`, {
+      method: 'DELETE',
+    });
+  }
+
+  featureArticle(articleId: string) {
+    return this.request<ArticleSummary>(
+      `/curation/articles/${encodeURIComponent(articleId)}/feature`,
+      { method: 'POST' },
+    );
+  }
+
+  unfeatureArticle(articleId: string) {
+    return this.request<ArticleSummary>(
+      `/curation/articles/${encodeURIComponent(articleId)}/feature`,
+      { method: 'DELETE' },
+    );
+  }
+
+  hideArticle(articleId: string) {
+    return this.request<ArticleSummary>(
+      `/moderation/articles/${encodeURIComponent(articleId)}/hide`,
+      { method: 'POST' },
+    );
+  }
+
+  unhideArticle(articleId: string) {
+    return this.request<ArticleSummary>(
+      `/moderation/articles/${encodeURIComponent(articleId)}/unhide`,
+      { method: 'POST' },
+    );
   }
 
   listAdminUsers(query: Partial<ListAdminUsersQuery> = {}) {

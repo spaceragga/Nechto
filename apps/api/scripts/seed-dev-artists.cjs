@@ -3,6 +3,7 @@
 const { readFile } = require('node:fs/promises');
 const catalog = require('../src/dev/dev-artist-catalog.json');
 const seriesByEmail = require('../src/dev/dev-artist-series.json');
+const articlesByEmail = require('../src/dev/dev-artist-articles.json');
 const { purgeTestUsers } = require('./purge-test-users.cjs');
 
 const apiBaseUrl = (
@@ -292,13 +293,90 @@ async function seedArtist(artist) {
   await deleteMyProjects(cookie);
   await replaceWorks(cookie, artist);
   await createSeries(cookie, artist);
+  await replaceArticles(cookie, artist);
 
   await expectOk(
     '/profiles/me/publish',
     await request('/profiles/me/publish', { method: 'POST', cookie }),
   );
 
+  await publishSeedArticles(cookie, artist);
+
   console.log(`  ${artist.email}  /u/${artist.slug}  ${artist.displayName}`);
+}
+
+async function replaceArticles(cookie, artist) {
+  const listed = await expectOk(
+    '/articles/me',
+    await request('/articles/me?limit=50', { cookie }),
+  );
+  for (const article of listed.items ?? []) {
+    await expectOk(
+      `/articles/${article.id}`,
+      await request(`/articles/${encodeURIComponent(article.id)}`, {
+        method: 'DELETE',
+        cookie,
+      }),
+    );
+  }
+
+  const drafts = articlesByEmail[artist.email];
+  if (!drafts?.length) {
+    return;
+  }
+
+  const works = await expectOk(
+    '/works/me',
+    await request('/works/me?limit=10', { cookie }),
+  );
+  const workIds = (works.items ?? []).map((work) => work.id);
+
+  for (let index = 0; index < drafts.length; index += 1) {
+    const draft = drafts[index];
+    const coverWorkId = workIds[index] ?? workIds[0] ?? null;
+    await expectOk(
+      '/articles',
+      await request('/articles', {
+        method: 'POST',
+        cookie,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: draft.title,
+          lede: draft.lede,
+          body: draft.body,
+          coverWorkId,
+        }),
+      }),
+    );
+  }
+}
+
+async function publishSeedArticles(cookie, artist) {
+  const drafts = articlesByEmail[artist.email];
+  if (!drafts?.length) {
+    return;
+  }
+
+  const listed = await expectOk(
+    '/articles/me',
+    await request('/articles/me?limit=50', { cookie }),
+  );
+  const unpublished = (listed.items ?? []).filter(
+    (article) => !article.publishedAt,
+  );
+  for (const article of unpublished) {
+    await expectOk(
+      `/articles/${article.id}/publish`,
+      await request(`/articles/${encodeURIComponent(article.id)}/publish`, {
+        method: 'POST',
+        cookie,
+      }),
+    );
+  }
+
+  console.log(
+    `  ${artist.email} journal: ${unpublished.length} article(s) published`,
+  );
 }
 
 async function main() {

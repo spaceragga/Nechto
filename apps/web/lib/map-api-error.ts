@@ -19,6 +19,9 @@ const CODE_KEYS: Partial<Record<ApiErrorCode, string>> = {
   [API_ERROR_CODES.WORK_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.WORK_IN_PROJECT]: 'workInProject',
   [API_ERROR_CODES.PROJECT_NOT_FOUND]: 'notFound',
+  [API_ERROR_CODES.ARTICLE_NOT_FOUND]: 'notFound',
+  [API_ERROR_CODES.ARTICLE_PUBLISH_REQUIREMENTS_NOT_MET]:
+    'articlePublishRequirements',
   [API_ERROR_CODES.PROFILE_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.USER_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.AUTHENTICATION_REQUIRED]: 'unauthorized',

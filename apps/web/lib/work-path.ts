@@ -9,3 +9,7 @@ export function workPath(slug: string, workId: string): string {
 export function projectPath(slug: string, projectId: string): string {
   return `${profilePath(slug)}/p/${projectId}`;
 }
+
+export function articlePath(articleId: string): string {
+  return `/journal/${articleId}`;
+}

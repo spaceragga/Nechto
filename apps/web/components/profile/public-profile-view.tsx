@@ -1,17 +1,28 @@
 import { getTranslations } from 'next-intl/server';
-import type { PublicProfile, ProjectSummary, Work } from '@nechto/api-contract';
+import type {
+  ArticleSummary,
+  PublicProfile,
+  ProjectSummary,
+  Work,
+} from '@nechto/api-contract';
 import { QueryScrollLock } from '@/components/query-scroll-lock';
 import { MediaTile } from '@/components/ui/media-tile';
 import { ChipLink } from '@/components/ui/chip-link';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { excerpt } from '@/lib/excerpt';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { profilePath, projectPath, workPath } from '@/lib/work-path';
+import {
+  articlePath,
+  profilePath,
+  projectPath,
+  workPath,
+} from '@/lib/work-path';
 
 type PublicProfileViewProps = {
   profile: PublicProfile;
   works: Work[];
   projects: ProjectSummary[];
+  articles: ArticleSummary[];
   pane?: string;
 };
 
@@ -19,6 +30,7 @@ export async function PublicProfileView({
   profile,
   works,
   projects,
+  articles,
   pane,
 }: PublicProfileViewProps) {
   const t = await getTranslations('PublicProfile');
@@ -26,11 +38,17 @@ export async function PublicProfileView({
   const photoSrc = toUploadSrc(profile.avatarUrl);
   const slug = profile.slug ?? '';
   const projectsPane = pane === 'projects';
+  const journalPane = pane === 'journal';
   const href = profilePath(slug);
+  const scrollToken = journalPane
+    ? 'journal'
+    : projectsPane
+      ? 'projects'
+      : 'works';
 
   return (
     <main className="w-full px-6 py-12">
-      <QueryScrollLock token={projectsPane ? 'projects' : 'works'} />
+      <QueryScrollLock token={scrollToken} />
       <div className="flex items-start justify-between gap-6">
         <div className="min-w-0">
           <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
@@ -65,7 +83,11 @@ export async function PublicProfileView({
       </div>
 
       <nav aria-label={t('pane')} className="mt-8 flex flex-wrap gap-4">
-        <ChipLink href={href} active={!projectsPane} scroll={false}>
+        <ChipLink
+          href={href}
+          active={!projectsPane && !journalPane}
+          scroll={false}
+        >
           {t('works')}
         </ChipLink>
         <ChipLink
@@ -75,9 +97,32 @@ export async function PublicProfileView({
         >
           {t('projects')}
         </ChipLink>
+        <ChipLink
+          href={`${href}?pane=journal`}
+          active={journalPane}
+          scroll={false}
+        >
+          {t('journal')}
+        </ChipLink>
       </nav>
 
-      {projectsPane ? (
+      {journalPane ? (
+        articles.length === 0 ? (
+          <p className="mt-4 text-sm opacity-70">{t('emptyJournal')}</p>
+        ) : (
+          <section className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article) => (
+              <MediaTile
+                key={article.id}
+                href={articlePath(article.id)}
+                title={article.title}
+                subtitle={article.lede ? excerpt(article.lede, 110) : undefined}
+                src={toUploadSrc(article.coverImageUrl)}
+              />
+            ))}
+          </section>
+        )
+      ) : projectsPane ? (
         projects.length === 0 ? (
           <p className="mt-4 text-sm opacity-70">{t('emptyProjects')}</p>
         ) : (

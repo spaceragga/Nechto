@@ -1,5 +1,11 @@
 import { ApiError } from '@nechto/api-client';
-import type { AuthUser, Profile, Project, Work } from '@nechto/api-contract';
+import type {
+  AuthUser,
+  Article,
+  Profile,
+  Project,
+  Work,
+} from '@nechto/api-contract';
 import { cache } from 'react';
 import { createServerApiClient } from '@/lib/api-server';
 
@@ -54,6 +60,16 @@ export const loadMyProjects = cache(async (): Promise<Project[]> => {
   try {
     const api = await createServerApiClient();
     const page = await api.listMyProjects({ limit: 50 });
+    return page.items;
+  } catch {
+    return [];
+  }
+});
+
+export const loadMyArticles = cache(async (): Promise<Article[]> => {
+  try {
+    const api = await createServerApiClient();
+    const page = await api.listMyArticles({ limit: 50 });
     return page.items;
   } catch {
     return [];

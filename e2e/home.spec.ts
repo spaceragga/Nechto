@@ -402,7 +402,7 @@ test.describe('home page locales', () => {
     ).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Как смотреть/ }),
-    ).toHaveAttribute('href', '/journal');
+    ).toHaveAttribute('href', '/looking');
     await expect(
       spots.getByRole('link', { name: /Войти в студию/ }),
     ).toHaveAttribute('href', /^\/[a-z0-9-]+$/);
@@ -507,7 +507,7 @@ test.describe('home page locales', () => {
     ).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /How to look/ }),
-    ).toHaveAttribute('href', '/en/journal');
+    ).toHaveAttribute('href', '/en/looking');
     await expect(journalSpot(page)).toBeVisible();
     await expect(
       page.getByRole('link', { name: /Publish your profile/ }),
@@ -719,7 +719,9 @@ test.describe('home page locales', () => {
     );
     await expect(page).toHaveURL(/\/journal\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Журнал');
-    await expect(page.locator('main a').first()).toBeVisible();
+    await expect(page.locator('main')).toContainText(
+      /Двор без счётчика|Пока нет опубликованных статей/,
+    );
 
     await page.goto('/');
     await followLink(
@@ -794,7 +796,9 @@ test.describe('home page locales', () => {
     );
     await expect(page).toHaveURL(/\/en\/journal\/?$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Journal');
-    await expect(page.locator('main a').first()).toBeVisible();
+    await expect(page.locator('main')).toContainText(
+      /Двор без счётчика|No published articles yet/,
+    );
 
     await page.goto('/en');
     await followLink(

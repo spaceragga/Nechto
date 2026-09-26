@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { CurationJournalDesk } from '@/components/curation/curation-journal-desk';
 import { StaffScreen } from '@/components/staff/staff-screen';
 import type { AppLocale } from '@/i18n/routing';
 import { loadStaffResource } from '@/lib/staff-page';
@@ -22,16 +23,12 @@ export default async function CurationPage({ params }: PageProps) {
       forbidden={t('forbidden')}
       allowed={result.ok}
     >
-      <ul className="mt-10 grid gap-8 sm:grid-cols-2">
-        {(['pairings', 'hangings', 'issues', 'channels'] as const).map(
-          (key) => (
-            <li key={key}>
-              <h2 className="text-sm tracking-wide opacity-70">{t(key)}</h2>
-              <p className="mt-3 text-sm opacity-70">{t('emptyCuration')}</p>
-            </li>
-          ),
-        )}
-      </ul>
+      {result.ok ? (
+        <CurationJournalDesk
+          issues={result.data.issues}
+          featuredArticle={result.data.featuredArticle}
+        />
+      ) : null}
     </StaffScreen>
   );
 }

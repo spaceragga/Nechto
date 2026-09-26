@@ -140,15 +140,30 @@ describe('Staff access (e2e)', () => {
     await request(app.getHttpServer())
       .get('/moderation/desk')
       .set('Cookie', adminCookie)
-      .expect(200, { reports: [], hiddenWorks: [] });
+      .expect(200)
+      .expect((response) => {
+        expect(response.body).toMatchObject({
+          reports: [],
+          hiddenWorks: [],
+        });
+        expect(Array.isArray(response.body.liveArticles)).toBe(true);
+        expect(Array.isArray(response.body.hiddenArticles)).toBe(true);
+      });
     await request(app.getHttpServer())
       .get('/curation/desk')
       .set('Cookie', adminCookie)
-      .expect(200, {
-        pairings: [],
-        hangings: [],
-        issues: [],
-        channels: [],
+      .expect(200)
+      .expect((response) => {
+        expect(response.body).toMatchObject({
+          pairings: [],
+          hangings: [],
+          channels: [],
+        });
+        expect(Array.isArray(response.body.issues)).toBe(true);
+        expect(
+          response.body.featuredArticle === null ||
+            typeof response.body.featuredArticle === 'object',
+        ).toBe(true);
       });
   });
 });

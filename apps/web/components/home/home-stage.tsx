@@ -12,7 +12,12 @@ import { excerpt } from '@/lib/excerpt';
 import { getCurrentUser } from '@/lib/session';
 import { type HomeFeedSlices } from '@/lib/pick-home-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { workPath, profilePath, projectPath } from '@/lib/work-path';
+import {
+  workPath,
+  profilePath,
+  projectPath,
+  articlePath,
+} from '@/lib/work-path';
 
 type HomeStageProps = {
   locale: string;
@@ -40,9 +45,7 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
   const creatorHref = feed.creatorOfWeek
     ? profilePath(feed.creatorOfWeek.slug)
     : null;
-  const journalHref = feed.journal
-    ? workPath(feed.journal.creator.slug, feed.journal.work.id)
-    : '/journal';
+  const journalHref = feed.journal ? articlePath(feed.journal.id) : '/journal';
   const studioWork = feed.studio?.latestWorks[0];
 
   return (
@@ -136,16 +139,16 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
         <div className="flex min-w-0 flex-col gap-25">
           <HomeJournalSpot
             kicker={t('journalSpot.kicker')}
-            title={feed.journal?.work.title ?? t('journalSpot.title')}
+            title={feed.journal?.title ?? t('journalSpot.title')}
             lede={
-              excerpt(feed.journal?.work.description) ||
-              excerpt(feed.journal?.creator.bio) ||
+              excerpt(feed.journal?.lede) ||
+              excerpt(feed.journal?.author.displayName) ||
               t('journalSpot.lede')
             }
             cta={t('journalSpot.cta')}
             href={journalHref}
             src={
-              feed.journal ? toUploadSrc(feed.journal.work.imageUrl) : undefined
+              feed.journal ? toUploadSrc(feed.journal.coverImageUrl) : undefined
             }
           />
           <HomeCollectionSpot
