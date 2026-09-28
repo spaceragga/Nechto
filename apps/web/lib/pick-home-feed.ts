@@ -1,10 +1,47 @@
 import type {
   ArticleSummary,
   CreatorDirection,
+  DialogueSummary,
   ProjectSummary,
   WorkWithAuthor,
 } from '@nechto/api-contract';
 import type { PublishedCreator } from './load-published-feed';
+
+export type HomeDialogue = {
+  id: string | null;
+  title: string;
+  note: string;
+  left: WorkWithAuthor;
+  right: WorkWithAuthor;
+};
+
+function toHomeDialogue(dialogue: DialogueSummary | null): HomeDialogue | null {
+  if (!dialogue) {
+    return null;
+  }
+  return {
+    id: dialogue.id,
+    title: dialogue.title,
+    note: dialogue.note,
+    left: dialogue.left,
+    right: dialogue.right,
+  };
+}
+
+function autoHomeDialogue(
+  pair: [WorkWithAuthor, WorkWithAuthor] | null,
+): HomeDialogue | null {
+  if (!pair) {
+    return null;
+  }
+  return {
+    id: null,
+    title: `${pair[0].title} / ${pair[1].title}`,
+    note: '',
+    left: pair[0],
+    right: pair[1],
+  };
+}
 
 const STUDIO_DIRECTIONS: CreatorDirection[] = ['craft', 'interior', 'fashion'];
 
@@ -142,7 +179,7 @@ export type HomeFeedSlices = {
   fresh: WorkWithAuthor[];
   hanging: WorkWithAuthor[];
   journal: ArticleSummary | null;
-  dialogue: [WorkWithAuthor, WorkWithAuthor] | null;
+  dialogue: HomeDialogue | null;
   studio: PublishedCreator | null;
   openCall: WorkWithAuthor | null;
   series: ProjectSummary | null;
@@ -193,6 +230,7 @@ export function pickHomeFeed(
   creators: PublishedCreator[],
   series: ProjectSummary[] = [],
   journal: ArticleSummary | null = null,
+  curatedDialogue: DialogueSummary | null = null,
 ): HomeFeedSlices {
   const spotlight = featuredCreators(creators);
   const fromFeed = worksByCreators(works, spotlight);
@@ -205,10 +243,17 @@ export function pickHomeFeed(
   const creatorOfWeek = spotlight[0] ?? null;
   const nowCreators = spotlight.slice(0, 3);
 
-  const dialogue = pairFromDifferentAuthors(unusedWorks(rest, used));
-  if (dialogue) {
-    used.add(dialogue[0].id);
-    used.add(dialogue[1].id);
+  const curated = toHomeDialogue(curatedDialogue);
+  if (curated) {
+    used.add(curated.left.id);
+    used.add(curated.right.id);
+  }
+  const dialogue =
+    curated ??
+    autoHomeDialogue(pairFromDifferentAuthors(unusedWorks(rest, used)));
+  if (dialogue && !curated) {
+    used.add(dialogue.left.id);
+    used.add(dialogue.right.id);
   }
 
   const hanging = takeUnusedWorks(
@@ -232,8 +277,8 @@ export function pickHomeFeed(
     fresh,
     hanging,
     journal,
-    series: pickHomeSeries(series),
     dialogue,
+    series: pickHomeSeries(series),
     studio,
     openCall,
   };

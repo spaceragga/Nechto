@@ -7,6 +7,7 @@ const EXPLORE_LINKS = [
   { href: '/new', key: 'new' },
   { href: '/collections', key: 'collections' },
   { href: '/journal', key: 'journal' },
+  { href: '/dialogue', key: 'dialogue' },
   { href: '/community', key: 'community' },
 ] as const;
 

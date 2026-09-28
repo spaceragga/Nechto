@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ModerationArticlesDesk } from '@/components/moderation/moderation-articles-desk';
+import { ModerationDialoguesDesk } from '@/components/moderation/moderation-dialogues-desk';
 import { StaffScreen } from '@/components/staff/staff-screen';
 import type { AppLocale } from '@/i18n/routing';
 import { loadStaffResource } from '@/lib/staff-page';
@@ -42,6 +43,10 @@ export default async function ModerationPage({ params }: PageProps) {
           <ModerationArticlesDesk
             published={result.data.liveArticles}
             hiddenArticles={result.data.hiddenArticles}
+          />
+          <ModerationDialoguesDesk
+            published={result.data.liveDialogues}
+            hiddenDialogues={result.data.hiddenDialogues}
           />
         </>
       ) : null}

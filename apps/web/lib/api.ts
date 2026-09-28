@@ -3,6 +3,7 @@ import type {
   AuthUser,
   ChangePasswordDto,
   CreateArticleFields,
+  CreateDialogueFields,
   CreateWorkFields,
   CursorPageQuery,
   DeleteAccountDto,
@@ -163,6 +164,38 @@ export function hideArticleRequest(articleId: string) {
 
 export function unhideArticleRequest(articleId: string) {
   return api.unhideArticle(articleId);
+}
+
+export function createDialogueRequest(fields: CreateDialogueFields) {
+  return api.createDialogue(fields);
+}
+
+export function publishDialogueRequest(dialogueId: string) {
+  return api.publishDialogue(dialogueId);
+}
+
+export function unpublishDialogueRequest(dialogueId: string) {
+  return api.unpublishDialogue(dialogueId);
+}
+
+export function deleteDialogueRequest(dialogueId: string) {
+  return api.deleteDialogue(dialogueId);
+}
+
+export function featureDialogueRequest(dialogueId: string) {
+  return api.featureDialogue(dialogueId);
+}
+
+export function unfeatureDialogueRequest(dialogueId: string) {
+  return api.unfeatureDialogue(dialogueId);
+}
+
+export function hideDialogueRequest(dialogueId: string) {
+  return api.hideDialogue(dialogueId);
+}
+
+export function unhideDialogueRequest(dialogueId: string) {
+  return api.unhideDialogue(dialogueId);
 }
 
 export function listAdminUsersRequest(

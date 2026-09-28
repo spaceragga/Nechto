@@ -24,7 +24,7 @@ export function HomeDialogueSpot({
   rightTitle,
   rightMeta,
   cta,
-  href = '/community',
+  href = '/dialogue',
   leftSrc,
   rightSrc,
 }: HomeDialogueSpotProps) {
