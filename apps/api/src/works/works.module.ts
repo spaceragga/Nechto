@@ -7,5 +7,6 @@ import { WorksService } from './works.service';
   imports: [StorageModule],
   controllers: [WorksController],
   providers: [WorksService],
+  exports: [WorksService],
 })
 export class WorksModule {}

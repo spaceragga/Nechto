@@ -1,13 +1,13 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   DIALOGUE_NOTE_MAX,
   DIALOGUE_TITLE_MAX,
   type DialogueSummary,
-  type WorkWithAuthor,
 } from '@nechto/api-contract';
+import { WorkPicker } from '@/components/curation/work-picker';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { Input } from '@/components/ui/input';
@@ -27,49 +27,11 @@ import { Link } from '@/i18n/navigation';
 type CurationDialoguesDeskProps = {
   pairings: DialogueSummary[];
   featuredDialogue: DialogueSummary | null;
-  works: WorkWithAuthor[];
 };
-
-function WorkSelect({
-  label,
-  value,
-  onChange,
-  placeholder,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-  options: { id: string; label: string }[];
-}) {
-  return (
-    <label className="flex flex-col gap-2 text-sm">
-      <span>{label}</span>
-      <select
-        className="rounded border border-white/20 bg-[var(--bg)] px-3 py-2 text-[var(--fg)] [color-scheme:dark]"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-      >
-        <option value="">{placeholder}</option>
-        {options.map((work) => (
-          <option
-            key={work.id}
-            value={work.id}
-            className="bg-[var(--bg)] text-[var(--fg)]"
-          >
-            {work.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
 
 export function CurationDialoguesDesk({
   pairings: initial,
   featuredDialogue: initialFeatured,
-  works,
 }: CurationDialoguesDeskProps) {
   const t = useTranslations('Staff');
   const tErrors = useTranslations('Errors');
@@ -82,15 +44,6 @@ export function CurationDialoguesDesk({
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const workOptions = useMemo(
-    () =>
-      works.map((work) => ({
-        id: work.id,
-        label: `${work.title} — ${work.author.displayName}`,
-      })),
-    [works],
-  );
 
   function replacePairing(updated: DialogueSummary) {
     setPairings((current) =>
@@ -177,19 +130,25 @@ export function CurationDialoguesDesk({
             rows={3}
           />
         </label>
-        <WorkSelect
+        <WorkPicker
           label={t('pairingLeft')}
           value={leftWorkId}
           onChange={setLeftWorkId}
+          excludeId={rightWorkId}
           placeholder={t('pairingPickWork')}
-          options={workOptions}
+          searchPlaceholder={t('pairingSearchWork')}
+          empty={t('pairingNoWorks')}
+          clearLabel={t('pairingClearWork')}
         />
-        <WorkSelect
+        <WorkPicker
           label={t('pairingRight')}
           value={rightWorkId}
           onChange={setRightWorkId}
+          excludeId={leftWorkId}
           placeholder={t('pairingPickWork')}
-          options={workOptions}
+          searchPlaceholder={t('pairingSearchWork')}
+          empty={t('pairingNoWorks')}
+          clearLabel={t('pairingClearWork')}
         />
         <Button
           type="submit"

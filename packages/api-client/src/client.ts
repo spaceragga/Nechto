@@ -18,6 +18,7 @@ import {
   type HealthResponse,
   type HelloResponse,
   type ListAdminUsersQuery,
+  type ListCurationWorksQuery,
   type ListCreatorsQuery,
   type LoginDto,
   type LogoutResponse,
@@ -389,6 +390,12 @@ export class ApiClient {
     });
   }
 
+  listCurationWorks(query: Partial<ListCurationWorksQuery> = {}) {
+    return this.request<CursorPage<WorkWithAuthor>>(
+      `/curation/works${toSearchParams(query)}`,
+    );
+  }
+
   updateDialogue(dialogueId: string, fields: UpdateDialogueFields) {
     return this.request<DialogueSummary>(
       `/curation/dialogues/${encodeURIComponent(dialogueId)}`,
@@ -526,6 +533,7 @@ function toSearchParams(query: {
   direction?: string;
   name?: string;
   email?: string;
+  q?: string;
 }): string {
   const params = new URLSearchParams();
   if (query.cursor) {
@@ -542,6 +550,9 @@ function toSearchParams(query: {
   }
   if (query.email) {
     params.set('email', query.email);
+  }
+  if (query.q) {
+    params.set('q', query.q);
   }
   const serialized = params.toString();
   return serialized ? `?${serialized}` : '';

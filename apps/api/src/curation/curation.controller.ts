@@ -7,15 +7,20 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   createDialogueFieldsSchema,
+  listCurationWorksQuerySchema,
   updateDialogueFieldsSchema,
   type ArticleSummary,
   type CreateDialogueFields,
   type CurationDesk,
+  type CursorPage,
   type DialogueSummary,
+  type ListCurationWorksQuery,
   type UpdateDialogueFields,
+  type WorkWithAuthor,
 } from '@nechto/api-contract';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/decorators/current-user.decorator';
@@ -23,12 +28,14 @@ import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { RequiresCurator } from '../auth/requires-access';
 import { ArticlesService } from '../articles/articles.service';
 import { DialoguesService } from '../dialogues/dialogues.service';
+import { WorksService } from '../works/works.service';
 
 @Controller('curation')
 export class CurationController {
   constructor(
     private readonly articles: ArticlesService,
     private readonly dialogues: DialoguesService,
+    private readonly works: WorksService,
   ) {}
 
   @Get('desk')
@@ -46,6 +53,15 @@ export class CurationController {
       featuredArticle: issues.find((item) => item.featuredAt) ?? null,
       featuredDialogue: pairings.find((item) => item.featuredAt) ?? null,
     };
+  }
+
+  @Get('works')
+  @RequiresCurator()
+  listWorks(
+    @Query(new ZodValidationPipe(listCurationWorksQuerySchema))
+    query: ListCurationWorksQuery,
+  ): Promise<CursorPage<WorkWithAuthor>> {
+    return this.works.listForCuration(query);
   }
 
   @Post('articles/:id/feature')

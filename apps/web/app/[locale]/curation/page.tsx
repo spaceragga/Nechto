@@ -13,13 +13,9 @@ export default async function CurationPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('Staff');
-  const result = await loadStaffResource(locale as AppLocale, async (api) => {
-    const [desk, works] = await Promise.all([
-      api.getCurationDesk(),
-      api.listPublishedWorks({ limit: 50 }).catch(() => ({ items: [] })),
-    ]);
-    return { desk, works: works.items };
-  });
+  const result = await loadStaffResource(locale as AppLocale, (api) =>
+    api.getCurationDesk(),
+  );
 
   return (
     <StaffScreen
@@ -31,13 +27,12 @@ export default async function CurationPage({ params }: PageProps) {
       {result.ok ? (
         <>
           <CurationJournalDesk
-            issues={result.data.desk.issues}
-            featuredArticle={result.data.desk.featuredArticle}
+            issues={result.data.issues}
+            featuredArticle={result.data.featuredArticle}
           />
           <CurationDialoguesDesk
-            pairings={result.data.desk.pairings}
-            featuredDialogue={result.data.desk.featuredDialogue}
-            works={result.data.works}
+            pairings={result.data.pairings}
+            featuredDialogue={result.data.featuredDialogue}
           />
         </>
       ) : null}

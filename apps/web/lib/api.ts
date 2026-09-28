@@ -170,6 +170,12 @@ export function createDialogueRequest(fields: CreateDialogueFields) {
   return api.createDialogue(fields);
 }
 
+export function listCurationWorksRequest(
+  query: { q?: string; limit?: number } = {},
+) {
+  return api.listCurationWorks(query);
+}
+
 export function publishDialogueRequest(dialogueId: string) {
   return api.publishDialogue(dialogueId);
 }

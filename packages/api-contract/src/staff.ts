@@ -60,6 +60,17 @@ export type CurationDesk = {
   featuredDialogue: DialogueSummary | null;
 };
 
+export const CURATION_WORKS_SEARCH_MAX = 80;
+
+export const listCurationWorksQuerySchema = z.object({
+  q: z.string().trim().max(CURATION_WORKS_SEARCH_MAX).optional().default(''),
+  limit: z.coerce.number().int().min(1).max(50).optional().default(30),
+});
+
+export type ListCurationWorksQuery = z.infer<
+  typeof listCurationWorksQuerySchema
+>;
+
 export function emptyStaffAccess(): StaffAccess {
   return {
     isCurator: false,
