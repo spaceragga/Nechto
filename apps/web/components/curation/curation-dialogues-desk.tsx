@@ -45,6 +45,16 @@ export function CurationDialoguesDesk({
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  function selectLeft(id: string) {
+    setLeftWorkId(id);
+    setRightWorkId((current) => (current && current === id ? '' : current));
+  }
+
+  function selectRight(id: string) {
+    setRightWorkId(id);
+    setLeftWorkId((current) => (current && current === id ? '' : current));
+  }
+
   function replacePairing(updated: DialogueSummary) {
     setPairings((current) =>
       current.map((item) => (item.id === updated.id ? updated : item)),
@@ -133,7 +143,7 @@ export function CurationDialoguesDesk({
         <WorkPicker
           label={t('pairingLeft')}
           value={leftWorkId}
-          onChange={setLeftWorkId}
+          onChange={selectLeft}
           excludeId={rightWorkId}
           placeholder={t('pairingPickWork')}
           searchPlaceholder={t('pairingSearchWork')}
@@ -143,7 +153,7 @@ export function CurationDialoguesDesk({
         <WorkPicker
           label={t('pairingRight')}
           value={rightWorkId}
-          onChange={setRightWorkId}
+          onChange={selectRight}
           excludeId={leftWorkId}
           placeholder={t('pairingPickWork')}
           searchPlaceholder={t('pairingSearchWork')}

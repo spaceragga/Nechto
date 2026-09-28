@@ -38,13 +38,6 @@ export function WorkPicker({
   const [held, setHeld] = useState<WorkWithAuthor | null>(null);
 
   useEffect(() => {
-    if (value && value === excludeId) {
-      onChange('');
-      setHeld(null);
-    }
-  }, [value, excludeId, onChange]);
-
-  useEffect(() => {
     let cancelled = false;
     const handle = window.setTimeout(() => {
       setLoading(true);
@@ -71,10 +64,12 @@ export function WorkPicker({
     };
   }, [query]);
 
+  const activeValue = value && value !== excludeId ? value : '';
   const visible = options.filter((work) => work.id !== excludeId);
-  const selected =
-    options.find((work) => work.id === value) ??
-    (held?.id === value ? held : null);
+  const selected = activeValue
+    ? (options.find((work) => work.id === activeValue) ??
+      (held?.id === activeValue ? held : null))
+    : null;
 
   function pick(work: WorkWithAuthor) {
     setHeld(work);
@@ -134,7 +129,11 @@ export function WorkPicker({
                 <li className="px-3 py-2 text-xs opacity-60">{empty}</li>
               ) : (
                 visible.map((work) => (
-                  <li key={work.id} role="option">
+                  <li
+                    key={work.id}
+                    role="option"
+                    aria-selected={work.id === activeValue}
+                  >
                     <button
                       type="button"
                       className="block w-full truncate px-3 py-2 text-left hover:bg-white/10"
