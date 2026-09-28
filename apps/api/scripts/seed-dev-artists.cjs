@@ -408,13 +408,13 @@ async function grantArtist1Admin() {
   try {
     const result = await prisma.user.updateMany({
       where: { email: 'artist1@nechto.test' },
-      data: { isAdmin: true, isCurator: true, isModerator: true },
+      data: { isAdmin: true, isCurator: true, isModerator: false },
     });
     if (result.count === 0) {
       console.warn('artist1@nechto.test not found; staff flags were not set');
       return;
     }
-    console.log('  artist1@nechto.test isAdmin+isCurator+isModerator=true');
+    console.log('  artist1@nechto.test isAdmin+isCurator=true');
   } finally {
     await prisma.$disconnect();
   }
