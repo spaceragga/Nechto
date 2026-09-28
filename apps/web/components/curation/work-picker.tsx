@@ -90,10 +90,10 @@ export function WorkPicker({
   }
 
   return (
-    <div className="flex flex-col gap-2 text-sm">
+    <div className="flex w-full flex-col gap-2 text-sm">
       <span>{label}</span>
       {selected ? (
-        <div className="flex items-center gap-2 rounded border border-white/20 px-3 py-2">
+        <div className="flex w-full items-center gap-2 rounded border border-white/20 px-3 py-2">
           <span className="min-w-0 flex-1 truncate">{workLabel(selected)}</span>
           <button
             type="button"
@@ -104,12 +104,13 @@ export function WorkPicker({
           </button>
         </div>
       ) : (
-        <div className="relative">
+        <div className="relative w-full">
           <Input
             role="combobox"
             aria-expanded={open}
             aria-controls={listId}
             aria-autocomplete="list"
+            className="w-full"
             placeholder={open || query ? searchPlaceholder : placeholder}
             value={query}
             onChange={(event) => {
