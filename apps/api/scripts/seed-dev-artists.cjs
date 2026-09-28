@@ -398,6 +398,7 @@ async function main() {
     await seedArtist(artist);
   }
   await grantArtist1Admin();
+  await seedDialogues();
   console.log(`Password for all: ${password}`);
 }
 
@@ -407,13 +408,74 @@ async function grantArtist1Admin() {
   try {
     const result = await prisma.user.updateMany({
       where: { email: 'artist1@nechto.test' },
-      data: { isAdmin: true },
+      data: { isAdmin: true, isCurator: true, isModerator: false },
     });
     if (result.count === 0) {
-      console.warn('artist1@nechto.test not found; isAdmin was not set');
+      console.warn('artist1@nechto.test not found; staff flags were not set');
       return;
     }
-    console.log('  artist1@nechto.test isAdmin=true');
+    console.log('  artist1@nechto.test isAdmin+isCurator=true');
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function seedDialogues() {
+  const { PrismaClient } = require('@prisma/client');
+  const prisma = new PrismaClient();
+  try {
+    await prisma.dialogue.deleteMany({});
+    const works = await prisma.work.findMany({
+      where: {
+        hidden: false,
+        profile: { publishedAt: { not: null }, slug: { not: null } },
+      },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, profileId: true, title: true },
+      take: 40,
+    });
+
+    const byProfile = new Map();
+    for (const work of works) {
+      if (!byProfile.has(work.profileId)) {
+        byProfile.set(work.profileId, work);
+      }
+    }
+    const picks = [...byProfile.values()];
+    if (picks.length < 4) {
+      console.warn('Not enough authors with works to seed dialogues');
+      return;
+    }
+
+    const curator = await prisma.user.findUnique({
+      where: { email: 'artist1@nechto.test' },
+      select: { id: true },
+    });
+
+    const first = await prisma.dialogue.create({
+      data: {
+        title: 'Двор и кухня',
+        note: 'Свет с улицы и свет с табурета. Два быта рядом — без конкурса, с паузой.',
+        leftWorkId: picks[0].id,
+        rightWorkId: picks[1].id,
+        createdByUserId: curator?.id ?? null,
+        publishedAt: new Date(),
+        featuredAt: new Date(),
+      },
+    });
+    const second = await prisma.dialogue.create({
+      data: {
+        title: 'Ткань и неон',
+        note: 'Примерка на Зыбицкой и ночь на выезде из Бреста. Разный материал, один ритм.',
+        leftWorkId: picks[2].id,
+        rightWorkId: picks[3].id,
+        createdByUserId: curator?.id ?? null,
+        publishedAt: new Date(),
+      },
+    });
+    console.log(
+      `  dialogues seeded: ${first.title} (featured), ${second.title}`,
+    );
   } finally {
     await prisma.$disconnect();
   }

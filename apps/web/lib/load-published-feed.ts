@@ -3,7 +3,9 @@ import type {
   ArticleSummary,
   CreatorDirection,
   CursorPage,
+  DialogueSummary,
   PublicArticle,
+  PublicDialogue,
   PublicProfile,
   PublicProfileWithWorks,
   ProjectSummary,
@@ -189,6 +191,47 @@ export async function loadPublishedArticles(
 export async function loadHomeJournalArticle(): Promise<ArticleSummary | null> {
   const articles = await loadPublishedArticles(12);
   return articles.find((item) => item.featuredAt) ?? articles[0] ?? null;
+}
+
+export async function loadPublishedDialoguesPage(options?: {
+  limit?: number;
+  cursor?: string;
+}): Promise<CursorPage<DialogueSummary>> {
+  try {
+    const api = await createServerApiClient();
+    return await api.listPublishedDialogues({
+      limit: options?.limit ?? 24,
+      cursor: options?.cursor,
+    });
+  } catch {
+    return { items: [], nextCursor: null };
+  }
+}
+
+export async function loadPublishedDialogues(
+  limit = 24,
+): Promise<DialogueSummary[]> {
+  const page = await loadPublishedDialoguesPage({ limit });
+  return page.items;
+}
+
+export async function loadHomeDialogue(): Promise<DialogueSummary | null> {
+  const dialogues = await loadPublishedDialogues(12);
+  return dialogues.find((item) => item.featuredAt) ?? dialogues[0] ?? null;
+}
+
+export async function loadPublishedDialogue(
+  id: string,
+): Promise<PublicDialogue | null> {
+  try {
+    const api = await createServerApiClient();
+    return await api.getDialogue(id);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    return null;
+  }
 }
 
 export async function loadPublishedArticle(

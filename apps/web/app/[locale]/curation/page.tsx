@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { CurationDialoguesDesk } from '@/components/curation/curation-dialogues-desk';
 import { CurationJournalDesk } from '@/components/curation/curation-journal-desk';
 import { StaffScreen } from '@/components/staff/staff-screen';
 import type { AppLocale } from '@/i18n/routing';
@@ -24,10 +25,16 @@ export default async function CurationPage({ params }: PageProps) {
       allowed={result.ok}
     >
       {result.ok ? (
-        <CurationJournalDesk
-          issues={result.data.issues}
-          featuredArticle={result.data.featuredArticle}
-        />
+        <>
+          <CurationJournalDesk
+            issues={result.data.issues}
+            featuredArticle={result.data.featuredArticle}
+          />
+          <CurationDialoguesDesk
+            pairings={result.data.pairings}
+            featuredDialogue={result.data.featuredDialogue}
+          />
+        </>
       ) : null}
     </StaffScreen>
   );

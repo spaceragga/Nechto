@@ -7,21 +7,25 @@ import {
   type AuthActionResponse,
   type ChangePasswordDto,
   type CreateArticleFields,
+  type CreateDialogueFields,
   type CreateWorkFields,
   type CurationDesk,
   type CursorPage,
   type CursorPageQuery,
   type DeleteAccountDto,
+  type DialogueSummary,
   type ForgotPasswordDto,
   type HealthResponse,
   type HelloResponse,
   type ListAdminUsersQuery,
+  type ListCurationWorksQuery,
   type ListCreatorsQuery,
   type LoginDto,
   type LogoutResponse,
   type ModerationDesk,
   type Profile,
   type PublicArticle,
+  type PublicDialogue,
   type PublicProfile,
   type PublicProfileWithWorks,
   type Project,
@@ -35,6 +39,7 @@ import {
   type StaffUser,
   type StaffUserList,
   type UpdateArticleFields,
+  type UpdateDialogueFields,
   type UpdateProfileDto,
   type UpdateStaffAccessDto,
   type UpdateWorkFields,
@@ -368,6 +373,88 @@ export class ApiClient {
     );
   }
 
+  listPublishedDialogues(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<DialogueSummary>>(
+      `/dialogues${toSearchParams(query)}`,
+    );
+  }
+
+  getDialogue(id: string) {
+    return this.request<PublicDialogue>(`/dialogues/${encodeURIComponent(id)}`);
+  }
+
+  createDialogue(fields: CreateDialogueFields) {
+    return this.request<DialogueSummary>('/curation/dialogues', {
+      method: 'POST',
+      body: JSON.stringify(fields),
+    });
+  }
+
+  listCurationWorks(query: Partial<ListCurationWorksQuery> = {}) {
+    return this.request<CursorPage<WorkWithAuthor>>(
+      `/curation/works${toSearchParams(query)}`,
+    );
+  }
+
+  updateDialogue(dialogueId: string, fields: UpdateDialogueFields) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(fields),
+      },
+    );
+  }
+
+  publishDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}/publish`,
+      { method: 'POST' },
+    );
+  }
+
+  unpublishDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}/unpublish`,
+      { method: 'POST' },
+    );
+  }
+
+  deleteDialogue(dialogueId: string) {
+    return this.request<void>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}`,
+      { method: 'DELETE' },
+    );
+  }
+
+  featureDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}/feature`,
+      { method: 'POST' },
+    );
+  }
+
+  unfeatureDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}/feature`,
+      { method: 'DELETE' },
+    );
+  }
+
+  hideDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/moderation/dialogues/${encodeURIComponent(dialogueId)}/hide`,
+      { method: 'POST' },
+    );
+  }
+
+  unhideDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/moderation/dialogues/${encodeURIComponent(dialogueId)}/unhide`,
+      { method: 'POST' },
+    );
+  }
+
   listAdminUsers(query: Partial<ListAdminUsersQuery> = {}) {
     return this.request<StaffUserList>(`/admin/users${toSearchParams(query)}`);
   }
@@ -446,6 +533,7 @@ function toSearchParams(query: {
   direction?: string;
   name?: string;
   email?: string;
+  q?: string;
 }): string {
   const params = new URLSearchParams();
   if (query.cursor) {
@@ -462,6 +550,9 @@ function toSearchParams(query: {
   }
   if (query.email) {
     params.set('email', query.email);
+  }
+  if (query.q) {
+    params.set('q', query.q);
   }
   const serialized = params.toString();
   return serialized ? `?${serialized}` : '';

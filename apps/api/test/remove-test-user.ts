@@ -6,6 +6,15 @@ export async function removeTestUser(prisma: PrismaClient, email: string) {
     where: { user: { email } },
     data: { publishedAt: null },
   });
+  await prisma.dialogue.deleteMany({
+    where: {
+      OR: [
+        { leftWork: { profile: { user: { email } } } },
+        { rightWork: { profile: { user: { email } } } },
+        { createdBy: { email } },
+      ],
+    },
+  });
   await prisma.project.deleteMany({
     where: { profile: { user: { email } } },
   });

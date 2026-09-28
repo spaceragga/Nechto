@@ -36,6 +36,15 @@ async function purgeTestUsers() {
       where: junk,
       data: { publishedAt: null },
     });
+    await prisma.dialogue.deleteMany({
+      where: {
+        OR: [
+          { leftWork: { profile: junk } },
+          { rightWork: { profile: junk } },
+          { createdBy: { email: { notIn: keepEmails } } },
+        ],
+      },
+    });
     await prisma.project.deleteMany({
       where: { profile: junk },
     });

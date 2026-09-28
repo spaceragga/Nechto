@@ -9,6 +9,7 @@ import { HomeProjectsRail } from '@/components/home/home-projects-rail';
 import { HomeWorksGrid } from '@/components/home/home-works-grid';
 import { catalogHref, parseCatalogDirection } from '@/lib/catalog-query';
 import {
+  loadHomeDialogue,
   loadHomeJournalArticle,
   loadPublishedCreators,
   loadPublishedProjects,
@@ -38,6 +39,7 @@ export default async function HomePage({
     stageCreators,
     stageSeries,
     journalArticle,
+    homeDialogue,
     filteredWorksPage,
     filteredCreators,
     filteredProjects,
@@ -47,6 +49,7 @@ export default async function HomePage({
     loadPublishedCreators({ limit: 50 }),
     loadPublishedProjects({ limit: 24 }),
     loadHomeJournalArticle(),
+    loadHomeDialogue(),
     direction
       ? loadPublishedWorksPage({ limit: 24, direction })
       : Promise.resolve(null),
@@ -63,6 +66,7 @@ export default async function HomePage({
     stageCreators,
     stageSeries,
     journalArticle,
+    homeDialogue,
   );
   const works = direction ? (filteredWorksPage?.items ?? []) : feed.railWorks;
   const projects = direction ? (filteredProjects ?? []) : stageSeries;

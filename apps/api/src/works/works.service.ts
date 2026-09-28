@@ -75,16 +75,47 @@ export class WorksService {
       },
     });
 
-    const mapped = rows
-      .map((row) => toWorkWithAuthorView(row, this.storage))
-      .filter((row): row is WorkWithAuthor => row !== null);
-    const hasMore = mapped.length > query.limit;
-    const items = hasMore ? mapped.slice(0, query.limit) : mapped;
+    return this.pagePublished(rows, query.limit);
+  }
 
-    return {
-      items,
-      nextCursor: hasMore ? (items[items.length - 1]?.id ?? null) : null,
-    };
+  /** Curator pairing desk: recent published works, optional title/author search. */
+  async listForCuration(query: {
+    q: string;
+    limit: number;
+  }): Promise<CursorPage<WorkWithAuthor>> {
+    const needle = query.q.trim();
+    const rows = await this.prisma.work.findMany({
+      where: {
+        hidden: false,
+        profile: publishedProfileWhere,
+        ...(needle
+          ? {
+              OR: [
+                { title: { contains: needle, mode: 'insensitive' } },
+                {
+                  profile: {
+                    displayName: { contains: needle, mode: 'insensitive' },
+                  },
+                },
+                {
+                  profile: {
+                    slug: { contains: needle, mode: 'insensitive' },
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
+      orderBy: { createdAt: 'desc' },
+      take: query.limit + 1,
+      include: {
+        profile: {
+          select: publishedAuthorSelect,
+        },
+      },
+    });
+
+    return this.pagePublished(rows, query.limit);
   }
 
   async listPublishedBySlug(
@@ -230,6 +261,30 @@ export class WorksService {
     return {
       items: slice.map((row) => toWorkView(row, this.storage)),
       nextCursor: hasMore ? (slice[slice.length - 1]?.id ?? null) : null,
+    };
+  }
+
+  private pagePublished(
+    rows: Array<
+      WorkRecord & {
+        profile: {
+          slug: string | null;
+          displayName: string | null;
+          avatarKey: string | null;
+          directions: string[];
+        };
+      }
+    >,
+    limit: number,
+  ): CursorPage<WorkWithAuthor> {
+    const mapped = rows
+      .map((row) => toWorkWithAuthorView(row, this.storage))
+      .filter((row): row is WorkWithAuthor => row !== null);
+    const hasMore = mapped.length > limit;
+    const items = hasMore ? mapped.slice(0, limit) : mapped;
+    return {
+      items,
+      nextCursor: hasMore ? (items[items.length - 1]?.id ?? null) : null,
     };
   }
 

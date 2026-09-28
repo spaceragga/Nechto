@@ -13,3 +13,7 @@ export function projectPath(slug: string, projectId: string): string {
 export function articlePath(articleId: string): string {
   return `/journal/${articleId}`;
 }
+
+export function dialoguePath(dialogueId: string): string {
+  return `/dialogue/${dialogueId}`;
+}

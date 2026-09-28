@@ -220,7 +220,8 @@ test.describe('home feed pick', () => {
 
     const ids = [
       feed.billboard?.id,
-      ...(feed.dialogue?.map((item) => item.id) ?? []),
+      feed.dialogue?.left.id,
+      feed.dialogue?.right.id,
       ...feed.hanging.map((item) => item.id),
       ...feed.fresh.map((item) => item.id),
       feed.openCall?.id,

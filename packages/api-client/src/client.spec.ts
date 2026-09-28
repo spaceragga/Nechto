@@ -186,6 +186,8 @@ describe('ApiClient', () => {
           hiddenWorks: [],
           liveArticles: [],
           hiddenArticles: [],
+          liveDialogues: [],
+          hiddenDialogues: [],
         }),
         {
           status: 200,
@@ -198,6 +200,8 @@ describe('ApiClient', () => {
       hiddenWorks: [],
       liveArticles: [],
       hiddenArticles: [],
+      liveDialogues: [],
+      hiddenDialogues: [],
     });
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:3001/moderation/desk',
@@ -212,6 +216,7 @@ describe('ApiClient', () => {
           issues: [],
           channels: [],
           featuredArticle: null,
+          featuredDialogue: null,
         }),
         {
           status: 200,
@@ -222,6 +227,7 @@ describe('ApiClient', () => {
     await expect(client.getCurationDesk()).resolves.toMatchObject({
       pairings: [],
       featuredArticle: null,
+      featuredDialogue: null,
     });
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:3001/curation/desk',

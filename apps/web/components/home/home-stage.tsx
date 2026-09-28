@@ -17,6 +17,7 @@ import {
   profilePath,
   projectPath,
   articlePath,
+  dialoguePath,
 } from '@/lib/work-path';
 
 type HomeStageProps = {
@@ -101,38 +102,46 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
           </div>
           <HomeDialogueSpot
             kicker={t('dialogueSpot.kicker')}
-            title={
-              feed.dialogue
-                ? `${feed.dialogue[0].title} / ${feed.dialogue[1].title}`
-                : t('dialogueSpot.title')
-            }
+            title={feed.dialogue?.title ?? t('dialogueSpot.title')}
             lede={
-              feed.dialogue
-                ? t('dialogueSpot.ledeLive', {
-                    left: feed.dialogue[0].author.displayName,
-                    right: feed.dialogue[1].author.displayName,
-                  })
-                : t('dialogueSpot.lede')
+              feed.dialogue?.note
+                ? excerpt(feed.dialogue.note, 140)
+                : feed.dialogue
+                  ? t('dialogueSpot.ledeLive', {
+                      left: feed.dialogue.left.author.displayName,
+                      right: feed.dialogue.right.author.displayName,
+                    })
+                  : t('dialogueSpot.lede')
             }
-            leftTitle={feed.dialogue?.[0].title ?? t('dialogueSpot.leftTitle')}
+            leftTitle={feed.dialogue?.left.title ?? t('dialogueSpot.leftTitle')}
             leftMeta={
-              feed.dialogue?.[0].author.displayName ??
+              feed.dialogue?.left.author.displayName ??
               t('dialogueSpot.leftMeta')
             }
             rightTitle={
-              feed.dialogue?.[1].title ?? t('dialogueSpot.rightTitle')
+              feed.dialogue?.right.title ?? t('dialogueSpot.rightTitle')
             }
             rightMeta={
-              feed.dialogue?.[1].author.displayName ??
+              feed.dialogue?.right.author.displayName ??
               t('dialogueSpot.rightMeta')
             }
             leftSrc={
-              feed.dialogue ? toUploadSrc(feed.dialogue[0].imageUrl) : undefined
+              feed.dialogue
+                ? toUploadSrc(feed.dialogue.left.imageUrl)
+                : undefined
             }
             rightSrc={
-              feed.dialogue ? toUploadSrc(feed.dialogue[1].imageUrl) : undefined
+              feed.dialogue
+                ? toUploadSrc(feed.dialogue.right.imageUrl)
+                : undefined
             }
-            href={feed.dialogue ? '/community' : null}
+            href={
+              feed.dialogue?.id
+                ? dialoguePath(feed.dialogue.id)
+                : feed.dialogue
+                  ? '/dialogue'
+                  : null
+            }
             cta={t('dialogueSpot.cta')}
           />
         </div>

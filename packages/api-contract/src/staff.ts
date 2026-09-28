@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { ArticleSummary } from './article';
+import type { DialogueSummary } from './dialogue';
 
 export const STAFF_USER_SEARCH_MIN = 2;
 
@@ -46,15 +47,29 @@ export type ModerationDesk = {
   hiddenWorks: [];
   liveArticles: ArticleSummary[];
   hiddenArticles: ArticleSummary[];
+  liveDialogues: DialogueSummary[];
+  hiddenDialogues: DialogueSummary[];
 };
 
 export type CurationDesk = {
-  pairings: [];
+  pairings: DialogueSummary[];
   hangings: [];
   issues: ArticleSummary[];
   channels: [];
   featuredArticle: ArticleSummary | null;
+  featuredDialogue: DialogueSummary | null;
 };
+
+export const CURATION_WORKS_SEARCH_MAX = 80;
+
+export const listCurationWorksQuerySchema = z.object({
+  q: z.string().trim().max(CURATION_WORKS_SEARCH_MAX).optional().default(''),
+  limit: z.coerce.number().int().min(1).max(50).optional().default(30),
+});
+
+export type ListCurationWorksQuery = z.infer<
+  typeof listCurationWorksQuerySchema
+>;
 
 export function emptyStaffAccess(): StaffAccess {
   return {
