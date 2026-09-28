@@ -148,6 +148,8 @@ describe('Staff access (e2e)', () => {
         });
         expect(Array.isArray(response.body.liveArticles)).toBe(true);
         expect(Array.isArray(response.body.hiddenArticles)).toBe(true);
+        expect(Array.isArray(response.body.liveDialogues)).toBe(true);
+        expect(Array.isArray(response.body.hiddenDialogues)).toBe(true);
       });
     await request(app.getHttpServer())
       .get('/curation/desk')
@@ -155,14 +157,18 @@ describe('Staff access (e2e)', () => {
       .expect(200)
       .expect((response) => {
         expect(response.body).toMatchObject({
-          pairings: [],
           hangings: [],
           channels: [],
         });
+        expect(Array.isArray(response.body.pairings)).toBe(true);
         expect(Array.isArray(response.body.issues)).toBe(true);
         expect(
           response.body.featuredArticle === null ||
             typeof response.body.featuredArticle === 'object',
+        ).toBe(true);
+        expect(
+          response.body.featuredDialogue === null ||
+            typeof response.body.featuredDialogue === 'object',
         ).toBe(true);
       });
   });
