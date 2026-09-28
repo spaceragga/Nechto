@@ -16,7 +16,7 @@ export default async function CurationPage({ params }: PageProps) {
   const result = await loadStaffResource(locale as AppLocale, async (api) => {
     const [desk, works] = await Promise.all([
       api.getCurationDesk(),
-      api.listPublishedWorks({ limit: 80 }).catch(() => ({ items: [] })),
+      api.listPublishedWorks({ limit: 50 }).catch(() => ({ items: [] })),
     ]);
     return { desk, works: works.items };
   });
