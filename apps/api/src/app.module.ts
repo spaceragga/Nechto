@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CurationModule } from './curation/curation.module';
+import { DialoguesModule } from './dialogues/dialogues.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfilesModule } from './profiles/profiles.module';
@@ -27,6 +28,7 @@ import { WorksModule } from './works/works.module';
     AccountModule,
     AdminModule,
     ArticlesModule,
+    DialoguesModule,
     StorageModule,
     AuthModule,
     CurationModule,

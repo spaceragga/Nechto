@@ -1,6 +1,7 @@
 export * from './account';
 export * from './article';
 export * from './auth';
+export * from './dialogue';
 export * from './directions';
 export * from './errors';
 export * from './health';

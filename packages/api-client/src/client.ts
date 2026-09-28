@@ -7,11 +7,13 @@ import {
   type AuthActionResponse,
   type ChangePasswordDto,
   type CreateArticleFields,
+  type CreateDialogueFields,
   type CreateWorkFields,
   type CurationDesk,
   type CursorPage,
   type CursorPageQuery,
   type DeleteAccountDto,
+  type DialogueSummary,
   type ForgotPasswordDto,
   type HealthResponse,
   type HelloResponse,
@@ -22,6 +24,7 @@ import {
   type ModerationDesk,
   type Profile,
   type PublicArticle,
+  type PublicDialogue,
   type PublicProfile,
   type PublicProfileWithWorks,
   type Project,
@@ -35,6 +38,7 @@ import {
   type StaffUser,
   type StaffUserList,
   type UpdateArticleFields,
+  type UpdateDialogueFields,
   type UpdateProfileDto,
   type UpdateStaffAccessDto,
   type UpdateWorkFields,
@@ -364,6 +368,82 @@ export class ApiClient {
   unhideArticle(articleId: string) {
     return this.request<ArticleSummary>(
       `/moderation/articles/${encodeURIComponent(articleId)}/unhide`,
+      { method: 'POST' },
+    );
+  }
+
+  listPublishedDialogues(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<DialogueSummary>>(
+      `/dialogues${toSearchParams(query)}`,
+    );
+  }
+
+  getDialogue(id: string) {
+    return this.request<PublicDialogue>(`/dialogues/${encodeURIComponent(id)}`);
+  }
+
+  createDialogue(fields: CreateDialogueFields) {
+    return this.request<DialogueSummary>('/curation/dialogues', {
+      method: 'POST',
+      body: JSON.stringify(fields),
+    });
+  }
+
+  updateDialogue(dialogueId: string, fields: UpdateDialogueFields) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(fields),
+      },
+    );
+  }
+
+  publishDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}/publish`,
+      { method: 'POST' },
+    );
+  }
+
+  unpublishDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}/unpublish`,
+      { method: 'POST' },
+    );
+  }
+
+  deleteDialogue(dialogueId: string) {
+    return this.request<void>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}`,
+      { method: 'DELETE' },
+    );
+  }
+
+  featureDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}/feature`,
+      { method: 'POST' },
+    );
+  }
+
+  unfeatureDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/curation/dialogues/${encodeURIComponent(dialogueId)}/feature`,
+      { method: 'DELETE' },
+    );
+  }
+
+  hideDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/moderation/dialogues/${encodeURIComponent(dialogueId)}/hide`,
+      { method: 'POST' },
+    );
+  }
+
+  unhideDialogue(dialogueId: string) {
+    return this.request<DialogueSummary>(
+      `/moderation/dialogues/${encodeURIComponent(dialogueId)}/unhide`,
       { method: 'POST' },
     );
   }

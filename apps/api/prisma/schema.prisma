@@ -20,6 +20,7 @@ model User {
   updatedAt           DateTime             @updatedAt
   profile             Profile?
   passwordResetTokens PasswordResetToken[]
+  dialogues           Dialogue[]
 }
 
 model PasswordResetToken {
@@ -69,6 +70,8 @@ model Work {
   updatedAt     DateTime       @updatedAt
   projectBlocks ProjectBlock[]
   articleCovers Article[]
+  dialoguesLeft Dialogue[]     @relation("DialogueLeft")
+  dialoguesRight Dialogue[]    @relation("DialogueRight")
 
   @@index([profileId, createdAt])
   @@index([createdAt])
@@ -92,6 +95,27 @@ model Article {
   @@index([profileId, createdAt])
   @@index([publishedAt])
   @@index([featuredAt])
+}
+
+model Dialogue {
+  id              String    @id @default(cuid())
+  title           String
+  note            String    @default("")
+  leftWorkId      String
+  rightWorkId     String
+  leftWork        Work      @relation("DialogueLeft", fields: [leftWorkId], references: [id], onDelete: Restrict)
+  rightWork       Work      @relation("DialogueRight", fields: [rightWorkId], references: [id], onDelete: Restrict)
+  createdByUserId String?
+  createdBy       User?     @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
+  publishedAt     DateTime?
+  featuredAt      DateTime?
+  hidden          Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([publishedAt])
+  @@index([featuredAt])
+  @@index([createdByUserId])
 }
 
 model Project {
