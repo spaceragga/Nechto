@@ -47,7 +47,6 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
     ? profilePath(feed.creatorOfWeek.slug)
     : null;
   const journalHref = feed.journal ? articlePath(feed.journal.id) : '/journal';
-  const studioWork = feed.studio?.latestWorks[0];
 
   return (
     <section aria-label={t('growthSpotsLabel')} className="flex flex-col gap-4">
@@ -182,8 +181,14 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
                 : undefined
             }
           />
+          <HomeLookingSpot
+            kicker={t('lookingSpot.kicker')}
+            title={t('lookingSpot.title')}
+            lede={t('lookingSpot.lede')}
+            cta={t('lookingSpot.cta')}
+          />
         </div>
-        <div className="flex min-w-0 flex-col gap-25">
+        <div className="flex min-w-0 flex-col gap-10">
           <HomeNow creators={feed.nowCreators} />
           <HomeFreshSpot
             kicker={t('freshSpot.kicker')}
@@ -197,19 +202,25 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
               src: toUploadSrc(work.imageUrl),
             }))}
           />
-          <HomeLookingSpot
-            kicker={t('lookingSpot.kicker')}
-            title={t('lookingSpot.title')}
-            lede={t('lookingSpot.lede')}
-            cta={t('lookingSpot.cta')}
-          />
           <HomeStudioSpot
             kicker={t('studioSpot.kicker')}
-            title={feed.studio?.displayName ?? t('studioSpot.title')}
-            lede={excerpt(feed.studio?.bio, 140) || t('studioSpot.lede')}
+            title={
+              feed.studio?.studioTitle ??
+              feed.studio?.displayName ??
+              t('studioSpot.title')
+            }
+            lede={
+              excerpt(
+                feed.studio?.studioDescription || feed.studio?.bio,
+                140,
+              ) || t('studioSpot.lede')
+            }
             cta={t('studioSpot.cta')}
-            href={feed.studio ? profilePath(feed.studio.slug) : null}
-            src={studioWork ? toUploadSrc(studioWork.imageUrl) : undefined}
+            href={feed.studio?.slug ? `/studio/${feed.studio.slug}` : '/studio'}
+            src={toUploadSrc(
+              feed.studio?.studioCoverUrl ??
+                feed.studio?.latestWorks[0]?.imageUrl,
+            )}
           />
         </div>
       </div>

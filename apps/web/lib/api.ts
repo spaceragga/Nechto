@@ -73,6 +73,10 @@ export function uploadMyAvatarRequest(file: File) {
   return api.uploadMyAvatar(file, file.name);
 }
 
+export function uploadMyStudioCoverRequest(file: File) {
+  return api.uploadMyStudioCover(file, file.name);
+}
+
 export function publishMyProfileRequest() {
   return api.publishMyProfile();
 }
@@ -202,6 +206,30 @@ export function hideDialogueRequest(dialogueId: string) {
 
 export function unhideDialogueRequest(dialogueId: string) {
   return api.unhideDialogue(dialogueId);
+}
+
+export function listStudioProfileRequest(profileId: string) {
+  return api.listStudioProfile(profileId);
+}
+
+export function unlistStudioProfileRequest(profileId: string) {
+  return api.unlistStudioProfile(profileId);
+}
+
+export function featureStudioProfileRequest(profileId: string) {
+  return api.featureStudioProfile(profileId);
+}
+
+export function unfeatureStudioProfileRequest(profileId: string) {
+  return api.unfeatureStudioProfile(profileId);
+}
+
+export function hideStudioProfileRequest(profileId: string) {
+  return api.hideStudioProfile(profileId);
+}
+
+export function unhideStudioProfileRequest(profileId: string) {
+  return api.unhideStudioProfile(profileId);
 }
 
 export function listAdminUsersRequest(

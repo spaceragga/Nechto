@@ -431,15 +431,15 @@ test.describe('home page locales', () => {
     expect(authorBox).toBeTruthy();
     expect(nowBox).toBeTruthy();
     expect(dialogueBox!.x).toBeLessThan(collectionBox!.x);
-    expect(collectionBox!.x).toBeLessThan(lookingBox!.x);
+    expect(collectionBox!.x).toBeLessThan(freshBox!.x);
     expect(Math.abs(dialogueBox!.x - authorBox!.x)).toBeLessThan(40);
     expect(dialogueBox!.y).toBeGreaterThan(authorBox!.y);
-    expect(Math.abs(studioBox!.x - lookingBox!.x)).toBeLessThan(40);
-    expect(studioBox!.y).toBeGreaterThan(lookingBox!.y);
+    expect(Math.abs(lookingBox!.x - collectionBox!.x)).toBeLessThan(40);
+    expect(lookingBox!.y).toBeGreaterThan(collectionBox!.y);
+    expect(Math.abs(studioBox!.x - freshBox!.x)).toBeLessThan(40);
+    expect(studioBox!.y).toBeGreaterThan(freshBox!.y);
     expect(Math.abs(freshBox!.x - nowBox!.x)).toBeLessThan(40);
     expect(freshBox!.y).toBeGreaterThan(nowBox!.y + nowBox!.height - 8);
-    expect(Math.abs(lookingBox!.x - freshBox!.x)).toBeLessThan(40);
-    expect(lookingBox!.y).toBeGreaterThan(freshBox!.y);
   });
 
   test('collection mosaic is staggered under the journal', async ({ page }) => {

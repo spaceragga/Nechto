@@ -37,7 +37,12 @@ export function HomeDialogueSpot({
       >
         <div className="grid grid-cols-2 gap-1">
           <div className="min-w-0">
-            <WorkFrame src={leftSrc} alt={leftTitle} className="h-32 w-full" />
+            <WorkFrame
+              src={leftSrc}
+              alt={leftTitle}
+              fit="cover"
+              className="h-64 w-full"
+            />
             <p className="mt-2 truncate text-center font-serif text-sm">
               {leftTitle}
             </p>
@@ -49,7 +54,8 @@ export function HomeDialogueSpot({
             <WorkFrame
               src={rightSrc}
               alt={rightTitle}
-              className="h-32 w-full"
+              fit="cover"
+              className="h-64 w-full"
             />
             <p className="mt-2 truncate text-center font-serif text-sm">
               {rightTitle}

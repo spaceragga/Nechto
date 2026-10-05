@@ -56,7 +56,7 @@
     "studioSpot": {
       "kicker": "Studio",
       "title": "The studio is still taking shape",
-      "lede": "A craft, interior, or fashion author will land here.",
+      "lede": "A studio author will land here.",
       "cta": "Enter the studio"
     },
     "hangingSpot": {
@@ -88,8 +88,21 @@
       "collections": "Selections",
       "journal": "Journal",
       "dialogue": "Dialogue",
+      "studio": "Studio",
       "community": "Community"
     }
+  },
+  "Studio": {
+    "title": "Studio",
+    "lede": "Each author keeps their own studio by their directions. Not one feed — themes, people, a path to commission.",
+    "featuredKicker": "In the house now",
+    "themes": "By theme",
+    "creators": "Authors",
+    "works": "Recent work",
+    "empty": "Studio is empty. A published author can open their studio from the profile.",
+    "profileKicker": "Studio",
+    "backToIndex": "All studios",
+    "profileEmpty": "No works in this studio yet."
   },
   "Journal": {
     "title": "Journal",
@@ -238,7 +251,24 @@
     "hideDialogue": "Hide",
     "unhideDialogue": "Restore",
     "channels": "Channels",
-    "emptyCuration": "No articles to feature yet."
+    "emptyCuration": "No articles to feature yet.",
+    "studio": "Studio",
+    "studioLede": "Published profiles in studio. One can lead the home page and /studio.",
+    "studioListed": "In studio",
+    "studioCandidates": "Candidates",
+    "studioList": "Add to studio",
+    "studioUnlist": "Remove from studio",
+    "emptyStudioListed": "No one in studio yet.",
+    "emptyStudioCandidates": "No eligible published profiles yet.",
+    "featuredStudioNow": "Studio on home",
+    "featuredStudioNone": "No featured studio author on home yet.",
+    "studioLive": "Studio",
+    "studioLiveLede": "Curator list. A hidden profile disappears from /studio and home.",
+    "emptyStudioLive": "No one in studio yet.",
+    "studioHidden": "Hidden in studio",
+    "emptyStudioHidden": "No hidden studio profiles.",
+    "hideStudio": "Hide",
+    "unhideStudio": "Restore"
   },
   "Errors": {
     "unknown": "Something went wrong",
@@ -261,6 +291,7 @@
     "articlePublishRequirements": "To publish an article, publish your profile and write at least 400 characters",
     "dialoguePublishRequirements": "You need two published works from different authors",
     "dialogueSameAuthor": "A dialogue needs different authors",
+    "studioListRequirements": "Need a published profile, studio cover, and description",
     "workTooLarge": "Work file is too large",
     "workType": "Use JPEG, PNG, or WebP",
     "rateLimited": "Too many attempts. Try again later",
@@ -282,6 +313,15 @@
     "slug": "Profile address",
     "slugHint": "Letters, numbers, and hyphens. Your page will be /address",
     "directions": "Directions (up to three)",
+    "studioTitle": "Studio",
+    "studioLede": "Name, cover, and description — your showcase on /studio.",
+    "studioName": "Studio name",
+    "studioDescription": "Studio description",
+    "studioCover": "Studio cover",
+    "studioCoverAlt": "Studio cover",
+    "studioNoCover": "No cover yet",
+    "studioOptIn": "Open studio on /studio",
+    "studioOptInHint": "Need a published profile, cover image, and description.",
     "websiteUrl": "Website",
     "instagramUrl": "Instagram",
     "telegramUrl": "Telegram",
@@ -414,6 +454,7 @@
     "works": "Works",
     "projects": "Projects",
     "journal": "Journal",
+    "studio": "Studio",
     "pane": "Works, projects, and journal",
     "empty": "No published works yet",
     "emptyProjects": "No series yet",

@@ -56,7 +56,7 @@
     "studioSpot": {
       "kicker": "Студия",
       "title": "Студия ещё собирается",
-      "lede": "Здесь будет автор craft, interior или fashion.",
+      "lede": "Здесь будет автор со студией.",
       "cta": "Войти в студию"
     },
     "hangingSpot": {
@@ -88,8 +88,21 @@
       "collections": "Подборки",
       "journal": "Журнал",
       "dialogue": "Диалог",
+      "studio": "Студия",
       "community": "Сообщество"
     }
+  },
+  "Studio": {
+    "title": "Студия",
+    "lede": "У каждого автора — своя студия по его направлениям. Не общая лента: темы, люди, путь к заказу.",
+    "featuredKicker": "Сейчас в доме",
+    "themes": "По темам",
+    "creators": "Авторы",
+    "works": "Свежие работы",
+    "empty": "Студия пока пуста. Опубликованный автор может открыть свою студию в профиле.",
+    "profileKicker": "Студия",
+    "backToIndex": "Все студии",
+    "profileEmpty": "В этой студии пока нет работ."
   },
   "Journal": {
     "title": "Журнал",
@@ -238,7 +251,24 @@
     "hideDialogue": "Скрыть",
     "unhideDialogue": "Вернуть",
     "channels": "Каналы",
-    "emptyCuration": "Статей для выпуска пока нет."
+    "emptyCuration": "Статей для выпуска пока нет.",
+    "studio": "Студия",
+    "studioLede": "Опубликованные профили в студии. Один может стоять на главной и в шапке /studio.",
+    "studioListed": "В студии",
+    "studioCandidates": "Кандидаты",
+    "studioList": "Добавить в студию",
+    "studioUnlist": "Убрать из студии",
+    "emptyStudioListed": "В студии пока никого нет.",
+    "emptyStudioCandidates": "Подходящих опубликованных профилей пока нет.",
+    "featuredStudioNow": "Студия на главной",
+    "featuredStudioNone": "На главной пока нет выбранного автора студии.",
+    "studioLive": "Студия",
+    "studioLiveLede": "Список куратора. Скрытый профиль пропадает с /studio и с главной.",
+    "emptyStudioLive": "В студии пока никого нет.",
+    "studioHidden": "Скрытые в студии",
+    "emptyStudioHidden": "Скрытых профилей студии нет.",
+    "hideStudio": "Скрыть",
+    "unhideStudio": "Вернуть"
   },
   "Errors": {
     "unknown": "Что-то пошло не так",
@@ -261,6 +291,7 @@
     "articlePublishRequirements": "Чтобы опубликовать статью, опубликуйте профиль и напишите не меньше 400 символов",
     "dialoguePublishRequirements": "Нужны две опубликованные работы разных авторов",
     "dialogueSameAuthor": "В диалоге должны быть разные авторы",
+    "studioListRequirements": "Нужны опубликованный профиль, обложка и описание студии",
     "workTooLarge": "Файл работы слишком большой",
     "workType": "Нужен JPEG, PNG или WebP",
     "rateLimited": "Слишком много попыток. Попробуйте позже",
@@ -282,6 +313,15 @@
     "slug": "Адрес профиля",
     "slugHint": "Буквы, цифры и дефис. Страница будет /адрес",
     "directions": "Направления (до трёх)",
+    "studioTitle": "Студия",
+    "studioLede": "Название, обложка и описание — ваша витрина на /studio.",
+    "studioName": "Название студии",
+    "studioDescription": "Описание студии",
+    "studioCover": "Обложка студии",
+    "studioCoverAlt": "Обложка студии",
+    "studioNoCover": "Нет обложки",
+    "studioOptIn": "Открыть студию на /studio",
+    "studioOptInHint": "Нужны опубликованный профиль, обложка и описание.",
     "websiteUrl": "Сайт",
     "instagramUrl": "Instagram",
     "telegramUrl": "Telegram",
@@ -414,6 +454,7 @@
     "works": "Работы",
     "projects": "Проекты",
     "journal": "Журнал",
+    "studio": "Студия",
     "pane": "Работы, проекты и журнал",
     "empty": "Пока нет опубликованных работ",
     "emptyProjects": "Пока нет серий",
