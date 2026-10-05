@@ -53,6 +53,16 @@ export class ProfilesController {
     return this.profilesService.uploadAvatar(user.id, file);
   }
 
+  @Post('me/studio/cover')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(imageUploadInterceptor())
+  uploadStudioCover(
+    @CurrentUser() user: AuthUser,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.profilesService.uploadStudioCover(user.id, file);
+  }
+
   @Post('me/publish')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)

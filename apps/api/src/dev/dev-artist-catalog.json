@@ -53,36 +53,36 @@
       "websiteUrl": "https://example.com/rusetskaya",
       "instagramUrl": "https://www.instagram.com/anna.rusetskaya/",
       "telegramUrl": "https://t.me/anna_rusetskaya",
-      "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80",
       "works": [
         {
           "title": "Кухня, утро, третий этаж",
-          "imageUrl": "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1556912173-46c336c7fd55?auto=format&fit=crop&w=1200&q=80",
           "description": "Чайник уже часть композиции, занавеска кривая — так и живёт квартира. Снимала с табурета, не с треноги. Бытовой свет в восемь утра лучше любого софтбокса: он уже лежит на столешнице."
         },
         {
           "title": "Гостиная после ремонта",
-          "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=80",
           "description": "Ещё пахнет краской, диван в плёнке. Хозяйка сказала «потом красиво поставим» — я как раз хотела этот «потом». Интерьер без дизайна: следы работы важнее подушек."
         },
         {
           "title": "Квартира с длинным светом",
-          "imageUrl": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80",
           "description": "Гродно, квартира друзей после первого ремонта: ещё нет штор, уже есть пол. Свет тянется от окна до коридора и сам ставит кадр. Просила никого не убирать чашки."
         },
         {
           "title": "Ниша и растение",
-          "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
           "description": "Ниша была «для шкафа», туда поставили фикус. Снимала с пола, чтобы горшок и плинтус были одной линией. Бытовой свет в два часа дня — лучший софт, который у меня есть."
         },
         {
           "title": "Лестничная клетка",
-          "imageUrl": "https://images.pexels.com/photos/2089698/pexels-photo-2089698.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "imageUrl": "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=1200",
           "description": "Подъезд на Ожешко, третий лестничный марш. Перила холодные, окно грязное — и из-за этого свет мягкий. Не интерьер в каталоге, место, через которое ходят каждый день."
         },
         {
           "title": "Лампа в проёме",
-          "imageUrl": "https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "imageUrl": "https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=1200&q=80",
           "description": "Лампа стояла в проёме между кухней и комнатой, провода ещё не спрятали. Включили её «на минуту», я снимала двадцать. Мне важен был круг на стене, не сам светильник."
         }
       ]
@@ -100,32 +100,32 @@
       "works": [
         {
           "title": "Линейка сезона",
-          "imageUrl": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1200&q=80",
           "description": "Пять вещей на одной вешалке, как уходят из ателье. Не лукбук: видно плечики и сгиб ткани. Линейка маленькая специально — сколько влезает в мастерскую на Зыбицкой."
         },
         {
           "title": "Платье у моря",
-          "imageUrl": "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80",
           "description": "Выехали на Нарочь в том, что шилось зимой. Ветер сам поставил складку. Не подиум и не сток: одна примерка на воздухе, и ткань наконец живёт не на манекене."
         },
         {
           "title": "Куртка с примерки",
-          "imageUrl": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=1200&q=80",
           "description": "Ещё с булавками на плече. Клиентка вышла посмотреть в зеркало у окна, я успела до того, как мы всё отпустили. Шов виден специально: это не лукбук, это примерка на Зыбицкой."
         },
         {
           "title": "Сложенный тираж",
-          "imageUrl": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=1200&q=80",
           "description": "Шесть курток одного кроя, разные длины. Сложила на стол, чтобы увидеть тираж как стопку, а не как витрину. Маленькая серия: сколько влезает в мастерскую, столько и шьётся."
         },
         {
           "title": "Швейная в ателье",
-          "imageUrl": "https://images.pexels.com/photos/7679460/pexels-photo-7679460.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "imageUrl": "https://images.pexels.com/photos/7671168/pexels-photo-7671168.jpeg?auto=compress&cs=tinysrgb&w=1200",
           "description": "Машина, которую не прячу в кадр. Нитки, мелок, утюг сбоку. Хочу, чтобы было понятно: вещь начинается здесь, а не на съёмке. Свет с окна, никаких софтбоксов."
         },
         {
           "title": "Лук во дворе",
-          "imageUrl": "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80",
           "description": "Вышли во двор в том, что только сняли с манекена. Асфальт мокрый, пальто тяжёлое — так и должно быть. Один готовый лук, без смены и без «ещё ракурс»."
         }
       ]
@@ -268,36 +268,36 @@
       "websiteUrl": "https://example.com/krylovich",
       "instagramUrl": "https://www.instagram.com/lena.krylovich/",
       "telegramUrl": "https://t.me/lena_krylovich",
-      "avatarUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
       "works": [
         {
           "title": "Чашки",
-          "imageUrl": "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=1200&q=80",
           "description": "Только сняла с круга, ручки ещё мягкие. Снимала на том же столе, где пьём чай вечером. Если чашкой будут пользоваться, пусть в кадре будет вес глины, не «сервиз»."
         },
         {
           "title": "Глазурь",
-          "imageUrl": "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?auto=format&fit=crop&w=1200&q=80",
           "description": "Покрытие до обжига, подтёки нарочно. Гомель, мастерская в доме: глазурь пахнет, окно открыто. Цвет после печи будет другим — этот кадр про сейчас."
         },
         {
           "title": "Горшки до обжига",
-          "imageUrl": "https://images.pexels.com/photos/1094767/pexels-photo-1094767.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "imageUrl": "https://images.pexels.com/photos/4207892/pexels-photo-4207892.jpeg?auto=compress&cs=tinysrgb&w=1200",
           "description": "Партия ещё сырая, стоят сушиться у окна. Снимала до того, как глазурь всё спрячет: виден шов от рук. Если вещь потом пьют чай, пусть сначала будет видна глина."
         },
         {
           "title": "Керамика на полке",
-          "imageUrl": "https://images.pexels.com/photos/2162938/pexels-photo-2162938.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "imageUrl": "https://images.pexels.com/photos/4207785/pexels-photo-4207785.jpeg?auto=compress&cs=tinysrgb&w=1200",
           "description": "Полка в мастерской, не витрина. Расставила так, как достаю утром — миска к миске. Свет с кухни, потому что мастерская в доме, а не в отдельном цеху."
         },
         {
           "title": "Вазы",
-          "imageUrl": "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?auto=format&fit=crop&w=1200&q=80",
           "description": "Три вазы из одной массы, разные горловины. Хотела ряд, который читается как разговор, не как ассортимент. После обжига одна треснула — в кадр не ставила, это про живых."
         },
         {
           "title": "Сырая партия",
-          "imageUrl": "https://images.pexels.com/photos/2162937/pexels-photo-2162937.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "imageUrl": "https://images.pexels.com/photos/4207790/pexels-photo-4207790.jpeg?auto=compress&cs=tinysrgb&w=1200",
           "description": "Только сняла с круга, ещё тёплые. Пыль на столе не вытирала. Это самый честный вид работы: пока не притворились «готовым изделием»."
         }
       ]
@@ -354,7 +354,7 @@
       "websiteUrl": "https://example.com/busel",
       "instagramUrl": "https://www.instagram.com/nadya.busel/",
       "telegramUrl": "https://t.me/nadya_busel",
-      "avatarUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80",
       "works": [
         {
           "title": "Улица без сюжета",
@@ -401,32 +401,32 @@
       "works": [
         {
           "title": "Табурет",
-          "imageUrl": "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=1200&q=80",
           "description": "Ясень, три ноги, сиденье чуть вогнул под вес. Снял в мастерской, пока ещё пахнет стружкой. Потом он уедет в чужую кухню — этот кадр про вещь до быта."
         },
         {
           "title": "Диван в комнате",
-          "imageUrl": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1200&q=80",
           "description": "Не мой диван: принёс каркас, обивка хозяйская. Снимал там, где им сидят, не на циклораме. Если предмет не держится в комнате, это ещё не мебель."
         },
         {
           "title": "Предмет в интерьере",
-          "imageUrl": "https://images.unsplash.com/photo-1532372320572-cda25653a26d?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1200&q=80",
           "description": "Стол из той же партии, что и табурет, уже стоит у стены в квартире. Не студия: вилка на скатерти, свет из кухни. Вещь должна читаться в быту, не на белом фоне."
         },
         {
           "title": "Столярка",
-          "imageUrl": "https://images.unsplash.com/photo-1551298370-9d3d53740c72?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1200&q=80",
           "description": "Верстак после дня: стружка, струбцины, ясень в зажиме. Снимал, пока не подмёл — иначе это уже не мастерская, а декорация. Отсюда вещь выходит в комнату."
         },
         {
           "title": "Мебель у стены",
-          "imageUrl": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1200&q=80",
           "description": "Комод приставили и оставили жить. Плинтус родной, обои старые — так и надо. Я не привожу фон, я привожу предмет и смотрю, держится ли он в чужой комнате."
         },
         {
           "title": "Инструмент",
-          "imageUrl": "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?auto=format&fit=crop&w=1200&q=80",
+          "imageUrl": "https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg?auto=compress&cs=tinysrgb&w=1200",
           "description": "Рубанок, нож, киянка — то, чем делается ясень, пока он ещё доска. Снял на верстаке в конце дня, без раскладки «красивый набор». Если вещь честная, инструмент тоже не прячу."
         }
       ]

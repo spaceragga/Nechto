@@ -2,6 +2,7 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import {
   API_ERROR_CODES,
+  canListProfileInStudio,
   canPublishProfile,
   type CreatorDirection,
   type CursorPage,
@@ -96,10 +97,71 @@ export class ProfilesService {
   }
 
   async updateMine(userId: string, dto: UpdateProfileDto): Promise<Profile> {
-    await this.ensureProfile(userId);
+    const current = await this.ensureProfile(userId);
+    const data = this.toUpdateData(dto);
+    const nextSlug =
+      dto.slug !== undefined ? (dto.slug ?? current.slug) : current.slug;
+    const nextDisplayName =
+      dto.displayName !== undefined ? dto.displayName : current.displayName;
+    const nextAcceptPolicies =
+      dto.acceptPolicies !== undefined
+        ? dto.acceptPolicies
+        : current.acceptPolicies;
+
+    if (dto.studioOptIn === true) {
+      let publishedAt = current.publishedAt;
+      if (!publishedAt) {
+        if (
+          !canPublishProfile({
+            displayName: nextDisplayName,
+            slug: nextSlug,
+            acceptPolicies: nextAcceptPolicies,
+            workCount: current._count?.works ?? 0,
+          })
+        ) {
+          throw new ApiHttpException(
+            HttpStatus.BAD_REQUEST,
+            API_ERROR_CODES.STUDIO_LIST_REQUIREMENTS_NOT_MET,
+            'Studio needs a published profile, cover image, and description',
+          );
+        }
+        publishedAt = new Date();
+        data.publishedAt = publishedAt;
+      }
+
+      const nextDescription =
+        dto.studioDescription !== undefined
+          ? dto.studioDescription
+          : current.studioDescription;
+      const nextCoverKey =
+        data.studioCoverKey !== undefined
+          ? data.studioCoverKey
+          : current.studioCoverKey;
+
+      if (
+        !canListProfileInStudio({
+          publishedAt: publishedAt.toISOString(),
+          slug: nextSlug,
+          studioDescription: nextDescription,
+          studioCoverKey: nextCoverKey,
+        })
+      ) {
+        throw new ApiHttpException(
+          HttpStatus.BAD_REQUEST,
+          API_ERROR_CODES.STUDIO_LIST_REQUIREMENTS_NOT_MET,
+          'Studio needs a published profile, cover image, and description',
+        );
+      }
+      data.studioListedAt = current.studioListedAt ?? new Date();
+      data.studioHidden = false;
+    } else if (dto.studioOptIn === false) {
+      data.studioListedAt = null;
+      data.studioFeaturedAt = null;
+      data.studioHidden = false;
+    }
 
     try {
-      const profile = await this.updateByUserId(userId, this.toUpdateData(dto));
+      const profile = await this.updateByUserId(userId, data);
 
       return toProfileView(profile, this.storage);
     } catch (error) {
@@ -141,7 +203,12 @@ export class ProfilesService {
 
   async unpublishMine(userId: string): Promise<Profile> {
     await this.ensureProfile(userId);
-    const updated = await this.updateByUserId(userId, { publishedAt: null });
+    const updated = await this.updateByUserId(userId, {
+      publishedAt: null,
+      studioListedAt: null,
+      studioFeaturedAt: null,
+      studioHidden: false,
+    });
 
     return toProfileView(updated, this.storage);
   }
@@ -169,6 +236,39 @@ export class ProfilesService {
       } catch (error) {
         this.logger.warn(
           `Failed to delete previous avatar key ${previousKey}`,
+          error instanceof Error ? error.stack : undefined,
+        );
+      }
+    }
+
+    return toProfileView(updated, this.storage);
+  }
+
+  async uploadStudioCover(
+    userId: string,
+    file: Express.Multer.File | undefined,
+  ): Promise<Profile> {
+    const cover = assertAvatarFile(file);
+    const profile = await this.ensureProfile(userId);
+    const previousKey = profile.studioCoverKey;
+    const key = `studio/${userId}/${randomUUID()}${extensionForAvatarMime(cover.mimetype)}`;
+
+    await this.storage.put({
+      key,
+      body: cover.buffer,
+      contentType: cover.mimetype,
+    });
+
+    const updated = await this.updateByUserId(userId, {
+      studioCoverKey: key,
+    });
+
+    if (previousKey && previousKey !== key) {
+      try {
+        await this.storage.delete(previousKey);
+      } catch (error) {
+        this.logger.warn(
+          `Failed to delete previous studio cover key ${previousKey}`,
           error instanceof Error ? error.stack : undefined,
         );
       }
@@ -208,6 +308,12 @@ export class ProfilesService {
         : {}),
       ...(dto.acceptPolicies !== undefined
         ? { acceptPolicies: dto.acceptPolicies }
+        : {}),
+      ...(dto.studioTitle !== undefined
+        ? { studioTitle: dto.studioTitle }
+        : {}),
+      ...(dto.studioDescription !== undefined
+        ? { studioDescription: dto.studioDescription }
         : {}),
     };
   }
