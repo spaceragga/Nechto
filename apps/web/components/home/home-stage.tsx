@@ -188,7 +188,7 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
             cta={t('lookingSpot.cta')}
           />
         </div>
-        <div className="flex min-w-0 flex-col gap-10">
+        <div className="flex min-w-0 flex-col gap-25">
           <HomeNow creators={feed.nowCreators} />
           <HomeFreshSpot
             kicker={t('freshSpot.kicker')}

@@ -405,7 +405,7 @@ test.describe('home page locales', () => {
     ).toHaveAttribute('href', '/looking');
     await expect(
       spots.getByRole('link', { name: /Войти в студию/ }),
-    ).toHaveAttribute('href', /^\/[a-z0-9-]+$/);
+    ).toHaveAttribute('href', /^\/studio\/[a-z0-9-]+$/);
 
     const freshKicker = spots.getByText('Только что');
     const dialogueKicker = spots.getByText('Диалог');

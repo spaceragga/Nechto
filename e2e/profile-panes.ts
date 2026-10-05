@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 
-const PROFILE_PANE_COUNT = 5;
+const PROFILE_PANE_COUNT = 6;
 
 export async function nextProfilePane(page: Page) {
   await page
