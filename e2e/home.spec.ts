@@ -475,7 +475,9 @@ test.describe('home page locales', () => {
 
     const midGap = collectionBox!.y - (journalBox!.y + journalBox!.height);
     const rightGap = freshBox!.y - (nowBox!.y + nowBox!.height);
-    expect(Math.abs(midGap - rightGap)).toBeLessThan(24);
+    // Mid column uses gap-25, right column gap-10 — right stack stays tighter.
+    expect(midGap).toBeGreaterThan(rightGap + 24);
+    expect(rightGap).toBeGreaterThan(24);
 
     const heights = frameBoxes.map((box) => box.height);
     expect(Math.max(...heights) - Math.min(...heights)).toBeGreaterThan(24);
