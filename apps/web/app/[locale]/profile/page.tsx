@@ -14,6 +14,7 @@ const PROFILE_DETAILS_PANE_INDEX = 1;
 const PROFILE_WORKS_PANE_INDEX = 2;
 const PROFILE_PROJECTS_PANE_INDEX = 3;
 const PROFILE_ARTICLES_PANE_INDEX = 4;
+const PROFILE_STUDIO_PANE_INDEX = 5;
 
 type ProfilePageProps = {
   params: Promise<{ locale: string }>;
@@ -37,7 +38,9 @@ export default async function ProfilePage({
           ? PROFILE_PROJECTS_PANE_INDEX
           : pane === 'journal'
             ? PROFILE_ARTICLES_PANE_INDEX
-            : PROFILE_DETAILS_PANE_INDEX;
+            : pane === 'studio'
+              ? PROFILE_STUDIO_PANE_INDEX
+              : PROFILE_DETAILS_PANE_INDEX;
   const result = await loadMyProfile();
   const works = result.ok ? await loadMyWorks() : [];
   const projects = result.ok ? await loadMyProjects() : [];

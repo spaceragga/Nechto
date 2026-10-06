@@ -393,13 +393,28 @@ async function main() {
 
   const purged = await purgeTestUsers();
   console.log(`Purged ${purged} leftover test user(s)`);
+  await clearDialogues();
   console.log(`Seeding ${catalog.artists.length} artists via ${apiBaseUrl}`);
   for (const artist of catalog.artists) {
     await seedArtist(artist);
   }
   await grantArtist1Admin();
   await seedDialogues();
+  await seedStudios();
   console.log(`Password for all: ${password}`);
+}
+
+async function clearDialogues() {
+  const { PrismaClient } = require('@prisma/client');
+  const prisma = new PrismaClient();
+  try {
+    const result = await prisma.dialogue.deleteMany({});
+    if (result.count > 0) {
+      console.log(`  cleared ${result.count} dialogue(s) before reseeding`);
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 async function grantArtist1Admin() {
@@ -415,6 +430,100 @@ async function grantArtist1Admin() {
       return;
     }
     console.log('  artist1@nechto.test isAdmin+isCurator=true');
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function seedStudios() {
+  const { join } = require('node:path');
+  const { PrismaClient } = require('@prisma/client');
+  const prisma = new PrismaClient();
+  const coversDir = join(__dirname, '../src/dev/studio-covers');
+  // One studio per category feel: dedicated cover + copy, not a reused work photo
+  const studios = [
+    {
+      email: 'artist2@nechto.test',
+      slug: 'anna-rusetskaya',
+      title: 'Студия интерьера',
+      description:
+        'Интерьер без постановки: кухни, ниши, подъезды, свет после ремонта. Кадр про квартиру, в которой уже живут — не про каталог.',
+      coverFile: 'interior.jpg',
+    },
+    {
+      email: 'artist3@nechto.test',
+      slug: 'yulia-nekhai',
+      title: 'Студия моды',
+      description:
+        'Мода маленьким тиражом: ткань на столе ателье, примерка, шов, один лук во дворе. От Зыбицкой до улицы — без подиума.',
+      coverFile: 'fashion.jpg',
+    },
+    {
+      email: 'artist7@nechto.test',
+      slug: 'lena-krylovich',
+      title: 'Студия ремесла',
+      description:
+        'Ремесло: керамика из гомельской мастерской — круг, глазурь, чашки и миски ещё тёплые. Снимаю там же, где кручу.',
+      coverFile: 'craft.jpg',
+    },
+    {
+      email: 'artist10@nechto.test',
+      slug: 'taras-litvin',
+      title: 'Студия предмета',
+      description:
+        'Предмет в интерьере: столярка из ясеня — табуреты, столы, комоды. Сначала верстак и стружка, потом чужая комната, где вещь остаётся жить.',
+      coverFile: 'wood.jpg',
+      featured: true,
+    },
+  ];
+
+  try {
+    for (const studio of studios) {
+      const cookie = await signIn(studio.email);
+      const bytes = await readFile(join(coversDir, studio.coverFile));
+      const cover = new FormData();
+      cover.append(
+        'file',
+        new Blob([bytes], { type: 'image/jpeg' }),
+        studio.coverFile,
+      );
+      await expectOk(
+        '/profiles/me/studio/cover',
+        await request('/profiles/me/studio/cover', {
+          method: 'POST',
+          body: cover,
+          cookie,
+        }),
+      );
+      await expectOk(
+        '/profiles/me',
+        await request('/profiles/me', {
+          method: 'PATCH',
+          cookie,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studioTitle: studio.title,
+            studioDescription: studio.description,
+            studioOptIn: true,
+          }),
+        }),
+      );
+
+      if (studio.featured) {
+        await prisma.profile.updateMany({
+          where: { slug: studio.slug },
+          data: { studioFeaturedAt: new Date() },
+        });
+      } else {
+        await prisma.profile.updateMany({
+          where: { slug: studio.slug },
+          data: { studioFeaturedAt: null },
+        });
+      }
+      console.log(
+        `  studio: ${studio.slug}  ${studio.title}  cover=${studio.coverFile}`,
+      );
+    }
   } finally {
     await prisma.$disconnect();
   }

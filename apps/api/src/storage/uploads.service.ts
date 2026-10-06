@@ -25,16 +25,18 @@ export class UploadsService {
     key: string,
     requesterId: string | undefined,
   ): Promise<boolean> {
-    const avatar = await this.prisma.profile.findFirst({
-      where: { avatarKey: key },
+    const profile = await this.prisma.profile.findFirst({
+      where: {
+        OR: [{ avatarKey: key }, { studioCoverKey: key }],
+      },
       select: {
         publishedAt: true,
         userId: true,
         user: { select: { suspendedAt: true } },
       },
     });
-    if (avatar) {
-      return isReadable(avatar, requesterId);
+    if (profile) {
+      return isReadable(profile, requesterId);
     }
 
     const work = await this.prisma.work.findFirst({

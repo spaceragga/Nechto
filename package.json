@@ -37,10 +37,11 @@
     "@nestjs/core": "11.2.5",
     "@nestjs/platform-express": "11.2.5",
     "@nestjs/testing": "11.2.5",
-    "deepmerge-ts": "$deepmerge-ts",
+    "deepmerge-ts": "8.0.2",
     "js-yaml": "4.3.2",
     "multer": "2.4.0",
-    "next": "16.3.5",
+    "next": "16.3.8",
+    "nodemailer": "10.0.15",
     "sharp": "0.35.4"
   },
   "devDependencies": {
@@ -49,7 +50,7 @@
     "@types/node": "^22.13.10",
     "deepmerge-ts": "8.0.2",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^16.3.5",
+    "eslint-config-next": "^16.3.8",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.11.0",
     "prettier": "^3.9.6",

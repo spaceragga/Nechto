@@ -18,6 +18,12 @@ const baseProfile = {
   telegramUrl: null as string | null,
   acceptPolicies: false,
   publishedAt: null as Date | null,
+  studioTitle: null as string | null,
+  studioDescription: null as string | null,
+  studioCoverKey: null as string | null,
+  studioListedAt: null as Date | null,
+  studioFeaturedAt: null as Date | null,
+  studioHidden: false,
   user: { email: 'a@nechto.test', suspendedAt: null as Date | null },
   _count: { works: 0 },
 };

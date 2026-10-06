@@ -17,3 +17,7 @@ export function articlePath(articleId: string): string {
 export function dialoguePath(dialogueId: string): string {
   return `/dialogue/${dialogueId}`;
 }
+
+export function studioPath(slug: string): string {
+  return `/studio/${slug}`;
+}

@@ -38,6 +38,7 @@ import {
   type ResetPasswordDto,
   type StaffUser,
   type StaffUserList,
+  type StudioProfileSummary,
   type UpdateArticleFields,
   type UpdateDialogueFields,
   type UpdateProfileDto,
@@ -160,6 +161,15 @@ export class ApiClient {
     const body = new FormData();
     body.append('file', file, fileName);
     return this.request<Profile>('/profiles/me/avatar', {
+      method: 'POST',
+      body,
+    });
+  }
+
+  uploadMyStudioCover(file: Blob, fileName = 'studio-cover') {
+    const body = new FormData();
+    body.append('file', file, fileName);
+    return this.request<Profile>('/profiles/me/studio/cover', {
       method: 'POST',
       body,
     });
@@ -451,6 +461,60 @@ export class ApiClient {
   unhideDialogue(dialogueId: string) {
     return this.request<DialogueSummary>(
       `/moderation/dialogues/${encodeURIComponent(dialogueId)}/unhide`,
+      { method: 'POST' },
+    );
+  }
+
+  listStudioProfiles(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<StudioProfileSummary>>(
+      `/studio${toSearchParams(query)}`,
+    );
+  }
+
+  getStudioProfile(slug: string) {
+    return this.request<StudioProfileSummary>(
+      `/studio/${encodeURIComponent(slug)}`,
+    );
+  }
+
+  listStudioProfile(profileId: string) {
+    return this.request<StudioProfileSummary>(
+      `/curation/studio/${encodeURIComponent(profileId)}/list`,
+      { method: 'POST' },
+    );
+  }
+
+  unlistStudioProfile(profileId: string) {
+    return this.request<StudioProfileSummary>(
+      `/curation/studio/${encodeURIComponent(profileId)}/unlist`,
+      { method: 'POST' },
+    );
+  }
+
+  featureStudioProfile(profileId: string) {
+    return this.request<StudioProfileSummary>(
+      `/curation/studio/${encodeURIComponent(profileId)}/feature`,
+      { method: 'POST' },
+    );
+  }
+
+  unfeatureStudioProfile(profileId: string) {
+    return this.request<StudioProfileSummary>(
+      `/curation/studio/${encodeURIComponent(profileId)}/feature`,
+      { method: 'DELETE' },
+    );
+  }
+
+  hideStudioProfile(profileId: string) {
+    return this.request<StudioProfileSummary>(
+      `/moderation/studio/${encodeURIComponent(profileId)}/hide`,
+      { method: 'POST' },
+    );
+  }
+
+  unhideStudioProfile(profileId: string) {
+    return this.request<StudioProfileSummary>(
+      `/moderation/studio/${encodeURIComponent(profileId)}/unhide`,
       { method: 'POST' },
     );
   }

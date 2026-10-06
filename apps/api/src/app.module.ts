@@ -14,6 +14,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { ProjectsModule } from './projects/projects.module';
 import { StorageModule } from './storage/storage.module';
+import { StudioModule } from './studio/studio.module';
 import { WorksModule } from './works/works.module';
 
 @Module({
@@ -35,6 +36,7 @@ import { WorksModule } from './works/works.module';
     ModerationModule,
     ProfilesModule,
     ProjectsModule,
+    StudioModule,
     WorksModule,
   ],
   controllers: [AppController],

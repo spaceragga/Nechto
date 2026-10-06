@@ -28,11 +28,23 @@ type ProfileRow = {
   updatedAt: Date;
   acceptPolicies?: boolean;
   publishedAt?: Date | null;
+  studioTitle?: string | null;
+  studioDescription?: string | null;
+  studioCoverKey?: string | null;
+  studioListedAt?: Date | null;
+  studioFeaturedAt?: Date | null;
+  studioHidden?: boolean;
 };
 
 export type ProfileRecord = ProfileRow & {
   acceptPolicies: boolean;
   publishedAt: Date | null;
+  studioTitle: string | null;
+  studioDescription: string | null;
+  studioCoverKey: string | null;
+  studioListedAt: Date | null;
+  studioFeaturedAt: Date | null;
+  studioHidden: boolean;
 };
 
 export type ProfileWrite = {
@@ -46,6 +58,12 @@ export type ProfileWrite = {
   telegramUrl?: string | null;
   acceptPolicies?: boolean;
   publishedAt?: Date | null;
+  studioTitle?: string | null;
+  studioDescription?: string | null;
+  studioCoverKey?: string | null;
+  studioListedAt?: Date | null;
+  studioFeaturedAt?: Date | null;
+  studioHidden?: boolean;
 };
 
 export function toProfileRecord(row: ProfileRow): ProfileRecord {
@@ -53,6 +71,12 @@ export function toProfileRecord(row: ProfileRow): ProfileRecord {
     ...row,
     acceptPolicies: row.acceptPolicies ?? false,
     publishedAt: row.publishedAt ?? null,
+    studioTitle: row.studioTitle ?? null,
+    studioDescription: row.studioDescription ?? null,
+    studioCoverKey: row.studioCoverKey ?? null,
+    studioListedAt: row.studioListedAt ?? null,
+    studioFeaturedAt: row.studioFeaturedAt ?? null,
+    studioHidden: row.studioHidden ?? false,
   };
 }
 
@@ -81,6 +105,9 @@ export function toPublicProfile(
     telegramUrl: profile.telegramUrl,
     publishedAt: profile.publishedAt?.toISOString() ?? null,
     workCount: profile._count?.works ?? 0,
+    inStudio: Boolean(
+      profile.studioListedAt && !profile.studioHidden && profile.publishedAt,
+    ),
   };
 }
 
@@ -95,5 +122,10 @@ export function toProfileView(
     email: profile.user.email,
     acceptPolicies: profile.acceptPolicies,
     suspendedAt: profile.user.suspendedAt?.toISOString() ?? null,
+    studioTitle: profile.studioTitle,
+    studioDescription: profile.studioDescription,
+    studioCoverUrl: profile.studioCoverKey
+      ? storage.getPublicUrl(profile.studioCoverKey)
+      : null,
   };
 }

@@ -15,6 +15,7 @@ import {
   articlePath,
   profilePath,
   projectPath,
+  studioPath,
   workPath,
 } from '@/lib/work-path';
 
@@ -68,6 +69,11 @@ export async function PublicProfileView({
                 .map((direction) => t(`directions.${direction}`))
                 .join(' · ')}
             </p>
+          ) : null}
+          {profile.inStudio && slug ? (
+            <div className="mt-4">
+              <ChipLink href={studioPath(slug)}>{t('studio')}</ChipLink>
+            </div>
           ) : null}
         </div>
         {photoSrc ? (

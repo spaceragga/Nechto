@@ -9,4 +9,5 @@ export * from './pagination';
 export * from './profile';
 export * from './project';
 export * from './staff';
+export * from './studio';
 export * from './work';

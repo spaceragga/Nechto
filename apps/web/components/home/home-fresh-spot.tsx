@@ -39,11 +39,12 @@ export function HomeFreshSpot({
               key={`${item.href}-${item.title}`}
               className={index === 0 ? '' : 'border-t border-white/15'}
             >
-              <Link href={item.href} className="flex items-center gap-3 py-2">
+              <Link href={item.href} className="flex items-center gap-3 py-3">
                 <WorkFrame
                   src={item.src}
                   alt={item.title}
-                  className="h-12 w-14 shrink-0"
+                  fit="cover"
+                  className="h-30 w-[10.5rem] shrink-0"
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-serif text-sm">{item.title}</p>

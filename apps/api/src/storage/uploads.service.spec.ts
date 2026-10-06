@@ -91,7 +91,36 @@ describe('UploadsService', () => {
     });
   });
 
-  it('looks up work images when the key is not an avatar', async () => {
+  it('serves studio cover keys from profile lookup', async () => {
+    prisma.profile.findFirst.mockResolvedValue({
+      publishedAt: new Date(),
+      userId: 'owner',
+      user: { suspendedAt: null },
+    });
+    storage.read.mockResolvedValue({
+      body: Buffer.from('cover'),
+      contentType: 'image/jpeg',
+    });
+
+    await expect(
+      service.readPublicObject('studio/owner/cover.jpg', null),
+    ).resolves.toEqual({
+      body: Buffer.from('cover'),
+      contentType: 'image/jpeg',
+    });
+    expect(prisma.profile.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          OR: [
+            { avatarKey: 'studio/owner/cover.jpg' },
+            { studioCoverKey: 'studio/owner/cover.jpg' },
+          ],
+        },
+      }),
+    );
+  });
+
+  it('looks up work images when the key is not an avatar or studio cover', async () => {
     prisma.profile.findFirst.mockResolvedValue(null);
     prisma.work.findFirst.mockResolvedValue({
       profile: {

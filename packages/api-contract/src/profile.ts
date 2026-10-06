@@ -4,6 +4,7 @@ import {
   profileSlugSchema,
   type CreatorDirection,
 } from './directions';
+import { STUDIO_DESCRIPTION_MAX, STUDIO_TITLE_MAX } from './studio';
 import type { Work } from './work';
 
 function emptyToNull<T extends string>(
@@ -28,6 +29,13 @@ function optionalNullableUrl() {
 function optionalNullableSlug() {
   return z
     .union([profileSlugSchema, z.literal(''), z.null()])
+    .optional()
+    .transform(emptyToNull);
+}
+
+function optionalNullableText(max: number) {
+  return z
+    .union([z.string().trim().max(max), z.literal(''), z.null()])
     .optional()
     .transform(emptyToNull);
 }
@@ -59,6 +67,10 @@ export const updateProfileSchema = z.object({
   instagramUrl: optionalNullableUrl(),
   telegramUrl: optionalNullableUrl(),
   acceptPolicies: z.boolean().optional(),
+  studioTitle: optionalNullableText(STUDIO_TITLE_MAX),
+  studioDescription: optionalNullableText(STUDIO_DESCRIPTION_MAX),
+  /** Open studio when description/cover + published profile are ready. */
+  studioOptIn: z.boolean().optional(),
 });
 
 export type UpdateProfileDto = z.infer<typeof updateProfileSchema>;
@@ -74,6 +86,8 @@ export type PublicProfile = {
   telegramUrl: string | null;
   publishedAt: string | null;
   workCount: number;
+  /** Author listed their studio (and not moderated away). */
+  inStudio: boolean;
 };
 
 export type Profile = PublicProfile & {
@@ -82,6 +96,9 @@ export type Profile = PublicProfile & {
   email: string;
   acceptPolicies: boolean;
   suspendedAt: string | null;
+  studioTitle: string | null;
+  studioDescription: string | null;
+  studioCoverUrl: string | null;
 };
 
 export type PublicProfileWithWorks = PublicProfile & {

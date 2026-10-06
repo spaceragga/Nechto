@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { ArticleSummary } from './article';
 import type { DialogueSummary } from './dialogue';
+import type { StudioProfileSummary } from './studio';
 
 export const STAFF_USER_SEARCH_MIN = 2;
 
@@ -49,6 +50,8 @@ export type ModerationDesk = {
   hiddenArticles: ArticleSummary[];
   liveDialogues: DialogueSummary[];
   hiddenDialogues: DialogueSummary[];
+  liveStudio: StudioProfileSummary[];
+  hiddenStudio: StudioProfileSummary[];
 };
 
 export type CurationDesk = {
@@ -58,6 +61,9 @@ export type CurationDesk = {
   channels: [];
   featuredArticle: ArticleSummary | null;
   featuredDialogue: DialogueSummary | null;
+  studioListed: StudioProfileSummary[];
+  studioCandidates: StudioProfileSummary[];
+  featuredStudio: StudioProfileSummary | null;
 };
 
 export const CURATION_WORKS_SEARCH_MAX = 80;

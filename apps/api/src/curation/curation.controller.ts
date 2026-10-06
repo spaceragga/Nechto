@@ -19,6 +19,7 @@ import {
   type CursorPage,
   type DialogueSummary,
   type ListCurationWorksQuery,
+  type StudioProfileSummary,
   type UpdateDialogueFields,
   type WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -28,6 +29,7 @@ import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { RequiresCurator } from '../auth/requires-access';
 import { ArticlesService } from '../articles/articles.service';
 import { DialoguesService } from '../dialogues/dialogues.service';
+import { StudioService } from '../studio/studio.service';
 import { WorksService } from '../works/works.service';
 
 @Controller('curation')
@@ -35,16 +37,20 @@ export class CurationController {
   constructor(
     private readonly articles: ArticlesService,
     private readonly dialogues: DialoguesService,
+    private readonly studio: StudioService,
     private readonly works: WorksService,
   ) {}
 
   @Get('desk')
   @RequiresCurator()
   async desk(): Promise<CurationDesk> {
-    const [issues, pairings] = await Promise.all([
-      this.articles.listForCuration(),
-      this.dialogues.listForCuration(),
-    ]);
+    const [issues, pairings, studioListed, studioCandidates] =
+      await Promise.all([
+        this.articles.listForCuration(),
+        this.dialogues.listForCuration(),
+        this.studio.listListedForCuration(),
+        this.studio.listCandidatesForCuration(),
+      ]);
     return {
       pairings,
       hangings: [],
@@ -52,7 +58,45 @@ export class CurationController {
       channels: [],
       featuredArticle: issues.find((item) => item.featuredAt) ?? null,
       featuredDialogue: pairings.find((item) => item.featuredAt) ?? null,
+      studioListed,
+      studioCandidates,
+      featuredStudio:
+        studioListed.find((item) => item.studioFeaturedAt) ?? null,
     };
+  }
+
+  @Post('studio/:profileId/list')
+  @RequiresCurator()
+  listStudio(
+    @Param('profileId') profileId: string,
+  ): Promise<StudioProfileSummary> {
+    return this.studio.list(profileId);
+  }
+
+  @Post('studio/:profileId/unlist')
+  @RequiresCurator()
+  @HttpCode(200)
+  unlistStudio(
+    @Param('profileId') profileId: string,
+  ): Promise<StudioProfileSummary> {
+    return this.studio.unlist(profileId);
+  }
+
+  @Post('studio/:profileId/feature')
+  @RequiresCurator()
+  featureStudio(
+    @Param('profileId') profileId: string,
+  ): Promise<StudioProfileSummary> {
+    return this.studio.feature(profileId);
+  }
+
+  @Delete('studio/:profileId/feature')
+  @RequiresCurator()
+  @HttpCode(200)
+  unfeatureStudio(
+    @Param('profileId') profileId: string,
+  ): Promise<StudioProfileSummary> {
+    return this.studio.unfeature(profileId);
   }
 
   @Get('works')

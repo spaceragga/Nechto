@@ -16,6 +16,7 @@ import { ProfileAvatarField } from '@/components/profile/profile-avatar-field';
 import { ProfileDetailsForm } from '@/components/profile/profile-details-form';
 import { ProfilePager } from '@/components/profile/profile-pager';
 import { ProfilePublishField } from '@/components/profile/profile-publish-field';
+import { ProfileStudioField } from '@/components/profile/profile-studio-field';
 import { ProfileProjectsField } from '@/components/profile/profile-projects-field';
 import { ProfileWorksField } from '@/components/profile/profile-works-field';
 import { FormError } from '@/components/ui/form-error';
@@ -237,6 +238,37 @@ function ProfileEditorForm({
             void articles.deleteArticle(articleId);
           }}
         />
+
+        <form onSubmit={details.saveProfile} className="flex flex-col gap-6">
+          <ProfileStudioField
+            title={details.studioTitle}
+            description={details.studioDescription}
+            coverUrl={details.studioCoverUrl}
+            optIn={details.studioOptIn}
+            ready={
+              Boolean(details.studioDescription.trim()) &&
+              Boolean(
+                details.studioCoverUrl || details.profile.studioCoverUrl,
+              ) &&
+              (Boolean(details.profile.publishedAt) ||
+                canPublishProfile({
+                  displayName: details.displayName,
+                  slug: details.slug,
+                  acceptPolicies: details.acceptPolicies,
+                  workCount: works.works.length,
+                }))
+            }
+            uploading={details.saving}
+            coverInputKey={details.studioCoverInputKey}
+            onTitleChange={details.setStudioTitle}
+            onDescriptionChange={details.setStudioDescription}
+            onOptInChange={details.setStudioOptIn}
+            onCoverChange={details.selectStudioCover}
+            saving={details.saving}
+            error={details.error}
+            saved={details.saved}
+          />
+        </form>
       </ProfilePager>
     </div>
   );

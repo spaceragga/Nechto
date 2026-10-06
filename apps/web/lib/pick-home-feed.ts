@@ -43,7 +43,11 @@ function autoHomeDialogue(
   };
 }
 
-const STUDIO_DIRECTIONS: CreatorDirection[] = ['craft', 'interior', 'fashion'];
+export function pickStudioCreator(
+  creators: PublishedCreator[],
+): PublishedCreator | null {
+  return creators.find((creator) => creator.inStudio) ?? creators[0] ?? null;
+}
 
 export function latestWorkPerAuthor(works: WorkWithAuthor[]): WorkWithAuthor[] {
   const seen = new Set<string>();
@@ -90,20 +94,6 @@ export function pairFromDifferentAuthors(
   }
 
   return [first, second];
-}
-
-export function pickStudioCreator(
-  creators: PublishedCreator[],
-): PublishedCreator | null {
-  return (
-    creators.find((creator) =>
-      creator.directions.some((direction) =>
-        STUDIO_DIRECTIONS.includes(direction),
-      ),
-    ) ??
-    creators[0] ??
-    null
-  );
 }
 
 export function pickHomeSeries(
@@ -231,6 +221,7 @@ export function pickHomeFeed(
   series: ProjectSummary[] = [],
   journal: ArticleSummary | null = null,
   curatedDialogue: DialogueSummary | null = null,
+  curatedStudio: PublishedCreator | null = null,
 ): HomeFeedSlices {
   const spotlight = featuredCreators(creators);
   const fromFeed = worksByCreators(works, spotlight);
@@ -267,7 +258,10 @@ export function pickHomeFeed(
   const studioPool = spotlight.filter(
     (creator) => creator.slug !== creatorOfWeek?.slug,
   );
-  const studio = pickStudioCreator(studioPool) ?? pickStudioCreator(spotlight);
+  const studio =
+    curatedStudio ??
+    pickStudioCreator(studioPool) ??
+    pickStudioCreator(spotlight);
 
   return {
     billboard,

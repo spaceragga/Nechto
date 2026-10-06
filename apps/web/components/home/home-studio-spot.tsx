@@ -21,7 +21,12 @@ export function HomeStudioSpot({
   return (
     <article>
       <HomeSpotRoot href={href} spot="studio" className="flex min-w-0 flex-col">
-        <WorkFrame src={src} alt={title} className="h-40 w-full" />
+        <WorkFrame
+          src={src}
+          alt={title}
+          fit="cover"
+          className="h-72 w-full md:h-[28rem]"
+        />
         <p className="mt-2 font-sans text-xs tracking-[0.2em] uppercase opacity-80">
           {kicker}
         </p>

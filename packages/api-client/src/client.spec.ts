@@ -188,6 +188,8 @@ describe('ApiClient', () => {
           hiddenArticles: [],
           liveDialogues: [],
           hiddenDialogues: [],
+          liveStudio: [],
+          hiddenStudio: [],
         }),
         {
           status: 200,
@@ -202,6 +204,8 @@ describe('ApiClient', () => {
       hiddenArticles: [],
       liveDialogues: [],
       hiddenDialogues: [],
+      liveStudio: [],
+      hiddenStudio: [],
     });
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:3001/moderation/desk',

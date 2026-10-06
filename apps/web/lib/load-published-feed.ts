@@ -11,12 +11,18 @@ import type {
   ProjectSummary,
   PublicProject,
   Work,
+  StudioProfileSummary,
   WorkWithAuthor,
 } from '@nechto/api-contract';
 import { CREATOR_DIRECTIONS } from '@nechto/api-contract';
 import { createServerApiClient } from '@/lib/api-server';
 
-export type PublishedCreator = PublicProfileWithWorks & { slug: string };
+export type PublishedCreator = PublicProfileWithWorks & {
+  slug: string;
+  studioTitle?: string | null;
+  studioDescription?: string | null;
+  studioCoverUrl?: string | null;
+};
 
 function parseDirection(
   value: string | undefined,
@@ -31,6 +37,78 @@ function creatorsWithSlug(items: PublicProfileWithWorks[]): PublishedCreator[] {
   return items.filter((creator): creator is PublishedCreator =>
     Boolean(creator.slug),
   );
+}
+
+function studioProfileToCreator(
+  profile: StudioProfileSummary,
+): PublishedCreator {
+  return {
+    slug: profile.slug,
+    displayName: profile.displayName,
+    bio: profile.bio,
+    avatarUrl: profile.avatarUrl,
+    directions: profile.directions,
+    websiteUrl: null,
+    instagramUrl: null,
+    telegramUrl: null,
+    publishedAt: profile.studioListedAt,
+    workCount: profile.latestWorks.length,
+    inStudio: Boolean(profile.studioListedAt && !profile.studioHidden),
+    studioTitle: profile.title,
+    studioDescription: profile.description,
+    studioCoverUrl: profile.coverUrl,
+    latestWorks: profile.latestWorks,
+  };
+}
+
+export async function loadStudioProfiles(
+  limit = 24,
+): Promise<PublishedCreator[]> {
+  try {
+    const api = await createServerApiClient();
+    const page = await api.listStudioProfiles({ limit });
+    return page.items.map(studioProfileToCreator);
+  } catch {
+    return [];
+  }
+}
+
+export async function loadHomeStudioProfile(): Promise<PublishedCreator | null> {
+  const profiles = await loadStudioProfiles(12);
+  return profiles[0] ?? null;
+}
+
+export async function loadStudioProfileBySlug(
+  slug: string,
+): Promise<StudioProfileSummary | null> {
+  try {
+    const api = await createServerApiClient();
+    return await api.getStudioProfile(slug);
+  } catch {
+    return null;
+  }
+}
+
+export async function loadStudioWorks(limit = 18): Promise<WorkWithAuthor[]> {
+  const creators = await loadStudioProfiles(24);
+  const works: WorkWithAuthor[] = [];
+  for (const creator of creators) {
+    for (const work of creator.latestWorks) {
+      works.push({
+        ...work,
+        author: {
+          slug: creator.slug,
+          displayName: creator.displayName ?? creator.slug,
+          avatarUrl: creator.avatarUrl,
+          directions: creator.directions,
+        },
+      });
+      if (works.length >= limit) {
+        return works;
+      }
+    }
+  }
+  return works;
 }
 
 export async function loadPublishedCreators(options?: {

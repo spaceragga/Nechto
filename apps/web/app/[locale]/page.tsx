@@ -10,6 +10,7 @@ import { HomeWorksGrid } from '@/components/home/home-works-grid';
 import { catalogHref, parseCatalogDirection } from '@/lib/catalog-query';
 import {
   loadHomeDialogue,
+  loadHomeStudioProfile,
   loadHomeJournalArticle,
   loadPublishedCreators,
   loadPublishedProjects,
@@ -40,6 +41,7 @@ export default async function HomePage({
     stageSeries,
     journalArticle,
     homeDialogue,
+    homeStudio,
     filteredWorksPage,
     filteredCreators,
     filteredProjects,
@@ -50,6 +52,7 @@ export default async function HomePage({
     loadPublishedProjects({ limit: 24 }),
     loadHomeJournalArticle(),
     loadHomeDialogue(),
+    loadHomeStudioProfile(),
     direction
       ? loadPublishedWorksPage({ limit: 24, direction })
       : Promise.resolve(null),
@@ -67,6 +70,7 @@ export default async function HomePage({
     stageSeries,
     journalArticle,
     homeDialogue,
+    homeStudio,
   );
   const works = direction ? (filteredWorksPage?.items ?? []) : feed.railWorks;
   const projects = direction ? (filteredProjects ?? []) : stageSeries;
