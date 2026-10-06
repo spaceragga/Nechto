@@ -14,7 +14,6 @@ import { Link } from '@/i18n/navigation';
 
 type StudioIndexProps = {
   title: string;
-  lede: string;
   featuredKicker: string;
   themesLabel: string;
   worksLabel: string;
@@ -34,7 +33,6 @@ function creatorsForTheme(
 
 export function StudioIndex({
   title,
-  lede,
   featuredKicker,
   themesLabel,
   worksLabel,
@@ -56,7 +54,6 @@ export function StudioIndex({
     <main className="flex w-full flex-col gap-12 px-6 py-12">
       <header>
         <h1 className="font-serif text-4xl tracking-wide">{title}</h1>
-        <p className="mt-3 max-w-2xl font-sans text-sm opacity-70">{lede}</p>
       </header>
 
       {!hasContent ? <p className="text-sm opacity-70">{empty}</p> : null}
