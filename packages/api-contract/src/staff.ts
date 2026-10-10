@@ -1,7 +1,10 @@
 import { z } from 'zod';
 import type { ArticleSummary } from './article';
 import type { DialogueSummary } from './dialogue';
+import type { ProjectSummary } from './project';
+import type { PublicProfileWithWorks } from './profile';
 import type { StudioProfileSummary } from './studio';
+import type { WorkWithAuthor } from './work';
 
 export const STAFF_USER_SEARCH_MIN = 2;
 
@@ -45,7 +48,8 @@ export type StaffUserList = {
 
 export type ModerationDesk = {
   reports: [];
-  hiddenWorks: [];
+  liveWorks: WorkWithAuthor[];
+  hiddenWorks: WorkWithAuthor[];
   liveArticles: ArticleSummary[];
   hiddenArticles: ArticleSummary[];
   liveDialogues: DialogueSummary[];
@@ -56,11 +60,17 @@ export type ModerationDesk = {
 
 export type CurationDesk = {
   pairings: DialogueSummary[];
-  hangings: [];
+  hangings: WorkWithAuthor[];
   issues: ArticleSummary[];
-  channels: [];
+  channels: ProjectSummary[];
+  creators: PublicProfileWithWorks[];
   featuredArticle: ArticleSummary | null;
   featuredDialogue: DialogueSummary | null;
+  featuredBillboard: WorkWithAuthor | null;
+  featuredCreator: PublicProfileWithWorks | null;
+  /** Curated home author-selection strip (ordered). */
+  selectionCreators: PublicProfileWithWorks[];
+  featuredChannel: ProjectSummary | null;
   studioListed: StudioProfileSummary[];
   studioCandidates: StudioProfileSummary[];
   featuredStudio: StudioProfileSummary | null;
