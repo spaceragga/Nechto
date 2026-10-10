@@ -2,6 +2,7 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import {
   API_ERROR_CODES,
+  HOME_HANGING_MAX,
   PUBLISH_MIN_WORKS,
   type CreateWorkFields,
   type CursorPage,
@@ -215,6 +216,195 @@ export class WorksService {
     });
 
     return toWorkView(updated, this.storage);
+  }
+
+  async getBillboard(): Promise<WorkWithAuthor | null> {
+    const row = await this.prisma.work.findFirst({
+      where: {
+        hidden: false,
+        featuredAt: { not: null },
+        profile: publishedProfileWhere,
+      },
+      orderBy: { featuredAt: 'desc' },
+      include: { profile: { select: publishedAuthorSelect } },
+    });
+    return row ? toWorkWithAuthorView(row, this.storage) : null;
+  }
+
+  async listHangings(): Promise<WorkWithAuthor[]> {
+    const rows = await this.prisma.work.findMany({
+      where: {
+        hidden: false,
+        hangingAt: { not: null },
+        profile: publishedProfileWhere,
+      },
+      orderBy: { hangingAt: 'desc' },
+      take: HOME_HANGING_MAX,
+      include: { profile: { select: publishedAuthorSelect } },
+    });
+    return rows
+      .map((row) => toWorkWithAuthorView(row, this.storage))
+      .filter((row): row is WorkWithAuthor => row !== null);
+  }
+
+  async listLiveForModeration(): Promise<WorkWithAuthor[]> {
+    const rows = await this.prisma.work.findMany({
+      where: { hidden: false, profile: publishedProfileWhere },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+      include: { profile: { select: publishedAuthorSelect } },
+    });
+    return rows
+      .map((row) => toWorkWithAuthorView(row, this.storage))
+      .filter((row): row is WorkWithAuthor => row !== null);
+  }
+
+  async listHiddenForModeration(): Promise<WorkWithAuthor[]> {
+    const rows = await this.prisma.work.findMany({
+      where: { hidden: true, profile: publishedProfileWhere },
+      orderBy: { updatedAt: 'desc' },
+      take: 50,
+      include: { profile: { select: publishedAuthorSelect } },
+    });
+    return rows
+      .map((row) => toWorkWithAuthorView(row, this.storage))
+      .filter((row): row is WorkWithAuthor => row !== null);
+  }
+
+  async featureBillboard(workId: string): Promise<WorkWithAuthor> {
+    await this.requirePublishedWork(workId);
+    await this.prisma.$transaction([
+      this.prisma.work.updateMany({
+        where: { featuredAt: { not: null } },
+        data: { featuredAt: null },
+      }),
+      this.prisma.work.update({
+        where: { id: workId },
+        data: { featuredAt: new Date() },
+      }),
+    ]);
+    return this.requirePublishedWorkView(workId);
+  }
+
+  async unfeatureBillboard(workId: string): Promise<WorkWithAuthor> {
+    await this.requirePublishedWork(workId);
+    await this.prisma.work.update({
+      where: { id: workId },
+      data: { featuredAt: null },
+    });
+    return this.requirePublishedWorkView(workId);
+  }
+
+  async hang(workId: string): Promise<WorkWithAuthor> {
+    await this.requirePublishedWork(workId);
+    const count = await this.prisma.work.count({
+      where: { hangingAt: { not: null }, hidden: false },
+    });
+    const current = await this.prisma.work.findUnique({
+      where: { id: workId },
+      select: { hangingAt: true },
+    });
+    if (!current?.hangingAt && count >= HOME_HANGING_MAX) {
+      throw new ApiHttpException(
+        HttpStatus.CONFLICT,
+        API_ERROR_CODES.HANGING_FULL,
+        'Hanging strip is full',
+      );
+    }
+    await this.prisma.work.update({
+      where: { id: workId },
+      data: { hangingAt: new Date() },
+    });
+    return this.requirePublishedWorkView(workId);
+  }
+
+  async unhang(workId: string): Promise<WorkWithAuthor> {
+    await this.requirePublishedWork(workId);
+    await this.prisma.work.update({
+      where: { id: workId },
+      data: { hangingAt: null },
+    });
+    return this.requirePublishedWorkView(workId);
+  }
+
+  async hide(workId: string): Promise<WorkWithAuthor> {
+    return this.setHidden(workId, true);
+  }
+
+  async unhide(workId: string): Promise<WorkWithAuthor> {
+    return this.setHidden(workId, false);
+  }
+
+  private async setHidden(
+    workId: string,
+    hidden: boolean,
+  ): Promise<WorkWithAuthor> {
+    const work = await this.prisma.work.findFirst({
+      where: { id: workId, profile: publishedProfileWhere },
+    });
+    if (!work) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.WORK_NOT_FOUND,
+        'Work not found',
+      );
+    }
+    await this.prisma.work.update({
+      where: { id: workId },
+      data: {
+        hidden,
+        ...(hidden ? { featuredAt: null, hangingAt: null } : {}),
+      },
+    });
+    const row = await this.prisma.work.findUniqueOrThrow({
+      where: { id: workId },
+      include: { profile: { select: publishedAuthorSelect } },
+    });
+    const view = toWorkWithAuthorView(row, this.storage);
+    if (!view) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.WORK_NOT_FOUND,
+        'Work not found',
+      );
+    }
+    return view;
+  }
+
+  private async requirePublishedWork(workId: string) {
+    const work = await this.prisma.work.findFirst({
+      where: {
+        id: workId,
+        hidden: false,
+        profile: publishedProfileWhere,
+      },
+    });
+    if (!work) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.WORK_NOT_FOUND,
+        'Work not found',
+      );
+    }
+    return work;
+  }
+
+  private async requirePublishedWorkView(
+    workId: string,
+  ): Promise<WorkWithAuthor> {
+    const row = await this.prisma.work.findUniqueOrThrow({
+      where: { id: workId },
+      include: { profile: { select: publishedAuthorSelect } },
+    });
+    const view = toWorkWithAuthorView(row, this.storage);
+    if (!view) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.WORK_NOT_FOUND,
+        'Work not found',
+      );
+    }
+    return view;
   }
 
   async deleteMine(userId: string, workId: string): Promise<void> {

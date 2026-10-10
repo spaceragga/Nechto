@@ -80,7 +80,10 @@ export class ProjectsService {
         },
         blocks: { some: { kind: 'image' } },
       },
-      orderBy: { id: 'desc' },
+      orderBy: [
+        { featuredAt: { sort: 'desc', nulls: 'last' } },
+        { id: 'desc' },
+      ],
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       take: query.limit + 1,
       include: {
@@ -90,6 +93,90 @@ export class ProjectsService {
     });
 
     return this.pageSummaries(rows, query.limit);
+  }
+
+  async listForCuration(): Promise<ProjectSummary[]> {
+    const rows = await this.prisma.project.findMany({
+      where: {
+        profile: publishedProfileWhere,
+        blocks: { some: { kind: 'image' } },
+      },
+      orderBy: [
+        { featuredAt: { sort: 'desc', nulls: 'last' } },
+        { updatedAt: 'desc' },
+      ],
+      take: 50,
+      include: {
+        ...projectInclude,
+        profile: { select: publishedAuthorSelect },
+      },
+    });
+    return rows
+      .map((row) => toProjectSummary(row, this.storage))
+      .filter((row): row is ProjectSummary => row !== null);
+  }
+
+  async feature(projectId: string): Promise<ProjectSummary> {
+    await this.requirePublishedProject(projectId);
+    await this.prisma.$transaction([
+      this.prisma.project.updateMany({
+        where: { featuredAt: { not: null } },
+        data: { featuredAt: null },
+      }),
+      this.prisma.project.update({
+        where: { id: projectId },
+        data: { featuredAt: new Date() },
+      }),
+    ]);
+    return this.requirePublishedSummary(projectId);
+  }
+
+  async unfeature(projectId: string): Promise<ProjectSummary> {
+    await this.requirePublishedProject(projectId);
+    await this.prisma.project.update({
+      where: { id: projectId },
+      data: { featuredAt: null },
+    });
+    return this.requirePublishedSummary(projectId);
+  }
+
+  private async requirePublishedProject(projectId: string) {
+    const project = await this.prisma.project.findFirst({
+      where: {
+        id: projectId,
+        profile: publishedProfileWhere,
+        blocks: { some: { kind: 'image' } },
+      },
+    });
+    if (!project) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROJECT_NOT_FOUND,
+        'Project not found',
+      );
+    }
+    return project;
+  }
+
+  private async requirePublishedSummary(
+    projectId: string,
+  ): Promise<ProjectSummary> {
+    const row = await this.prisma.project.findUniqueOrThrow({
+      where: { id: projectId },
+      include: {
+        ...projectInclude,
+        profile: { select: publishedAuthorSelect },
+      },
+    });
+    const summary = toProjectSummary(row, this.storage);
+    if (!summary) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROJECT_NOT_FOUND,
+        'Project not found',
+      );
+    }
+    return summary;
   }
 
   async listPublishedBySlug(

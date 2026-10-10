@@ -4,11 +4,13 @@ import type {
   DialogueSummary,
   ModerationDesk,
   StudioProfileSummary,
+  WorkWithAuthor,
 } from '@nechto/api-contract';
 import { RequiresModerator } from '../auth/requires-access';
 import { ArticlesService } from '../articles/articles.service';
 import { DialoguesService } from '../dialogues/dialogues.service';
 import { StudioService } from '../studio/studio.service';
+import { WorksService } from '../works/works.service';
 
 @Controller('moderation')
 export class ModerationController {
@@ -16,12 +18,15 @@ export class ModerationController {
     private readonly articles: ArticlesService,
     private readonly dialogues: DialoguesService,
     private readonly studio: StudioService,
+    private readonly works: WorksService,
   ) {}
 
   @Get('desk')
   @RequiresModerator()
   async desk(): Promise<ModerationDesk> {
     const [
+      liveWorks,
+      hiddenWorks,
       liveArticles,
       hiddenArticles,
       liveDialogues,
@@ -29,6 +34,8 @@ export class ModerationController {
       liveStudio,
       hiddenStudio,
     ] = await Promise.all([
+      this.works.listLiveForModeration(),
+      this.works.listHiddenForModeration(),
       this.articles.listForCuration(),
       this.articles.listHidden(),
       this.dialogues.listLive(),
@@ -38,7 +45,8 @@ export class ModerationController {
     ]);
     return {
       reports: [],
-      hiddenWorks: [],
+      liveWorks,
+      hiddenWorks,
       liveArticles,
       hiddenArticles,
       liveDialogues,
@@ -46,6 +54,19 @@ export class ModerationController {
       liveStudio,
       hiddenStudio,
     };
+  }
+
+  @Post('works/:id/hide')
+  @RequiresModerator()
+  hideWork(@Param('id') id: string): Promise<WorkWithAuthor> {
+    return this.works.hide(id);
+  }
+
+  @Post('works/:id/unhide')
+  @RequiresModerator()
+  @HttpCode(200)
+  unhideWork(@Param('id') id: string): Promise<WorkWithAuthor> {
+    return this.works.unhide(id);
   }
 
   @Post('articles/:id/hide')
