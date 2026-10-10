@@ -31,6 +31,7 @@ export type ProjectRecord = {
   id: string;
   title: string;
   description: string;
+  featuredAt?: Date | null;
   createdAt: Date;
   blocks: ProjectBlockRecord[];
 };
@@ -117,6 +118,7 @@ export function toProjectSummary(
     title: project.title,
     description: project.description,
     createdAt: project.createdAt.toISOString(),
+    featuredAt: project.featuredAt?.toISOString() ?? null,
     coverImageUrl: cover,
     frameImageUrls: frames,
     blockCount: blocks.length,

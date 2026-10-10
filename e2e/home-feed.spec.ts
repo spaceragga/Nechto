@@ -14,6 +14,8 @@ function work(id: string, title: string): Work {
     description: title,
     imageUrl: `/uploads/${id}.jpg`,
     hidden: false,
+    featuredAt: null,
+    hangingAt: null,
     createdAt: '2026-08-31T00:00:00.000Z',
   };
 }
@@ -53,6 +55,9 @@ function creator(options: {
     telegramUrl: null,
     publishedAt: '2026-08-31T00:00:00.000Z',
     workCount: 1,
+    inStudio: false,
+    homeFeaturedAt: null,
+    homeSelectionAt: null,
     latestWorks: [options.work],
   };
 }
@@ -83,6 +88,41 @@ test.describe('home feed pick', () => {
     expect(feed.creatorOfWeek?.slug).toBe('taras-litvin');
     expect(feed.nowCreators.map((item) => item.slug)).toEqual(['taras-litvin']);
     expect(feed.railWorks.map((item) => item.title)).toEqual(['Двор']);
+  });
+
+  test('keeps curated author selection first and fills empty slots', () => {
+    const a = work('w-a', 'A');
+    const b = work('w-b', 'B');
+    const c = work('w-c', 'C');
+    const d = work('w-d', 'D');
+    const creators = [
+      creator({ slug: 'a', displayName: 'A', bio: 'bio', work: a }),
+      creator({ slug: 'b', displayName: 'B', bio: 'bio', work: b }),
+      creator({ slug: 'c', displayName: 'C', bio: 'bio', work: c }),
+      creator({ slug: 'd', displayName: 'D', bio: 'bio', work: d }),
+    ];
+    const pinned = [
+      { ...creators[1]!, homeSelectionAt: '2026-10-01T00:00:00.000Z' },
+    ];
+    const feed = pickHomeFeed(
+      creators.map((item) =>
+        withAuthor(item.latestWorks[0]!, item.slug, item.displayName!),
+      ),
+      creators,
+      [],
+      null,
+      null,
+      null,
+      null,
+      [],
+      null,
+      null,
+      pinned,
+    );
+
+    expect(feed.nowCreators).toHaveLength(3);
+    expect(feed.nowCreators[0]?.slug).toBe('b');
+    expect(new Set(feed.nowCreators.map((item) => item.slug)).size).toBe(3);
   });
 
   test('falls back to any published creator when nobody has a bio', () => {
@@ -250,6 +290,7 @@ test.describe('home feed pick', () => {
           title: 'Дворы',
           description: '',
           createdAt: '2026-08-31T00:00:00.000Z',
+          featuredAt: null,
           coverImageUrl: '/uploads/w-kasia-1.jpg',
           frameImageUrls: ['/uploads/w-kasia-1.jpg'],
           blockCount: 3,

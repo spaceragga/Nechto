@@ -16,7 +16,11 @@ export function HomeSpotRoot({
 }: HomeSpotRootProps) {
   if (href) {
     return (
-      <Link href={href} data-home-spot={spot} className={className}>
+      <Link
+        href={href}
+        data-home-spot={spot}
+        className={`group ${className}`.trim()}
+      >
         {children}
       </Link>
     );

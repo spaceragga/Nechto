@@ -34,6 +34,8 @@ type ProfileRow = {
   studioListedAt?: Date | null;
   studioFeaturedAt?: Date | null;
   studioHidden?: boolean;
+  homeFeaturedAt?: Date | null;
+  homeSelectionAt?: Date | null;
 };
 
 export type ProfileRecord = ProfileRow & {
@@ -45,6 +47,8 @@ export type ProfileRecord = ProfileRow & {
   studioListedAt: Date | null;
   studioFeaturedAt: Date | null;
   studioHidden: boolean;
+  homeFeaturedAt: Date | null;
+  homeSelectionAt: Date | null;
 };
 
 export type ProfileWrite = {
@@ -64,6 +68,8 @@ export type ProfileWrite = {
   studioListedAt?: Date | null;
   studioFeaturedAt?: Date | null;
   studioHidden?: boolean;
+  homeFeaturedAt?: Date | null;
+  homeSelectionAt?: Date | null;
 };
 
 export function toProfileRecord(row: ProfileRow): ProfileRecord {
@@ -77,6 +83,8 @@ export function toProfileRecord(row: ProfileRow): ProfileRecord {
     studioListedAt: row.studioListedAt ?? null,
     studioFeaturedAt: row.studioFeaturedAt ?? null,
     studioHidden: row.studioHidden ?? false,
+    homeFeaturedAt: row.homeFeaturedAt ?? null,
+    homeSelectionAt: row.homeSelectionAt ?? null,
   };
 }
 
@@ -108,6 +116,8 @@ export function toPublicProfile(
     inStudio: Boolean(
       profile.studioListedAt && !profile.studioHidden && profile.publishedAt,
     ),
+    homeFeaturedAt: profile.homeFeaturedAt?.toISOString() ?? null,
+    homeSelectionAt: profile.homeSelectionAt?.toISOString() ?? null,
   };
 }
 

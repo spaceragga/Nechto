@@ -54,6 +54,8 @@ function studioProfileToCreator(
     publishedAt: profile.studioListedAt,
     workCount: profile.latestWorks.length,
     inStudio: Boolean(profile.studioListedAt && !profile.studioHidden),
+    homeFeaturedAt: null,
+    homeSelectionAt: null,
     studioTitle: profile.title,
     studioDescription: profile.description,
     studioCoverUrl: profile.coverUrl,
@@ -76,6 +78,43 @@ export async function loadStudioProfiles(
 export async function loadHomeStudioProfile(): Promise<PublishedCreator | null> {
   const profiles = await loadStudioProfiles(12);
   return profiles[0] ?? null;
+}
+
+export async function loadHomeBillboard(): Promise<WorkWithAuthor | null> {
+  try {
+    const api = await createServerApiClient();
+    return await api.getHomeBillboard();
+  } catch {
+    return null;
+  }
+}
+
+export async function loadHomeHangings(): Promise<WorkWithAuthor[]> {
+  try {
+    const api = await createServerApiClient();
+    return await api.listHomeHangings();
+  } catch {
+    return [];
+  }
+}
+
+export async function loadHomeCreator(): Promise<PublishedCreator | null> {
+  const creators = await loadPublishedCreators({ limit: 12 });
+  return creators.find((creator) => creator.homeFeaturedAt) ?? null;
+}
+
+export async function loadHomeAuthorSelection(): Promise<PublishedCreator[]> {
+  try {
+    const api = await createServerApiClient();
+    return creatorsWithSlug(await api.listHomeAuthorSelection());
+  } catch {
+    return [];
+  }
+}
+
+export async function loadHomeSeries(): Promise<ProjectSummary | null> {
+  const series = await loadPublishedProjects({ limit: 12 });
+  return series.find((item) => item.featuredAt) ?? null;
 }
 
 export async function loadStudioProfileBySlug(

@@ -25,10 +25,10 @@ export function HomeFreshSpot({
   return (
     <article>
       <div className="mb-2 flex items-baseline justify-between gap-3">
-        <h2 className="font-sans text-xs tracking-[0.2em] uppercase opacity-80">
+        <h2 className="font-sans text-sm tracking-[0.16em] uppercase opacity-80">
           {kicker}
         </h2>
-        <Link href="/new" className="font-sans text-sm text-[var(--accent)]">
+        <Link href="/new" className="font-sans text-base text-[var(--accent)]">
           {seeAll}
         </Link>
       </div>
@@ -39,7 +39,10 @@ export function HomeFreshSpot({
               key={`${item.href}-${item.title}`}
               className={index === 0 ? '' : 'border-t border-white/15'}
             >
-              <Link href={item.href} className="flex items-center gap-3 py-3">
+              <Link
+                href={item.href}
+                className="group flex items-center gap-3 py-3"
+              >
                 <WorkFrame
                   src={item.src}
                   alt={item.title}
@@ -47,12 +50,12 @@ export function HomeFreshSpot({
                   className="h-30 w-[10.5rem] shrink-0"
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-serif text-sm">{item.title}</p>
-                  <p className="mt-0.5 font-serif text-xs opacity-70">
+                  <p className="truncate font-serif text-base">{item.title}</p>
+                  <p className="mt-0.5 font-serif text-sm opacity-70">
                     {item.author}
                   </p>
                 </div>
-                <span className="shrink-0 font-sans text-xs opacity-50">
+                <span className="shrink-0 font-sans text-sm opacity-50">
                   {item.time}
                 </span>
               </Link>
@@ -60,7 +63,7 @@ export function HomeFreshSpot({
           ))}
         </ul>
       ) : (
-        <p className="font-serif text-sm opacity-70">{pending}</p>
+        <p className="font-serif text-base opacity-70">{pending}</p>
       )}
     </article>
   );

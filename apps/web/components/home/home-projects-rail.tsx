@@ -21,14 +21,14 @@ export async function HomeProjectsRail({
 
   return (
     <section id="projects" className="scroll-mt-20">
-      <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="font-sans text-xl tracking-wide">{t('projects')}</h2>
-        <Link href={catalogHref} className="font-sans text-sm">
+      <div className="mb-2 flex items-baseline justify-between gap-3">
+        <h2 className="font-sans text-2xl tracking-wide">{t('projects')}</h2>
+        <Link href={catalogHref} className="font-sans text-base opacity-80">
           {t('seeAll')}
         </Link>
       </div>
       {projects.length > 0 ? (
-        <FluidRail minItem="16rem">
+        <FluidRail minItem="16rem" className="items-start">
           {projects.map((project) => (
             <MediaTile
               key={project.id}
@@ -36,6 +36,7 @@ export async function HomeProjectsRail({
               title={project.title}
               subtitle={project.author.displayName}
               src={toUploadSrc(project.coverImageUrl)}
+              captionSize="sm"
             />
           ))}
         </FluidRail>

@@ -15,7 +15,9 @@ export async function HomeFragmentsRail({ feed }: HomeFragmentsRailProps) {
 
   return (
     <section id="fragments" className="scroll-mt-20">
-      <h2 className="mb-3 font-sans text-xl tracking-wide">{t('fragments')}</h2>
+      <h2 className="mb-2 font-sans text-2xl tracking-wide">
+        {t('fragments')}
+      </h2>
       <p className="text-sm opacity-70">{t('pending')}</p>
     </section>
   );

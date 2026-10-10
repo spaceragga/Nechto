@@ -144,8 +144,9 @@ describe('Staff access (e2e)', () => {
       .expect((response) => {
         expect(response.body).toMatchObject({
           reports: [],
-          hiddenWorks: [],
         });
+        expect(Array.isArray(response.body.liveWorks)).toBe(true);
+        expect(Array.isArray(response.body.hiddenWorks)).toBe(true);
         expect(Array.isArray(response.body.liveArticles)).toBe(true);
         expect(Array.isArray(response.body.hiddenArticles)).toBe(true);
         expect(Array.isArray(response.body.liveDialogues)).toBe(true);
@@ -158,10 +159,9 @@ describe('Staff access (e2e)', () => {
       .set('Cookie', adminCookie)
       .expect(200)
       .expect((response) => {
-        expect(response.body).toMatchObject({
-          hangings: [],
-          channels: [],
-        });
+        expect(Array.isArray(response.body.hangings)).toBe(true);
+        expect(Array.isArray(response.body.channels)).toBe(true);
+        expect(Array.isArray(response.body.creators)).toBe(true);
         expect(Array.isArray(response.body.pairings)).toBe(true);
         expect(Array.isArray(response.body.issues)).toBe(true);
         expect(
@@ -171,6 +171,19 @@ describe('Staff access (e2e)', () => {
         expect(
           response.body.featuredDialogue === null ||
             typeof response.body.featuredDialogue === 'object',
+        ).toBe(true);
+        expect(
+          response.body.featuredBillboard === null ||
+            typeof response.body.featuredBillboard === 'object',
+        ).toBe(true);
+        expect(
+          response.body.featuredCreator === null ||
+            typeof response.body.featuredCreator === 'object',
+        ).toBe(true);
+        expect(Array.isArray(response.body.selectionCreators)).toBe(true);
+        expect(
+          response.body.featuredChannel === null ||
+            typeof response.body.featuredChannel === 'object',
         ).toBe(true);
         expect(Array.isArray(response.body.studioListed)).toBe(true);
         expect(Array.isArray(response.body.studioCandidates)).toBe(true);

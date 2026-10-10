@@ -8,10 +8,12 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import {
   createWorkFieldsSchema,
   cursorPageQuerySchema,
@@ -58,6 +60,21 @@ export class WorksController {
     query: ListPublishedWorksQuery,
   ) {
     return this.worksService.listPublished(query);
+  }
+
+  @Get('home/billboard')
+  async getBillboard(@Res({ passthrough: true }) res: Response) {
+    const work = await this.worksService.getBillboard();
+    if (!work) {
+      res.status(204);
+      return;
+    }
+    return work;
+  }
+
+  @Get('home/hangings')
+  listHangings() {
+    return this.worksService.listHangings();
   }
 
   @Get(':id')

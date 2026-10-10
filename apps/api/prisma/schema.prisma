@@ -55,6 +55,8 @@ model Profile {
   studioListedAt DateTime?
   studioFeaturedAt DateTime?
   studioHidden   Boolean   @default(false)
+  homeFeaturedAt DateTime?
+  homeSelectionAt DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   works          Work[]
@@ -64,6 +66,8 @@ model Profile {
   @@index([publishedAt])
   @@index([studioListedAt])
   @@index([studioFeaturedAt])
+  @@index([homeFeaturedAt])
+  @@index([homeSelectionAt])
 }
 
 model Work {
@@ -74,6 +78,8 @@ model Work {
   description   String         @default("")
   imageKey      String
   hidden        Boolean        @default(false)
+  featuredAt    DateTime?
+  hangingAt     DateTime?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   projectBlocks ProjectBlock[]
@@ -83,6 +89,8 @@ model Work {
 
   @@index([profileId, createdAt])
   @@index([createdAt])
+  @@index([featuredAt])
+  @@index([hangingAt])
 }
 
 model Article {
@@ -132,11 +140,13 @@ model Project {
   profile     Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
   title       String
   description String         @default("")
+  featuredAt  DateTime?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   blocks      ProjectBlock[]
 
   @@index([profileId, createdAt])
+  @@index([featuredAt])
 }
 
 model ProjectBlock {

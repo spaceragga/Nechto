@@ -19,6 +19,8 @@ import {
   type CursorPage,
   type DialogueSummary,
   type ListCurationWorksQuery,
+  type ProjectSummary,
+  type PublicProfileWithWorks,
   type StudioProfileSummary,
   type UpdateDialogueFields,
   type WorkWithAuthor,
@@ -29,6 +31,8 @@ import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { RequiresCurator } from '../auth/requires-access';
 import { ArticlesService } from '../articles/articles.service';
 import { DialoguesService } from '../dialogues/dialogues.service';
+import { ProfilesService } from '../profiles/profiles.service';
+import { ProjectsService } from '../projects/projects.service';
 import { StudioService } from '../studio/studio.service';
 import { WorksService } from '../works/works.service';
 
@@ -37,6 +41,8 @@ export class CurationController {
   constructor(
     private readonly articles: ArticlesService,
     private readonly dialogues: DialoguesService,
+    private readonly profiles: ProfilesService,
+    private readonly projects: ProjectsService,
     private readonly studio: StudioService,
     private readonly works: WorksService,
   ) {}
@@ -44,25 +50,115 @@ export class CurationController {
   @Get('desk')
   @RequiresCurator()
   async desk(): Promise<CurationDesk> {
-    const [issues, pairings, studioListed, studioCandidates] =
-      await Promise.all([
-        this.articles.listForCuration(),
-        this.dialogues.listForCuration(),
-        this.studio.listListedForCuration(),
-        this.studio.listCandidatesForCuration(),
-      ]);
+    const [
+      issues,
+      pairings,
+      hangings,
+      channels,
+      creators,
+      studioListed,
+      studioCandidates,
+      featuredBillboard,
+    ] = await Promise.all([
+      this.articles.listForCuration(),
+      this.dialogues.listForCuration(),
+      this.works.listHangings(),
+      this.projects.listForCuration(),
+      this.profiles.listForHomeCuration(),
+      this.studio.listListedForCuration(),
+      this.studio.listCandidatesForCuration(),
+      this.works.getBillboard(),
+    ]);
     return {
       pairings,
-      hangings: [],
+      hangings,
       issues,
-      channels: [],
+      channels,
+      creators,
       featuredArticle: issues.find((item) => item.featuredAt) ?? null,
       featuredDialogue: pairings.find((item) => item.featuredAt) ?? null,
+      featuredBillboard,
+      featuredCreator: creators.find((item) => item.homeFeaturedAt) ?? null,
+      selectionCreators: creators.filter((item) => item.homeSelectionAt),
+      featuredChannel: channels.find((item) => item.featuredAt) ?? null,
       studioListed,
       studioCandidates,
       featuredStudio:
         studioListed.find((item) => item.studioFeaturedAt) ?? null,
     };
+  }
+
+  @Post('works/:id/feature')
+  @RequiresCurator()
+  featureBillboard(@Param('id') id: string): Promise<WorkWithAuthor> {
+    return this.works.featureBillboard(id);
+  }
+
+  @Delete('works/:id/feature')
+  @RequiresCurator()
+  @HttpCode(200)
+  unfeatureBillboard(@Param('id') id: string): Promise<WorkWithAuthor> {
+    return this.works.unfeatureBillboard(id);
+  }
+
+  @Post('works/:id/hang')
+  @RequiresCurator()
+  hangWork(@Param('id') id: string): Promise<WorkWithAuthor> {
+    return this.works.hang(id);
+  }
+
+  @Delete('works/:id/hang')
+  @RequiresCurator()
+  @HttpCode(200)
+  unhangWork(@Param('id') id: string): Promise<WorkWithAuthor> {
+    return this.works.unhang(id);
+  }
+
+  @Post('profiles/:slug/feature-home')
+  @RequiresCurator()
+  featureHomeCreator(
+    @Param('slug') slug: string,
+  ): Promise<PublicProfileWithWorks> {
+    return this.profiles.featureHome(slug);
+  }
+
+  @Delete('profiles/:slug/feature-home')
+  @RequiresCurator()
+  @HttpCode(200)
+  unfeatureHomeCreator(
+    @Param('slug') slug: string,
+  ): Promise<PublicProfileWithWorks> {
+    return this.profiles.unfeatureHome(slug);
+  }
+
+  @Post('profiles/:slug/select-home')
+  @RequiresCurator()
+  selectHomeCreator(
+    @Param('slug') slug: string,
+  ): Promise<PublicProfileWithWorks> {
+    return this.profiles.selectHome(slug);
+  }
+
+  @Delete('profiles/:slug/select-home')
+  @RequiresCurator()
+  @HttpCode(200)
+  unselectHomeCreator(
+    @Param('slug') slug: string,
+  ): Promise<PublicProfileWithWorks> {
+    return this.profiles.unselectHome(slug);
+  }
+
+  @Post('projects/:id/feature')
+  @RequiresCurator()
+  featureChannel(@Param('id') id: string): Promise<ProjectSummary> {
+    return this.projects.feature(id);
+  }
+
+  @Delete('projects/:id/feature')
+  @RequiresCurator()
+  @HttpCode(200)
+  unfeatureChannel(@Param('id') id: string): Promise<ProjectSummary> {
+    return this.projects.unfeature(id);
   }
 
   @Post('studio/:profileId/list')

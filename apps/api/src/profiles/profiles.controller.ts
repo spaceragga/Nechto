@@ -85,6 +85,11 @@ export class ProfilesController {
     return this.profilesService.listPublished(query);
   }
 
+  @Get('home/selection')
+  listHomeSelection() {
+    return this.profilesService.listHomeSelection();
+  }
+
   @Get('by-slug/:slug')
   getBySlug(@Param('slug') slug: string) {
     return this.profilesService.getPublishedBySlug(slug);

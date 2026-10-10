@@ -8,6 +8,9 @@ import {
   type DialogueSummary,
 } from '@nechto/api-contract';
 import { WorkPicker } from '@/components/curation/work-picker';
+import { StaffDesk } from '@/components/staff/staff-desk';
+import { StaffDeskList } from '@/components/staff/staff-desk-list';
+import { StaffThumbPair } from '@/components/staff/staff-thumb';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { Input } from '@/components/ui/input';
@@ -100,22 +103,38 @@ export function CurationDialoguesDesk({
   }
 
   return (
-    <section className="mt-10">
-      <h2 className="text-sm tracking-wide opacity-70">{t('pairings')}</h2>
-      <p className="mt-2 max-w-2xl text-sm opacity-70">{t('pairingsLede')}</p>
-
+    <StaffDesk
+      title={t('pairings')}
+      lede={t('pairingsLede')}
+      meta={
+        featured
+          ? featured.title
+          : pairings.length > 0
+            ? String(pairings.length)
+            : t('deskEmpty')
+      }
+    >
       {featured ? (
-        <p className="mt-4 text-sm">
-          {t('featuredDialogueNow')}:{' '}
-          <Link
-            href={dialoguePath(featured.id)}
-            className="text-[var(--accent)]"
-          >
-            {featured.title}
-          </Link>
-        </p>
+        <div className="flex items-center gap-3 text-sm">
+          <StaffThumbPair
+            size="md"
+            leftSrc={featured.left.imageUrl}
+            rightSrc={featured.right.imageUrl}
+            leftAlt={featured.left.title}
+            rightAlt={featured.right.title}
+          />
+          <p className="min-w-0">
+            {t('featuredDialogueNow')}:{' '}
+            <Link
+              href={dialoguePath(featured.id)}
+              className="text-[var(--accent)]"
+            >
+              {featured.title}
+            </Link>
+          </p>
+        </div>
       ) : (
-        <p className="mt-4 text-sm opacity-70">{t('featuredDialogueNone')}</p>
+        <p className="text-sm opacity-70">{t('featuredDialogueNone')}</p>
       )}
 
       <form
@@ -174,20 +193,29 @@ export function CurationDialoguesDesk({
         </div>
       ) : null}
 
-      {pairings.length === 0 ? (
-        <p className="mt-6 text-sm opacity-70">{t('emptyPairings')}</p>
-      ) : (
-        <ul className="mt-6 flex flex-col gap-4">
-          {pairings.map((item) => {
-            const busy = pendingId === item.id;
-            const published = Boolean(item.publishedAt);
-            const isFeatured = Boolean(item.featuredAt);
-            return (
-              <li
-                key={item.id}
-                className="flex flex-col gap-3 border border-white/15 px-4 py-3"
-              >
-                <div>
+      <StaffDeskList
+        className="mt-6"
+        items={pairings}
+        keyOf={(item) => item.id}
+        getSearchText={(item) =>
+          `${item.title} ${item.left.title} ${item.right.title} ${item.left.author.displayName} ${item.right.author.displayName}`
+        }
+        empty={t('emptyPairings')}
+        renderItem={(item) => {
+          const busy = pendingId === item.id;
+          const published = Boolean(item.publishedAt);
+          const isFeatured = Boolean(item.featuredAt);
+          return (
+            <div className="mb-3 flex flex-col gap-3 border border-white/15 px-4 py-3">
+              <div className="flex items-start gap-3">
+                <StaffThumbPair
+                  size="lg"
+                  leftSrc={item.left.imageUrl}
+                  rightSrc={item.right.imageUrl}
+                  leftAlt={item.left.title}
+                  rightAlt={item.right.title}
+                />
+                <div className="min-w-0">
                   {published ? (
                     <Link
                       href={dialoguePath(item.id)}
@@ -224,102 +252,102 @@ export function CurationDialoguesDesk({
                       : t('statusDraft')}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {published ? (
-                    <>
-                      <Button
-                        type="button"
-                        disabled={busy}
-                        onClick={() =>
-                          void runItem(item.id, async () => {
-                            const updated = await unpublishDialogueRequest(
-                              item.id,
-                            );
-                            setFeatured((current) =>
-                              current?.id === item.id ? null : current,
-                            );
-                            replacePairing(updated);
-                          })
-                        }
-                      >
-                        {t('unpublishPairing')}
-                      </Button>
-                      {isFeatured ? (
-                        <Button
-                          type="button"
-                          disabled={busy}
-                          onClick={() =>
-                            void runItem(item.id, async () => {
-                              const updated = await unfeatureDialogueRequest(
-                                item.id,
-                              );
-                              setFeatured(null);
-                              replacePairing(updated);
-                            })
-                          }
-                        >
-                          {t('unfeatureHome')}
-                        </Button>
-                      ) : (
-                        <Button
-                          type="button"
-                          disabled={busy}
-                          onClick={() =>
-                            void runItem(item.id, async () => {
-                              const updated = await featureDialogueRequest(
-                                item.id,
-                              );
-                              setFeatured(updated);
-                              setPairings((current) =>
-                                current.map((row) =>
-                                  row.id === item.id
-                                    ? updated
-                                    : { ...row, featuredAt: null },
-                                ),
-                              );
-                            })
-                          }
-                        >
-                          {t('featureHome')}
-                        </Button>
-                      )}
-                    </>
-                  ) : (
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {published ? (
+                  <>
                     <Button
                       type="button"
                       disabled={busy}
                       onClick={() =>
                         void runItem(item.id, async () => {
-                          replacePairing(await publishDialogueRequest(item.id));
+                          const updated = await unpublishDialogueRequest(
+                            item.id,
+                          );
+                          setFeatured((current) =>
+                            current?.id === item.id ? null : current,
+                          );
+                          replacePairing(updated);
                         })
                       }
                     >
-                      {t('publishPairing')}
+                      {t('unpublishPairing')}
                     </Button>
-                  )}
+                    {isFeatured ? (
+                      <Button
+                        type="button"
+                        disabled={busy}
+                        onClick={() =>
+                          void runItem(item.id, async () => {
+                            const updated = await unfeatureDialogueRequest(
+                              item.id,
+                            );
+                            setFeatured(null);
+                            replacePairing(updated);
+                          })
+                        }
+                      >
+                        {t('unfeatureHome')}
+                      </Button>
+                    ) : (
+                      <Button
+                        type="button"
+                        disabled={busy}
+                        onClick={() =>
+                          void runItem(item.id, async () => {
+                            const updated = await featureDialogueRequest(
+                              item.id,
+                            );
+                            setFeatured(updated);
+                            setPairings((current) =>
+                              current.map((row) =>
+                                row.id === item.id
+                                  ? updated
+                                  : { ...row, featuredAt: null },
+                              ),
+                            );
+                          })
+                        }
+                      >
+                        {t('featureHome')}
+                      </Button>
+                    )}
+                  </>
+                ) : (
                   <Button
                     type="button"
                     disabled={busy}
                     onClick={() =>
                       void runItem(item.id, async () => {
-                        await deleteDialogueRequest(item.id);
-                        setFeatured((current) =>
-                          current?.id === item.id ? null : current,
-                        );
-                        setPairings((current) =>
-                          current.filter((row) => row.id !== item.id),
-                        );
+                        replacePairing(await publishDialogueRequest(item.id));
                       })
                     }
                   >
-                    {t('deletePairing')}
+                    {t('publishPairing')}
                   </Button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
+                )}
+                <Button
+                  type="button"
+                  disabled={busy}
+                  onClick={() =>
+                    void runItem(item.id, async () => {
+                      await deleteDialogueRequest(item.id);
+                      setFeatured((current) =>
+                        current?.id === item.id ? null : current,
+                      );
+                      setPairings((current) =>
+                        current.filter((row) => row.id !== item.id),
+                      );
+                    })
+                  }
+                >
+                  {t('deletePairing')}
+                </Button>
+              </div>
+            </div>
+          );
+        }}
+      />
+    </StaffDesk>
   );
 }
