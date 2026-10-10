@@ -154,6 +154,54 @@ export function deleteMyArticleRequest(articleId: string) {
   return api.deleteMyArticle(articleId);
 }
 
+export function featureBillboardRequest(workId: string) {
+  return api.featureBillboard(workId);
+}
+
+export function unfeatureBillboardRequest(workId: string) {
+  return api.unfeatureBillboard(workId);
+}
+
+export function hangWorkRequest(workId: string) {
+  return api.hangWork(workId);
+}
+
+export function unhangWorkRequest(workId: string) {
+  return api.unhangWork(workId);
+}
+
+export function featureHomeCreatorRequest(slug: string) {
+  return api.featureHomeCreator(slug);
+}
+
+export function unfeatureHomeCreatorRequest(slug: string) {
+  return api.unfeatureHomeCreator(slug);
+}
+
+export function selectHomeCreatorRequest(slug: string) {
+  return api.selectHomeCreator(slug);
+}
+
+export function unselectHomeCreatorRequest(slug: string) {
+  return api.unselectHomeCreator(slug);
+}
+
+export function featureChannelRequest(projectId: string) {
+  return api.featureChannel(projectId);
+}
+
+export function unfeatureChannelRequest(projectId: string) {
+  return api.unfeatureChannel(projectId);
+}
+
+export function hideWorkRequest(workId: string) {
+  return api.hideWork(workId);
+}
+
+export function unhideWorkRequest(workId: string) {
+  return api.unhideWork(workId);
+}
+
 export function featureArticleRequest(articleId: string) {
   return api.featureArticle(articleId);
 }

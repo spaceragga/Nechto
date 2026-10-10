@@ -23,13 +23,13 @@ export async function JournalArticleView({ article }: JournalArticleViewProps) {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
-      <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
+      <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
         {t('kicker')}
       </p>
       <h1 className="mt-3 font-serif text-4xl tracking-wide md:text-5xl">
         {article.title}
       </h1>
-      <p className="mt-4 font-serif text-sm opacity-70">
+      <p className="mt-4 font-serif text-base opacity-70">
         <Link href={profilePath(article.author.slug)}>
           {article.author.displayName}
         </Link>
@@ -58,7 +58,7 @@ export async function JournalArticleView({ article }: JournalArticleViewProps) {
           </p>
         ))}
       </div>
-      <p className="mt-12 font-sans text-sm">
+      <p className="mt-12 font-sans text-base">
         <Link
           href={profilePath(article.author.slug)}
           className="text-[var(--accent)]"

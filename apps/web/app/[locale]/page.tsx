@@ -9,7 +9,12 @@ import { HomeProjectsRail } from '@/components/home/home-projects-rail';
 import { HomeWorksGrid } from '@/components/home/home-works-grid';
 import { catalogHref, parseCatalogDirection } from '@/lib/catalog-query';
 import {
+  loadHomeAuthorSelection,
+  loadHomeBillboard,
+  loadHomeCreator,
   loadHomeDialogue,
+  loadHomeHangings,
+  loadHomeSeries,
   loadHomeStudioProfile,
   loadHomeJournalArticle,
   loadPublishedCreators,
@@ -42,6 +47,11 @@ export default async function HomePage({
     journalArticle,
     homeDialogue,
     homeStudio,
+    homeBillboard,
+    homeHangings,
+    homeCreator,
+    homeAuthorSelection,
+    homeSeries,
     filteredWorksPage,
     filteredCreators,
     filteredProjects,
@@ -53,6 +63,11 @@ export default async function HomePage({
     loadHomeJournalArticle(),
     loadHomeDialogue(),
     loadHomeStudioProfile(),
+    loadHomeBillboard(),
+    loadHomeHangings(),
+    loadHomeCreator(),
+    loadHomeAuthorSelection(),
+    loadHomeSeries(),
     direction
       ? loadPublishedWorksPage({ limit: 24, direction })
       : Promise.resolve(null),
@@ -71,19 +86,26 @@ export default async function HomePage({
     journalArticle,
     homeDialogue,
     homeStudio,
+    homeBillboard,
+    homeHangings,
+    homeCreator,
+    homeSeries,
+    homeAuthorSelection,
   );
   const works = direction ? (filteredWorksPage?.items ?? []) : feed.railWorks;
-  const projects = direction ? (filteredProjects ?? []) : stageSeries;
-  const creators = direction ? (filteredCreators ?? []) : stageCreators;
+  const projects = direction ? (filteredProjects ?? []) : shuffled(stageSeries);
+  const creators = direction
+    ? shuffled(filteredCreators ?? [])
+    : shuffled(stageCreators);
 
   return (
-    <main className="flex w-full flex-col gap-6 px-6 py-6">
+    <main className="flex w-full flex-col gap-5 px-6 py-6">
       <div className="flex flex-col gap-4">
         <header>
           <h1 className="font-serif text-4xl tracking-wide md:text-5xl">
             {t('title')}
           </h1>
-          <p className="mt-2 max-w-2xl font-sans text-sm opacity-70">
+          <p className="mt-2 max-w-2xl font-sans text-base leading-relaxed opacity-70">
             {t('subtitle')}
           </p>
           <HomeExploreNav />
@@ -95,27 +117,29 @@ export default async function HomePage({
 
         <DirectionChips active={direction} basePath="/" />
       </div>
-      <HomeWorksGrid
-        works={works}
-        empty={direction ? t('emptyWorks') : t('pending')}
-        catalogHref={catalogHref('/works', { direction })}
-      />
-      <HomeProjectsRail
-        projects={projects}
-        empty={direction ? t('emptyProjects') : t('pending')}
-        catalogHref={catalogHref('/projects', { direction })}
-      />
-      <HomeCreatorsRail
-        creators={creators}
-        empty={direction ? t('emptyCreators') : t('pending')}
-        catalogHref={catalogHref('/creators', { direction })}
-      />
-      <HomeFragmentsRail
-        feed={{
-          items: shuffled(fragments.items),
-          nextCursor: fragments.nextCursor,
-        }}
-      />
+      <div className="flex flex-col gap-5">
+        <HomeWorksGrid
+          works={works}
+          empty={direction ? t('emptyWorks') : t('pending')}
+          catalogHref={catalogHref('/works', { direction })}
+        />
+        <HomeProjectsRail
+          projects={projects}
+          empty={direction ? t('emptyProjects') : t('pending')}
+          catalogHref={catalogHref('/projects', { direction })}
+        />
+        <HomeCreatorsRail
+          creators={creators}
+          empty={direction ? t('emptyCreators') : t('pending')}
+          catalogHref={catalogHref('/creators', { direction })}
+        />
+        <HomeFragmentsRail
+          feed={{
+            items: shuffled(fragments.items),
+            nextCursor: fragments.nextCursor,
+          }}
+        />
+      </div>
     </main>
   );
 }

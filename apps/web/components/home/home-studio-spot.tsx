@@ -27,12 +27,16 @@ export function HomeStudioSpot({
           fit="cover"
           className="h-72 w-full md:h-[28rem]"
         />
-        <p className="mt-2 font-sans text-xs tracking-[0.2em] uppercase opacity-80">
+        <p className="mt-2 font-sans text-sm tracking-[0.16em] uppercase opacity-80">
           {kicker}
         </p>
-        <h2 className="mt-1 font-serif text-2xl tracking-wide">{title}</h2>
-        <p className="mt-1 font-serif text-sm opacity-70">{lede}</p>
-        <span className="mt-2 font-sans text-sm text-[var(--accent)]">
+        <h2 className="mt-1 font-serif text-2xl leading-tight tracking-wide md:text-3xl">
+          {title}
+        </h2>
+        <p className="mt-1 font-sans text-base leading-relaxed opacity-70">
+          {lede}
+        </p>
+        <span className="mt-2 font-sans text-base text-[var(--accent)]">
           {cta}
         </span>
       </HomeSpotRoot>

@@ -52,19 +52,19 @@ export async function PublicProfileView({
       <QueryScrollLock token={scrollToken} />
       <div className="flex items-start justify-between gap-6">
         <div className="min-w-0">
-          <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
+          <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
             {t('kicker')}
           </p>
           <h1 className="mt-2 font-serif text-4xl tracking-wide md:text-5xl">
             {title}
           </h1>
           {profile.bio ? (
-            <p className="mt-4 max-w-2xl font-sans text-sm opacity-70">
+            <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed opacity-70">
               {profile.bio}
             </p>
           ) : null}
           {profile.directions.length > 0 ? (
-            <p className="mt-3 font-sans text-sm opacity-70">
+            <p className="mt-3 font-sans text-base opacity-70">
               {profile.directions
                 .map((direction) => t(`directions.${direction}`))
                 .join(' · ')}
@@ -114,9 +114,9 @@ export async function PublicProfileView({
 
       {journalPane ? (
         articles.length === 0 ? (
-          <p className="mt-4 text-sm opacity-70">{t('emptyJournal')}</p>
+          <p className="mt-4 text-base opacity-70">{t('emptyJournal')}</p>
         ) : (
-          <section className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="mt-4 grid gap-x-8 gap-y-10 sm:grid-cols-2">
             {articles.map((article) => (
               <MediaTile
                 key={article.id}
@@ -124,15 +124,16 @@ export async function PublicProfileView({
                 title={article.title}
                 subtitle={article.lede ? excerpt(article.lede, 110) : undefined}
                 src={toUploadSrc(article.coverImageUrl)}
+                wellClassName="aspect-[3/2] w-full"
               />
             ))}
           </section>
         )
       ) : projectsPane ? (
         projects.length === 0 ? (
-          <p className="mt-4 text-sm opacity-70">{t('emptyProjects')}</p>
+          <p className="mt-4 text-base opacity-70">{t('emptyProjects')}</p>
         ) : (
-          <section className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="mt-4 grid gap-x-8 gap-y-10 sm:grid-cols-2">
             {projects.map((project) => (
               <MediaTile
                 key={project.id}
@@ -144,14 +145,15 @@ export async function PublicProfileView({
                     : undefined
                 }
                 src={toUploadSrc(project.coverImageUrl)}
+                wellClassName="aspect-[3/2] w-full"
               />
             ))}
           </section>
         )
       ) : works.length === 0 ? (
-        <p className="mt-4 text-sm opacity-70">{t('empty')}</p>
+        <p className="mt-4 text-base opacity-70">{t('empty')}</p>
       ) : (
-        <section className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="mt-4 grid gap-x-8 gap-y-10 sm:grid-cols-2">
           {works.map((work) => (
             <MediaTile
               key={work.id}
@@ -161,6 +163,7 @@ export async function PublicProfileView({
                 work.description ? excerpt(work.description, 110) : undefined
               }
               src={toUploadSrc(work.imageUrl)}
+              wellClassName="aspect-[3/2] w-full"
             />
           ))}
         </section>

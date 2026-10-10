@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from 'react';
 import type { WorkWithAuthor } from '@nechto/api-contract';
+import { StaffThumb } from '@/components/staff/staff-thumb';
 import { Input } from '@/components/ui/input';
 import { listCurationWorksRequest } from '@/lib/api';
 
@@ -88,7 +89,8 @@ export function WorkPicker({
     <div className="flex w-full flex-col gap-2 text-sm">
       <span>{label}</span>
       {selected ? (
-        <div className="flex w-full items-center gap-2 rounded border border-white/20 px-3 py-2">
+        <div className="flex w-full items-center gap-3 rounded border border-white/20 px-3 py-2">
+          <StaffThumb src={selected.imageUrl} alt={selected.title} />
           <span className="min-w-0 flex-1 truncate">{workLabel(selected)}</span>
           <button
             type="button"
@@ -136,11 +138,14 @@ export function WorkPicker({
                   >
                     <button
                       type="button"
-                      className="block w-full truncate px-3 py-2 text-left hover:bg-white/10"
+                      className="flex w-full items-center gap-3 truncate px-3 py-2 text-left hover:bg-white/10"
                       onMouseDown={(event) => event.preventDefault()}
                       onClick={() => pick(work)}
                     >
-                      {workLabel(work)}
+                      <StaffThumb src={work.imageUrl} alt={work.title} />
+                      <span className="min-w-0 flex-1 truncate">
+                        {workLabel(work)}
+                      </span>
                     </button>
                   </li>
                 ))
