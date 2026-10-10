@@ -14,7 +14,7 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
   const live = works.slice(0, 5);
 
   return (
-    <section aria-label={t('hangingSpot.kicker')} className="py-6">
+    <section aria-label={t('hangingSpot.kicker')} className="py-4">
       <div className="mx-auto flex w-full max-w-5xl min-w-0 flex-col text-center">
         <div className="grid grid-cols-5 items-stretch gap-2">
           {live.length > 0
@@ -22,7 +22,7 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
                 <Link
                   key={work.id}
                   href={workPath(work.author.slug, work.id)}
-                  className="flex min-w-0 flex-col"
+                  className="group flex min-w-0 flex-col"
                 >
                   <WorkFrame
                     src={toUploadSrc(work.imageUrl)}
@@ -30,10 +30,10 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
                     fit="cover"
                     className="aspect-[3/4] w-full shrink-0"
                   />
-                  <p className="mt-1 truncate text-center font-serif text-[11px] leading-tight">
+                  <p className="mt-1.5 truncate text-center font-serif text-sm leading-tight">
                     {work.title}
                   </p>
-                  <p className="mt-0.5 truncate text-center font-serif text-[11px] opacity-70">
+                  <p className="mt-0.5 truncate text-center font-serif text-sm opacity-70">
                     {work.author.displayName}
                   </p>
                 </Link>
@@ -44,23 +44,23 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
                     fit="cover"
                     className="aspect-[3/4] w-full shrink-0"
                   />
-                  <p className="mt-1 font-serif text-[11px] leading-tight opacity-70">
+                  <p className="mt-1.5 font-serif text-sm leading-tight opacity-70">
                     {t('pending')}
                   </p>
                 </div>
               ))}
         </div>
-        <Link href="/top-works" className="mt-2 flex flex-col text-center">
-          <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-80">
+        <Link href="/top-works" className="mt-3 flex flex-col text-center">
+          <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-80">
             {t('hangingSpot.kicker')}
           </p>
-          <h2 className="mt-1 font-serif text-2xl tracking-wide">
+          <h2 className="mt-1 font-serif text-2xl leading-tight tracking-wide md:text-3xl">
             {t('hangingSpot.title')}
           </h2>
-          <p className="mt-1 font-serif text-sm opacity-70">
+          <p className="mt-1 font-sans text-base leading-relaxed opacity-70">
             {t('hangingSpot.lede')}
           </p>
-          <span className="mt-2 font-sans text-sm text-[var(--accent)]">
+          <span className="mt-2 font-sans text-base text-[var(--accent)]">
             {t('hangingSpot.cta')}
           </span>
         </Link>

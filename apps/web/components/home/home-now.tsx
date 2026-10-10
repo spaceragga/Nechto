@@ -31,13 +31,13 @@ export async function HomeNow({ creators = [] }: HomeNowProps) {
       aria-label={t('nowLabel')}
       className="flex min-w-0 shrink-0 flex-col gap-3"
     >
-      <p className="px-1 font-sans text-xs tracking-[0.2em] uppercase">
+      <p className="px-1 font-sans text-sm tracking-[0.16em] uppercase opacity-80">
         {t('nowLabel')}
       </p>
       {items.length > 0 ? (
         items.map((item) => <HomeNowRow key={item.id} item={item} />)
       ) : (
-        <p className="px-1 font-serif text-sm opacity-70">{t('pending')}</p>
+        <p className="px-1 font-serif text-base opacity-70">{t('pending')}</p>
       )}
     </aside>
   );

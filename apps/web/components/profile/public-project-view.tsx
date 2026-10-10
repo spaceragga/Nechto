@@ -15,13 +15,13 @@ export async function PublicProjectView({ project }: PublicProjectViewProps) {
 
   return (
     <main className="w-full px-6 py-12 text-center">
-      <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
+      <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
         {t('kicker')}
       </p>
       <h1 className="mt-2 font-serif text-4xl tracking-wide md:text-5xl">
         {project.title}
       </h1>
-      <p className="mt-3 font-serif text-sm opacity-70">
+      <p className="mt-3 font-serif text-base opacity-70">
         <Link href={`${authorHref}?pane=projects`}>
           {project.author.displayName}
         </Link>

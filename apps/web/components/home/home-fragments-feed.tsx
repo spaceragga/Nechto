@@ -39,14 +39,18 @@ export function HomeFragmentsFeed({ initial }: HomeFragmentsFeedProps) {
 
   return (
     <section id="fragments" className="scroll-mt-20">
-      <h2 className="mb-3 font-sans text-xl tracking-wide">{t('fragments')}</h2>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-3">
+      <h2 className="mb-2 font-sans text-2xl tracking-wide">
+        {t('fragments')}
+      </h2>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-x-3 gap-y-4">
         {items.map((work) => (
           <MediaTile
             key={work.id}
             href={workPath(work.author.slug, work.id)}
             title={work.title}
             src={toUploadSrc(work.imageUrl)}
+            fit="cover"
+            captionSize="sm"
             wellClassName="h-36 w-full"
           />
         ))}

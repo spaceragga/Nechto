@@ -87,6 +87,8 @@ export type ProjectSummary = {
   title: string;
   description: string;
   createdAt: string;
+  /** Home collection / channel pin. */
+  featuredAt: string | null;
   coverImageUrl: string | null;
   frameImageUrls: string[];
   blockCount: number;

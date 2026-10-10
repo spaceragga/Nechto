@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { ArticleSummary } from '@nechto/api-contract';
+import { StaffDesk } from '@/components/staff/staff-desk';
+import { StaffDeskList } from '@/components/staff/staff-desk-list';
+import { StaffThumb } from '@/components/staff/staff-thumb';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { featureArticleRequest, unfeatureArticleRequest } from '@/lib/api';
@@ -61,36 +64,44 @@ export function CurationJournalDesk({
   }
 
   return (
-    <section className="mt-10">
-      <h2 className="text-sm tracking-wide opacity-70">{t('issues')}</h2>
-      <p className="mt-2 max-w-2xl text-sm opacity-70">{t('issuesLede')}</p>
+    <StaffDesk
+      title={t('issues')}
+      lede={t('issuesLede')}
+      meta={featured ? featured.title : t('deskAuto')}
+    >
       {featured ? (
-        <p className="mt-4 text-sm">
-          {t('featuredNow')}:{' '}
-          <Link
-            href={articlePath(featured.id)}
-            className="text-[var(--accent)]"
-          >
-            {featured.title}
-          </Link>
-        </p>
+        <div className="flex items-center gap-3 text-sm">
+          <StaffThumb src={featured.coverImageUrl} alt={featured.title} />
+          <p className="min-w-0">
+            {t('featuredNow')}:{' '}
+            <Link
+              href={articlePath(featured.id)}
+              className="text-[var(--accent)]"
+            >
+              {featured.title}
+            </Link>
+          </p>
+        </div>
       ) : (
-        <p className="mt-4 text-sm opacity-70">{t('featuredNone')}</p>
+        <p className="text-sm opacity-70">{t('featuredNone')}</p>
       )}
       {error ? (
         <div className="mt-4">
           <FormError>{error}</FormError>
         </div>
       ) : null}
-      {issues.length === 0 ? (
-        <p className="mt-6 text-sm opacity-70">{t('emptyCuration')}</p>
-      ) : (
-        <ul className="mt-6 flex flex-col gap-4">
-          {issues.map((issue) => (
-            <li
-              key={issue.id}
-              className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3"
-            >
+      <StaffDeskList
+        className="mt-6"
+        items={issues}
+        keyOf={(issue) => issue.id}
+        getSearchText={(issue) =>
+          `${issue.title} ${issue.author.displayName} ${issue.author.slug}`
+        }
+        empty={t('emptyCuration')}
+        renderItem={(issue) => (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <StaffThumb src={issue.coverImageUrl} alt={issue.title} />
               <div className="min-w-0">
                 <Link
                   href={articlePath(issue.id)}
@@ -105,27 +116,27 @@ export function CurationJournalDesk({
                   {issue.featuredAt ? ` · ${t('featuredBadge')}` : ''}
                 </p>
               </div>
-              {issue.featuredAt ? (
-                <Button
-                  type="button"
-                  disabled={pendingId === issue.id}
-                  onClick={() => void unfeature(issue.id)}
-                >
-                  {t('unfeature')}
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  disabled={pendingId === issue.id}
-                  onClick={() => void feature(issue.id)}
-                >
-                  {t('featureHome')}
-                </Button>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+            </div>
+            {issue.featuredAt ? (
+              <Button
+                type="button"
+                disabled={pendingId === issue.id}
+                onClick={() => void unfeature(issue.id)}
+              >
+                {t('unfeature')}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                disabled={pendingId === issue.id}
+                onClick={() => void feature(issue.id)}
+              >
+                {t('featureHome')}
+              </Button>
+            )}
+          </div>
+        )}
+      />
+    </StaffDesk>
   );
 }

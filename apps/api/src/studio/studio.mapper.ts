@@ -7,7 +7,8 @@ import {
 import { toWorkView } from '../works/work.mapper';
 import type { StorageService } from '../storage/storage.service';
 
-type StudioProfileRow = ProfileRecord & {
+/** Prisma row before `toProfileRecord` fills optional home/studio pins. */
+type StudioProfileRow = Parameters<typeof toProfileRecord>[0] & {
   works?: Array<{
     id: string;
     title: string;

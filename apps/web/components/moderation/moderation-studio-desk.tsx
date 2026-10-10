@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { StudioProfileSummary } from '@nechto/api-contract';
+import { StaffDesk } from '@/components/staff/staff-desk';
+import { StaffDeskList } from '@/components/staff/staff-desk-list';
+import { StaffThumb } from '@/components/staff/staff-thumb';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import {
@@ -77,78 +80,87 @@ export function ModerationStudioDesk({
   }
 
   return (
-    <section className="mt-10 flex flex-col gap-10">
+    <StaffDesk
+      title={t('studioLive')}
+      lede={t('studioLiveLede')}
+      meta={`${published.length} · ${hidden.length}`}
+    >
       {error ? <FormError>{error}</FormError> : null}
-      <div>
-        <h2 className="text-sm tracking-wide opacity-70">{t('studioLive')}</h2>
-        <p className="mt-2 max-w-2xl text-sm opacity-70">
-          {t('studioLiveLede')}
-        </p>
-        {published.length === 0 ? (
-          <p className="mt-3 text-sm opacity-70">{t('emptyStudioLive')}</p>
-        ) : (
-          <ul className="mt-4 flex flex-col gap-3">
-            {published.map((profile) => (
-              <li
-                key={profile.profileId}
-                className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3"
-              >
-                <div>
-                  <Link
-                    href={studioPath(profile.slug)}
-                    className="font-serif text-lg tracking-wide"
-                  >
-                    {profile.displayName}
-                  </Link>
-                  <p className="text-sm opacity-70">
-                    {renderDirections(profile)}
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  disabled={pendingId === profile.profileId}
-                  onClick={() => void hide(profile.profileId)}
+      <h3 className="text-sm tracking-wide opacity-70">{t('studioLive')}</h3>
+      <StaffDeskList
+        className="mt-3"
+        items={published}
+        keyOf={(profile) => profile.profileId}
+        getSearchText={(profile) =>
+          `${profile.displayName} ${profile.slug} ${renderDirections(profile)}`
+        }
+        empty={t('emptyStudioLive')}
+        renderItem={(profile) => (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <StaffThumb
+                src={profile.coverUrl ?? profile.avatarUrl}
+                alt={profile.displayName}
+              />
+              <div className="min-w-0">
+                <Link
+                  href={studioPath(profile.slug)}
+                  className="font-serif text-lg tracking-wide"
                 >
-                  {t('hideStudio')}
-                </Button>
-              </li>
-            ))}
-          </ul>
+                  {profile.displayName}
+                </Link>
+                <p className="text-sm opacity-70">
+                  {renderDirections(profile)}
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              disabled={pendingId === profile.profileId}
+              onClick={() => void hide(profile.profileId)}
+            >
+              {t('hideStudio')}
+            </Button>
+          </div>
         )}
-      </div>
-      <div>
-        <h2 className="text-sm tracking-wide opacity-70">
-          {t('studioHidden')}
-        </h2>
-        {hidden.length === 0 ? (
-          <p className="mt-3 text-sm opacity-70">{t('emptyStudioHidden')}</p>
-        ) : (
-          <ul className="mt-4 flex flex-col gap-3">
-            {hidden.map((profile) => (
-              <li
-                key={profile.profileId}
-                className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3"
-              >
-                <div>
-                  <Link href={profilePath(profile.slug)}>
-                    {profile.displayName}
-                  </Link>
-                  <p className="text-sm opacity-70">
-                    {renderDirections(profile)}
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  disabled={pendingId === profile.profileId}
-                  onClick={() => void unhide(profile.profileId)}
-                >
-                  {t('unhideStudio')}
-                </Button>
-              </li>
-            ))}
-          </ul>
+      />
+      <h3 className="mt-8 text-sm tracking-wide opacity-70">
+        {t('studioHidden')}
+      </h3>
+      <StaffDeskList
+        className="mt-3"
+        items={hidden}
+        keyOf={(profile) => profile.profileId}
+        getSearchText={(profile) =>
+          `${profile.displayName} ${profile.slug} ${renderDirections(profile)}`
+        }
+        empty={t('emptyStudioHidden')}
+        renderItem={(profile) => (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <StaffThumb
+                src={profile.coverUrl ?? profile.avatarUrl}
+                alt={profile.displayName}
+              />
+              <div className="min-w-0">
+                <Link href={profilePath(profile.slug)}>
+                  {profile.displayName}
+                </Link>
+                <p className="text-sm opacity-70">
+                  {renderDirections(profile)}
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              disabled={pendingId === profile.profileId}
+              onClick={() => void unhide(profile.profileId)}
+            >
+              {t('unhideStudio')}
+            </Button>
+          </div>
         )}
-      </div>
-    </section>
+      />
+    </StaffDesk>
   );
 }

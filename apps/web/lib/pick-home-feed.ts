@@ -1,11 +1,14 @@
-import type {
-  ArticleSummary,
-  CreatorDirection,
-  DialogueSummary,
-  ProjectSummary,
-  WorkWithAuthor,
+import {
+  HOME_AUTHOR_SELECTION_MAX,
+  HOME_HANGING_MAX,
+  type ArticleSummary,
+  type CreatorDirection,
+  type DialogueSummary,
+  type ProjectSummary,
+  type WorkWithAuthor,
 } from '@nechto/api-contract';
 import type { PublishedCreator } from './load-published-feed';
+import { shuffled } from './shuffle';
 
 export type HomeDialogue = {
   id: string | null;
@@ -135,7 +138,7 @@ export function worksFromCreators(
 export function hangingFromCreators(
   creators: PublishedCreator[],
 ): WorkWithAuthor[] {
-  return worksFromCreators(creators, 5);
+  return worksFromCreators(creators, HOME_HANGING_MAX);
 }
 
 function hasProfileCopy(creator: PublishedCreator): boolean {
@@ -222,6 +225,11 @@ export function pickHomeFeed(
   journal: ArticleSummary | null = null,
   curatedDialogue: DialogueSummary | null = null,
   curatedStudio: PublishedCreator | null = null,
+  curatedBillboard: WorkWithAuthor | null = null,
+  curatedHangings: WorkWithAuthor[] = [],
+  curatedCreator: PublishedCreator | null = null,
+  curatedSeries: ProjectSummary | null = null,
+  curatedAuthorSelection: PublishedCreator[] = [],
 ): HomeFeedSlices {
   const spotlight = featuredCreators(creators);
   const fromFeed = worksByCreators(works, spotlight);
@@ -230,9 +238,25 @@ export function pickHomeFeed(
   const rest = uniqueWorks([...spotlightWorks, ...works]);
   const used = new Set<string>();
 
-  const billboard = takeUnusedWorks(spotlightWorks, used, 1)[0] ?? null;
-  const creatorOfWeek = spotlight[0] ?? null;
-  const nowCreators = spotlight.slice(0, 3);
+  const billboard =
+    curatedBillboard ?? takeUnusedWorks(spotlightWorks, used, 1)[0] ?? null;
+  if (billboard) {
+    used.add(billboard.id);
+  }
+
+  const creatorOfWeek = curatedCreator ?? spotlight[0] ?? null;
+  const pinnedSelection = curatedAuthorSelection.slice(
+    0,
+    HOME_AUTHOR_SELECTION_MAX,
+  );
+  const pinnedSlugs = new Set(pinnedSelection.map((creator) => creator.slug));
+  const autoFill = shuffled(
+    spotlight.filter((creator) => !pinnedSlugs.has(creator.slug)),
+  ).slice(0, Math.max(0, HOME_AUTHOR_SELECTION_MAX - pinnedSelection.length));
+  const nowCreators =
+    pinnedSelection.length > 0
+      ? [...pinnedSelection, ...autoFill].slice(0, HOME_AUTHOR_SELECTION_MAX)
+      : shuffled(spotlight).slice(0, HOME_AUTHOR_SELECTION_MAX);
 
   const curated = toHomeDialogue(curatedDialogue);
   if (curated) {
@@ -247,11 +271,18 @@ export function pickHomeFeed(
     used.add(dialogue.right.id);
   }
 
-  const hanging = takeUnusedWorks(
-    uniqueWorks([...hangingFromCreators(spotlight), ...rest]),
-    used,
-    5,
-  );
+  const pinnedHangings = curatedHangings.filter((work) => !used.has(work.id));
+  for (const work of pinnedHangings) {
+    used.add(work.id);
+  }
+  const hanging = [
+    ...pinnedHangings,
+    ...takeUnusedWorks(
+      uniqueWorks([...hangingFromCreators(spotlight), ...rest]),
+      used,
+      Math.max(0, HOME_HANGING_MAX - pinnedHangings.length),
+    ),
+  ].slice(0, HOME_HANGING_MAX);
   const fresh = takeUnusedWorks(works.length > 0 ? works : rest, used, 3);
   const openCall = takeUnusedWorks(rest, used, 1)[0] ?? null;
 
@@ -272,7 +303,7 @@ export function pickHomeFeed(
     hanging,
     journal,
     dialogue,
-    series: pickHomeSeries(series),
+    series: curatedSeries ?? pickHomeSeries(series),
     studio,
     openCall,
   };

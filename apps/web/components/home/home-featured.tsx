@@ -37,12 +37,16 @@ export function HomeFeatured({
       }
     >
       <WorkFrame src={src} alt={title} fit={fit} className={frameClassName} />
-      <p className="mt-2 font-sans text-xs tracking-[0.2em] uppercase opacity-80">
+      <p className="mt-2 font-sans text-sm tracking-[0.16em] uppercase opacity-80">
         {kicker}
       </p>
-      <p className="mt-1 font-serif text-2xl md:text-3xl">{title}</p>
-      <p className="mt-0.5 font-serif text-sm opacity-70">{meta}</p>
-      <span className="mt-2 font-sans text-sm text-[var(--accent)]">{cta}</span>
+      <p className="mt-1 font-serif text-2xl leading-tight tracking-wide md:text-3xl">
+        {title}
+      </p>
+      <p className="mt-1 font-serif text-base opacity-70">{meta}</p>
+      <span className="mt-2 font-sans text-base text-[var(--accent)]">
+        {cta}
+      </span>
     </HomeSpotRoot>
   );
 }

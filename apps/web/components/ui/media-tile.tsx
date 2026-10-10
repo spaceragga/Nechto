@@ -10,6 +10,7 @@ type MediaTileProps = {
   wellClassName?: string;
   className?: string;
   fit?: 'contain' | 'cover';
+  captionSize?: 'sm' | 'md';
 };
 
 export function MediaTile({
@@ -19,17 +20,18 @@ export function MediaTile({
   src,
   wellClassName = 'h-44 w-full',
   className = '',
-  fit,
+  fit = 'cover',
+  captionSize = 'md',
 }: MediaTileProps) {
   return (
-    <Link href={href} className={`block min-w-0 ${className}`.trim()}>
+    <Link href={href} className={`group block min-w-0 ${className}`.trim()}>
       <WorkFrame
         src={src}
         alt={title ?? ''}
         className={wellClassName}
         fit={fit}
       />
-      <WorkCaption title={title} meta={subtitle} />
+      <WorkCaption title={title} meta={subtitle} size={captionSize} />
     </Link>
   );
 }

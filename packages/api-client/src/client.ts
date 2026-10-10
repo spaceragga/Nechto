@@ -355,6 +355,105 @@ export class ApiClient {
     });
   }
 
+  async getHomeBillboard() {
+    const work = await this.request<WorkWithAuthor | undefined>(
+      '/works/home/billboard',
+    );
+    return work ?? null;
+  }
+
+  listHomeHangings() {
+    return this.request<WorkWithAuthor[]>('/works/home/hangings');
+  }
+
+  listHomeAuthorSelection() {
+    return this.request<PublicProfileWithWorks[]>('/profiles/home/selection');
+  }
+
+  featureBillboard(workId: string) {
+    return this.request<WorkWithAuthor>(
+      `/curation/works/${encodeURIComponent(workId)}/feature`,
+      { method: 'POST' },
+    );
+  }
+
+  unfeatureBillboard(workId: string) {
+    return this.request<WorkWithAuthor>(
+      `/curation/works/${encodeURIComponent(workId)}/feature`,
+      { method: 'DELETE' },
+    );
+  }
+
+  hangWork(workId: string) {
+    return this.request<WorkWithAuthor>(
+      `/curation/works/${encodeURIComponent(workId)}/hang`,
+      { method: 'POST' },
+    );
+  }
+
+  unhangWork(workId: string) {
+    return this.request<WorkWithAuthor>(
+      `/curation/works/${encodeURIComponent(workId)}/hang`,
+      { method: 'DELETE' },
+    );
+  }
+
+  featureHomeCreator(slug: string) {
+    return this.request<PublicProfileWithWorks>(
+      `/curation/profiles/${encodeURIComponent(slug)}/feature-home`,
+      { method: 'POST' },
+    );
+  }
+
+  unfeatureHomeCreator(slug: string) {
+    return this.request<PublicProfileWithWorks>(
+      `/curation/profiles/${encodeURIComponent(slug)}/feature-home`,
+      { method: 'DELETE' },
+    );
+  }
+
+  selectHomeCreator(slug: string) {
+    return this.request<PublicProfileWithWorks>(
+      `/curation/profiles/${encodeURIComponent(slug)}/select-home`,
+      { method: 'POST' },
+    );
+  }
+
+  unselectHomeCreator(slug: string) {
+    return this.request<PublicProfileWithWorks>(
+      `/curation/profiles/${encodeURIComponent(slug)}/select-home`,
+      { method: 'DELETE' },
+    );
+  }
+
+  featureChannel(projectId: string) {
+    return this.request<ProjectSummary>(
+      `/curation/projects/${encodeURIComponent(projectId)}/feature`,
+      { method: 'POST' },
+    );
+  }
+
+  unfeatureChannel(projectId: string) {
+    return this.request<ProjectSummary>(
+      `/curation/projects/${encodeURIComponent(projectId)}/feature`,
+      { method: 'DELETE' },
+    );
+  }
+
+  hideWork(workId: string) {
+    return this.request<WorkWithAuthor>(
+      `/moderation/works/${encodeURIComponent(workId)}/hide`,
+      { method: 'POST' },
+    );
+  }
+
+  unhideWork(workId: string) {
+    return this.request<WorkWithAuthor>(
+      `/moderation/works/${encodeURIComponent(workId)}/unhide`,
+      { method: 'POST' },
+    );
+  }
+
   featureArticle(articleId: string) {
     return this.request<ArticleSummary>(
       `/curation/articles/${encodeURIComponent(articleId)}/feature`,

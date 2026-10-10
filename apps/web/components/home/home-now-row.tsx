@@ -26,7 +26,7 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
     <div className="relative flex h-36 shrink-0 gap-1 overflow-hidden">
       <Link
         href={item.href}
-        className="peer/author flex w-28 shrink-0 flex-col px-1 py-1"
+        className="peer/author group flex w-28 shrink-0 flex-col px-1 py-1"
       >
         <WorkFrame
           src={item.avatarSrc}
@@ -37,7 +37,7 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
         <span className="mt-1 font-serif text-sm leading-tight">
           {item.author}
         </span>
-        <span className="mt-0.5 font-sans text-[11px] leading-tight opacity-70">
+        <span className="mt-0.5 font-sans text-xs leading-tight opacity-70">
           {item.directionLabel}
         </span>
       </Link>
@@ -50,7 +50,7 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
           <Link
             key={`${work.href}:${work.title}:${index}`}
             href={work.href}
-            className="flex min-h-0 flex-col"
+            className="group flex min-h-0 flex-col"
           >
             <WorkFrame
               src={work.src}
@@ -58,7 +58,7 @@ export function HomeNowRow({ item }: HomeNowRowProps) {
               fit="cover"
               className="min-h-0 w-full flex-1"
             />
-            <span className="truncate pt-0.5 font-serif text-[11px] leading-tight">
+            <span className="truncate pt-0.5 font-serif text-xs leading-tight">
               {work.title}
             </span>
           </Link>

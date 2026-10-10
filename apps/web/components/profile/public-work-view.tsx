@@ -23,13 +23,13 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
 
   return (
     <main className="w-full px-6 py-12 text-center">
-      <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
+      <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
         {t('kicker')}
       </p>
       <h1 className="mt-2 font-serif text-4xl tracking-wide md:text-5xl">
         {work.title}
       </h1>
-      <p className="mt-3 font-serif text-sm opacity-70">
+      <p className="mt-3 font-serif text-base opacity-70">
         <Link href={authorHref}>{work.author.displayName}</Link>
         {direction ? ` · ${direction}` : ''}
       </p>
@@ -48,8 +48,8 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
       ) : null}
       {more.length > 0 ? (
         <section className="mt-12">
-          <p className="font-sans text-sm opacity-70">{t('more')}</p>
-          <div className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          <p className="font-sans text-base opacity-70">{t('more')}</p>
+          <div className="mt-4 grid gap-x-8 gap-y-10 sm:grid-cols-2">
             {more.map((item) => (
               <MediaTile
                 key={item.id}
@@ -61,6 +61,7 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
                     : work.author.displayName
                 }
                 src={toUploadSrc(item.imageUrl)}
+                wellClassName="aspect-[3/2] w-full"
               />
             ))}
           </div>

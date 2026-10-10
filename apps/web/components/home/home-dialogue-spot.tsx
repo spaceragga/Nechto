@@ -43,10 +43,10 @@ export function HomeDialogueSpot({
               fit="cover"
               className="h-64 w-full"
             />
-            <p className="mt-2 truncate text-center font-serif text-sm">
+            <p className="mt-2 truncate text-center font-serif text-base">
               {leftTitle}
             </p>
-            <p className="mt-0.5 text-center font-serif text-xs opacity-70">
+            <p className="mt-0.5 text-center font-serif text-sm opacity-70">
               {leftMeta}
             </p>
           </div>
@@ -57,20 +57,24 @@ export function HomeDialogueSpot({
               fit="cover"
               className="h-64 w-full"
             />
-            <p className="mt-2 truncate text-center font-serif text-sm">
+            <p className="mt-2 truncate text-center font-serif text-base">
               {rightTitle}
             </p>
-            <p className="mt-0.5 text-center font-serif text-xs opacity-70">
+            <p className="mt-0.5 text-center font-serif text-sm opacity-70">
               {rightMeta}
             </p>
           </div>
         </div>
-        <p className="mt-2 font-sans text-xs tracking-[0.2em] uppercase opacity-80">
+        <p className="mt-3 font-sans text-sm tracking-[0.16em] uppercase opacity-80">
           {kicker}
         </p>
-        <h2 className="mt-1 font-serif text-2xl tracking-wide">{title}</h2>
-        <p className="mt-1 font-serif text-sm opacity-70">{lede}</p>
-        <span className="mt-2 font-sans text-sm text-[var(--accent)]">
+        <h2 className="mt-1 font-serif text-2xl leading-tight tracking-wide md:text-3xl">
+          {title}
+        </h2>
+        <p className="mt-1 font-sans text-base leading-relaxed opacity-70">
+          {lede}
+        </p>
+        <span className="mt-2 font-sans text-base text-[var(--accent)]">
           {cta}
         </span>
       </HomeSpotRoot>

@@ -49,6 +49,7 @@ export function ProfileWorkEditor({
           src={toUploadSrc(work.imageUrl)}
           alt={work.title}
           fit="cover"
+          staticFrame
           className="aspect-3/4 w-full"
         />
         <div

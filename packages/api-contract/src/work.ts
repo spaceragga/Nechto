@@ -30,12 +30,19 @@ export const updateWorkFieldsSchema = z
 
 export type UpdateWorkFields = z.infer<typeof updateWorkFieldsSchema>;
 
+/** Max works a curator can pin on the home hanging strip. */
+export const HOME_HANGING_MAX = 5;
+
 export type Work = {
   id: string;
   title: string;
   description: string;
   imageUrl: string;
   hidden: boolean;
+  /** Home billboard pin. */
+  featuredAt: string | null;
+  /** Home hanging strip pin. */
+  hangingAt: string | null;
   createdAt: string;
 };
 

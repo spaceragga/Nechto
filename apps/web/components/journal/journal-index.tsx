@@ -28,7 +28,9 @@ export function JournalIndex({
     <main className="flex w-full flex-col gap-10 px-6 py-12">
       <header>
         <h1 className="font-serif text-4xl tracking-wide">{title}</h1>
-        <p className="mt-3 max-w-2xl font-sans text-sm opacity-70">{lede}</p>
+        <p className="mt-3 max-w-2xl font-sans text-base leading-relaxed opacity-70">
+          {lede}
+        </p>
       </header>
 
       {featured ? (
@@ -38,23 +40,23 @@ export function JournalIndex({
             title={featured.title}
             subtitle={featured.meta}
             src={featured.src}
-            wellClassName="h-72 w-full md:h-[28rem]"
+            wellClassName="aspect-[3/2] w-full md:aspect-auto md:h-[28rem]"
           />
           <div className="max-w-md">
-            <p className="font-sans text-xs tracking-[0.2em] uppercase opacity-70">
+            <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
               {featured.meta}
             </p>
-            <p className="mt-4 font-serif text-base leading-relaxed opacity-90">
+            <p className="mt-4 font-serif text-lg leading-relaxed opacity-90">
               {excerpt(featured.lede, 220) || featured.title}
             </p>
           </div>
         </article>
       ) : empty ? (
-        <p className="text-sm opacity-70">{empty}</p>
+        <p className="text-base opacity-70">{empty}</p>
       ) : null}
 
       {rest.length > 0 ? (
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2">
           {rest.map((article) => (
             <MediaTile
               key={article.href}
@@ -64,6 +66,7 @@ export function JournalIndex({
                 article.lede ? ` · ${excerpt(article.lede, 80)}` : ''
               }`}
               src={article.src}
+              wellClassName="aspect-[3/2] w-full"
             />
           ))}
         </div>

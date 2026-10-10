@@ -183,6 +183,7 @@ describe('ApiClient', () => {
       new Response(
         JSON.stringify({
           reports: [],
+          liveWorks: [],
           hiddenWorks: [],
           liveArticles: [],
           hiddenArticles: [],
@@ -199,6 +200,7 @@ describe('ApiClient', () => {
     );
     await expect(client.getModerationDesk()).resolves.toEqual({
       reports: [],
+      liveWorks: [],
       hiddenWorks: [],
       liveArticles: [],
       hiddenArticles: [],
@@ -219,8 +221,16 @@ describe('ApiClient', () => {
           hangings: [],
           issues: [],
           channels: [],
+          creators: [],
           featuredArticle: null,
           featuredDialogue: null,
+          featuredBillboard: null,
+          featuredCreator: null,
+          selectionCreators: [],
+          featuredChannel: null,
+          studioListed: [],
+          studioCandidates: [],
+          featuredStudio: null,
         }),
         {
           status: 200,
@@ -232,10 +242,56 @@ describe('ApiClient', () => {
       pairings: [],
       featuredArticle: null,
       featuredDialogue: null,
+      selectionCreators: [],
     });
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:3001/curation/desk',
       expect.anything(),
+    );
+
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    await expect(client.listHomeAuthorSelection()).resolves.toEqual([]);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/profiles/home/selection',
+      expect.anything(),
+    );
+
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          slug: 'taras',
+          displayName: 'Taras',
+          bio: null,
+          avatarUrl: null,
+          directions: [],
+          websiteUrl: null,
+          instagramUrl: null,
+          telegramUrl: null,
+          publishedAt: '2026-10-01T00:00:00.000Z',
+          workCount: 1,
+          inStudio: false,
+          homeFeaturedAt: null,
+          homeSelectionAt: '2026-10-01T00:00:00.000Z',
+          latestWorks: [],
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+    await expect(client.selectHomeCreator('taras')).resolves.toMatchObject({
+      slug: 'taras',
+      homeSelectionAt: '2026-10-01T00:00:00.000Z',
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/curation/profiles/taras/select-home',
+      expect.objectContaining({ method: 'POST' }),
     );
   });
 

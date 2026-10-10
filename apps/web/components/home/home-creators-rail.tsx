@@ -22,14 +22,14 @@ export async function HomeCreatorsRail({
 
   return (
     <section id="creators" aria-label={t('creators')}>
-      <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="font-sans text-xl tracking-wide">{t('creators')}</h2>
-        <Link href={catalogHref} className="font-sans text-sm">
+      <div className="mb-2 flex items-baseline justify-between gap-3">
+        <h2 className="font-sans text-2xl tracking-wide">{t('creators')}</h2>
+        <Link href={catalogHref} className="font-sans text-base opacity-80">
           {t('creatorsLink')}
         </Link>
       </div>
       {creators.length > 0 ? (
-        <FluidRail minItem="8.5rem" grow={false}>
+        <FluidRail minItem="8.5rem" grow={false} className="items-start">
           {creators.map((creator) => (
             <MediaTile
               key={creator.slug}
@@ -42,6 +42,7 @@ export async function HomeCreatorsRail({
               }
               src={toUploadSrc(creator.avatarUrl)}
               fit="cover"
+              captionSize="sm"
               wellClassName="aspect-3/4 w-full"
             />
           ))}

@@ -75,6 +75,9 @@ export const updateProfileSchema = z.object({
 
 export type UpdateProfileDto = z.infer<typeof updateProfileSchema>;
 
+/** Max authors a curator can pin in the home author-selection strip. */
+export const HOME_AUTHOR_SELECTION_MAX = 3;
+
 export type PublicProfile = {
   slug: string | null;
   displayName: string | null;
@@ -88,6 +91,10 @@ export type PublicProfile = {
   workCount: number;
   /** Author listed their studio (and not moderated away). */
   inStudio: boolean;
+  /** Home creator-of-the-week pin. */
+  homeFeaturedAt: string | null;
+  /** Home author-selection strip pin. */
+  homeSelectionAt: string | null;
 };
 
 export type Profile = PublicProfile & {

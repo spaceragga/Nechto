@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { StudioProfileSummary } from '@nechto/api-contract';
+import { StaffDesk } from '@/components/staff/staff-desk';
+import { StaffDeskList } from '@/components/staff/staff-desk-list';
+import { StaffThumb } from '@/components/staff/staff-thumb';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import {
@@ -110,21 +113,35 @@ export function CurationStudioDesk({
   }
 
   return (
-    <section className="mt-10">
-      <h2 className="text-sm tracking-wide opacity-70">{t('studio')}</h2>
-      <p className="mt-2 max-w-2xl text-sm opacity-70">{t('studioLede')}</p>
+    <StaffDesk
+      title={t('studio')}
+      lede={t('studioLede')}
+      meta={
+        featured
+          ? featured.displayName
+          : listed.length > 0
+            ? String(listed.length)
+            : t('deskEmpty')
+      }
+    >
       {featured ? (
-        <p className="mt-4 text-sm">
-          {t('featuredStudioNow')}:{' '}
-          <Link
-            href={studioPath(featured.slug)}
-            className="text-[var(--accent)]"
-          >
-            {featured.displayName}
-          </Link>
-        </p>
+        <div className="flex items-center gap-3 text-sm">
+          <StaffThumb
+            src={featured.coverUrl ?? featured.avatarUrl}
+            alt={featured.displayName}
+          />
+          <p className="min-w-0">
+            {t('featuredStudioNow')}:{' '}
+            <Link
+              href={studioPath(featured.slug)}
+              className="text-[var(--accent)]"
+            >
+              {featured.displayName}
+            </Link>
+          </p>
+        </div>
       ) : (
-        <p className="mt-4 text-sm opacity-70">{t('featuredStudioNone')}</p>
+        <p className="text-sm opacity-70">{t('featuredStudioNone')}</p>
       )}
       {error ? (
         <div className="mt-4">
@@ -132,18 +149,24 @@ export function CurationStudioDesk({
         </div>
       ) : null}
 
-      <h3 className="mt-8 text-sm tracking-wide opacity-70">
+      <h3 className="mt-6 text-sm tracking-wide opacity-70">
         {t('studioListed')}
       </h3>
-      {listed.length === 0 ? (
-        <p className="mt-3 text-sm opacity-70">{t('emptyStudioListed')}</p>
-      ) : (
-        <ul className="mt-4 flex flex-col gap-3">
-          {listed.map((profile) => (
-            <li
-              key={profile.profileId}
-              className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3"
-            >
+      <StaffDeskList
+        className="mt-3"
+        items={listed}
+        keyOf={(profile) => profile.profileId}
+        getSearchText={(profile) =>
+          `${profile.displayName} ${profile.slug} ${renderDirections(profile)}`
+        }
+        empty={t('emptyStudioListed')}
+        renderItem={(profile) => (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <StaffThumb
+                src={profile.coverUrl ?? profile.avatarUrl}
+                alt={profile.displayName}
+              />
               <div className="min-w-0">
                 <Link
                   href={studioPath(profile.slug)}
@@ -156,49 +179,55 @@ export function CurationStudioDesk({
                   {profile.studioFeaturedAt ? ` · ${t('featuredBadge')}` : ''}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {profile.studioFeaturedAt ? (
-                  <Button
-                    type="button"
-                    disabled={pendingId === profile.profileId}
-                    onClick={() => void unfeatureProfile(profile.profileId)}
-                  >
-                    {t('unfeature')}
-                  </Button>
-                ) : (
-                  <Button
-                    type="button"
-                    disabled={pendingId === profile.profileId}
-                    onClick={() => void featureProfile(profile.profileId)}
-                  >
-                    {t('featureHome')}
-                  </Button>
-                )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {profile.studioFeaturedAt ? (
                 <Button
                   type="button"
                   disabled={pendingId === profile.profileId}
-                  onClick={() => void unlistProfile(profile.profileId)}
+                  onClick={() => void unfeatureProfile(profile.profileId)}
                 >
-                  {t('studioUnlist')}
+                  {t('unfeature')}
                 </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              ) : (
+                <Button
+                  type="button"
+                  disabled={pendingId === profile.profileId}
+                  onClick={() => void featureProfile(profile.profileId)}
+                >
+                  {t('featureHome')}
+                </Button>
+              )}
+              <Button
+                type="button"
+                disabled={pendingId === profile.profileId}
+                onClick={() => void unlistProfile(profile.profileId)}
+              >
+                {t('studioUnlist')}
+              </Button>
+            </div>
+          </div>
+        )}
+      />
 
-      <h3 className="mt-10 text-sm tracking-wide opacity-70">
+      <h3 className="mt-8 text-sm tracking-wide opacity-70">
         {t('studioCandidates')}
       </h3>
-      {candidates.length === 0 ? (
-        <p className="mt-3 text-sm opacity-70">{t('emptyStudioCandidates')}</p>
-      ) : (
-        <ul className="mt-4 flex flex-col gap-3">
-          {candidates.map((profile) => (
-            <li
-              key={profile.profileId}
-              className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3"
-            >
+      <StaffDeskList
+        className="mt-3"
+        items={candidates}
+        keyOf={(profile) => profile.profileId}
+        getSearchText={(profile) =>
+          `${profile.displayName} ${profile.slug} ${renderDirections(profile)}`
+        }
+        empty={t('emptyStudioCandidates')}
+        renderItem={(profile) => (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <StaffThumb
+                src={profile.coverUrl ?? profile.avatarUrl}
+                alt={profile.displayName}
+              />
               <div className="min-w-0">
                 <Link
                   href={profilePath(profile.slug)}
@@ -210,17 +239,17 @@ export function CurationStudioDesk({
                   {renderDirections(profile)}
                 </p>
               </div>
-              <Button
-                type="button"
-                disabled={pendingId === profile.profileId}
-                onClick={() => void listProfile(profile.profileId)}
-              >
-                {t('studioList')}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+            </div>
+            <Button
+              type="button"
+              disabled={pendingId === profile.profileId}
+              onClick={() => void listProfile(profile.profileId)}
+            >
+              {t('studioList')}
+            </Button>
+          </div>
+        )}
+      />
+    </StaffDesk>
   );
 }

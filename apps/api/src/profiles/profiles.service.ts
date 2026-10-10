@@ -2,6 +2,7 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import {
   API_ERROR_CODES,
+  HOME_AUTHOR_SELECTION_MAX,
   canListProfileInStudio,
   canPublishProfile,
   type CreatorDirection,
@@ -71,7 +72,10 @@ export class ProfilesService {
         ...publishedProfileWhere,
         ...(query.direction ? { directions: { has: query.direction } } : {}),
       },
-      orderBy: { id: 'desc' },
+      orderBy: [
+        { homeFeaturedAt: { sort: 'desc', nulls: 'last' } },
+        { id: 'desc' },
+      ],
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       take: query.limit + 1,
       include: {
@@ -93,6 +97,161 @@ export class ProfilesService {
         latestWorks: row.works.map((work) => toWorkView(work, this.storage)),
       })),
       nextCursor: hasMore ? (slice[slice.length - 1]?.id ?? null) : null,
+    };
+  }
+
+  async listForHomeCuration(): Promise<PublicProfileWithWorks[]> {
+    const rows = await this.prisma.profile.findMany({
+      where: publishedProfileWhere,
+      orderBy: [
+        { homeSelectionAt: { sort: 'desc', nulls: 'last' } },
+        { homeFeaturedAt: { sort: 'desc', nulls: 'last' } },
+        { publishedAt: 'desc' },
+      ],
+      take: 50,
+      include: {
+        ...profileInclude,
+        works: {
+          where: { hidden: false },
+          orderBy: { id: 'desc' },
+          take: 4,
+        },
+      },
+    });
+    return rows.map((row) => ({
+      ...toPublicProfile(toProfileRecord(row), this.storage),
+      latestWorks: row.works.map((work) => toWorkView(work, this.storage)),
+    }));
+  }
+
+  async featureHome(slug: string): Promise<PublicProfileWithWorks> {
+    const profile = await this.prisma.profile.findFirst({
+      where: { ...publishedProfileWhere, slug },
+    });
+    if (!profile) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROFILE_NOT_FOUND,
+        'Profile not found',
+      );
+    }
+    await this.prisma.$transaction([
+      this.prisma.profile.updateMany({
+        where: { homeFeaturedAt: { not: null } },
+        data: { homeFeaturedAt: null },
+      }),
+      this.prisma.profile.update({
+        where: { id: profile.id },
+        data: { homeFeaturedAt: new Date() },
+      }),
+    ]);
+    return this.requireHomeCurationView(profile.id);
+  }
+
+  async unfeatureHome(slug: string): Promise<PublicProfileWithWorks> {
+    const profile = await this.prisma.profile.findFirst({
+      where: { ...publishedProfileWhere, slug },
+    });
+    if (!profile) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROFILE_NOT_FOUND,
+        'Profile not found',
+      );
+    }
+    await this.prisma.profile.update({
+      where: { id: profile.id },
+      data: { homeFeaturedAt: null },
+    });
+    return this.requireHomeCurationView(profile.id);
+  }
+
+  async listHomeSelection(): Promise<PublicProfileWithWorks[]> {
+    const rows = await this.prisma.profile.findMany({
+      where: {
+        ...publishedProfileWhere,
+        homeSelectionAt: { not: null },
+      },
+      orderBy: { homeSelectionAt: 'desc' },
+      take: HOME_AUTHOR_SELECTION_MAX,
+      include: {
+        ...profileInclude,
+        works: {
+          where: { hidden: false },
+          orderBy: { id: 'desc' },
+          take: 4,
+        },
+      },
+    });
+    return rows.map((row) => ({
+      ...toPublicProfile(toProfileRecord(row), this.storage),
+      latestWorks: row.works.map((work) => toWorkView(work, this.storage)),
+    }));
+  }
+
+  async selectHome(slug: string): Promise<PublicProfileWithWorks> {
+    const profile = await this.prisma.profile.findFirst({
+      where: { ...publishedProfileWhere, slug },
+    });
+    if (!profile) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROFILE_NOT_FOUND,
+        'Profile not found',
+      );
+    }
+    const count = await this.prisma.profile.count({
+      where: { homeSelectionAt: { not: null }, ...publishedProfileWhere },
+    });
+    if (!profile.homeSelectionAt && count >= HOME_AUTHOR_SELECTION_MAX) {
+      throw new ApiHttpException(
+        HttpStatus.CONFLICT,
+        API_ERROR_CODES.AUTHOR_SELECTION_FULL,
+        'Author selection is full',
+      );
+    }
+    await this.prisma.profile.update({
+      where: { id: profile.id },
+      data: { homeSelectionAt: new Date() },
+    });
+    return this.requireHomeCurationView(profile.id);
+  }
+
+  async unselectHome(slug: string): Promise<PublicProfileWithWorks> {
+    const profile = await this.prisma.profile.findFirst({
+      where: { ...publishedProfileWhere, slug },
+    });
+    if (!profile) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROFILE_NOT_FOUND,
+        'Profile not found',
+      );
+    }
+    await this.prisma.profile.update({
+      where: { id: profile.id },
+      data: { homeSelectionAt: null },
+    });
+    return this.requireHomeCurationView(profile.id);
+  }
+
+  private async requireHomeCurationView(
+    profileId: string,
+  ): Promise<PublicProfileWithWorks> {
+    const row = await this.prisma.profile.findUniqueOrThrow({
+      where: { id: profileId },
+      include: {
+        ...profileInclude,
+        works: {
+          where: { hidden: false },
+          orderBy: { id: 'desc' },
+          take: 4,
+        },
+      },
+    });
+    return {
+      ...toPublicProfile(toProfileRecord(row), this.storage),
+      latestWorks: row.works.map((work) => toWorkView(work, this.storage)),
     };
   }
 
@@ -208,6 +367,8 @@ export class ProfilesService {
       studioListedAt: null,
       studioFeaturedAt: null,
       studioHidden: false,
+      homeFeaturedAt: null,
+      homeSelectionAt: null,
     });
 
     return toProfileView(updated, this.storage);

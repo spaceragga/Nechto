@@ -71,7 +71,7 @@ export function StudioProfileView({
       {profile.latestWorks.length === 0 ? (
         <p className="text-sm opacity-70">{empty}</p>
       ) : (
-        <section className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="grid w-full gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {profile.latestWorks.map((work) => (
             <MediaTile
               key={work.id}
@@ -81,6 +81,7 @@ export function StudioProfileView({
                 work.description ? excerpt(work.description, 110) : undefined
               }
               src={toUploadSrc(work.imageUrl)}
+              wellClassName="aspect-[3/2] w-full"
             />
           ))}
         </section>

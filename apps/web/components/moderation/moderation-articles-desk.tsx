@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { ArticleSummary } from '@nechto/api-contract';
+import { StaffDesk } from '@/components/staff/staff-desk';
+import { StaffDeskList } from '@/components/staff/staff-desk-list';
+import { StaffThumb } from '@/components/staff/staff-thumb';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { hideArticleRequest, unhideArticleRequest } from '@/lib/api';
@@ -58,70 +61,73 @@ export function ModerationArticlesDesk({
   }
 
   return (
-    <section className="mt-10 flex flex-col gap-10">
+    <StaffDesk
+      title={t('journalLive')}
+      meta={`${published.length} · ${hidden.length}`}
+    >
       {error ? <FormError>{error}</FormError> : null}
-      <div>
-        <h2 className="text-sm tracking-wide opacity-70">{t('journalLive')}</h2>
-        {published.length === 0 ? (
-          <p className="mt-3 text-sm opacity-70">{t('emptyJournalLive')}</p>
-        ) : (
-          <ul className="mt-4 flex flex-col gap-3">
-            {published.map((item) => (
-              <li
-                key={item.id}
-                className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3"
-              >
-                <div>
-                  <Link href={articlePath(item.id)}>{item.title}</Link>
-                  <p className="text-sm opacity-70">
-                    <Link href={profilePath(item.author.slug)}>
-                      {item.author.displayName}
-                    </Link>
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  disabled={pendingId === item.id}
-                  onClick={() => void hide(item.id)}
-                >
-                  {t('hideArticle')}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <div>
-        <h2 className="text-sm tracking-wide opacity-70">
-          {t('hiddenArticles')}
-        </h2>
-        {hidden.length === 0 ? (
-          <p className="mt-3 text-sm opacity-70">{t('emptyHiddenArticles')}</p>
-        ) : (
-          <ul className="mt-4 flex flex-col gap-3">
-            {hidden.map((item) => (
-              <li
-                key={item.id}
-                className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3"
-              >
-                <div>
-                  <p>{item.title}</p>
-                  <p className="text-sm opacity-70">
+      <h3 className="text-sm tracking-wide opacity-70">{t('journalLive')}</h3>
+      <StaffDeskList
+        className="mt-3"
+        items={published}
+        keyOf={(item) => item.id}
+        getSearchText={(item) =>
+          `${item.title} ${item.author.displayName} ${item.author.slug}`
+        }
+        empty={t('emptyJournalLive')}
+        renderItem={(item) => (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <StaffThumb src={item.coverImageUrl} alt={item.title} />
+              <div className="min-w-0">
+                <Link href={articlePath(item.id)}>{item.title}</Link>
+                <p className="text-sm opacity-70">
+                  <Link href={profilePath(item.author.slug)}>
                     {item.author.displayName}
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  disabled={pendingId === item.id}
-                  onClick={() => void unhide(item.id)}
-                >
-                  {t('unhideArticle')}
-                </Button>
-              </li>
-            ))}
-          </ul>
+                  </Link>
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              disabled={pendingId === item.id}
+              onClick={() => void hide(item.id)}
+            >
+              {t('hideArticle')}
+            </Button>
+          </div>
         )}
-      </div>
-    </section>
+      />
+      <h3 className="mt-8 text-sm tracking-wide opacity-70">
+        {t('hiddenArticles')}
+      </h3>
+      <StaffDeskList
+        className="mt-3"
+        items={hidden}
+        keyOf={(item) => item.id}
+        getSearchText={(item) =>
+          `${item.title} ${item.author.displayName} ${item.author.slug}`
+        }
+        empty={t('emptyHiddenArticles')}
+        renderItem={(item) => (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <StaffThumb src={item.coverImageUrl} alt={item.title} />
+              <div className="min-w-0">
+                <p>{item.title}</p>
+                <p className="text-sm opacity-70">{item.author.displayName}</p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              disabled={pendingId === item.id}
+              onClick={() => void unhide(item.id)}
+            >
+              {t('unhideArticle')}
+            </Button>
+          </div>
+        )}
+      />
+    </StaffDesk>
   );
 }
