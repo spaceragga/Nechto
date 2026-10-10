@@ -567,8 +567,8 @@ test.describe('home page locales', () => {
     await expect(
       spots.getByRole('link', { name: /Сегодня на стене/ }),
     ).toHaveCSS('text-align', 'center');
-    await expect(spots).toHaveCSS('padding-top', '24px');
-    await expect(spots).toHaveCSS('padding-bottom', '24px');
+    await expect(spots).toHaveCSS('padding-top', '16px');
+    await expect(spots).toHaveCSS('padding-bottom', '16px');
   });
 
   test('shows the hanging spot in English', async ({ page }) => {
