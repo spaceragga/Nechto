@@ -17,7 +17,7 @@ test.describe('profile reports', () => {
     await expect(page.getByRole('status')).toHaveText('Жалоба отправлена');
   });
 
-  test('hides the report form from the profile owner', async ({ page }) => {
+  test('hides the report control from the profile owner', async ({ page }) => {
     await page.goto('/login');
     await page.getByLabel('Email').fill('artist1@nechto.test');
     await page.getByLabel('Пароль').fill('password123');

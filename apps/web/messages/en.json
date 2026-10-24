@@ -549,11 +549,13 @@
   },
   "Report": {
     "open": "Report",
+    "lede": "A moderator will review this profile report. Closing a report does not hide works by itself.",
     "reason": "Reason",
     "details": "Details",
     "email": "Contact email",
     "submit": "Submit report",
     "submitting": "Sending…",
+    "cancel": "Cancel",
     "sent": "Report submitted",
     "reasons": {
       "spam": "Spam",

@@ -80,6 +80,9 @@ export async function PublicProfileView({
               <ChipLink href={studioPath(slug)}>{t('studio')}</ChipLink>
             </div>
           ) : null}
+          {canReport && slug ? (
+            <ReportProfileForm slug={slug} viewerEmail={viewerEmail} />
+          ) : null}
         </div>
         {photoSrc ? (
           <div data-public-profile-photo className="shrink-0">
@@ -173,9 +176,6 @@ export async function PublicProfileView({
           ))}
         </section>
       )}
-      {canReport && slug ? (
-        <ReportProfileForm slug={slug} viewerEmail={viewerEmail} />
-      ) : null}
     </main>
   );
 }

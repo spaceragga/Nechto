@@ -50,7 +50,7 @@ export function ReportProfileForm({
 
   if (sent) {
     return (
-      <p className="mt-10 text-sm opacity-70" role="status">
+      <p className="mt-6 text-sm opacity-70" role="status">
         {t('sent')}
       </p>
     );
@@ -58,22 +58,27 @@ export function ReportProfileForm({
 
   if (!open) {
     return (
-      <div className="mt-10">
-        <Button type="button" onClick={() => setOpen(true)}>
+      <div className="mt-6">
+        <button
+          type="button"
+          className="font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline"
+          onClick={() => setOpen(true)}
+        >
           {t('open')}
-        </Button>
+        </button>
       </div>
     );
   }
 
   return (
     <form
-      className="mt-10 flex max-w-md flex-col gap-4"
+      className="mt-6 flex max-w-md flex-col gap-4 border border-white/10 p-4"
       onSubmit={(event) => {
         event.preventDefault();
         void submit();
       }}
     >
+      <p className="font-sans text-sm tracking-wide opacity-70">{t('lede')}</p>
       <label className="flex flex-col gap-1 text-sm">
         <span>{t('reason')}</span>
         <select
@@ -108,9 +113,21 @@ export function ReportProfileForm({
         />
       </label>
       {error ? <FormError>{error}</FormError> : null}
-      <Button type="submit" disabled={pending || !hydrated}>
-        {pending ? t('submitting') : t('submit')}
-      </Button>
+      <div className="flex flex-wrap gap-3">
+        <Button type="submit" disabled={pending || !hydrated}>
+          {pending ? t('submitting') : t('submit')}
+        </Button>
+        <Button
+          type="button"
+          disabled={pending}
+          onClick={() => {
+            setOpen(false);
+            setError(null);
+          }}
+        >
+          {t('cancel')}
+        </Button>
+      </div>
     </form>
   );
 }
