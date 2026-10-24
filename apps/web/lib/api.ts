@@ -12,6 +12,7 @@ import type {
   ListCreatorsQuery,
   LoginDto,
   Profile,
+  CreateReportDto,
   CreateProjectFields,
   ReplaceProjectBlocks,
   UpdateArticleFields,
@@ -291,6 +292,14 @@ export function updateStaffAccessRequest(
   access: UpdateStaffAccessDto,
 ) {
   return api.updateStaffAccess(userId, access);
+}
+
+export function createReportRequest(input: CreateReportDto) {
+  return api.createReport(input);
+}
+
+export function resolveReportRequest(reportId: string) {
+  return api.resolveReport(reportId);
 }
 
 export function listPublishedWorksRequest(

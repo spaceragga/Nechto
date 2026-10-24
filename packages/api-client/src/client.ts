@@ -24,6 +24,7 @@ import {
   type LogoutResponse,
   type ModerationDesk,
   type Profile,
+  type ProfileReport,
   type PublicArticle,
   type PublicDialogue,
   type PublicProfile,
@@ -31,6 +32,8 @@ import {
   type Project,
   type ProjectSummary,
   type PublicProject,
+  type CreateReportDto,
+  type CreateReportResponse,
   type CreateProjectFields,
   type ReplaceProjectBlocks,
   type UpdateProjectFields,
@@ -629,6 +632,20 @@ export class ApiClient {
         method: 'PATCH',
         body: JSON.stringify(access),
       },
+    );
+  }
+
+  createReport(input: CreateReportDto) {
+    return this.request<CreateReportResponse>('/reports', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  resolveReport(reportId: string) {
+    return this.request<ProfileReport>(
+      `/moderation/reports/${encodeURIComponent(reportId)}/resolve`,
+      { method: 'POST' },
     );
   }
 

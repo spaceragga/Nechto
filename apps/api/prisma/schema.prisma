@@ -21,6 +21,7 @@ model User {
   profile             Profile?
   passwordResetTokens PasswordResetToken[]
   dialogues           Dialogue[]
+  reports             Report[]
 }
 
 model PasswordResetToken {
@@ -62,6 +63,7 @@ model Profile {
   works          Work[]
   projects       Project[]
   articles       Article[]
+  reports        Report[]
 
   @@index([publishedAt])
   @@index([studioListedAt])
@@ -162,4 +164,22 @@ model ProjectBlock {
 
   @@unique([projectId, position])
   @@index([workId])
+}
+
+model Report {
+  id         String    @id @default(cuid())
+  profileId  String
+  profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  reporterId String?
+  reporter   User?     @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+  reason     String
+  details    String    @default("")
+  email      String
+  status     String    @default("open")
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([profileId])
+  @@index([reporterId])
 }
