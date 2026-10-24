@@ -3,6 +3,7 @@ import type {
   ArticleSummary,
   DialogueSummary,
   ModerationDesk,
+  ProfileReport,
   StudioProfileSummary,
   WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -11,12 +12,14 @@ import { ArticlesService } from '../articles/articles.service';
 import { DialoguesService } from '../dialogues/dialogues.service';
 import { StudioService } from '../studio/studio.service';
 import { WorksService } from '../works/works.service';
+import { ReportsService } from './reports.service';
 
 @Controller('moderation')
 export class ModerationController {
   constructor(
     private readonly articles: ArticlesService,
     private readonly dialogues: DialoguesService,
+    private readonly reports: ReportsService,
     private readonly studio: StudioService,
     private readonly works: WorksService,
   ) {}
@@ -33,6 +36,7 @@ export class ModerationController {
       hiddenDialogues,
       liveStudio,
       hiddenStudio,
+      reports,
     ] = await Promise.all([
       this.works.listLiveForModeration(),
       this.works.listHiddenForModeration(),
@@ -42,9 +46,10 @@ export class ModerationController {
       this.dialogues.listHidden(),
       this.studio.listLiveForModeration(),
       this.studio.listHiddenForModeration(),
+      this.reports.listForDesk(),
     ]);
     return {
-      reports: [],
+      reports,
       liveWorks,
       hiddenWorks,
       liveArticles,
@@ -110,5 +115,12 @@ export class ModerationController {
     @Param('profileId') profileId: string,
   ): Promise<StudioProfileSummary> {
     return this.studio.unhide(profileId);
+  }
+
+  @Post('reports/:id/resolve')
+  @RequiresModerator()
+  @HttpCode(200)
+  resolveReport(@Param('id') id: string): Promise<ProfileReport> {
+    return this.reports.resolve(id);
   }
 }

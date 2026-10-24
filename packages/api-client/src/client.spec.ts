@@ -215,6 +215,60 @@ describe('ApiClient', () => {
     );
 
     fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ ok: true }), {
+        status: 201,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    await expect(
+      client.createReport({
+        slug: 'kasia-voit',
+        reason: 'spam',
+        details: 'bots',
+        email: 'visitor@nechto.test',
+      }),
+    ).resolves.toEqual({ ok: true });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/reports',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          slug: 'kasia-voit',
+          reason: 'spam',
+          details: 'bots',
+          email: 'visitor@nechto.test',
+        }),
+      }),
+    );
+
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 'r1',
+          reason: 'spam',
+          details: 'bots',
+          email: 'visitor@nechto.test',
+          status: 'resolved',
+          createdAt: '2026-10-24T00:00:00.000Z',
+          resolvedAt: '2026-10-24T01:00:00.000Z',
+          profile: { slug: 'kasia-voit', displayName: 'Кася' },
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+    await expect(client.resolveReport('r1')).resolves.toMatchObject({
+      id: 'r1',
+      status: 'resolved',
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/moderation/reports/r1/resolve',
+      expect.objectContaining({ method: 'POST' }),
+    );
+
+    fetchMock.mockResolvedValue(
       new Response(
         JSON.stringify({
           pairings: [],
