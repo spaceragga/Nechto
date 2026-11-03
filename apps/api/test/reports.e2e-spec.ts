@@ -92,7 +92,7 @@ describe('Reports (e2e)', () => {
   it('accepts a public report and lets a moderator close it', async () => {
     await request(app.getHttpServer())
       .post('/reports')
-      .send({ slug, reason: 'spam' })
+      .send({ targetType: 'profile', slug, reason: 'spam' })
       .expect(400)
       .expect((response) => {
         expect(response.body.code).toBe(API_ERROR_CODES.VALIDATION_FAILED);
@@ -101,16 +101,34 @@ describe('Reports (e2e)', () => {
     await request(app.getHttpServer())
       .post('/reports')
       .set('Cookie', authorCookie)
-      .send({ slug, reason: 'spam' })
+      .send({ targetType: 'profile', slug, reason: 'spam' })
       .expect(403);
 
     await request(app.getHttpServer())
       .post('/reports')
       .send({
+        targetType: 'profile',
         slug,
         reason: 'harassment',
         details: 'rude bio',
         email: 'anon@nechto.test',
+      })
+      .expect(201)
+      .expect({ ok: true });
+
+    const work = await prisma.work.findFirstOrThrow({
+      where: { profile: { slug } },
+      select: { id: true },
+    });
+
+    await request(app.getHttpServer())
+      .post('/reports')
+      .send({
+        targetType: 'work',
+        targetId: work.id,
+        reason: 'copyright',
+        details: 'stolen frame',
+        email: 'rights@nechto.test',
       })
       .expect(201)
       .expect({ ok: true });
@@ -120,29 +138,42 @@ describe('Reports (e2e)', () => {
       .set('Cookie', moderatorCookie)
       .expect(200);
 
-    const open = (
-      desk.body.reports as Array<{
-        id: string;
-        status: string;
-        profile: { slug: string };
-      }>
-    ).find((item) => item.profile.slug === slug && item.status === 'open');
-    expect(open).toBeTruthy();
+    const reports = desk.body.reports as Array<{
+      id: string;
+      status: string;
+      targetType: string;
+      profile: { slug: string };
+    }>;
+    const openProfile = reports.find(
+      (item) =>
+        item.profile.slug === slug &&
+        item.status === 'open' &&
+        item.targetType === 'profile',
+    );
+    const openWork = reports.find(
+      (item) =>
+        item.profile.slug === slug &&
+        item.status === 'open' &&
+        item.targetType === 'work',
+    );
+    expect(openProfile).toBeTruthy();
+    expect(openWork).toBeTruthy();
 
     const resolved = await request(app.getHttpServer())
-      .post(`/moderation/reports/${open?.id}/resolve`)
+      .post(`/moderation/reports/${openProfile?.id}/resolve`)
       .set('Cookie', visitorCookie)
       .expect(403);
 
     expect(resolved.body.code).toBe(API_ERROR_CODES.FORBIDDEN);
 
     await request(app.getHttpServer())
-      .post(`/moderation/reports/${open?.id}/resolve`)
+      .post(`/moderation/reports/${openProfile?.id}/resolve`)
       .set('Cookie', moderatorCookie)
       .expect(200)
       .expect((response) => {
         expect(response.body.status).toBe('resolved');
         expect(response.body.email).toBe('anon@nechto.test');
+        expect(response.body.targetType).toBe('profile');
       });
   });
 });

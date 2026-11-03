@@ -1,6 +1,9 @@
 -- CreateTable
 CREATE TABLE "Report" (
     "id" TEXT NOT NULL,
+    "targetType" TEXT NOT NULL,
+    "targetId" TEXT NOT NULL,
+    "targetTitle" TEXT NOT NULL DEFAULT '',
     "profileId" TEXT NOT NULL,
     "reporterId" TEXT,
     "reason" TEXT NOT NULL,
@@ -21,6 +24,9 @@ CREATE INDEX "Report_profileId_idx" ON "Report"("profileId");
 
 -- CreateIndex
 CREATE INDEX "Report_reporterId_idx" ON "Report"("reporterId");
+
+-- CreateIndex
+CREATE INDEX "Report_targetType_targetId_idx" ON "Report"("targetType", "targetId");
 
 -- AddForeignKey
 ALTER TABLE "Report" ADD CONSTRAINT "Report_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;

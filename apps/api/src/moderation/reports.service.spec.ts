@@ -5,6 +5,10 @@ import { PrismaService } from '../prisma/prisma.service';
 describe('ReportsService', () => {
   const prisma = {
     profile: { findFirst: jest.fn() },
+    work: { findFirst: jest.fn() },
+    project: { findFirst: jest.fn() },
+    article: { findFirst: jest.fn() },
+    dialogue: { findFirst: jest.fn() },
     report: {
       create: jest.fn(),
       findMany: jest.fn(),
@@ -23,12 +27,15 @@ describe('ReportsService', () => {
     prisma.profile.findFirst.mockResolvedValue({
       id: 'profile-1',
       userId: 'author-1',
+      displayName: 'Кася',
+      slug: 'kasia-voit',
     });
     prisma.report.create.mockResolvedValue({ id: 'r1' });
 
     await expect(
       service.create(
         {
+          targetType: 'profile',
           slug: 'kasia-voit',
           reason: 'spam',
           details: 'bots',
@@ -40,6 +47,9 @@ describe('ReportsService', () => {
 
     expect(prisma.report.create).toHaveBeenCalledWith({
       data: {
+        targetType: 'profile',
+        targetId: 'profile-1',
+        targetTitle: 'Кася',
         profileId: 'profile-1',
         reporterId: undefined,
         reason: 'spam',
@@ -49,10 +59,47 @@ describe('ReportsService', () => {
     });
   });
 
+  it('creates a report for a published work', async () => {
+    prisma.work.findFirst.mockResolvedValue({
+      id: 'work-1',
+      title: 'Двор',
+      profileId: 'profile-1',
+      profile: { userId: 'author-1' },
+    });
+    prisma.report.create.mockResolvedValue({ id: 'r2' });
+
+    await expect(
+      service.create(
+        {
+          targetType: 'work',
+          targetId: 'work-1',
+          reason: 'copyright',
+          details: '',
+          email: 'visitor@nechto.test',
+        },
+        null,
+      ),
+    ).resolves.toEqual({ ok: true });
+
+    expect(prisma.report.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        targetType: 'work',
+        targetId: 'work-1',
+        targetTitle: 'Двор',
+        profileId: 'profile-1',
+      }),
+    });
+  });
+
   it('rejects a report without contact email', async () => {
     await expect(
       service.create(
-        { slug: 'kasia-voit', reason: 'other', details: '' },
+        {
+          targetType: 'profile',
+          slug: 'kasia-voit',
+          reason: 'other',
+          details: '',
+        },
         null,
       ),
     ).rejects.toMatchObject({
@@ -65,11 +112,18 @@ describe('ReportsService', () => {
     prisma.profile.findFirst.mockResolvedValue({
       id: 'profile-1',
       userId: 'author-1',
+      displayName: 'Кася',
+      slug: 'kasia-voit',
     });
 
     await expect(
       service.create(
-        { slug: 'kasia-voit', reason: 'spam', details: '' },
+        {
+          targetType: 'profile',
+          slug: 'kasia-voit',
+          reason: 'spam',
+          details: '',
+        },
         {
           id: 'author-1',
           email: 'author@nechto.test',
@@ -86,6 +140,9 @@ describe('ReportsService', () => {
   it('resolves an open report', async () => {
     const row = {
       id: 'r1',
+      targetType: 'profile',
+      targetId: 'profile-1',
+      targetTitle: 'Кася',
       reason: 'spam',
       details: '',
       email: 'a@nechto.test',
@@ -104,6 +161,7 @@ describe('ReportsService', () => {
     await expect(service.resolve('r1')).resolves.toMatchObject({
       id: 'r1',
       status: 'resolved',
+      targetType: 'profile',
       profile: { slug: 'kasia-voit' },
     });
   });

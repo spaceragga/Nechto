@@ -24,7 +24,7 @@ import {
   type LogoutResponse,
   type ModerationDesk,
   type Profile,
-  type ProfileReport,
+  type ContentReport,
   type PublicArticle,
   type PublicDialogue,
   type PublicProfile,
@@ -643,7 +643,7 @@ export class ApiClient {
   }
 
   resolveReport(reportId: string) {
-    return this.request<ProfileReport>(
+    return this.request<ContentReport>(
       `/moderation/reports/${encodeURIComponent(reportId)}/resolve`,
       { method: 'POST' },
     );

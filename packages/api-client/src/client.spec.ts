@@ -222,6 +222,7 @@ describe('ApiClient', () => {
     );
     await expect(
       client.createReport({
+        targetType: 'profile',
         slug: 'kasia-voit',
         reason: 'spam',
         details: 'bots',
@@ -233,6 +234,7 @@ describe('ApiClient', () => {
       expect.objectContaining({
         method: 'POST',
         body: JSON.stringify({
+          targetType: 'profile',
           slug: 'kasia-voit',
           reason: 'spam',
           details: 'bots',
@@ -245,6 +247,9 @@ describe('ApiClient', () => {
       new Response(
         JSON.stringify({
           id: 'r1',
+          targetType: 'profile',
+          targetId: 'profile-1',
+          targetTitle: 'Кася',
           reason: 'spam',
           details: 'bots',
           email: 'visitor@nechto.test',

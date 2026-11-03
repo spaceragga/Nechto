@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { Work, WorkWithAuthor } from '@nechto/api-contract';
+import { ReportForm } from '@/components/report-form';
 import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { excerpt } from '@/lib/excerpt';
@@ -10,9 +11,16 @@ import { Link } from '@/i18n/navigation';
 type PublicWorkViewProps = {
   work: WorkWithAuthor;
   more: Work[];
+  canReport?: boolean;
+  viewerEmail?: string;
 };
 
-export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
+export async function PublicWorkView({
+  work,
+  more,
+  canReport = false,
+  viewerEmail,
+}: PublicWorkViewProps) {
   const t = await getTranslations('WorkPage');
   const tCreators = await getTranslations('Creators');
   const src = toUploadSrc(work.imageUrl);
@@ -45,6 +53,15 @@ export async function PublicWorkView({ work, more }: PublicWorkViewProps) {
           fit="contain"
           className="mt-8 h-[28rem] w-full md:h-[36rem]"
         />
+      ) : null}
+      {canReport ? (
+        <div className="mx-auto mt-10 max-w-md">
+          <ReportForm
+            target={{ targetType: 'work', targetId: work.id }}
+            viewerEmail={viewerEmail}
+            className="mt-0"
+          />
+        </div>
       ) : null}
       {more.length > 0 ? (
         <section className="mt-12">

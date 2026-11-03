@@ -17,20 +17,62 @@ export const REPORT_STATUSES = ['open', 'resolved'] as const;
 
 export type ReportStatus = (typeof REPORT_STATUSES)[number];
 
-export const createReportSchema = z.object({
-  slug: profileSlugSchema,
+export const REPORT_TARGET_TYPES = [
+  'profile',
+  'work',
+  'project',
+  'article',
+  'dialogue',
+] as const;
+
+export type ReportTargetType = (typeof REPORT_TARGET_TYPES)[number];
+
+export const reportTargetTypeSchema = z.enum(REPORT_TARGET_TYPES);
+
+const reportContactFields = {
   reason: reportReasonSchema,
   details: z.string().trim().max(2000).optional().default(''),
   email: z
     .union([z.string().trim().email().max(128), z.literal('')])
     .optional()
     .transform((value) => (value === '' ? undefined : value)),
-});
+};
+
+export const createReportSchema = z.discriminatedUnion('targetType', [
+  z.object({
+    targetType: z.literal('profile'),
+    slug: profileSlugSchema,
+    ...reportContactFields,
+  }),
+  z.object({
+    targetType: z.literal('work'),
+    targetId: z.string().cuid(),
+    ...reportContactFields,
+  }),
+  z.object({
+    targetType: z.literal('project'),
+    targetId: z.string().cuid(),
+    ...reportContactFields,
+  }),
+  z.object({
+    targetType: z.literal('article'),
+    targetId: z.string().cuid(),
+    ...reportContactFields,
+  }),
+  z.object({
+    targetType: z.literal('dialogue'),
+    targetId: z.string().cuid(),
+    ...reportContactFields,
+  }),
+]);
 
 export type CreateReportDto = z.infer<typeof createReportSchema>;
 
-export type ProfileReport = {
+export type ContentReport = {
   id: string;
+  targetType: ReportTargetType;
+  targetId: string;
+  targetTitle: string;
   reason: ReportReason;
   details: string;
   email: string;

@@ -2,9 +2,11 @@ import type { Profile, Report } from '@prisma/client';
 import {
   REPORT_REASONS,
   REPORT_STATUSES,
-  type ProfileReport,
+  REPORT_TARGET_TYPES,
+  type ContentReport,
   type ReportReason,
   type ReportStatus,
+  type ReportTargetType,
 } from '@nechto/api-contract';
 
 type ReportRecord = Report & {
@@ -23,9 +25,18 @@ function asStatus(value: string): ReportStatus {
     : 'open';
 }
 
-export function toProfileReport(row: ReportRecord): ProfileReport {
+function asTargetType(value: string): ReportTargetType {
+  return (REPORT_TARGET_TYPES as readonly string[]).includes(value)
+    ? (value as ReportTargetType)
+    : 'profile';
+}
+
+export function toContentReport(row: ReportRecord): ContentReport {
   return {
     id: row.id,
+    targetType: asTargetType(row.targetType),
+    targetId: row.targetId,
+    targetTitle: row.targetTitle,
     reason: asReason(row.reason),
     details: row.details,
     email: row.email,

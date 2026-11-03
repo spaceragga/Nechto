@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { REPORT_REASONS, type ReportReason } from '@nechto/api-contract';
+import {
+  REPORT_REASONS,
+  type CreateReportDto,
+  type ReportReason,
+  type ReportTargetType,
+} from '@nechto/api-contract';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { Input } from '@/components/ui/input';
@@ -10,15 +15,22 @@ import { useHydrated } from '@/hooks/use-hydrated';
 import { createReportRequest } from '@/lib/api';
 import { mapApiErrorMessage } from '@/lib/map-api-error';
 
-type ReportProfileFormProps = {
-  slug: string;
+type ReportFormProps = {
+  target:
+    | { targetType: 'profile'; slug: string }
+    | {
+        targetType: Exclude<ReportTargetType, 'profile'>;
+        targetId: string;
+      };
   viewerEmail?: string;
+  className?: string;
 };
 
-export function ReportProfileForm({
-  slug,
+export function ReportForm({
+  target,
   viewerEmail,
-}: ReportProfileFormProps) {
+  className = 'mt-6',
+}: ReportFormProps) {
   const t = useTranslations('Report');
   const tErrors = useTranslations('Errors');
   const hydrated = useHydrated();
@@ -34,12 +46,23 @@ export function ReportProfileForm({
     setPending(true);
     setError(null);
     try {
-      await createReportRequest({
-        slug,
-        reason,
-        details,
-        email: email.trim() || undefined,
-      });
+      const payload: CreateReportDto =
+        target.targetType === 'profile'
+          ? {
+              targetType: 'profile',
+              slug: target.slug,
+              reason,
+              details,
+              email: email.trim() || undefined,
+            }
+          : {
+              targetType: target.targetType,
+              targetId: target.targetId,
+              reason,
+              details,
+              email: email.trim() || undefined,
+            };
+      await createReportRequest(payload);
       setSent(true);
     } catch (caught) {
       setError(mapApiErrorMessage(caught, tErrors));
@@ -50,7 +73,7 @@ export function ReportProfileForm({
 
   if (sent) {
     return (
-      <p className="mt-6 text-sm opacity-70" role="status">
+      <p className={`${className} text-sm opacity-70`} role="status">
         {t('sent')}
       </p>
     );
@@ -58,7 +81,7 @@ export function ReportProfileForm({
 
   if (!open) {
     return (
-      <div className="mt-6">
+      <div className={className}>
         <button
           type="button"
           className="font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline"
@@ -72,13 +95,15 @@ export function ReportProfileForm({
 
   return (
     <form
-      className="mt-6 flex max-w-md flex-col gap-4 border border-white/10 p-4"
+      className={`${className} flex max-w-md flex-col gap-4 border border-white/10 p-4 text-left`}
       onSubmit={(event) => {
         event.preventDefault();
         void submit();
       }}
     >
-      <p className="font-sans text-sm tracking-wide opacity-70">{t('lede')}</p>
+      <p className="font-sans text-sm tracking-wide opacity-70">
+        {t(`ledes.${target.targetType}`)}
+      </p>
       <label className="flex flex-col gap-1 text-sm">
         <span>{t('reason')}</span>
         <select

@@ -167,19 +167,24 @@ model ProjectBlock {
 }
 
 model Report {
-  id         String    @id @default(cuid())
-  profileId  String
-  profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  reporterId String?
-  reporter   User?     @relation(fields: [reporterId], references: [id], onDelete: SetNull)
-  reason     String
-  details    String    @default("")
-  email      String
-  status     String    @default("open")
-  createdAt  DateTime  @default(now())
-  resolvedAt DateTime?
+  id          String    @id @default(cuid())
+  /** profile | work | project | article | dialogue */
+  targetType  String
+  targetId    String
+  targetTitle String    @default("")
+  profileId   String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  reporterId  String?
+  reporter    User?     @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+  reason      String
+  details     String    @default("")
+  email       String
+  status      String    @default("open")
+  createdAt   DateTime  @default(now())
+  resolvedAt  DateTime?
 
   @@index([status, createdAt])
   @@index([profileId])
   @@index([reporterId])
+  @@index([targetType, targetId])
 }

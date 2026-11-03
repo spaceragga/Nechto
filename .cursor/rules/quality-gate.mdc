@@ -28,8 +28,9 @@ on files in `git diff --name-only origin/main...HEAD` (plus unstaged):
    `test:api:e2e`, Playwright specs). Skip a suite only if the machine cannot
    run it (no DB / browsers) and say so in the PR body.
 
-`npm audit --omit=dev --audit-level=high` and lockfile regenerate only when deps
-changed (Node 22.18 Docker). Docs/rules-only: Prettier on those files is enough.
+`npx audit-ci@7 --high --omit=dev --allowlist GHSA-mrhx-c7xc-m3w5` (zod CVE
+rejected, no 3.x fix) and lockfile regenerate only when deps changed (Node
+22.18 Docker). Docs/rules-only: Prettier on those files is enough.
 
 Never `gh pr create` with a known-red `quality` / `api-test` / `web-e2e` cause.
 

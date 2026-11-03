@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { PublicDialogue, WorkWithAuthor } from '@nechto/api-contract';
+import { ReportForm } from '@/components/report-form';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 import { toUploadSrc } from '@/lib/to-upload-src';
@@ -7,6 +8,8 @@ import { profilePath, workPath } from '@/lib/work-path';
 
 type DialogueViewProps = {
   dialogue: PublicDialogue;
+  canReport?: boolean;
+  viewerEmail?: string;
 };
 
 function DialogueSide({ work }: { work: WorkWithAuthor }) {
@@ -39,7 +42,11 @@ function DialogueSide({ work }: { work: WorkWithAuthor }) {
   );
 }
 
-export async function DialogueView({ dialogue }: DialogueViewProps) {
+export async function DialogueView({
+  dialogue,
+  canReport = false,
+  viewerEmail,
+}: DialogueViewProps) {
   const t = await getTranslations('Dialogue');
 
   return (
@@ -64,6 +71,13 @@ export async function DialogueView({ dialogue }: DialogueViewProps) {
       </section>
 
       <p className="max-w-2xl font-sans text-sm opacity-70">{t('footer')}</p>
+      {canReport ? (
+        <ReportForm
+          target={{ targetType: 'dialogue', targetId: dialogue.id }}
+          viewerEmail={viewerEmail}
+          className="mt-0"
+        />
+      ) : null}
       <p>
         <Link href="/dialogue" className="text-sm text-[var(--accent)]">
           {t('back')}

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('profile reports', () => {
+test.describe('content reports', () => {
   test('lets a visitor report a published profile', async ({ page }) => {
     await page.goto('/kasia-voit');
     await expect(
@@ -13,6 +13,27 @@ test.describe('profile reports', () => {
     await page
       .getByLabel('Email для обратной связи')
       .fill('visitor@nechto.test');
+    await page.getByRole('button', { name: 'Отправить жалобу' }).click();
+    await expect(page.getByRole('status')).toHaveText('Жалоба отправлена');
+  });
+
+  test('lets a visitor report a published work', async ({ page }) => {
+    await page.goto('/kasia-voit');
+    const workLink = page
+      .locator('main a[href^="/kasia-voit/"]:not([href*="/p/"])')
+      .first();
+    await expect(workLink).toBeVisible();
+    await workLink.click();
+    await expect(
+      page.getByRole('button', { name: 'Пожаловаться' }),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Пожаловаться' }).click();
+    await page.getByLabel('Причина').selectOption('copyright');
+    await page.getByLabel('Подробности').fill('Чужая работа.');
+    await page
+      .getByLabel('Email для обратной связи')
+      .fill('rights@nechto.test');
     await page.getByRole('button', { name: 'Отправить жалобу' }).click();
     await expect(page.getByRole('status')).toHaveText('Жалоба отправлена');
   });

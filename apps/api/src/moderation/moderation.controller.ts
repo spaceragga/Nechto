@@ -1,9 +1,9 @@
 import { Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import type {
   ArticleSummary,
+  ContentReport,
   DialogueSummary,
   ModerationDesk,
-  ProfileReport,
   StudioProfileSummary,
   WorkWithAuthor,
 } from '@nechto/api-contract';
@@ -120,7 +120,7 @@ export class ModerationController {
   @Post('reports/:id/resolve')
   @RequiresModerator()
   @HttpCode(200)
-  resolveReport(@Param('id') id: string): Promise<ProfileReport> {
+  resolveReport(@Param('id') id: string): Promise<ContentReport> {
     return this.reports.resolve(id);
   }
 }

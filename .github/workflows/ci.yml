@@ -20,7 +20,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - run: npm audit --omit=dev --audit-level=high
+      # GHSA-mrhx-c7xc-m3w5 (zod): CVE rejected; no 3.x fix until a planned v4 migration.
+      - run: npx --yes audit-ci@7 --high --omit=dev --allowlist GHSA-mrhx-c7xc-m3w5
       # Prisma Client typings are required for API typecheck; no DB needed.
       - run: npx prisma generate
         working-directory: apps/api
