@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { CurationModule } from './curation/curation.module';
 import { DialoguesModule } from './dialogues/dialogues.module';
 import { ModerationModule } from './moderation/moderation.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { ProjectsModule } from './projects/projects.module';
@@ -35,6 +36,7 @@ import { WorksModule } from './works/works.module';
     AuthModule,
     CurationModule,
     ModerationModule,
+    NotificationsModule,
     ProfilesModule,
     ProjectsModule,
     SearchModule,

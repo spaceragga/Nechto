@@ -40,9 +40,11 @@ import {
   type UpdateProjectFields,
   type RegisterDto,
   type ResetPasswordDto,
+  type NotificationList,
   type SearchQuery,
   type SearchResults,
   type StaffUser,
+  type UnreadCount,
   type StaffUserList,
   type StudioProfileSummary,
   type UpdateArticleFields,
@@ -90,6 +92,27 @@ export class ApiClient {
 
   search(query: Partial<SearchQuery> = {}) {
     return this.request<SearchResults>(`/search${toSearchParams(query)}`);
+  }
+
+  listNotifications() {
+    return this.request<NotificationList>('/notifications');
+  }
+
+  unreadNotificationCount() {
+    return this.request<UnreadCount>('/notifications/unread-count');
+  }
+
+  markNotificationRead(id: string) {
+    return this.request<{ ok: true }>(
+      `/notifications/${encodeURIComponent(id)}/read`,
+      { method: 'POST' },
+    );
+  }
+
+  markAllNotificationsRead() {
+    return this.request<UnreadCount>('/notifications/read-all', {
+      method: 'POST',
+    });
   }
 
   getHello() {

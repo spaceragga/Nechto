@@ -149,6 +149,21 @@
     "empty": "Ничего не нашлось.",
     "hint": "Введите хотя бы два символа."
   },
+  "Notifications": {
+    "title": "Уведомления",
+    "lede": "Лайки, подписки и комментарии к вашим работам и сериям.",
+    "empty": "Пока нет уведомлений.",
+    "markAllRead": "Прочитать все",
+    "kindLiked": "Лайк вашей работы",
+    "kindFollowed": "Новая подписка",
+    "kindCommented": "Комментарий к работе",
+    "kindProjectLiked": "Лайк вашей серии",
+    "kindProjectCommented": "Комментарий к серии",
+    "kindArticleLiked": "Лайк вашей статьи",
+    "kindArticleCommented": "Комментарий к статье",
+    "kindDialogueLiked": "Лайк вашего диалога",
+    "kindDialogueCommented": "Комментарий к диалогу"
+  },
   "Fresh": {
     "title": "Новые",
     "lede": "Свежие публикации в том порядке, в каком они появились в доме.",
