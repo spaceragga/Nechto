@@ -3,6 +3,7 @@ import type { ArticleSummary } from './article';
 import type { DialogueSummary } from './dialogue';
 import type { ProjectSummary } from './project';
 import type { PublicProfileWithWorks } from './profile';
+import type { ContentReport } from './report';
 import type { StudioProfileSummary } from './studio';
 import type { WorkWithAuthor } from './work';
 
@@ -47,7 +48,7 @@ export type StaffUserList = {
 };
 
 export type ModerationDesk = {
-  reports: [];
+  reports: ContentReport[];
   liveWorks: WorkWithAuthor[];
   hiddenWorks: WorkWithAuthor[];
   liveArticles: ArticleSummary[];

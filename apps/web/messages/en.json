@@ -192,7 +192,7 @@
     "adminTitle": "Users",
     "adminLede": "Access is independent: curator, moderator, and admin can be granted separately or together.",
     "moderatorTitle": "Reports",
-    "moderatorLede": "Hidden works, journal articles, dialogues, and studio land here. Reports are still ahead.",
+    "moderatorLede": "Content reports, hidden works, journal articles, dialogues, and studio land here.",
     "curatorTitle": "Selections",
     "curatorLede": "Pin the home billboard, creator of the week, author selection, hanging strip, channels, journal, dialogues, and studio.",
     "authorSelection": "Author selection",
@@ -209,6 +209,14 @@
     "unnamed": "No name",
     "forbidden": "You do not have access",
     "reports": "Reports",
+    "reportsLede": "Hide a work, article, or dialogue here. Close only clears the queue. Profiles and studio — desks below.",
+    "openReports": "Open",
+    "resolvedReports": "Closed",
+    "resolveReport": "Close",
+    "hideReported": "Hide",
+    "reportedHidden": "Hidden",
+    "reportContact": "Contact",
+    "emptyResolvedReports": "No closed reports yet.",
     "hiddenWorks": "Hidden works",
     "emptyReports": "No reports yet.",
     "emptyHidden": "No hidden works yet.",
@@ -536,17 +544,33 @@
       "paragraphs": [
         "Publish your own work or material you are authorized to use. Provide clear titles and useful image descriptions.",
         "Threats, degradation, discrimination, sexual exploitation, fraud, spam, and deliberate deception are prohibited.",
-        "Visitors can report violations from a creator page. A moderator reviews reports; profiles may be hidden and decisions are recorded in the moderation audit log.",
+        "Visitors can report violations from a creator, work, series, article, or dialogue page. A moderator reviews reports; content may be hidden and decisions are recorded in the moderation audit log.",
         "Copyright reports should include the material URL, a description of the rights, and contact details: support@nechto.by."
       ]
     }
   },
   "Report": {
     "open": "Report",
+    "ledes": {
+      "profile": "A moderator will review this profile report. Closing a report does not hide content by itself.",
+      "work": "A moderator will review this work report. Closing a report does not hide content by itself.",
+      "project": "A moderator will review this series report. Closing a report does not hide content by itself.",
+      "article": "A moderator will review this article report. Closing a report does not hide content by itself.",
+      "dialogue": "A moderator will review this dialogue report. Closing a report does not hide content by itself."
+    },
+    "targets": {
+      "profile": "Profile",
+      "work": "Work",
+      "project": "Series",
+      "article": "Article",
+      "dialogue": "Dialogue"
+    },
     "reason": "Reason",
     "details": "Details",
     "email": "Contact email",
     "submit": "Submit report",
+    "submitting": "Sending…",
+    "cancel": "Cancel",
     "sent": "Report submitted",
     "reasons": {
       "spam": "Spam",

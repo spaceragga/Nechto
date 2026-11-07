@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { PublicArticle } from '@nechto/api-contract';
+import { ReportForm } from '@/components/report-form';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { profilePath } from '@/lib/work-path';
@@ -7,9 +8,15 @@ import { Link } from '@/i18n/navigation';
 
 type JournalArticleViewProps = {
   article: PublicArticle;
+  canReport?: boolean;
+  viewerEmail?: string;
 };
 
-export async function JournalArticleView({ article }: JournalArticleViewProps) {
+export async function JournalArticleView({
+  article,
+  canReport = false,
+  viewerEmail,
+}: JournalArticleViewProps) {
   const t = await getTranslations('Journal');
   const tCreators = await getTranslations('Creators');
   const paragraphs = article.body
@@ -66,6 +73,13 @@ export async function JournalArticleView({ article }: JournalArticleViewProps) {
           {t('toAuthor', { name: article.author.displayName })}
         </Link>
       </p>
+      {canReport ? (
+        <ReportForm
+          target={{ targetType: 'article', targetId: article.id }}
+          viewerEmail={viewerEmail}
+          className="mt-8"
+        />
+      ) : null}
     </main>
   );
 }

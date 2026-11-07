@@ -6,6 +6,7 @@ import type {
   Work,
 } from '@nechto/api-contract';
 import { QueryScrollLock } from '@/components/query-scroll-lock';
+import { ReportForm } from '@/components/report-form';
 import { MediaTile } from '@/components/ui/media-tile';
 import { ChipLink } from '@/components/ui/chip-link';
 import { WorkFrame } from '@/components/ui/work-frame';
@@ -25,6 +26,8 @@ type PublicProfileViewProps = {
   projects: ProjectSummary[];
   articles: ArticleSummary[];
   pane?: string;
+  canReport?: boolean;
+  viewerEmail?: string;
 };
 
 export async function PublicProfileView({
@@ -33,6 +36,8 @@ export async function PublicProfileView({
   projects,
   articles,
   pane,
+  canReport = false,
+  viewerEmail,
 }: PublicProfileViewProps) {
   const t = await getTranslations('PublicProfile');
   const title = profile.displayName ?? profile.slug ?? '';
@@ -168,6 +173,13 @@ export async function PublicProfileView({
           ))}
         </section>
       )}
+      {canReport && slug ? (
+        <ReportForm
+          target={{ targetType: 'profile', slug }}
+          viewerEmail={viewerEmail}
+          className="mt-10"
+        />
+      ) : null}
     </main>
   );
 }

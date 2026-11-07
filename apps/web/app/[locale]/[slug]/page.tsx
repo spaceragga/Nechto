@@ -2,6 +2,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { PublicProfileView } from '@/components/profile/public-profile-view';
 import { loadPublishedProfile } from '@/lib/load-published-feed';
+import { loadReportViewer } from '@/lib/report-viewer';
 
 type PublicProfilePageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -16,7 +17,10 @@ export default async function PublicProfilePage({
   const { pane } = await searchParams;
   setRequestLocale(locale);
 
-  const published = await loadPublishedProfile(slug);
+  const [published, viewer] = await Promise.all([
+    loadPublishedProfile(slug),
+    loadReportViewer(),
+  ]);
   if (!published) {
     notFound();
   }
@@ -28,6 +32,8 @@ export default async function PublicProfilePage({
       projects={published.projects}
       articles={published.articles}
       pane={pane}
+      canReport={viewer.viewerSlug !== slug}
+      viewerEmail={viewer.viewerEmail}
     />
   );
 }

@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { PublicProject } from '@nechto/api-contract';
+import { ReportForm } from '@/components/report-form';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { profilePath, workPath } from '@/lib/work-path';
@@ -7,9 +8,15 @@ import { Link } from '@/i18n/navigation';
 
 type PublicProjectViewProps = {
   project: PublicProject;
+  canReport?: boolean;
+  viewerEmail?: string;
 };
 
-export async function PublicProjectView({ project }: PublicProjectViewProps) {
+export async function PublicProjectView({
+  project,
+  canReport = false,
+  viewerEmail,
+}: PublicProjectViewProps) {
   const t = await getTranslations('ProjectPage');
   const authorHref = profilePath(project.author.slug);
 
@@ -61,6 +68,15 @@ export async function PublicProjectView({ project }: PublicProjectViewProps) {
           ),
         )}
       </div>
+      {canReport ? (
+        <div className="mx-auto mt-10 max-w-md">
+          <ReportForm
+            target={{ targetType: 'project', targetId: project.id }}
+            viewerEmail={viewerEmail}
+            className="mt-0"
+          />
+        </div>
+      ) : null}
     </main>
   );
 }

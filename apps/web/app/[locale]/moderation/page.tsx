@@ -29,7 +29,7 @@ export default async function ModerationPage({ params }: PageProps) {
     >
       {result.ok ? (
         <>
-          <ModerationReportsDesk />
+          <ModerationReportsDesk reports={result.data.reports} />
           <ModerationWorksDesk
             liveWorks={result.data.liveWorks}
             hiddenWorks={result.data.hiddenWorks}
