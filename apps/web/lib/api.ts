@@ -314,6 +314,10 @@ export function createReportRequest(input: CreateReportDto) {
   return api.createReport(input);
 }
 
+export function searchRequest(query: Parameters<typeof api.search>[0] = {}) {
+  return api.search(query);
+}
+
 export function resolveReportRequest(reportId: string) {
   return api.resolveReport(reportId);
 }

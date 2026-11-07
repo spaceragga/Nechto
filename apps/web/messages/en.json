@@ -135,6 +135,20 @@
     "empty": "No published works yet.",
     "body": "The strongest work from creators. This selection is still taking shape."
   },
+  "Search": {
+    "title": "Search",
+    "lede": "Creators, works, series, journal, dialogues, and studios — by name and title.",
+    "placeholder": "Name, slug, or title",
+    "submit": "Search",
+    "works": "Works",
+    "creators": "Creators",
+    "projects": "Series",
+    "articles": "Journal",
+    "dialogues": "Dialogues",
+    "studios": "Studios",
+    "empty": "Nothing found.",
+    "hint": "Enter at least two characters."
+  },
   "Fresh": {
     "title": "New",
     "lede": "Fresh publications in the order they arrived in the house.",

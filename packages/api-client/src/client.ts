@@ -40,6 +40,8 @@ import {
   type UpdateProjectFields,
   type RegisterDto,
   type ResetPasswordDto,
+  type SearchQuery,
+  type SearchResults,
   type StaffUser,
   type StaffUserList,
   type StudioProfileSummary,
@@ -84,6 +86,10 @@ export class ApiClient {
 
   getHealth() {
     return this.request<HealthResponse>('/health');
+  }
+
+  search(query: Partial<SearchQuery> = {}) {
+    return this.request<SearchResults>(`/search${toSearchParams(query)}`);
   }
 
   getHello() {
