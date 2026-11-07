@@ -24,6 +24,9 @@ const baseProfile = {
   studioListedAt: null as Date | null,
   studioFeaturedAt: null as Date | null,
   studioHidden: false,
+  hidden: false,
+  homeFeaturedAt: null as Date | null,
+  homeSelectionAt: null as Date | null,
   user: { email: 'a@nechto.test', suspendedAt: null as Date | null },
   _count: { works: 0 },
 };
@@ -178,5 +181,55 @@ describe('ProfilesService', () => {
     expect(view.avatarUrl).toBe(
       'http://localhost:3001/uploads/avatars/u1/new.png',
     );
+  });
+
+  it('hides a profile, clears pins, and parks studio', async () => {
+    prisma.profile.findFirst.mockResolvedValue({ id: 'p1' });
+    prisma.profile.update.mockResolvedValue({
+      ...baseProfile,
+      slug: 'anna-rusetskaya',
+      displayName: 'Анна',
+      publishedAt: new Date('2026-01-01T00:00:00.000Z'),
+      hidden: true,
+    });
+
+    const view = await service.hide('p1');
+
+    expect(prisma.profile.update).toHaveBeenCalledWith({
+      where: { id: 'p1' },
+      data: {
+        hidden: true,
+        homeFeaturedAt: null,
+        homeSelectionAt: null,
+        studioFeaturedAt: null,
+        studioHidden: true,
+      },
+      select: expect.any(Object),
+    });
+    expect(view).toMatchObject({
+      profileId: 'p1',
+      slug: 'anna-rusetskaya',
+      hidden: true,
+    });
+  });
+
+  it('unhides a profile without flipping studioHidden back', async () => {
+    prisma.profile.findFirst.mockResolvedValue({ id: 'p1' });
+    prisma.profile.update.mockResolvedValue({
+      ...baseProfile,
+      slug: 'anna-rusetskaya',
+      displayName: 'Анна',
+      publishedAt: new Date('2026-01-01T00:00:00.000Z'),
+      hidden: false,
+      studioHidden: true,
+    });
+
+    await service.unhide('p1');
+
+    expect(prisma.profile.update).toHaveBeenCalledWith({
+      where: { id: 'p1' },
+      data: { hidden: false },
+      select: expect.any(Object),
+    });
   });
 });

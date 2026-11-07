@@ -142,17 +142,20 @@ describe('Staff access (e2e)', () => {
       .set('Cookie', adminCookie)
       .expect(200)
       .expect((response) => {
-        expect(response.body).toMatchObject({
-          reports: [],
-        });
+        expect(Array.isArray(response.body.reports)).toBe(true);
         expect(Array.isArray(response.body.liveWorks)).toBe(true);
         expect(Array.isArray(response.body.hiddenWorks)).toBe(true);
         expect(Array.isArray(response.body.liveArticles)).toBe(true);
         expect(Array.isArray(response.body.hiddenArticles)).toBe(true);
         expect(Array.isArray(response.body.liveDialogues)).toBe(true);
         expect(Array.isArray(response.body.hiddenDialogues)).toBe(true);
+        expect(Array.isArray(response.body.liveProjects)).toBe(true);
+        expect(Array.isArray(response.body.hiddenProjects)).toBe(true);
+        expect(Array.isArray(response.body.liveProfiles)).toBe(true);
+        expect(Array.isArray(response.body.hiddenProfiles)).toBe(true);
         expect(Array.isArray(response.body.liveStudio)).toBe(true);
         expect(Array.isArray(response.body.hiddenStudio)).toBe(true);
+        expect(Array.isArray(response.body.recentActions)).toBe(true);
       });
     await request(app.getHttpServer())
       .get('/curation/desk')

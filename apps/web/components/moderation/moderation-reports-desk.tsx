@@ -11,6 +11,8 @@ import { Link } from '@/i18n/navigation';
 import {
   hideArticleRequest,
   hideDialogueRequest,
+  hideProfileRequest,
+  hideProjectRequest,
   hideWorkRequest,
   resolveReportRequest,
 } from '@/lib/api';
@@ -44,7 +46,13 @@ function targetHref(item: ContentReport): string {
 }
 
 function canHideTarget(type: ReportTargetType): boolean {
-  return type === 'work' || type === 'article' || type === 'dialogue';
+  return (
+    type === 'work' ||
+    type === 'article' ||
+    type === 'dialogue' ||
+    type === 'project' ||
+    type === 'profile'
+  );
 }
 
 async function hideTarget(item: ContentReport) {
@@ -57,6 +65,12 @@ async function hideTarget(item: ContentReport) {
       return;
     case 'dialogue':
       await hideDialogueRequest(item.targetId);
+      return;
+    case 'project':
+      await hideProjectRequest(item.targetId);
+      return;
+    case 'profile':
+      await hideProfileRequest(item.targetId);
       return;
     default:
       throw new Error(`Hide is not available for ${item.targetType}`);
@@ -136,7 +150,9 @@ export function ModerationReportsDesk({
             targetLabel={tReport(
               `targets.${item.targetType as ReportTargetType}`,
             )}
+            reasonHeading={tReport('reason')}
             reasonLabel={tReport(`reasons.${item.reason}`)}
+            detailsHeading={tReport('details')}
             contactLabel={t('reportContact')}
             resolveLabel={t('resolveReport')}
             hideLabel={
@@ -172,7 +188,9 @@ export function ModerationReportsDesk({
             targetLabel={tReport(
               `targets.${item.targetType as ReportTargetType}`,
             )}
+            reasonHeading={tReport('reason')}
             reasonLabel={tReport(`reasons.${item.reason}`)}
+            detailsHeading={tReport('details')}
             contactLabel={t('reportContact')}
           />
         )}
@@ -185,7 +203,9 @@ type ReportRowProps = {
   item: ContentReport;
   pending: boolean;
   targetLabel: string;
+  reasonHeading: string;
   reasonLabel: string;
+  detailsHeading: string;
   contactLabel: string;
   resolveLabel?: string;
   hideLabel?: string;
@@ -198,7 +218,9 @@ function ReportRow({
   item,
   pending,
   targetLabel,
+  reasonHeading,
   reasonLabel,
+  detailsHeading,
   contactLabel,
   resolveLabel,
   hideLabel,
@@ -223,9 +245,13 @@ function ReportRow({
           {' · '}
           <Link href={profilePath(item.profile.slug)}>{author}</Link>
         </p>
-        <p className="text-sm opacity-70">{reasonLabel}</p>
+        <p className="text-sm opacity-70">
+          {reasonHeading}: {reasonLabel}
+        </p>
         {item.details ? (
-          <p className="mt-1 max-w-xl text-sm opacity-70">{item.details}</p>
+          <p className="mt-1 max-w-xl text-sm opacity-70">
+            {detailsHeading}: {item.details}
+          </p>
         ) : null}
         <p className="mt-1 text-sm opacity-50">
           {contactLabel}: {item.email}

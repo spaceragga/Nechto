@@ -18,6 +18,7 @@ describe('ProjectsService', () => {
     project: {
       findMany: jest.fn(),
       findFirst: jest.fn(),
+      findUniqueOrThrow: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -187,5 +188,35 @@ describe('ProjectsService', () => {
         code: API_ERROR_CODES.PROJECT_NOT_FOUND,
       });
     }
+  });
+
+  it('hides a project and clears featuredAt', async () => {
+    prisma.project.findFirst.mockResolvedValue({ id: 'pr1' });
+    prisma.project.update.mockResolvedValue({ id: 'pr1', hidden: true });
+    prisma.project.findUniqueOrThrow.mockResolvedValue({
+      id: 'pr1',
+      title: 'Yards',
+      description: 'A series.',
+      createdAt: new Date('2026-08-31T00:00:00.000Z'),
+      featuredAt: null,
+      hidden: true,
+      blocks: [{ kind: 'image', body: '', showTitle: true, work: workRow }],
+      profile: {
+        id: 'p1',
+        slug: 'kasia-voit',
+        displayName: 'Кася',
+        avatarKey: null,
+        directions: ['photography'],
+        publishedAt: new Date('2026-01-01T00:00:00.000Z'),
+      },
+    });
+
+    const view = await service.hide('pr1');
+
+    expect(prisma.project.update).toHaveBeenCalledWith({
+      where: { id: 'pr1' },
+      data: { hidden: true, featuredAt: null },
+    });
+    expect(view).toMatchObject({ id: 'pr1', title: 'Yards' });
   });
 });

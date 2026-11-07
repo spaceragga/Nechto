@@ -1,6 +1,10 @@
 import { z } from 'zod';
 import type { ArticleSummary } from './article';
 import type { DialogueSummary } from './dialogue';
+import type {
+  ModerationAuditEntry,
+  ModerationProfileSummary,
+} from './moderation';
 import type { ProjectSummary } from './project';
 import type { PublicProfileWithWorks } from './profile';
 import type { ContentReport } from './report';
@@ -55,8 +59,13 @@ export type ModerationDesk = {
   hiddenArticles: ArticleSummary[];
   liveDialogues: DialogueSummary[];
   hiddenDialogues: DialogueSummary[];
+  liveProjects: ProjectSummary[];
+  hiddenProjects: ProjectSummary[];
+  liveProfiles: ModerationProfileSummary[];
+  hiddenProfiles: ModerationProfileSummary[];
   liveStudio: StudioProfileSummary[];
   hiddenStudio: StudioProfileSummary[];
+  recentActions: ModerationAuditEntry[];
 };
 
 export type CurationDesk = {

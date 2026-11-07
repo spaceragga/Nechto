@@ -203,6 +203,22 @@ export function unhideWorkRequest(workId: string) {
   return api.unhideWork(workId);
 }
 
+export function hideProjectRequest(projectId: string) {
+  return api.hideProject(projectId);
+}
+
+export function unhideProjectRequest(projectId: string) {
+  return api.unhideProject(projectId);
+}
+
+export function hideProfileRequest(profileId: string) {
+  return api.hideProfile(profileId);
+}
+
+export function unhideProfileRequest(profileId: string) {
+  return api.unhideProfile(profileId);
+}
+
 export function featureArticleRequest(articleId: string) {
   return api.featureArticle(articleId);
 }

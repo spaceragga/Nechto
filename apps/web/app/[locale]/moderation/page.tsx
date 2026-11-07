@@ -1,6 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ModerationArticlesDesk } from '@/components/moderation/moderation-articles-desk';
+import { ModerationAuditDesk } from '@/components/moderation/moderation-audit-desk';
 import { ModerationDialoguesDesk } from '@/components/moderation/moderation-dialogues-desk';
+import { ModerationProfilesDesk } from '@/components/moderation/moderation-profiles-desk';
+import { ModerationProjectsDesk } from '@/components/moderation/moderation-projects-desk';
 import { ModerationReportsDesk } from '@/components/moderation/moderation-reports-desk';
 import { ModerationStudioDesk } from '@/components/moderation/moderation-studio-desk';
 import { ModerationWorksDesk } from '@/components/moderation/moderation-works-desk';
@@ -34,6 +37,10 @@ export default async function ModerationPage({ params }: PageProps) {
             liveWorks={result.data.liveWorks}
             hiddenWorks={result.data.hiddenWorks}
           />
+          <ModerationProjectsDesk
+            liveProjects={result.data.liveProjects}
+            hiddenProjects={result.data.hiddenProjects}
+          />
           <ModerationArticlesDesk
             published={result.data.liveArticles}
             hiddenArticles={result.data.hiddenArticles}
@@ -42,10 +49,15 @@ export default async function ModerationPage({ params }: PageProps) {
             published={result.data.liveDialogues}
             hiddenDialogues={result.data.hiddenDialogues}
           />
+          <ModerationProfilesDesk
+            liveProfiles={result.data.liveProfiles}
+            hiddenProfiles={result.data.hiddenProfiles}
+          />
           <ModerationStudioDesk
             published={result.data.liveStudio}
             hiddenStudio={result.data.hiddenStudio}
           />
+          <ModerationAuditDesk actions={result.data.recentActions} />
         </>
       ) : null}
     </StaffScreen>

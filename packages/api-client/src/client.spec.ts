@@ -179,26 +179,7 @@ describe('ApiClient', () => {
       }),
     );
 
-    fetchMock.mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          reports: [],
-          liveWorks: [],
-          hiddenWorks: [],
-          liveArticles: [],
-          hiddenArticles: [],
-          liveDialogues: [],
-          hiddenDialogues: [],
-          liveStudio: [],
-          hiddenStudio: [],
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      ),
-    );
-    await expect(client.getModerationDesk()).resolves.toEqual({
+    const emptyDesk = {
       reports: [],
       liveWorks: [],
       hiddenWorks: [],
@@ -206,12 +187,49 @@ describe('ApiClient', () => {
       hiddenArticles: [],
       liveDialogues: [],
       hiddenDialogues: [],
+      liveProjects: [],
+      hiddenProjects: [],
+      liveProfiles: [],
+      hiddenProfiles: [],
       liveStudio: [],
       hiddenStudio: [],
-    });
+      recentActions: [],
+    };
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify(emptyDesk), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    await expect(client.getModerationDesk()).resolves.toEqual(emptyDesk);
     expect(fetchMock).toHaveBeenLastCalledWith(
       'http://localhost:3001/moderation/desk',
       expect.anything(),
+    );
+
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          profileId: 'p1',
+          slug: 'anna',
+          displayName: 'Анна',
+          avatarUrl: null,
+          publishedAt: '2026-01-01T00:00:00.000Z',
+          hidden: true,
+        }),
+        {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+    await expect(client.hideProfile('p1')).resolves.toMatchObject({
+      profileId: 'p1',
+      hidden: true,
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/moderation/profiles/p1/hide',
+      expect.objectContaining({ method: 'POST' }),
     );
 
     fetchMock.mockResolvedValue(

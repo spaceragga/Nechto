@@ -8,6 +8,7 @@ import {
   type CreatorDirection,
   type CursorPage,
   type ListCreatorsQuery,
+  type ModerationProfileSummary,
   type Profile,
   type PublicProfile,
   type PublicProfileWithWorks,
@@ -364,6 +365,7 @@ export class ProfilesService {
     await this.ensureProfile(userId);
     const updated = await this.updateByUserId(userId, {
       publishedAt: null,
+      hidden: false,
       studioListedAt: null,
       studioFeaturedAt: null,
       studioHidden: false,
@@ -372,6 +374,115 @@ export class ProfilesService {
     });
 
     return toProfileView(updated, this.storage);
+  }
+
+  async listLiveForModeration(): Promise<ModerationProfileSummary[]> {
+    return this.listForModeration(false);
+  }
+
+  async listHiddenForModeration(): Promise<ModerationProfileSummary[]> {
+    return this.listForModeration(true);
+  }
+
+  async hide(profileId: string): Promise<ModerationProfileSummary> {
+    return this.setHidden(profileId, true);
+  }
+
+  async unhide(profileId: string): Promise<ModerationProfileSummary> {
+    return this.setHidden(profileId, false);
+  }
+
+  private async listForModeration(
+    hidden: boolean,
+  ): Promise<ModerationProfileSummary[]> {
+    const rows = await this.prisma.profile.findMany({
+      where: {
+        publishedAt: { not: null },
+        slug: { not: null },
+        hidden,
+        user: { suspendedAt: null },
+      },
+      orderBy: hidden ? { updatedAt: 'desc' } : { publishedAt: 'desc' },
+      take: 50,
+      select: {
+        id: true,
+        slug: true,
+        displayName: true,
+        avatarKey: true,
+        publishedAt: true,
+        hidden: true,
+      },
+    });
+    return rows.map((row) => this.toModerationSummary(row));
+  }
+
+  private async setHidden(
+    profileId: string,
+    hidden: boolean,
+  ): Promise<ModerationProfileSummary> {
+    const profile = await this.prisma.profile.findFirst({
+      where: {
+        id: profileId,
+        publishedAt: { not: null },
+        slug: { not: null },
+        user: { suspendedAt: null },
+      },
+      select: { id: true },
+    });
+    if (!profile) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROFILE_NOT_FOUND,
+        'Profile not found',
+      );
+    }
+
+    const updated = await this.prisma.profile.update({
+      where: { id: profileId },
+      data: {
+        hidden,
+        ...(hidden
+          ? {
+              // Drop home/studio pins; park studio listing so it does not limbo
+              // between live and hidden studio desks, and does not auto-return
+              // when the profile is unhidden.
+              homeFeaturedAt: null,
+              homeSelectionAt: null,
+              studioFeaturedAt: null,
+              studioHidden: true,
+            }
+          : {}),
+      },
+      select: {
+        id: true,
+        slug: true,
+        displayName: true,
+        avatarKey: true,
+        publishedAt: true,
+        hidden: true,
+      },
+    });
+    return this.toModerationSummary(updated);
+  }
+
+  private toModerationSummary(row: {
+    id: string;
+    slug: string | null;
+    displayName: string | null;
+    avatarKey: string | null;
+    publishedAt: Date | null;
+    hidden: boolean;
+  }): ModerationProfileSummary {
+    return {
+      profileId: row.id,
+      slug: row.slug ?? '',
+      displayName: row.displayName,
+      avatarUrl: row.avatarKey
+        ? this.storage.getPublicUrl(row.avatarKey)
+        : null,
+      publishedAt: row.publishedAt?.toISOString() ?? '',
+      hidden: row.hidden,
+    };
   }
 
   async uploadAvatar(
