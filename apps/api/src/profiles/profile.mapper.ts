@@ -28,6 +28,7 @@ type ProfileRow = {
   updatedAt: Date;
   acceptPolicies?: boolean;
   publishedAt?: Date | null;
+  hidden?: boolean;
   studioTitle?: string | null;
   studioDescription?: string | null;
   studioCoverKey?: string | null;
@@ -41,6 +42,7 @@ type ProfileRow = {
 export type ProfileRecord = ProfileRow & {
   acceptPolicies: boolean;
   publishedAt: Date | null;
+  hidden: boolean;
   studioTitle: string | null;
   studioDescription: string | null;
   studioCoverKey: string | null;
@@ -62,6 +64,7 @@ export type ProfileWrite = {
   telegramUrl?: string | null;
   acceptPolicies?: boolean;
   publishedAt?: Date | null;
+  hidden?: boolean;
   studioTitle?: string | null;
   studioDescription?: string | null;
   studioCoverKey?: string | null;
@@ -77,6 +80,7 @@ export function toProfileRecord(row: ProfileRow): ProfileRecord {
     ...row,
     acceptPolicies: row.acceptPolicies ?? false,
     publishedAt: row.publishedAt ?? null,
+    hidden: row.hidden ?? false,
     studioTitle: row.studioTitle ?? null,
     studioDescription: row.studioDescription ?? null,
     studioCoverKey: row.studioCoverKey ?? null,

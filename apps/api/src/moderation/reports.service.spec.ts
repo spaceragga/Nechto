@@ -1,5 +1,6 @@
 import { API_ERROR_CODES } from '@nechto/api-contract';
 import { ReportsService } from './reports.service';
+import { ModerationAuditService } from './moderation-audit.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 describe('ReportsService', () => {
@@ -16,11 +17,15 @@ describe('ReportsService', () => {
       update: jest.fn(),
     },
   };
+  const audit = { record: jest.fn(), listRecent: jest.fn() };
   let service: ReportsService;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new ReportsService(prisma as unknown as PrismaService);
+    service = new ReportsService(
+      prisma as unknown as PrismaService,
+      audit as unknown as ModerationAuditService,
+    );
   });
 
   it('creates a report for a published profile', async () => {
@@ -163,6 +168,41 @@ describe('ReportsService', () => {
       status: 'resolved',
       targetType: 'profile',
       profile: { slug: 'kasia-voit' },
+    });
+    expect(audit.record).not.toHaveBeenCalled();
+  });
+
+  it('records an audit entry when a moderator resolves a report', async () => {
+    const row = {
+      id: 'r1',
+      targetType: 'work',
+      targetId: 'work-1',
+      targetTitle: 'Двор',
+      reason: 'copyright',
+      details: '',
+      email: 'a@nechto.test',
+      status: 'open',
+      createdAt: new Date('2026-10-24T00:00:00.000Z'),
+      resolvedAt: null,
+      profile: { slug: 'anna-rusetskaya', displayName: 'Анна' },
+    };
+    prisma.report.findUnique.mockResolvedValue(row);
+    prisma.report.update.mockResolvedValue({
+      ...row,
+      status: 'resolved',
+      resolvedAt: new Date('2026-10-24T01:00:00.000Z'),
+    });
+
+    await expect(service.resolve('r1', 'mod-1')).resolves.toMatchObject({
+      id: 'r1',
+      status: 'resolved',
+    });
+    expect(audit.record).toHaveBeenCalledWith({
+      actorId: 'mod-1',
+      action: 'resolve_report',
+      targetType: 'work',
+      targetId: 'work-1',
+      reportId: 'r1',
     });
   });
 });

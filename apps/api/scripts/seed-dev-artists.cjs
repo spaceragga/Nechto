@@ -384,6 +384,11 @@ async function main() {
     throw new Error('Refusing to seed against NODE_ENV=production');
   }
 
+  if (process.env.SEED_ONLY === 'reports') {
+    await seedReports();
+    return;
+  }
+
   const health = await request('/health');
   if (!health.ok) {
     throw new Error(
@@ -401,6 +406,7 @@ async function main() {
   await grantArtist1Admin();
   await seedDialogues();
   await seedStudios();
+  await seedReports();
   console.log(`Password for all: ${password}`);
 }
 
@@ -584,6 +590,145 @@ async function seedDialogues() {
     });
     console.log(
       `  dialogues seeded: ${first.title} (featured), ${second.title}`,
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+/** Kasya is the primary manual test account — never seed reports against her. */
+const SEED_REPORTS_EXCLUDE_SLUG = 'kasia-voit';
+
+async function seedReports() {
+  const { PrismaClient } = require('@prisma/client');
+  const prisma = new PrismaClient();
+  const notKasya = {
+    publishedAt: { not: null },
+    AND: [
+      { slug: { not: null } },
+      { slug: { not: SEED_REPORTS_EXCLUDE_SLUG } },
+    ],
+    hidden: false,
+    user: { suspendedAt: null },
+  };
+
+  try {
+    await prisma.report.deleteMany({});
+
+    const profile = await prisma.profile.findFirst({
+      where: notKasya,
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, slug: true, displayName: true },
+    });
+    const work = await prisma.work.findFirst({
+      where: { hidden: false, profile: notKasya },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, title: true, profileId: true },
+    });
+    const project = await prisma.project.findFirst({
+      where: { hidden: false, profile: notKasya },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, title: true, profileId: true },
+    });
+    const article = await prisma.article.findFirst({
+      where: {
+        publishedAt: { not: null },
+        hidden: false,
+        profile: notKasya,
+      },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, title: true, profileId: true },
+    });
+    const dialogue = await prisma.dialogue.findFirst({
+      where: {
+        publishedAt: { not: null },
+        hidden: false,
+        leftWork: { profile: notKasya },
+        rightWork: { profile: notKasya },
+      },
+      orderBy: { createdAt: 'asc' },
+      select: {
+        id: true,
+        title: true,
+        leftWork: { select: { profileId: true } },
+      },
+    });
+
+    const rows = [];
+    if (profile) {
+      rows.push({
+        targetType: 'profile',
+        targetId: profile.id,
+        targetTitle: profile.displayName?.trim() || profile.slug || profile.id,
+        profileId: profile.id,
+        reason: 'harassment',
+        details: 'Грубый текст в био',
+        email: 'seed-reports@nechto.test',
+      });
+    } else {
+      console.warn('  reports: no non-Kasya profile to report');
+    }
+    if (work) {
+      rows.push({
+        targetType: 'work',
+        targetId: work.id,
+        targetTitle: work.title,
+        profileId: work.profileId,
+        reason: 'copyright',
+        details: 'Кадр без разрешения автора',
+        email: 'seed-reports@nechto.test',
+      });
+    } else {
+      console.warn('  reports: no non-Kasya work to report');
+    }
+    if (project) {
+      rows.push({
+        targetType: 'project',
+        targetId: project.id,
+        targetTitle: project.title,
+        profileId: project.profileId,
+        reason: 'spam',
+        details: 'Реклама вместо серии',
+        email: 'seed-reports@nechto.test',
+      });
+    } else {
+      console.warn('  reports: no non-Kasya project to report');
+    }
+    if (article) {
+      rows.push({
+        targetType: 'article',
+        targetId: article.id,
+        targetTitle: article.title,
+        profileId: article.profileId,
+        reason: 'impersonation',
+        details: 'Чужая подпись под текстом',
+        email: 'seed-reports@nechto.test',
+      });
+    } else {
+      console.warn('  reports: no non-Kasya article to report');
+    }
+    if (dialogue) {
+      rows.push({
+        targetType: 'dialogue',
+        targetId: dialogue.id,
+        targetTitle: dialogue.title,
+        profileId: dialogue.leftWork.profileId,
+        reason: 'other',
+        details: 'Странная пара работ в диалоге',
+        email: 'seed-reports@nechto.test',
+      });
+    } else {
+      console.warn('  reports: no dialogue without Kasya to report');
+    }
+
+    if (rows.length === 0) {
+      console.warn('  reports: nothing seeded');
+      return;
+    }
+
+    await prisma.report.createMany({ data: rows });
+    console.log(
+      `  reports seeded: ${rows.map((row) => row.targetType).join(', ')}`,
     );
   } finally {
     await prisma.$disconnect();

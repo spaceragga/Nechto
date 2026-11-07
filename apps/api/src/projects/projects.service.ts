@@ -74,6 +74,7 @@ export class ProjectsService {
   ): Promise<CursorPage<ProjectSummary>> {
     const rows = await this.prisma.project.findMany({
       where: {
+        hidden: false,
         profile: {
           ...publishedProfileWhere,
           ...(query.direction ? { directions: { has: query.direction } } : {}),
@@ -98,6 +99,7 @@ export class ProjectsService {
   async listForCuration(): Promise<ProjectSummary[]> {
     const rows = await this.prisma.project.findMany({
       where: {
+        hidden: false,
         profile: publishedProfileWhere,
         blocks: { some: { kind: 'image' } },
       },
@@ -140,10 +142,95 @@ export class ProjectsService {
     return this.requirePublishedSummary(projectId);
   }
 
+  async listLiveForModeration(): Promise<ProjectSummary[]> {
+    return this.listForModeration(false);
+  }
+
+  async listHiddenForModeration(): Promise<ProjectSummary[]> {
+    return this.listForModeration(true);
+  }
+
+  async hide(projectId: string): Promise<ProjectSummary> {
+    return this.setHidden(projectId, true);
+  }
+
+  async unhide(projectId: string): Promise<ProjectSummary> {
+    return this.setHidden(projectId, false);
+  }
+
+  private async listForModeration(hidden: boolean): Promise<ProjectSummary[]> {
+    const rows = await this.prisma.project.findMany({
+      where: {
+        hidden,
+        profile: publishedProfileWhere,
+        blocks: { some: { kind: 'image' } },
+      },
+      orderBy: hidden ? { updatedAt: 'desc' } : { createdAt: 'desc' },
+      take: 50,
+      include: {
+        ...projectInclude,
+        profile: { select: publishedAuthorSelect },
+      },
+    });
+    return rows
+      .map((row) => toProjectSummary(row, this.storage))
+      .filter((row): row is ProjectSummary => row !== null);
+  }
+
+  private async setHidden(
+    projectId: string,
+    hidden: boolean,
+  ): Promise<ProjectSummary> {
+    const project = await this.prisma.project.findFirst({
+      where: {
+        id: projectId,
+        profile: publishedProfileWhere,
+        blocks: { some: { kind: 'image' } },
+      },
+    });
+    if (!project) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROJECT_NOT_FOUND,
+        'Project not found',
+      );
+    }
+    await this.prisma.project.update({
+      where: { id: projectId },
+      data: {
+        hidden,
+        ...(hidden ? { featuredAt: null } : {}),
+      },
+    });
+    return this.requireModerationSummary(projectId);
+  }
+
+  private async requireModerationSummary(
+    projectId: string,
+  ): Promise<ProjectSummary> {
+    const row = await this.prisma.project.findUniqueOrThrow({
+      where: { id: projectId },
+      include: {
+        ...projectInclude,
+        profile: { select: publishedAuthorSelect },
+      },
+    });
+    const summary = toProjectSummary(row, this.storage);
+    if (!summary) {
+      throw new ApiHttpException(
+        HttpStatus.NOT_FOUND,
+        API_ERROR_CODES.PROJECT_NOT_FOUND,
+        'Project not found',
+      );
+    }
+    return summary;
+  }
+
   private async requirePublishedProject(projectId: string) {
     const project = await this.prisma.project.findFirst({
       where: {
         id: projectId,
+        hidden: false,
         profile: publishedProfileWhere,
         blocks: { some: { kind: 'image' } },
       },
@@ -200,6 +287,7 @@ export class ProjectsService {
     const rows = await this.prisma.project.findMany({
       where: {
         profileId,
+        hidden: false,
         blocks: { some: { kind: 'image' } },
       },
       orderBy: { id: 'desc' },
@@ -218,6 +306,7 @@ export class ProjectsService {
     const row = await this.prisma.project.findFirst({
       where: {
         id,
+        hidden: false,
         profile: publishedProfileWhere,
       },
       include: {

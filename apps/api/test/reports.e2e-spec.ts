@@ -175,6 +175,69 @@ describe('Reports (e2e)', () => {
         expect(response.body.email).toBe('anon@nechto.test');
         expect(response.body.targetType).toBe('profile');
       });
+
+    const afterResolve = await request(app.getHttpServer())
+      .get('/moderation/desk')
+      .set('Cookie', moderatorCookie)
+      .expect(200);
+    expect(afterResolve.body.recentActions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          action: 'resolve_report',
+          targetType: 'profile',
+          reportId: openProfile?.id,
+        }),
+      ]),
+    );
+  });
+
+  it('lets a moderator hide a profile and records the audit entry', async () => {
+    const profile = await prisma.profile.findFirstOrThrow({
+      where: { slug },
+      select: { id: true },
+    });
+
+    await request(app.getHttpServer())
+      .get(`/profiles/by-slug/${encodeURIComponent(slug)}`)
+      .expect(200);
+
+    const hidden = await request(app.getHttpServer())
+      .post(`/moderation/profiles/${profile.id}/hide`)
+      .set('Cookie', moderatorCookie)
+      .expect(201);
+    expect(hidden.body).toMatchObject({
+      profileId: profile.id,
+      slug,
+      hidden: true,
+    });
+
+    await request(app.getHttpServer())
+      .get(`/profiles/by-slug/${encodeURIComponent(slug)}`)
+      .expect(404);
+
+    const desk = await request(app.getHttpServer())
+      .get('/moderation/desk')
+      .set('Cookie', moderatorCookie)
+      .expect(200);
+    expect(desk.body.hiddenProfiles).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ profileId: profile.id, hidden: true }),
+      ]),
+    );
+    expect(desk.body.recentActions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          action: 'hide_profile',
+          targetType: 'profile',
+          targetId: profile.id,
+        }),
+      ]),
+    );
+
+    await request(app.getHttpServer())
+      .post(`/moderation/profiles/${profile.id}/unhide`)
+      .set('Cookie', moderatorCookie)
+      .expect(200);
   });
 });
 

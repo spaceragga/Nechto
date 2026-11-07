@@ -5,11 +5,13 @@ import {
   type ContentReport,
   type CreateReportDto,
   type CreateReportResponse,
+  type ModerationTargetType,
   type ReportTargetType,
 } from '@nechto/api-contract';
 import { ApiHttpException } from '../common/errors/api-http-exception';
 import { PrismaService } from '../prisma/prisma.service';
 import { publishedProfileWhere } from '../profiles/published-profile';
+import { ModerationAuditService } from './moderation-audit.service';
 import { toContentReport } from './report.mapper';
 
 const reportProfileSelect = {
@@ -27,7 +29,10 @@ type ResolvedTarget = {
 
 @Injectable()
 export class ReportsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly audit: ModerationAuditService,
+  ) {}
 
   async create(
     dto: CreateReportDto,
@@ -85,7 +90,7 @@ export class ReportsService {
     return [...open, ...resolved].map(toContentReport);
   }
 
-  async resolve(id: string): Promise<ContentReport> {
+  async resolve(id: string, actorId?: string): Promise<ContentReport> {
     const existing = await this.prisma.report.findUnique({
       where: { id },
       include: { profile: { select: reportProfileSelect } },
@@ -106,6 +111,15 @@ export class ReportsService {
       data: { status: 'resolved', resolvedAt: new Date() },
       include: { profile: { select: reportProfileSelect } },
     });
+    if (actorId) {
+      await this.audit.record({
+        actorId,
+        action: 'resolve_report',
+        targetType: updated.targetType as ModerationTargetType,
+        targetId: updated.targetId,
+        reportId: updated.id,
+      });
+    }
     return toContentReport(updated);
   }
 
@@ -165,6 +179,7 @@ export class ReportsService {
         const project = await this.prisma.project.findFirst({
           where: {
             id: dto.targetId,
+            hidden: false,
             profile: publishedProfileWhere,
           },
           select: {

@@ -107,12 +107,16 @@ export function ReportForm({
       <label className="flex flex-col gap-1 text-sm">
         <span>{t('reason')}</span>
         <select
-          className="rounded border border-white/20 bg-transparent px-3 py-2"
+          className="rounded border border-white/20 bg-[var(--bg)] px-3 py-2 text-[var(--fg)] [color-scheme:dark]"
           value={reason}
           onChange={(event) => setReason(event.target.value as ReportReason)}
         >
           {REPORT_REASONS.map((item) => (
-            <option key={item} value={item}>
+            <option
+              key={item}
+              value={item}
+              className="bg-[var(--bg)] text-[var(--fg)]"
+            >
               {t(`reasons.${item}`)}
             </option>
           ))}

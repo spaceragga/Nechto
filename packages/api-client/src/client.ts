@@ -23,6 +23,7 @@ import {
   type LoginDto,
   type LogoutResponse,
   type ModerationDesk,
+  type ModerationProfileSummary,
   type Profile,
   type ContentReport,
   type PublicArticle,
@@ -453,6 +454,34 @@ export class ApiClient {
   unhideWork(workId: string) {
     return this.request<WorkWithAuthor>(
       `/moderation/works/${encodeURIComponent(workId)}/unhide`,
+      { method: 'POST' },
+    );
+  }
+
+  hideProject(projectId: string) {
+    return this.request<ProjectSummary>(
+      `/moderation/projects/${encodeURIComponent(projectId)}/hide`,
+      { method: 'POST' },
+    );
+  }
+
+  unhideProject(projectId: string) {
+    return this.request<ProjectSummary>(
+      `/moderation/projects/${encodeURIComponent(projectId)}/unhide`,
+      { method: 'POST' },
+    );
+  }
+
+  hideProfile(profileId: string) {
+    return this.request<ModerationProfileSummary>(
+      `/moderation/profiles/${encodeURIComponent(profileId)}/hide`,
+      { method: 'POST' },
+    );
+  }
+
+  unhideProfile(profileId: string) {
+    return this.request<ModerationProfileSummary>(
+      `/moderation/profiles/${encodeURIComponent(profileId)}/unhide`,
       { method: 'POST' },
     );
   }
