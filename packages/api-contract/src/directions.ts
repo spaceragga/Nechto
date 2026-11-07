@@ -41,6 +41,7 @@ export const RESERVED_PROFILE_SLUGS = [
   'terms',
   'privacy',
   'top-works',
+  'search',
 ] as const;
 
 const reservedSlugs = new Set<string>(RESERVED_PROFILE_SLUGS);
