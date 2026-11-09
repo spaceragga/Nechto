@@ -183,7 +183,7 @@
   },
   "CommunityFeed": {
     "title": "Community",
-    "lede": "The house wall: people who have stepped into the light, and the work beside them. No comments, no ranking.",
+    "lede": "The house wall: people who have stepped into the light, and the work beside them. No ranking.",
     "people": "Creators",
     "wall": "Wall",
     "empty": "Quiet for now. Published profiles will appear here.",
@@ -609,6 +609,18 @@
         "Copyright reports should include the material URL, a description of the rights, and contact details: support@nechto.by."
       ]
     }
+  },
+  "Comments": {
+    "title": "Comments",
+    "empty": "No comments yet.",
+    "placeholder": "Comment",
+    "submit": "Send",
+    "submitting": "Sending…",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "signIn": "Sign in to leave a comment",
+    "loadMore": "More",
+    "anonymous": "Author"
   },
   "Report": {
     "open": "Report",

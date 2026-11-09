@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { Work, WorkWithAuthor } from '@nechto/api-contract';
+import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
 import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
@@ -63,6 +64,11 @@ export async function PublicWorkView({
           />
         </div>
       ) : null}
+      <CommentsSection
+        targetType="work"
+        targetId={work.id}
+        signedIn={Boolean(viewerEmail)}
+      />
       {more.length > 0 ? (
         <section className="mt-12">
           <p className="font-sans text-base opacity-70">{t('more')}</p>

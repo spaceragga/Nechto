@@ -372,6 +372,76 @@ describe('ApiClient', () => {
     );
   });
 
+  it('lists, creates, and deletes comments', async () => {
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001/',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+    const comment = {
+      id: 'c1',
+      body: 'Сильный кадр.',
+      createdAt: '2026-11-09T12:00:00.000Z',
+      targetType: 'work',
+      targetId: 'w1',
+      canDelete: true,
+      author: {
+        userId: 'u2',
+        slug: 'anna-rusetskaya',
+        displayName: 'Анна Русецкая',
+        avatarUrl: null,
+      },
+    };
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ items: [comment], nextCursor: null }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    await expect(
+      client.listComments({
+        targetType: 'work',
+        targetId: 'w1',
+        limit: 20,
+      }),
+    ).resolves.toEqual({ items: [comment], nextCursor: null });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/comments?limit=20&targetType=work&targetId=w1',
+      expect.anything(),
+    );
+
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify(comment), {
+        status: 201,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    await expect(
+      client.createComment({
+        targetType: 'work',
+        targetId: 'w1',
+        body: 'Сильный кадр.',
+      }),
+    ).resolves.toEqual(comment);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/comments',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          targetType: 'work',
+          targetId: 'w1',
+          body: 'Сильный кадр.',
+        }),
+      }),
+    );
+
+    fetchMock.mockResolvedValue(new Response(null, { status: 204 }));
+    await expect(client.deleteComment('c1')).resolves.toBeUndefined();
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/comments/c1',
+      expect.objectContaining({ method: 'DELETE' }),
+    );
+  });
+
   it('uploads avatar as multipart without forcing JSON content-type', async () => {
     fetchMock.mockResolvedValue(
       new Response(

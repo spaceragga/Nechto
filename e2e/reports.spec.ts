@@ -25,6 +25,15 @@ test.describe('content reports', () => {
     await expect(workLink).toBeVisible();
     await workLink.click();
     await expect(
+      page.getByRole('heading', { name: 'Комментарии' }),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByRole('listitem')
+        .or(page.getByText('Пока нет комментариев.'))
+        .first(),
+    ).toBeVisible();
+    await expect(
       page.getByRole('button', { name: 'Пожаловаться' }),
     ).toBeVisible();
 

@@ -6,7 +6,9 @@ import {
   type AuthUserResponse,
   type AuthActionResponse,
   type ChangePasswordDto,
+  type CommentView,
   type CreateArticleFields,
+  type CreateCommentDto,
   type CreateDialogueFields,
   type CreateWorkFields,
   type CurationDesk,
@@ -18,6 +20,7 @@ import {
   type HealthResponse,
   type HelloResponse,
   type ListAdminUsersQuery,
+  type ListCommentsQuery,
   type ListCurationWorksQuery,
   type ListCreatorsQuery,
   type LoginDto,
@@ -96,6 +99,25 @@ export class ApiClient {
 
   listNotifications() {
     return this.request<NotificationList>('/notifications');
+  }
+
+  listComments(query: ListCommentsQuery) {
+    return this.request<CursorPage<CommentView>>(
+      `/comments${toSearchParams(query)}`,
+    );
+  }
+
+  createComment(input: CreateCommentDto) {
+    return this.request<CommentView>('/comments', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  deleteComment(id: string) {
+    return this.request<void>(`/comments/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
   }
 
   unreadNotificationCount() {
@@ -772,6 +794,8 @@ function toSearchParams(query: {
   name?: string;
   email?: string;
   q?: string;
+  targetType?: string;
+  targetId?: string;
 }): string {
   const params = new URLSearchParams();
   if (query.cursor) {
@@ -791,6 +815,12 @@ function toSearchParams(query: {
   }
   if (query.q) {
     params.set('q', query.q);
+  }
+  if (query.targetType) {
+    params.set('targetType', query.targetType);
+  }
+  if (query.targetId) {
+    params.set('targetId', query.targetId);
   }
   const serialized = params.toString();
   return serialized ? `?${serialized}` : '';

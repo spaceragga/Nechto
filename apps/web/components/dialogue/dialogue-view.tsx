@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { PublicDialogue, WorkWithAuthor } from '@nechto/api-contract';
+import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
@@ -78,6 +79,11 @@ export async function DialogueView({
           className="mt-0"
         />
       ) : null}
+      <CommentsSection
+        targetType="dialogue"
+        targetId={dialogue.id}
+        signedIn={Boolean(viewerEmail)}
+      />
       <p>
         <Link href="/dialogue" className="text-sm text-[var(--accent)]">
           {t('back')}

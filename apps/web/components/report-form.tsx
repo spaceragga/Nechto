@@ -84,7 +84,8 @@ export function ReportForm({
       <div className={className}>
         <button
           type="button"
-          className="font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline"
+          className="font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline disabled:opacity-50"
+          disabled={!hydrated}
           onClick={() => setOpen(true)}
         >
           {t('open')}

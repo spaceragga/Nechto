@@ -22,6 +22,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   dialogues           Dialogue[]
   reports             Report[]
+  comments            Comment[]
   moderationActions   ModerationAction[]
   notifications       Notification[]       @relation("NotificationRecipient")
   actedNotifications  Notification[]       @relation("NotificationActor")
@@ -41,11 +42,13 @@ model Notification {
   dialogueId String?
   profileId  String?
   commentId  String?
+  comment    Comment?  @relation(fields: [commentId], references: [id], onDelete: SetNull)
   readAt     DateTime?
   createdAt  DateTime  @default(now())
 
   @@index([userId, createdAt])
   @@index([userId, readAt])
+  @@index([commentId])
 }
 
 model PasswordResetToken {
@@ -115,6 +118,7 @@ model Work {
   articleCovers Article[]
   dialoguesLeft Dialogue[]     @relation("DialogueLeft")
   dialoguesRight Dialogue[]    @relation("DialogueRight")
+  comments      Comment[]
 
   @@index([profileId, createdAt])
   @@index([createdAt])
@@ -136,6 +140,7 @@ model Article {
   hidden      Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  comments    Comment[]
 
   @@index([profileId, createdAt])
   @@index([publishedAt])
@@ -157,6 +162,7 @@ model Dialogue {
   hidden          Boolean   @default(false)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+  comments        Comment[]
 
   @@index([publishedAt])
   @@index([featuredAt])
@@ -174,6 +180,7 @@ model Project {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   blocks      ProjectBlock[]
+  comments    Comment[]
 
   @@index([profileId, createdAt])
   @@index([hidden])
@@ -232,4 +239,28 @@ model ModerationAction {
   @@index([createdAt])
   @@index([actorId])
   @@index([targetType, targetId])
+}
+
+model Comment {
+  id         String    @id @default(cuid())
+  authorId   String
+  author     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body       String    @db.Text
+  workId     String?
+  work       Work?     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  projectId  String?
+  project    Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  articleId  String?
+  article    Article?  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  dialogueId String?
+  dialogue   Dialogue? @relation(fields: [dialogueId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  notifications Notification[]
+
+  @@index([workId, createdAt])
+  @@index([projectId, createdAt])
+  @@index([articleId, createdAt])
+  @@index([dialogueId, createdAt])
+  @@index([authorId, createdAt])
 }
