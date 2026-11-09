@@ -24,4 +24,4 @@ RUN npx prisma generate
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run dev"]
+CMD ["sh", "-c", "node ./scripts/migrate-deploy.cjs && npm run dev"]

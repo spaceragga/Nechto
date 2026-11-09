@@ -57,6 +57,7 @@ services:
       - ./packages/api-contract:/workspace/packages/api-contract
       - ./tsconfig.base.json:/workspace/tsconfig.base.json:ro
       - api_uploads:/workspace/apps/api/uploads
+    command: sh -c "node ./scripts/migrate-deploy.cjs && npm run dev"
     depends_on:
       db:
         condition: service_healthy
