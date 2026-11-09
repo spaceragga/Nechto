@@ -442,6 +442,80 @@ describe('ApiClient', () => {
     );
   });
 
+  it('sends likes, unique views, and follows to /social', async () => {
+    const snapshot = { likeCount: 1, viewCount: 4, likedByMe: true };
+    fetchMock.mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.includes('/social/follows')) {
+        return new Response(
+          JSON.stringify({ followerCount: 2, following: true }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
+      }
+      return new Response(JSON.stringify(snapshot), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+    await expect(
+      client.getEngagement({ targetType: 'work', targetId: 'w1' }),
+    ).resolves.toEqual(snapshot);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/engagement?targetType=work&targetId=w1',
+      expect.anything(),
+    );
+
+    await client.recordView({ targetType: 'work', targetId: 'w1' });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/views',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ targetType: 'work', targetId: 'w1' }),
+      }),
+    );
+
+    await client.likeContent({ targetType: 'work', targetId: 'w1' });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/likes',
+      expect.objectContaining({ method: 'POST' }),
+    );
+
+    await client.unlikeContent({ targetType: 'work', targetId: 'w1' });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/likes',
+      expect.objectContaining({ method: 'DELETE' }),
+    );
+
+    await expect(client.getFollow({ slug: 'kasia-voit' })).resolves.toEqual({
+      followerCount: 2,
+      following: true,
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/follows?slug=kasia-voit',
+      expect.anything(),
+    );
+    await client.followProfile({ slug: 'kasia-voit' });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/follows',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ slug: 'kasia-voit' }),
+      }),
+    );
+    await client.unfollowProfile({ slug: 'kasia-voit' });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/follows',
+      expect.objectContaining({ method: 'DELETE' }),
+    );
+  });
+
   it('uploads avatar as multipart without forcing JSON content-type', async () => {
     fetchMock.mockResolvedValue(
       new Response(

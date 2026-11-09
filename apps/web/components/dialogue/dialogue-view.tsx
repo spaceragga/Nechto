@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { PublicDialogue, WorkWithAuthor } from '@nechto/api-contract';
 import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
+import { EngagementBar } from '@/components/social/engagement-bar';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 import { toUploadSrc } from '@/lib/to-upload-src';
@@ -79,6 +80,11 @@ export async function DialogueView({
           className="mt-0"
         />
       ) : null}
+      <EngagementBar
+        targetType="dialogue"
+        targetId={dialogue.id}
+        signedIn={Boolean(viewerEmail)}
+      />
       <CommentsSection
         targetType="dialogue"
         targetId={dialogue.id}

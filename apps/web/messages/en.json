@@ -122,7 +122,7 @@
     "title": "How to look",
     "updated": "Voice of the house",
     "paragraphs": [
-      "There are no likes, rankings, or counters in the house. Look at one work, read the caption, pause.",
+      "A like here is attention, not a rank. Look at one work, read the caption, pause.",
       "The journal is separate articles by authors for a reader. It is not a jpeg caption and not an editorial blog.",
       "Dialogue is two works side by side from a curator. Not a feed: one pair, a note, a path to the authors.",
       "Selections and series are whole stories. New is what just arrived. Top here is not a scoreboard.",
@@ -131,7 +131,7 @@
   },
   "TopWorks": {
     "title": "Top works",
-    "lede": "The latest work from each published creator. No ranking, no likes.",
+    "lede": "The latest work from each published creator. No ranking.",
     "empty": "No published works yet.",
     "body": "The strongest work from creators. This selection is still taking shape."
   },
@@ -395,6 +395,7 @@
     "authorSelectionFull": "The author selection already has three spots",
     "workTooLarge": "Work file is too large",
     "workType": "Use JPEG, PNG, or WebP",
+    "cannotFollowSelf": "You cannot follow your own profile",
     "rateLimited": "Too many attempts. Try again later",
     "serviceUnavailable": "The service is temporarily unavailable"
   },
@@ -609,6 +610,19 @@
         "Copyright reports should include the material URL, a description of the rights, and contact details: support@nechto.by."
       ]
     }
+  },
+  "Social": {
+    "like": "Like",
+    "unlike": "Unlike",
+    "liking": "Saving…",
+    "likes": "{count} likes",
+    "views": "{count} views",
+    "signInToLike": "Sign in to like",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "followingBusy": "Saving…",
+    "followers": "{count} followers",
+    "signInToFollow": "Sign in to follow"
   },
   "Comments": {
     "title": "Comments",

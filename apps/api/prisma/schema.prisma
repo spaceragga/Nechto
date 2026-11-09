@@ -26,6 +26,9 @@ model User {
   moderationActions   ModerationAction[]
   notifications       Notification[]       @relation("NotificationRecipient")
   actedNotifications  Notification[]       @relation("NotificationActor")
+  followsGiven        Follow[]             @relation("FollowsGiven")
+  likes               ContentLike[]
+  contentViews        ContentView[]
 }
 
 model Notification {
@@ -93,6 +96,7 @@ model Profile {
   projects       Project[]
   articles       Article[]
   reports        Report[]
+  followers      Follow[]
 
   @@index([publishedAt])
   @@index([hidden])
@@ -263,4 +267,41 @@ model Comment {
   @@index([articleId, createdAt])
   @@index([dialogueId, createdAt])
   @@index([authorId, createdAt])
+}
+
+model Follow {
+  id         String   @id @default(cuid())
+  followerId String
+  follower   User     @relation("FollowsGiven", fields: [followerId], references: [id], onDelete: Cascade)
+  profileId  String
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([followerId, profileId])
+  @@index([profileId, createdAt])
+}
+
+model ContentLike {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType String
+  targetId   String
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, targetType, targetId])
+  @@index([targetType, targetId])
+}
+
+model ContentView {
+  id         String   @id @default(cuid())
+  viewerKey  String
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  targetType String
+  targetId   String
+  createdAt  DateTime @default(now())
+
+  @@unique([viewerKey, targetType, targetId])
+  @@index([targetType, targetId])
 }

@@ -10,6 +10,11 @@ import {
   type CreateArticleFields,
   type CreateCommentDto,
   type CreateDialogueFields,
+  type EngagementQuery,
+  type EngagementSnapshot,
+  type EngagementTargetDto,
+  type FollowSlugDto,
+  type FollowSnapshot,
   type CreateWorkFields,
   type CurationDesk,
   type CursorPage,
@@ -117,6 +122,53 @@ export class ApiClient {
   deleteComment(id: string) {
     return this.request<void>(`/comments/${encodeURIComponent(id)}`, {
       method: 'DELETE',
+    });
+  }
+
+  getEngagement(query: EngagementQuery) {
+    return this.request<EngagementSnapshot>(
+      `/social/engagement${toSearchParams(query)}`,
+    );
+  }
+
+  recordView(input: EngagementTargetDto) {
+    return this.request<EngagementSnapshot>('/social/views', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  likeContent(input: EngagementTargetDto) {
+    return this.request<EngagementSnapshot>('/social/likes', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  unlikeContent(input: EngagementTargetDto) {
+    return this.request<EngagementSnapshot>('/social/likes', {
+      method: 'DELETE',
+      body: JSON.stringify(input),
+    });
+  }
+
+  getFollow(query: FollowSlugDto) {
+    return this.request<FollowSnapshot>(
+      `/social/follows${toSearchParams(query)}`,
+    );
+  }
+
+  followProfile(input: FollowSlugDto) {
+    return this.request<FollowSnapshot>('/social/follows', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  }
+
+  unfollowProfile(input: FollowSlugDto) {
+    return this.request<FollowSnapshot>('/social/follows', {
+      method: 'DELETE',
+      body: JSON.stringify(input),
     });
   }
 
@@ -794,6 +846,7 @@ function toSearchParams(query: {
   name?: string;
   email?: string;
   q?: string;
+  slug?: string;
   targetType?: string;
   targetId?: string;
 }): string {
@@ -815,6 +868,9 @@ function toSearchParams(query: {
   }
   if (query.q) {
     params.set('q', query.q);
+  }
+  if (query.slug) {
+    params.set('slug', query.slug);
   }
   if (query.targetType) {
     params.set('targetType', query.targetType);

@@ -32,6 +32,7 @@ const CODE_KEYS: Partial<Record<ApiErrorCode, string>> = {
   [API_ERROR_CODES.STUDIO_LIST_REQUIREMENTS_NOT_MET]: 'studioListRequirements',
   [API_ERROR_CODES.REPORT_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.COMMENT_NOT_FOUND]: 'notFound',
+  [API_ERROR_CODES.CANNOT_FOLLOW_SELF]: 'cannotFollowSelf',
   [API_ERROR_CODES.NOTIFICATION_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.PROFILE_NOT_FOUND]: 'notFound',
   [API_ERROR_CODES.USER_NOT_FOUND]: 'notFound',
