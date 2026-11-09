@@ -1,12 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import type {
-  CommentTargetType,
-  CommentView,
-  CursorPage,
-} from '@nechto/api-contract';
+import type { CommentTargetType, CommentView } from '@nechto/api-contract';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
@@ -23,27 +19,51 @@ import { profilePath } from '@/lib/work-path';
 type CommentsThreadProps = {
   targetType: CommentTargetType;
   targetId: string;
-  initial: CursorPage<CommentView>;
   signedIn: boolean;
 };
 
 export function CommentsThread({
   targetType,
   targetId,
-  initial,
   signedIn,
 }: CommentsThreadProps) {
   const t = useTranslations('Comments');
   const tErrors = useTranslations('Errors');
   const locale = useLocale();
   const hydrated = useHydrated();
-  const [items, setItems] = useState(initial.items);
-  const [nextCursor, setNextCursor] = useState(initial.nextCursor);
+  const [items, setItems] = useState<CommentView[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const [body, setBody] = useState('');
   const [pending, setPending] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void listCommentsRequest({ targetType, targetId, limit: 50 })
+      .then((page) => {
+        if (cancelled) {
+          return;
+        }
+        setItems(page.items);
+        setNextCursor(page.nextCursor);
+      })
+      .catch((caught) => {
+        if (!cancelled) {
+          setError(mapApiErrorMessage(caught, tErrors));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoaded(true);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [targetType, targetId, tErrors]);
 
   async function submit() {
     const trimmed = body.trim();
@@ -107,7 +127,7 @@ export function CommentsThread({
       <h2 className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
         {t('title')}
       </h2>
-      {items.length === 0 ? (
+      {!loaded ? null : items.length === 0 ? (
         <p className="mt-4 font-serif text-base opacity-70">{t('empty')}</p>
       ) : (
         <ul className="mt-6 flex flex-col gap-6">

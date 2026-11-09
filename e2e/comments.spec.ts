@@ -38,7 +38,8 @@ test.describe('comments', () => {
     const body = `Комментарий e2e ${stamp}`;
     await page.getByLabel('Комментарий').fill(body);
     await page.getByRole('button', { name: 'Отправить' }).click();
-    await expect(page.getByText(body)).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Удалить' })).toBeVisible();
+    const posted = page.getByRole('listitem').filter({ hasText: body });
+    await expect(posted).toBeVisible();
+    await expect(posted.getByRole('button', { name: 'Удалить' })).toBeVisible();
   });
 });

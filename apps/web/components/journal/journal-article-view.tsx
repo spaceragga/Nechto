@@ -74,7 +74,6 @@ export async function JournalArticleView({
           {t('toAuthor', { name: article.author.displayName })}
         </Link>
       </p>
-      <CommentsSection targetType="article" targetId={article.id} />
       {canReport ? (
         <ReportForm
           target={{ targetType: 'article', targetId: article.id }}
@@ -82,6 +81,11 @@ export async function JournalArticleView({
           className="mt-8"
         />
       ) : null}
+      <CommentsSection
+        targetType="article"
+        targetId={article.id}
+        signedIn={Boolean(viewerEmail)}
+      />
     </main>
   );
 }

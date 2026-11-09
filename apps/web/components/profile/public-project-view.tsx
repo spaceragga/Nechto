@@ -69,7 +69,6 @@ export async function PublicProjectView({
           ),
         )}
       </div>
-      <CommentsSection targetType="project" targetId={project.id} />
       {canReport ? (
         <div className="mx-auto mt-10 max-w-md">
           <ReportForm
@@ -79,6 +78,11 @@ export async function PublicProjectView({
           />
         </div>
       ) : null}
+      <CommentsSection
+        targetType="project"
+        targetId={project.id}
+        signedIn={Boolean(viewerEmail)}
+      />
     </main>
   );
 }

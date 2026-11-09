@@ -55,7 +55,6 @@ export async function PublicWorkView({
           className="mt-8 h-[28rem] w-full md:h-[36rem]"
         />
       ) : null}
-      <CommentsSection targetType="work" targetId={work.id} />
       {canReport ? (
         <div className="mx-auto mt-10 max-w-md">
           <ReportForm
@@ -65,6 +64,11 @@ export async function PublicWorkView({
           />
         </div>
       ) : null}
+      <CommentsSection
+        targetType="work"
+        targetId={work.id}
+        signedIn={Boolean(viewerEmail)}
+      />
       {more.length > 0 ? (
         <section className="mt-12">
           <p className="font-sans text-base opacity-70">{t('more')}</p>
