@@ -16,3 +16,5 @@ test-results
 playwright-report
 playwright/.cache
 blob-report
+# Next.js 16 rewrites this on every `next dev`.
+apps/web/AGENTS.md
