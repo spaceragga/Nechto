@@ -10,6 +10,7 @@ import { DoorGlyph } from '@/components/glyphs/door-glyph';
 import { GearGlyph } from '@/components/glyphs/gear-glyph';
 import { ProfileGlyph } from '@/components/glyphs/profile-glyph';
 import { ShieldGlyph } from '@/components/glyphs/shield-glyph';
+import { NotificationsBell } from '@/components/notifications/notifications-bell';
 import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
 import { usePathname, useRouter } from '@/i18n/navigation';
@@ -78,6 +79,7 @@ export function HomeAuthPanelClient({
             <ProfileGlyph />
           </ChromeIconLink>
         ) : null}
+        <NotificationsBell />
         <ChromeIconLink
           href="/profile"
           label={t('profileLink')}

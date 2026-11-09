@@ -318,6 +318,22 @@ export function searchRequest(query: Parameters<typeof api.search>[0] = {}) {
   return api.search(query);
 }
 
+export function listNotificationsRequest() {
+  return api.listNotifications();
+}
+
+export function unreadNotificationCountRequest() {
+  return api.unreadNotificationCount();
+}
+
+export function markNotificationReadRequest(id: string) {
+  return api.markNotificationRead(id);
+}
+
+export function markAllNotificationsReadRequest() {
+  return api.markAllNotificationsRead();
+}
+
 export function resolveReportRequest(reportId: string) {
   return api.resolveReport(reportId);
 }

@@ -149,6 +149,21 @@
     "empty": "Nothing found.",
     "hint": "Enter at least two characters."
   },
+  "Notifications": {
+    "title": "Notifications",
+    "lede": "Likes, follows, and comments on your works and series.",
+    "empty": "No notifications yet.",
+    "markAllRead": "Mark all read",
+    "kindLiked": "Liked your work",
+    "kindFollowed": "New follower",
+    "kindCommented": "Commented on your work",
+    "kindProjectLiked": "Liked your series",
+    "kindProjectCommented": "Commented on your series",
+    "kindArticleLiked": "Liked your article",
+    "kindArticleCommented": "Commented on your article",
+    "kindDialogueLiked": "Liked your dialogue",
+    "kindDialogueCommented": "Commented on your dialogue"
+  },
   "Fresh": {
     "title": "New",
     "lede": "Fresh publications in the order they arrived in the house.",
