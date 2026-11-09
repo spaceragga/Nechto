@@ -4,6 +4,7 @@ export * from './auth';
 export * from './comment';
 export * from './dialogue';
 export * from './directions';
+export * from './engagement';
 export * from './errors';
 export * from './health';
 export * from './moderation';

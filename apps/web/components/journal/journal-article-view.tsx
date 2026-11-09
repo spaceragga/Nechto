@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { PublicArticle } from '@nechto/api-contract';
 import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
+import { EngagementBar } from '@/components/social/engagement-bar';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { profilePath } from '@/lib/work-path';
@@ -81,6 +82,11 @@ export async function JournalArticleView({
           className="mt-8"
         />
       ) : null}
+      <EngagementBar
+        targetType="article"
+        targetId={article.id}
+        signedIn={Boolean(viewerEmail)}
+      />
       <CommentsSection
         targetType="article"
         targetId={article.id}

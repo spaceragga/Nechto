@@ -14,6 +14,9 @@ import type {
   Profile,
   CreateCommentDto,
   CreateReportDto,
+  EngagementQuery,
+  EngagementTargetDto,
+  FollowSlugDto,
   CreateProjectFields,
   ListCommentsQuery,
   ReplaceProjectBlocks,
@@ -326,6 +329,34 @@ export function createCommentRequest(input: CreateCommentDto) {
 
 export function deleteCommentRequest(id: string) {
   return api.deleteComment(id);
+}
+
+export function getEngagementRequest(query: EngagementQuery) {
+  return api.getEngagement(query);
+}
+
+export function recordViewRequest(input: EngagementTargetDto) {
+  return api.recordView(input);
+}
+
+export function likeContentRequest(input: EngagementTargetDto) {
+  return api.likeContent(input);
+}
+
+export function unlikeContentRequest(input: EngagementTargetDto) {
+  return api.unlikeContent(input);
+}
+
+export function getFollowRequest(query: FollowSlugDto) {
+  return api.getFollow(query);
+}
+
+export function followProfileRequest(input: FollowSlugDto) {
+  return api.followProfile(input);
+}
+
+export function unfollowProfileRequest(input: FollowSlugDto) {
+  return api.unfollowProfile(input);
 }
 
 export function searchRequest(query: Parameters<typeof api.search>[0] = {}) {

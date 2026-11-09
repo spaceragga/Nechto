@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { Work, WorkWithAuthor } from '@nechto/api-contract';
 import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
+import { EngagementBar } from '@/components/social/engagement-bar';
 import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { excerpt } from '@/lib/excerpt';
@@ -64,6 +65,11 @@ export async function PublicWorkView({
           />
         </div>
       ) : null}
+      <EngagementBar
+        targetType="work"
+        targetId={work.id}
+        signedIn={Boolean(viewerEmail)}
+      />
       <CommentsSection
         targetType="work"
         targetId={work.id}

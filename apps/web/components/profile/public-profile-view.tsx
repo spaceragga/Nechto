@@ -7,6 +7,7 @@ import type {
 } from '@nechto/api-contract';
 import { QueryScrollLock } from '@/components/query-scroll-lock';
 import { ReportForm } from '@/components/report-form';
+import { FollowButton } from '@/components/social/follow-button';
 import { MediaTile } from '@/components/ui/media-tile';
 import { ChipLink } from '@/components/ui/chip-link';
 import { WorkFrame } from '@/components/ui/work-frame';
@@ -79,6 +80,13 @@ export async function PublicProfileView({
             <div className="mt-4">
               <ChipLink href={studioPath(slug)}>{t('studio')}</ChipLink>
             </div>
+          ) : null}
+          {slug ? (
+            <FollowButton
+              slug={slug}
+              signedIn={Boolean(viewerEmail)}
+              isOwn={Boolean(viewerEmail) && !canReport}
+            />
           ) : null}
         </div>
         {photoSrc ? (
