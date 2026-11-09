@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { PublicProject } from '@nechto/api-contract';
+import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { toUploadSrc } from '@/lib/to-upload-src';
@@ -68,6 +69,7 @@ export async function PublicProjectView({
           ),
         )}
       </div>
+      <CommentsSection targetType="project" targetId={project.id} />
       {canReport ? (
         <div className="mx-auto mt-10 max-w-md">
           <ReportForm

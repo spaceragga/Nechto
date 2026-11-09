@@ -12,8 +12,10 @@ import type {
   ListCreatorsQuery,
   LoginDto,
   Profile,
+  CreateCommentDto,
   CreateReportDto,
   CreateProjectFields,
+  ListCommentsQuery,
   ReplaceProjectBlocks,
   UpdateArticleFields,
   UpdateProjectFields,
@@ -312,6 +314,18 @@ export function updateStaffAccessRequest(
 
 export function createReportRequest(input: CreateReportDto) {
   return api.createReport(input);
+}
+
+export function listCommentsRequest(query: ListCommentsQuery) {
+  return api.listComments(query);
+}
+
+export function createCommentRequest(input: CreateCommentDto) {
+  return api.createComment(input);
+}
+
+export function deleteCommentRequest(id: string) {
+  return api.deleteComment(id);
 }
 
 export function searchRequest(query: Parameters<typeof api.search>[0] = {}) {

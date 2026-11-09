@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { Work, WorkWithAuthor } from '@nechto/api-contract';
+import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
 import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
@@ -54,6 +55,7 @@ export async function PublicWorkView({
           className="mt-8 h-[28rem] w-full md:h-[36rem]"
         />
       ) : null}
+      <CommentsSection targetType="work" targetId={work.id} />
       {canReport ? (
         <div className="mx-auto mt-10 max-w-md">
           <ReportForm

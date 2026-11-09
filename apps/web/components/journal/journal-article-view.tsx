@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { PublicArticle } from '@nechto/api-contract';
+import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { toUploadSrc } from '@/lib/to-upload-src';
@@ -73,6 +74,7 @@ export async function JournalArticleView({
           {t('toAuthor', { name: article.author.displayName })}
         </Link>
       </p>
+      <CommentsSection targetType="article" targetId={article.id} />
       {canReport ? (
         <ReportForm
           target={{ targetType: 'article', targetId: article.id }}

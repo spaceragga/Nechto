@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { PublicDialogue, WorkWithAuthor } from '@nechto/api-contract';
+import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
@@ -71,6 +72,7 @@ export async function DialogueView({
       </section>
 
       <p className="max-w-2xl font-sans text-sm opacity-70">{t('footer')}</p>
+      <CommentsSection targetType="dialogue" targetId={dialogue.id} />
       {canReport ? (
         <ReportForm
           target={{ targetType: 'dialogue', targetId: dialogue.id }}

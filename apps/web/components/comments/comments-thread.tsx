@@ -1,0 +1,241 @@
+'use client';
+
+import { useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import type {
+  CommentTargetType,
+  CommentView,
+  CursorPage,
+} from '@nechto/api-contract';
+import { Button } from '@/components/ui/button';
+import { FormError } from '@/components/ui/form-error';
+import { useHydrated } from '@/hooks/use-hydrated';
+import { Link } from '@/i18n/navigation';
+import {
+  createCommentRequest,
+  deleteCommentRequest,
+  listCommentsRequest,
+} from '@/lib/api';
+import { mapApiErrorMessage } from '@/lib/map-api-error';
+import { toUploadSrc } from '@/lib/to-upload-src';
+import { profilePath } from '@/lib/work-path';
+
+type CommentsThreadProps = {
+  targetType: CommentTargetType;
+  targetId: string;
+  initial: CursorPage<CommentView>;
+  signedIn: boolean;
+};
+
+export function CommentsThread({
+  targetType,
+  targetId,
+  initial,
+  signedIn,
+}: CommentsThreadProps) {
+  const t = useTranslations('Comments');
+  const tErrors = useTranslations('Errors');
+  const locale = useLocale();
+  const hydrated = useHydrated();
+  const [items, setItems] = useState(initial.items);
+  const [nextCursor, setNextCursor] = useState(initial.nextCursor);
+  const [body, setBody] = useState('');
+  const [pending, setPending] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function submit() {
+    const trimmed = body.trim();
+    if (!trimmed) {
+      return;
+    }
+    setPending(true);
+    setError(null);
+    try {
+      const created = await createCommentRequest({
+        targetType,
+        targetId,
+        body: trimmed,
+      });
+      setItems((current) => [...current, created]);
+      setBody('');
+    } catch (caught) {
+      setError(mapApiErrorMessage(caught, tErrors));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function remove(id: string) {
+    setDeletingId(id);
+    setError(null);
+    try {
+      await deleteCommentRequest(id);
+      setItems((current) => current.filter((item) => item.id !== id));
+    } catch (caught) {
+      setError(mapApiErrorMessage(caught, tErrors));
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  async function loadMore() {
+    if (!nextCursor) {
+      return;
+    }
+    setLoadingMore(true);
+    setError(null);
+    try {
+      const page = await listCommentsRequest({
+        targetType,
+        targetId,
+        cursor: nextCursor,
+        limit: 50,
+      });
+      setItems((current) => [...current, ...page.items]);
+      setNextCursor(page.nextCursor);
+    } catch (caught) {
+      setError(mapApiErrorMessage(caught, tErrors));
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
+  return (
+    <section className="mx-auto mt-12 w-full max-w-2xl text-left">
+      <h2 className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
+        {t('title')}
+      </h2>
+      {items.length === 0 ? (
+        <p className="mt-4 font-serif text-base opacity-70">{t('empty')}</p>
+      ) : (
+        <ul className="mt-6 flex flex-col gap-6">
+          {items.map((item) => (
+            <li key={item.id} className="flex gap-3">
+              <CommentAvatar
+                name={item.author.displayName ?? t('anonymous')}
+                src={toUploadSrc(item.author.avatarUrl)}
+              />
+              <div className="min-w-0 flex-1">
+                <p className="font-sans text-sm">
+                  {item.author.slug ? (
+                    <Link
+                      href={profilePath(item.author.slug)}
+                      className="text-[var(--accent)]"
+                    >
+                      {item.author.displayName ?? t('anonymous')}
+                    </Link>
+                  ) : (
+                    <span>{item.author.displayName ?? t('anonymous')}</span>
+                  )}
+                  <span className="ml-2 opacity-50">
+                    {formatCommentDate(item.createdAt, locale)}
+                  </span>
+                </p>
+                <p className="mt-1 font-serif text-base leading-relaxed whitespace-pre-wrap">
+                  {item.body}
+                </p>
+                {item.canDelete ? (
+                  <button
+                    type="button"
+                    className="mt-2 font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline disabled:opacity-50"
+                    disabled={deletingId === item.id || !hydrated}
+                    onClick={() => {
+                      void remove(item.id);
+                    }}
+                  >
+                    {deletingId === item.id ? t('deleting') : t('delete')}
+                  </button>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      {nextCursor ? (
+        <button
+          type="button"
+          className="mt-4 font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline disabled:opacity-50"
+          disabled={loadingMore || !hydrated}
+          onClick={() => {
+            void loadMore();
+          }}
+        >
+          {t('loadMore')}
+        </button>
+      ) : null}
+      {error ? (
+        <div className="mt-4">
+          <FormError>{error}</FormError>
+        </div>
+      ) : null}
+      {signedIn ? (
+        <form
+          className="mt-8 flex flex-col gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submit();
+          }}
+        >
+          <label className="flex flex-col gap-1 text-sm">
+            <span>{t('placeholder')}</span>
+            <textarea
+              className="min-h-24 rounded border border-white/20 bg-transparent px-3 py-2"
+              value={body}
+              maxLength={2000}
+              onChange={(event) => setBody(event.target.value)}
+              required
+            />
+          </label>
+          <Button
+            type="submit"
+            disabled={pending || !hydrated || body.trim().length === 0}
+            className="self-start"
+          >
+            {pending ? t('submitting') : t('submit')}
+          </Button>
+        </form>
+      ) : (
+        <p className="mt-8 font-sans text-sm">
+          <Link href="/login" className="text-[var(--accent)]">
+            {t('signIn')}
+          </Link>
+        </p>
+      )}
+    </section>
+  );
+}
+
+function CommentAvatar({ name, src }: { name: string; src: string | null }) {
+  if (src) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt=""
+        className="mt-0.5 h-9 w-9 shrink-0 rounded-full object-cover"
+      />
+    );
+  }
+  return (
+    <span
+      aria-hidden
+      className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20 font-sans text-xs uppercase opacity-70"
+    >
+      {name.slice(0, 1)}
+    </span>
+  );
+}
+
+function formatCommentDate(value: string, locale: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+  return date.toLocaleDateString(locale === 'en' ? 'en-GB' : 'ru-RU', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}

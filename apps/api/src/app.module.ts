@@ -5,6 +5,7 @@ import { AccountModule } from './account/account.module';
 import { AdminModule } from './admin/admin.module';
 import { ArticlesModule } from './articles/articles.module';
 import { AuthModule } from './auth/auth.module';
+import { CommentsModule } from './comments/comments.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CurationModule } from './curation/curation.module';
@@ -34,6 +35,7 @@ import { WorksModule } from './works/works.module';
     DialoguesModule,
     StorageModule,
     AuthModule,
+    CommentsModule,
     CurationModule,
     ModerationModule,
     NotificationsModule,
