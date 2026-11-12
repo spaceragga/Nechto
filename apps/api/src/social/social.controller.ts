@@ -12,12 +12,16 @@ import {
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import {
+  cursorPageQuerySchema,
   engagementQuerySchema,
   engagementTargetSchema,
+  followMarksQuerySchema,
   followSlugSchema,
   type AuthUser,
+  type CursorPageQuery,
   type EngagementQuery,
   type EngagementTargetDto,
+  type FollowMarksQuery,
   type FollowSlugDto,
 } from '@nechto/api-contract';
 import type { Request, Response } from 'express';
@@ -85,6 +89,25 @@ export class SocialController {
     @CurrentUser() user: AuthUser,
   ) {
     return this.engagement.unlike(body, user);
+  }
+
+  @Get('following/marks')
+  @UseGuards(JwtAuthGuard)
+  followedMarks(
+    @Query(new ZodValidationPipe(followMarksQuerySchema))
+    query: FollowMarksQuery,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.follows.followedSlugs(user.id, query.slugs);
+  }
+
+  @Get('following')
+  @UseGuards(JwtAuthGuard)
+  listFollowing(
+    @Query(new ZodValidationPipe(cursorPageQuerySchema)) query: CursorPageQuery,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.follows.listFollowing(user.id, query);
   }
 
   @Get('follows')

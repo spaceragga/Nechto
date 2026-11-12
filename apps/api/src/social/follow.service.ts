@@ -2,18 +2,29 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   API_ERROR_CODES,
   type AuthUser,
+  type CursorPage,
+  type CursorPageQuery,
+  type FollowMarks,
   type FollowSnapshot,
+  type PublicProfile,
 } from '@nechto/api-contract';
 import { ApiHttpException } from '../common/errors/api-http-exception';
 import { NotificationsService } from '../notifications/notifications.service';
+import {
+  profileInclude,
+  toProfileRecord,
+  toPublicProfile,
+} from '../profiles/profile.mapper';
 import { publishedProfileWhere } from '../profiles/published-profile';
 import { PrismaService } from '../prisma/prisma.service';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class FollowService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
+    private readonly storage: StorageService,
   ) {}
 
   async status(slug: string, userId: string | null): Promise<FollowSnapshot> {
@@ -51,6 +62,51 @@ export class FollowService {
       });
     }
     return this.snapshot(profile.id, user.id);
+  }
+
+  async listFollowing(
+    userId: string,
+    query: CursorPageQuery,
+  ): Promise<CursorPage<PublicProfile>> {
+    const rows = await this.prisma.follow.findMany({
+      where: {
+        followerId: userId,
+        profile: publishedProfileWhere,
+      },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
+      take: query.limit + 1,
+      include: {
+        profile: { include: profileInclude },
+      },
+    });
+    const hasMore = rows.length > query.limit;
+    const slice = hasMore ? rows.slice(0, query.limit) : rows;
+    return {
+      items: slice.map((row) =>
+        toPublicProfile(toProfileRecord(row.profile), this.storage),
+      ),
+      nextCursor: hasMore ? (slice[slice.length - 1]?.id ?? null) : null,
+    };
+  }
+
+  async followedSlugs(userId: string, slugs: string[]): Promise<FollowMarks> {
+    const unique = [...new Set(slugs)];
+    if (unique.length === 0) {
+      return { slugs: [] };
+    }
+    const rows = await this.prisma.follow.findMany({
+      where: {
+        followerId: userId,
+        profile: { ...publishedProfileWhere, slug: { in: unique } },
+      },
+      select: { profile: { select: { slug: true } } },
+    });
+    return {
+      slugs: rows.flatMap((row) =>
+        row.profile.slug ? [row.profile.slug] : [],
+      ),
+    };
   }
 
   async unfollow(slug: string, user: AuthUser): Promise<FollowSnapshot> {

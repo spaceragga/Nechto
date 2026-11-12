@@ -32,3 +32,20 @@ export type FollowSnapshot = {
   followerCount: number;
   following: boolean;
 };
+
+export const followMarksQuerySchema = z
+  .object({
+    slug: z.union([
+      profileSlugSchema,
+      z.array(profileSlugSchema).min(1).max(50),
+    ]),
+  })
+  .transform((value) => ({
+    slugs: Array.isArray(value.slug) ? value.slug : [value.slug],
+  }));
+
+export type FollowMarksQuery = z.infer<typeof followMarksQuerySchema>;
+
+export type FollowMarks = {
+  slugs: string[];
+};

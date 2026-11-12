@@ -10,6 +10,7 @@ const EXPLORE_LINKS = [
   { href: '/dialogue', key: 'dialogue' },
   { href: '/studio', key: 'studio' },
   { href: '/community', key: 'community' },
+  { href: '/community?tab=following', key: 'following' },
 ] as const;
 
 export async function HomeExploreNav() {

@@ -13,6 +13,7 @@ import {
   type EngagementQuery,
   type EngagementSnapshot,
   type EngagementTargetDto,
+  type FollowMarks,
   type FollowSlugDto,
   type FollowSnapshot,
   type CreateWorkFields,
@@ -170,6 +171,23 @@ export class ApiClient {
       method: 'DELETE',
       body: JSON.stringify(input),
     });
+  }
+
+  listFollowing(query: Partial<CursorPageQuery> = {}) {
+    return this.request<CursorPage<PublicProfile>>(
+      `/social/following${toSearchParams(query)}`,
+    );
+  }
+
+  followedSlugs(slugs: string[]) {
+    const params = new URLSearchParams();
+    for (const slug of slugs) {
+      params.append('slug', slug);
+    }
+    const query = params.toString();
+    return this.request<FollowMarks>(
+      `/social/following/marks${query ? `?${query}` : ''}`,
+    );
   }
 
   unreadNotificationCount() {
@@ -849,6 +867,7 @@ function toSearchParams(query: {
   slug?: string;
   targetType?: string;
   targetId?: string;
+  sort?: string;
 }): string {
   const params = new URLSearchParams();
   if (query.cursor) {
@@ -877,6 +896,9 @@ function toSearchParams(query: {
   }
   if (query.targetId) {
     params.set('targetId', query.targetId);
+  }
+  if (query.sort) {
+    params.set('sort', query.sort);
   }
   const serialized = params.toString();
   return serialized ? `?${serialized}` : '';

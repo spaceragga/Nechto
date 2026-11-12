@@ -73,10 +73,13 @@ export class ProfilesService {
         ...publishedProfileWhere,
         ...(query.direction ? { directions: { has: query.direction } } : {}),
       },
-      orderBy: [
-        { homeFeaturedAt: { sort: 'desc', nulls: 'last' } },
-        { id: 'desc' },
-      ],
+      orderBy:
+        query.sort === 'published'
+          ? [{ publishedAt: 'desc' }, { id: 'desc' }]
+          : [
+              { homeFeaturedAt: { sort: 'desc', nulls: 'last' } },
+              { id: 'desc' },
+            ],
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       take: query.limit + 1,
       include: {

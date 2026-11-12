@@ -18,19 +18,32 @@ type FollowButtonProps = {
   slug: string;
   signedIn: boolean;
   isOwn: boolean;
+  /** Card action: no follower count, and no status fetch when the page already knows. */
+  compact?: boolean;
+  initialFollowing?: boolean;
 };
 
-const empty: FollowSnapshot = { followerCount: 0, following: false };
-
-export function FollowButton({ slug, signedIn, isOwn }: FollowButtonProps) {
+export function FollowButton({
+  slug,
+  signedIn,
+  isOwn,
+  compact = false,
+  initialFollowing,
+}: FollowButtonProps) {
   const t = useTranslations('Social');
   const tErrors = useTranslations('Errors');
   const hydrated = useHydrated();
-  const [state, setState] = useState<FollowSnapshot>(empty);
+  const [state, setState] = useState<FollowSnapshot>({
+    followerCount: 0,
+    following: initialFollowing ?? false,
+  });
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialFollowing !== undefined) {
+      return;
+    }
     let cancelled = false;
     void getFollowRequest({ slug })
       .then((snapshot) => {
@@ -46,7 +59,14 @@ export function FollowButton({ slug, signedIn, isOwn }: FollowButtonProps) {
     return () => {
       cancelled = true;
     };
-  }, [slug, tErrors]);
+  }, [slug, tErrors, initialFollowing]);
+
+  function followLabel() {
+    if (pending) {
+      return t('followingBusy');
+    }
+    return state.following ? t('unfollow') : t('follow');
+  }
 
   async function toggle() {
     if (!signedIn || isOwn || pending) {
@@ -66,29 +86,46 @@ export function FollowButton({ slug, signedIn, isOwn }: FollowButtonProps) {
     }
   }
 
+  if (compact && isOwn) {
+    return null;
+  }
+
   return (
-    <div className="mt-4">
-      <p className="font-sans text-sm opacity-70">
-        {t('followers', { count: state.followerCount })}
-      </p>
+    <div className={compact ? 'mt-2' : 'mt-4'}>
+      {compact ? null : (
+        <p className="font-sans text-sm opacity-70">
+          {t('followers', { count: state.followerCount })}
+        </p>
+      )}
       {isOwn ? null : signedIn ? (
-        <Button
-          type="button"
-          className="mt-3"
-          disabled={!hydrated || pending}
-          onClick={() => void toggle()}
-          aria-pressed={state.following}
-        >
-          {pending
-            ? t('followingBusy')
-            : state.following
-              ? t('unfollow')
-              : t('follow')}
-        </Button>
+        compact ? (
+          <button
+            type="button"
+            className="cursor-pointer rounded border border-white/30 px-2.5 py-1 font-sans text-xs tracking-wide disabled:opacity-50"
+            disabled={!hydrated || pending}
+            onClick={() => void toggle()}
+            aria-pressed={state.following}
+          >
+            {followLabel()}
+          </button>
+        ) : (
+          <Button
+            type="button"
+            className="mt-3"
+            disabled={!hydrated || pending}
+            onClick={() => void toggle()}
+            aria-pressed={state.following}
+          >
+            {followLabel()}
+          </Button>
+        )
       ) : (
-        <p className="mt-3 font-sans text-sm">
-          <Link href="/login" className="text-[var(--accent)]">
-            {t('signInToFollow')}
+        <p className={compact ? 'font-sans text-xs' : 'mt-3 font-sans text-sm'}>
+          <Link
+            href="/login"
+            className="cursor-pointer text-[var(--accent)] no-underline"
+          >
+            {compact ? t('follow') : t('signInToFollow')}
           </Link>
         </p>
       )}
