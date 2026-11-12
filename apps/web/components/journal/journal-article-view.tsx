@@ -2,10 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { PublicArticle } from '@nechto/api-contract';
 import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
-import {
-  EngagementBar,
-  EngagementOverlay,
-} from '@/components/social/engagement-bar';
+import { EngagementBar } from '@/components/social/engagement-bar';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import { profilePath } from '@/lib/work-path';
@@ -59,13 +56,6 @@ export async function JournalArticleView({
           alt={article.title}
           fit="cover"
           className="mt-10 h-[22rem] w-full md:h-[28rem]"
-          overlay={
-            <EngagementOverlay
-              targetType="article"
-              targetId={article.id}
-              signedIn={signedIn}
-            />
-          }
         />
       ) : null}
       <div className="mt-10 flex flex-col gap-6">
@@ -86,27 +76,25 @@ export async function JournalArticleView({
           {t('toAuthor', { name: article.author.displayName })}
         </Link>
       </p>
-      {canReport ? (
-        <ReportForm
-          target={{ targetType: 'article', targetId: article.id }}
-          viewerEmail={viewerEmail}
-          className="mt-8"
-        />
-      ) : null}
       <CommentsSection
         targetType="article"
         targetId={article.id}
         signedIn={signedIn}
         lead={
-          cover ? undefined : (
-            <EngagementBar
-              targetType="article"
-              targetId={article.id}
-              signedIn={signedIn}
-            />
-          )
+          <EngagementBar
+            targetType="article"
+            targetId={article.id}
+            signedIn={signedIn}
+          />
         }
       />
+      {canReport ? (
+        <ReportForm
+          target={{ targetType: 'article', targetId: article.id }}
+          viewerEmail={viewerEmail}
+          className="mt-10"
+        />
+      ) : null}
     </main>
   );
 }

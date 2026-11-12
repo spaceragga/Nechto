@@ -553,6 +553,7 @@
   },
   "PublicProfile": {
     "kicker": "Creator",
+    "directionsLabel": "Directions:",
     "works": "Works",
     "projects": "Projects",
     "journal": "Journal",
@@ -628,6 +629,7 @@
     "title": "Comments",
     "empty": "No comments yet.",
     "placeholder": "Comment",
+    "compose": "Leave a comment",
     "submit": "Send",
     "submitting": "Sending…",
     "delete": "Delete",

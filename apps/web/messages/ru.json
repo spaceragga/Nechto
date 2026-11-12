@@ -553,6 +553,7 @@
   },
   "PublicProfile": {
     "kicker": "Автор",
+    "directionsLabel": "Направления:",
     "works": "Работы",
     "projects": "Проекты",
     "journal": "Журнал",
@@ -628,6 +629,7 @@
     "title": "Комментарии",
     "empty": "Пока нет комментариев.",
     "placeholder": "Комментарий",
+    "compose": "Оставить комментарий",
     "submit": "Отправить",
     "submitting": "Отправка…",
     "delete": "Удалить",

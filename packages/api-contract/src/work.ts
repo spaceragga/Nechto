@@ -44,6 +44,9 @@ export type Work = {
   /** Home hanging strip pin. */
   hangingAt: string | null;
   createdAt: string;
+  /** Present on a public profile grid. */
+  likeCount?: number;
+  viewCount?: number;
 };
 
 export type WorkAuthor = {

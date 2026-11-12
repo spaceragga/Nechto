@@ -73,13 +73,6 @@ export async function DialogueView({
       </section>
 
       <p className="max-w-2xl font-sans text-sm opacity-70">{t('footer')}</p>
-      {canReport ? (
-        <ReportForm
-          target={{ targetType: 'dialogue', targetId: dialogue.id }}
-          viewerEmail={viewerEmail}
-          className="mt-0"
-        />
-      ) : null}
       <CommentsSection
         targetType="dialogue"
         targetId={dialogue.id}
@@ -92,6 +85,13 @@ export async function DialogueView({
           />
         }
       />
+      {canReport ? (
+        <ReportForm
+          target={{ targetType: 'dialogue', targetId: dialogue.id }}
+          viewerEmail={viewerEmail}
+          className="mt-0"
+        />
+      ) : null}
       <p>
         <Link href="/dialogue" className="text-sm text-[var(--accent)]">
           {t('back')}

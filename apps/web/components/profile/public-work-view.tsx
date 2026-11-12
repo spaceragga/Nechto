@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { Work, WorkWithAuthor } from '@nechto/api-contract';
 import { CommentsSection } from '@/components/comments/comments-section';
 import { ReportForm } from '@/components/report-form';
-import { EngagementOverlay } from '@/components/social/engagement-bar';
+import { EngagementBar } from '@/components/social/engagement-bar';
 import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { excerpt } from '@/lib/excerpt';
@@ -54,15 +54,20 @@ export async function PublicWorkView({
           alt={work.title}
           fit="contain"
           className="mt-8 h-[28rem] w-full md:h-[36rem]"
-          overlay={
-            <EngagementOverlay
-              targetType="work"
-              targetId={work.id}
-              signedIn={Boolean(viewerEmail)}
-            />
-          }
         />
       ) : null}
+      <CommentsSection
+        targetType="work"
+        targetId={work.id}
+        signedIn={Boolean(viewerEmail)}
+        lead={
+          <EngagementBar
+            targetType="work"
+            targetId={work.id}
+            signedIn={Boolean(viewerEmail)}
+          />
+        }
+      />
       {canReport ? (
         <div className="mx-auto mt-10 max-w-md">
           <ReportForm
@@ -72,11 +77,6 @@ export async function PublicWorkView({
           />
         </div>
       ) : null}
-      <CommentsSection
-        targetType="work"
-        targetId={work.id}
-        signedIn={Boolean(viewerEmail)}
-      />
       {more.length > 0 ? (
         <section className="mt-12">
           <p className="font-sans text-base opacity-70">{t('more')}</p>
@@ -93,6 +93,11 @@ export async function PublicWorkView({
                 }
                 src={toUploadSrc(item.imageUrl)}
                 wellClassName="aspect-[3/2] w-full"
+                engagement={{
+                  likeCount: item.likeCount ?? 0,
+                  viewCount: item.viewCount ?? 0,
+                  showViews: Boolean(viewerEmail) && !canReport,
+                }}
               />
             ))}
           </div>

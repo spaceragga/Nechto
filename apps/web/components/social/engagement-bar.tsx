@@ -42,6 +42,7 @@ function useEngagement(targetType: EngagementTargetType, targetId: string) {
       .then((snapshot) => {
         if (!cancelled) {
           setState(snapshot);
+          setError(null);
         }
       })
       .catch((caught) => {
@@ -75,12 +76,11 @@ function useEngagement(targetType: EngagementTargetType, targetId: string) {
   return { state, pending, error, toggleLike };
 }
 
-function EngagementMarks({
+export function EngagementBar({
   targetType,
   targetId,
   signedIn,
-  onImage,
-}: EngagementMarksProps & { onImage: boolean }) {
+}: EngagementMarksProps) {
   const t = useTranslations('Social');
   const hydrated = useHydrated();
   const { state, pending, error, toggleLike } = useEngagement(
@@ -128,38 +128,13 @@ function EngagementMarks({
     </Link>
   );
 
-  const row = (
-    <div
-      className={`flex items-center gap-4 ${
-        onImage ? 'drop-shadow-[0_1px_2px_rgb(0_0_0_/_70%)]' : ''
-      }`}
-    >
-      {views}
-      {likeControl}
-    </div>
-  );
-
-  if (onImage) {
-    return (
-      <div className="pointer-events-auto absolute bottom-3 left-3 text-[var(--fg)]">
-        {row}
-        {error ? <FormError>{error}</FormError> : null}
-      </div>
-    );
-  }
-
   return (
     <div>
-      {row}
+      <div className="flex items-center gap-4">
+        {likeControl}
+        {views}
+      </div>
       {error ? <FormError>{error}</FormError> : null}
     </div>
   );
-}
-
-export function EngagementOverlay(props: EngagementMarksProps) {
-  return <EngagementMarks {...props} onImage />;
-}
-
-export function EngagementBar(props: EngagementMarksProps) {
-  return <EngagementMarks {...props} onImage={false} />;
 }

@@ -5,6 +5,7 @@ const catalog = require('../src/dev/dev-artist-catalog.json');
 const seriesByEmail = require('../src/dev/dev-artist-series.json');
 const articlesByEmail = require('../src/dev/dev-artist-articles.json');
 const { purgeTestUsers } = require('./purge-test-users.cjs');
+const { seedSocialActivity } = require('./seed-dev-social.cjs');
 
 const apiBaseUrl = (
   process.env.SEED_API_URL ?? 'http://localhost:3001'
@@ -379,75 +380,6 @@ async function publishSeedArticles(cookie, artist) {
   );
 }
 
-async function postJson(path, cookie, body) {
-  return expectOk(
-    path,
-    await request(path, {
-      method: 'POST',
-      cookie,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    }),
-  );
-}
-
-async function seedSocial() {
-  const artists = catalog.artists ?? [];
-  if (artists.length < 2) {
-    throw new Error('Need at least two seeded artists for social graph');
-  }
-  const kasia = artists[0];
-  // Skip artist2: Playwright social.spec.ts still follows/likes as that account.
-  const visitors = artists.slice(2, 5);
-  if (visitors.length === 0) {
-    throw new Error('Need artists beyond artist2 to seed Kasya notifications');
-  }
-  const works = await expectOk(
-    `/works/profile/${kasia.slug}`,
-    await request(`/works/profile/${kasia.slug}?limit=50`),
-  );
-  const kasiaWorks = works.items ?? [];
-  if (kasiaWorks.length === 0) {
-    throw new Error(`No published work on ${kasia.slug}`);
-  }
-  const featured = kasiaWorks;
-
-  for (const visitor of visitors) {
-    const cookie = await signIn(visitor.email);
-    await postJson('/social/follows', cookie, { slug: kasia.slug });
-    for (const work of featured) {
-      await postJson('/social/likes', cookie, {
-        targetType: 'work',
-        targetId: work.id,
-      });
-      await postJson('/social/views', undefined, {
-        targetType: 'work',
-        targetId: work.id,
-      });
-    }
-  }
-
-  const commenter = await signIn(visitors[0].email);
-  const existing = await expectOk(
-    '/comments',
-    await request(
-      `/comments?targetType=work&targetId=${encodeURIComponent(featured[0].id)}`,
-      { cookie: commenter },
-    ),
-  );
-  if ((existing.items ?? []).length === 0) {
-    await postJson('/comments', commenter, {
-      targetType: 'work',
-      targetId: featured[0].id,
-      body: 'Этот кадр держит двор лучше любой открытки. Спасибо, что оставила грязь и свет как есть.',
-    });
-  }
-
-  console.log(
-    `  social: ${visitors.length} follow ${kasia.slug}, likes on ${featured.length} works, comment+notifications`,
-  );
-}
-
 async function main() {
   if (process.env.NODE_ENV === 'production') {
     throw new Error('Refusing to seed against NODE_ENV=production');
@@ -455,6 +387,11 @@ async function main() {
 
   if (process.env.SEED_ONLY === 'reports') {
     await seedReports();
+    return;
+  }
+
+  if (process.env.SEED_ONLY === 'social') {
+    await seedSocialActivity();
     return;
   }
 
@@ -476,7 +413,7 @@ async function main() {
   await seedDialogues();
   await seedStudios();
   await seedReports();
-  await seedSocial();
+  await seedSocialActivity();
   console.log(`Password for all: ${password}`);
 }
 
@@ -499,13 +436,13 @@ async function grantArtist1Admin() {
   try {
     const result = await prisma.user.updateMany({
       where: { email: 'artist1@nechto.test' },
-      data: { isAdmin: true, isCurator: true, isModerator: false },
+      data: { isAdmin: true, isCurator: true, isModerator: true },
     });
     if (result.count === 0) {
       console.warn('artist1@nechto.test not found; staff flags were not set');
       return;
     }
-    console.log('  artist1@nechto.test isAdmin+isCurator=true');
+    console.log('  artist1@nechto.test isAdmin+isCurator+isModerator=true');
   } finally {
     await prisma.$disconnect();
   }

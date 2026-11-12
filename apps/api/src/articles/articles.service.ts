@@ -14,6 +14,7 @@ import {
 import { ApiHttpException } from '../common/errors/api-http-exception';
 import { PrismaService } from '../prisma/prisma.service';
 import { publishedProfileWhere } from '../profiles/published-profile';
+import { withEngagementCounts } from '../social/engagement-counts';
 import { StorageService } from '../storage/storage.service';
 import {
   toArticleSummary,
@@ -116,10 +117,14 @@ export class ArticlesService {
       include: coverInclude,
     });
 
-    return this.pagePublished(
+    const page = this.pagePublished(
       rows.map((row) => ({ ...row, profile: author })),
       query.limit,
     );
+    return {
+      ...page,
+      items: await withEngagementCounts(this.prisma, 'article', page.items),
+    };
   }
 
   async getPublishedById(id: string): Promise<PublicArticle> {

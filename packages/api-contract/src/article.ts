@@ -58,6 +58,9 @@ export type ArticleSummary = {
   publishedAt: string;
   featuredAt: string | null;
   author: WorkAuthor;
+  /** Present on a public profile grid. */
+  likeCount?: number;
+  viewCount?: number;
 };
 
 export type PublicArticle = ArticleSummary & {

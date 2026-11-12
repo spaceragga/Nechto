@@ -28,7 +28,7 @@
     "db:deploy": "npm run prisma:deploy -w @nechto/api",
     "db:seed": "node apps/api/scripts/seed-dev-artists.cjs",
     "db:seed:dev": "node apps/api/scripts/seed-dev-artists.cjs",
-    "db:seed:social": "node apps/api/scripts/seed-dev-artists.cjs",
+    "db:seed:social": "node apps/api/scripts/seed-dev-social.cjs",
     "db:purge-test-users": "node apps/api/scripts/purge-test-users.cjs"
   },
   "engines": {

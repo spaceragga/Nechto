@@ -10,7 +10,7 @@ type WorkFrameProps = {
   fit?: 'contain' | 'cover';
   /** Disable hover motion (editors, tiny thumbs). */
   staticFrame?: boolean;
-  /** Sits on the still itself (eye/heart), not the empty frame. */
+  /** Cover tiles only. Contain frames stay clear. */
   overlay?: ReactNode;
 };
 
@@ -190,31 +190,23 @@ export function WorkFrame({
       style={live ? { perspective: '1200px' } : undefined}
     >
       {shown ? (
-        <div
+        // eslint-disable-next-line @next/next/no-img-element -- same path as StorageService public URLs
+        <img
+          ref={imageRef}
+          src={shown}
+          alt={alt}
+          onError={() => setFailed(true)}
           className={
             fit === 'cover'
-              ? 'relative h-full w-full'
-              : 'relative max-h-full max-w-full [width:max-content]'
+              ? 'block h-full w-full object-cover'
+              : 'max-h-full max-w-full object-contain'
           }
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element -- same path as StorageService public URLs */}
-          <img
-            ref={imageRef}
-            src={shown}
-            alt={alt}
-            onError={() => setFailed(true)}
-            className={
-              fit === 'cover'
-                ? 'block h-full w-full object-cover'
-                : 'block h-auto w-auto max-h-full max-w-full object-contain'
-            }
-            draggable={false}
-          />
-          {overlay ? (
-            <div className="pointer-events-none absolute inset-0 z-[2]">
-              {overlay}
-            </div>
-          ) : null}
+          draggable={false}
+        />
+      ) : null}
+      {overlay && fit === 'cover' ? (
+        <div className="pointer-events-none absolute inset-0 z-[2]">
+          {overlay}
         </div>
       ) : null}
       {live ? (

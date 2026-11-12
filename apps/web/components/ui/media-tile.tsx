@@ -1,3 +1,4 @@
+import { TileMarks } from '@/components/social/tile-marks';
 import { WorkCaption } from '@/components/ui/work-caption';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
@@ -11,6 +12,11 @@ type MediaTileProps = {
   className?: string;
   fit?: 'contain' | 'cover';
   captionSize?: 'sm' | 'md';
+  engagement?: {
+    likeCount: number;
+    viewCount: number;
+    showViews?: boolean;
+  };
 };
 
 export function MediaTile({
@@ -22,6 +28,7 @@ export function MediaTile({
   className = '',
   fit = 'cover',
   captionSize = 'md',
+  engagement,
 }: MediaTileProps) {
   return (
     <Link href={href} className={`group block min-w-0 ${className}`.trim()}>
@@ -30,6 +37,15 @@ export function MediaTile({
         alt={title ?? ''}
         className={wellClassName}
         fit={fit}
+        overlay={
+          engagement ? (
+            <TileMarks
+              likeCount={engagement.likeCount}
+              viewCount={engagement.viewCount}
+              showViews={engagement.showViews}
+            />
+          ) : undefined
+        }
       />
       <WorkCaption title={title} meta={subtitle} size={captionSize} />
     </Link>

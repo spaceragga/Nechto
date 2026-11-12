@@ -16,6 +16,7 @@ import { ApiHttpException } from '../common/errors/api-http-exception';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { publishedProfileWhere } from '../profiles/published-profile';
+import { withEngagementCounts } from '../social/engagement-counts';
 import { extensionForImageMime } from '../storage/image-file';
 import { assertWorkFile } from './work-file';
 import {
@@ -143,7 +144,11 @@ export class WorksService {
       take: query.limit + 1,
     });
 
-    return this.pageWorks(rows, query.limit);
+    const page = this.pageWorks(rows, query.limit);
+    return {
+      ...page,
+      items: await withEngagementCounts(this.prisma, 'work', page.items),
+    };
   }
 
   async getPublishedById(id: string): Promise<WorkWithAuthor> {

@@ -70,15 +70,6 @@ export async function PublicProjectView({
           ),
         )}
       </div>
-      {canReport ? (
-        <div className="mx-auto mt-10 max-w-md">
-          <ReportForm
-            target={{ targetType: 'project', targetId: project.id }}
-            viewerEmail={viewerEmail}
-            className="mt-0"
-          />
-        </div>
-      ) : null}
       <CommentsSection
         targetType="project"
         targetId={project.id}
@@ -91,6 +82,15 @@ export async function PublicProjectView({
           />
         }
       />
+      {canReport ? (
+        <div className="mx-auto mt-10 max-w-md">
+          <ReportForm
+            target={{ targetType: 'project', targetId: project.id }}
+            viewerEmail={viewerEmail}
+            className="mt-0"
+          />
+        </div>
+      ) : null}
     </main>
   );
 }
