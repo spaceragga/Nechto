@@ -123,7 +123,7 @@ export function CommentsThread({
   }
 
   return (
-    <section className="mx-auto mt-12 w-full max-w-2xl text-left">
+    <section className="mx-auto mt-12 w-full max-w-2xl border-t border-white/15 pt-12 text-left">
       <h2 className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
         {t('title')}
       </h2>

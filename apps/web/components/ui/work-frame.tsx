@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { toUploadSrc } from '@/lib/to-upload-src';
 
 type WorkFrameProps = {
@@ -10,6 +10,8 @@ type WorkFrameProps = {
   fit?: 'contain' | 'cover';
   /** Disable hover motion (editors, tiny thumbs). */
   staticFrame?: boolean;
+  /** Sits on the still itself (eye/heart), not the empty frame. */
+  overlay?: ReactNode;
 };
 
 const EASE_IN =
@@ -28,6 +30,7 @@ export function WorkFrame({
   className = '',
   fit = 'contain',
   staticFrame = false,
+  overlay,
 }: WorkFrameProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -187,19 +190,32 @@ export function WorkFrame({
       style={live ? { perspective: '1200px' } : undefined}
     >
       {shown ? (
-        // eslint-disable-next-line @next/next/no-img-element -- same path as StorageService public URLs
-        <img
-          ref={imageRef}
-          src={shown}
-          alt={alt}
-          onError={() => setFailed(true)}
+        <div
           className={
             fit === 'cover'
-              ? 'block h-full w-full object-cover'
-              : 'max-h-full max-w-full object-contain'
+              ? 'relative h-full w-full'
+              : 'relative inline-flex max-h-full max-w-full'
           }
-          draggable={false}
-        />
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- same path as StorageService public URLs */}
+          <img
+            ref={imageRef}
+            src={shown}
+            alt={alt}
+            onError={() => setFailed(true)}
+            className={
+              fit === 'cover'
+                ? 'block h-full w-full object-cover'
+                : 'max-h-full max-w-full object-contain'
+            }
+            draggable={false}
+          />
+          {overlay ? (
+            <div className="pointer-events-none absolute inset-0 z-[2]">
+              {overlay}
+            </div>
+          ) : null}
+        </div>
       ) : null}
       {live ? (
         <div
