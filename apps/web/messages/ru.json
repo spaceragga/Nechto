@@ -615,13 +615,13 @@
     "like": "Лайк",
     "unlike": "Убрать лайк",
     "liking": "Сохраняем…",
-    "likes": "{count} лайков",
-    "views": "{count} просмотров",
+    "likes": "{count, plural, one {# лайк} few {# лайка} other {# лайков}}",
+    "views": "{count, plural, one {# просмотр} few {# просмотра} other {# просмотров}}",
     "signInToLike": "Войдите, чтобы поставить лайк",
     "follow": "Подписаться",
     "unfollow": "Отписаться",
     "followingBusy": "Сохраняем…",
-    "followers": "{count} подписчиков",
+    "followers": "{count, plural, one {# подписчик} few {# подписчика} other {# подписчиков}}",
     "signInToFollow": "Войдите, чтобы подписаться"
   },
   "Comments": {

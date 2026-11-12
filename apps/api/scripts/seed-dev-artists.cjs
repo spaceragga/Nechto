@@ -379,6 +379,75 @@ async function publishSeedArticles(cookie, artist) {
   );
 }
 
+async function postJson(path, cookie, body) {
+  return expectOk(
+    path,
+    await request(path, {
+      method: 'POST',
+      cookie,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }),
+  );
+}
+
+async function seedSocial() {
+  const artists = catalog.artists ?? [];
+  if (artists.length < 2) {
+    throw new Error('Need at least two seeded artists for social graph');
+  }
+  const kasia = artists[0];
+  // Skip artist2: Playwright social.spec.ts still follows/likes as that account.
+  const visitors = artists.slice(2, 5);
+  if (visitors.length === 0) {
+    throw new Error('Need artists beyond artist2 to seed Kasya notifications');
+  }
+  const works = await expectOk(
+    `/works/profile/${kasia.slug}`,
+    await request(`/works/profile/${kasia.slug}?limit=50`),
+  );
+  const kasiaWorks = works.items ?? [];
+  if (kasiaWorks.length === 0) {
+    throw new Error(`No published work on ${kasia.slug}`);
+  }
+  const featured = kasiaWorks;
+
+  for (const visitor of visitors) {
+    const cookie = await signIn(visitor.email);
+    await postJson('/social/follows', cookie, { slug: kasia.slug });
+    for (const work of featured) {
+      await postJson('/social/likes', cookie, {
+        targetType: 'work',
+        targetId: work.id,
+      });
+      await postJson('/social/views', undefined, {
+        targetType: 'work',
+        targetId: work.id,
+      });
+    }
+  }
+
+  const commenter = await signIn(visitors[0].email);
+  const existing = await expectOk(
+    '/comments',
+    await request(
+      `/comments?targetType=work&targetId=${encodeURIComponent(featured[0].id)}`,
+      { cookie: commenter },
+    ),
+  );
+  if ((existing.items ?? []).length === 0) {
+    await postJson('/comments', commenter, {
+      targetType: 'work',
+      targetId: featured[0].id,
+      body: 'Этот кадр держит двор лучше любой открытки. Спасибо, что оставила грязь и свет как есть.',
+    });
+  }
+
+  console.log(
+    `  social: ${visitors.length} follow ${kasia.slug}, likes on ${featured.length} works, comment+notifications`,
+  );
+}
+
 async function main() {
   if (process.env.NODE_ENV === 'production') {
     throw new Error('Refusing to seed against NODE_ENV=production');
@@ -407,6 +476,7 @@ async function main() {
   await seedDialogues();
   await seedStudios();
   await seedReports();
+  await seedSocial();
   console.log(`Password for all: ${password}`);
 }
 

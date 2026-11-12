@@ -615,13 +615,13 @@
     "like": "Like",
     "unlike": "Unlike",
     "liking": "Saving…",
-    "likes": "{count} likes",
-    "views": "{count} views",
+    "likes": "{count, plural, one {# like} other {# likes}}",
+    "views": "{count, plural, one {# view} other {# views}}",
     "signInToLike": "Sign in to like",
     "follow": "Follow",
     "unfollow": "Unfollow",
     "followingBusy": "Saving…",
-    "followers": "{count} followers",
+    "followers": "{count, plural, one {# follower} other {# followers}}",
     "signInToFollow": "Sign in to follow"
   },
   "Comments": {

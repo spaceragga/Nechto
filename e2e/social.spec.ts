@@ -11,9 +11,9 @@ test.describe('social engagement', () => {
     await expect(workLink).toBeVisible();
     await workLink.click();
 
-    await expect(page.getByText(/просмотров/)).toBeVisible();
+    await expect(page.getByText(/просмотр/).first()).toBeVisible();
     await expect(
-      page.getByRole('link', { name: 'Войдите, чтобы поставить лайк' }),
+      page.getByRole('link', { name: 'Войдите, чтобы поставить лайк' }).first(),
     ).toBeVisible();
   });
 
@@ -40,9 +40,9 @@ test.describe('social engagement', () => {
       .first();
     await expect(workLink).toBeVisible();
     await workLink.click();
-    await page.getByRole('button', { name: 'Лайк' }).click();
+    await page.getByRole('button', { name: 'Лайк' }).first().click();
     await expect(
-      page.getByRole('button', { name: 'Убрать лайк' }),
+      page.getByRole('button', { name: 'Убрать лайк' }).first(),
     ).toBeVisible();
   });
 });
