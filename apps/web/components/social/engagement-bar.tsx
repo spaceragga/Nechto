@@ -24,24 +24,28 @@ type EngagementMarksProps = {
   signedIn: boolean;
 };
 
-const empty: EngagementSnapshot = {
-  likeCount: 0,
-  viewCount: 0,
-  likedByMe: false,
+type LoadedEngagement = {
+  targetType: EngagementTargetType;
+  targetId: string;
+  snapshot: EngagementSnapshot;
 };
 
 function useEngagement(targetType: EngagementTargetType, targetId: string) {
   const tErrors = useTranslations('Errors');
-  const [state, setState] = useState<EngagementSnapshot>(empty);
+  const [loaded, setLoaded] = useState<LoadedEngagement | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const state =
+    loaded?.targetType === targetType && loaded.targetId === targetId
+      ? loaded.snapshot
+      : null;
 
   useEffect(() => {
     let cancelled = false;
     void recordViewRequest({ targetType, targetId })
       .then((snapshot) => {
         if (!cancelled) {
-          setState(snapshot);
+          setLoaded({ targetType, targetId, snapshot });
           setError(null);
         }
       })
@@ -56,7 +60,7 @@ function useEngagement(targetType: EngagementTargetType, targetId: string) {
   }, [targetType, targetId, tErrors]);
 
   async function toggleLike(signedIn: boolean) {
-    if (!signedIn || pending) {
+    if (!state || !signedIn || pending) {
       return;
     }
     setPending(true);
@@ -65,7 +69,7 @@ function useEngagement(targetType: EngagementTargetType, targetId: string) {
       const next = state.likedByMe
         ? await unlikeContentRequest({ targetType, targetId })
         : await likeContentRequest({ targetType, targetId });
-      setState(next);
+      setLoaded({ targetType, targetId, snapshot: next });
     } catch (caught) {
       setError(mapApiErrorMessage(caught, tErrors));
     } finally {
@@ -87,6 +91,14 @@ export function EngagementBar({
     targetType,
     targetId,
   );
+
+  if (!state) {
+    return error ? (
+      <FormError>{error}</FormError>
+    ) : (
+      <div className="h-6" aria-busy="true" />
+    );
+  }
 
   const views = (
     <span

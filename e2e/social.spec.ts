@@ -1,6 +1,36 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('social engagement', () => {
+  test('hides engagement counts until the snapshot arrives', async ({
+    page,
+  }) => {
+    let release = () => {};
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/social/views', async (route) => {
+      await held;
+      await route.continue();
+    });
+
+    await page.goto('/kasia-voit');
+    const workLink = page
+      .locator('main a[href^="/kasia-voit/"]:not([href*="/p/"])')
+      .first();
+    await expect(workLink).toBeVisible();
+    await workLink.click();
+
+    const thread = page
+      .locator('section')
+      .filter({ has: page.getByRole('heading', { name: 'Комментарии' }) });
+    await expect(thread.locator('[aria-busy="true"]')).toBeVisible();
+    await expect(thread.getByLabel(/просмотр/)).toHaveCount(0);
+
+    release();
+    await expect(thread.getByLabel(/просмотр/)).toBeVisible();
+    await expect(thread.locator('[aria-busy="true"]')).toHaveCount(0);
+  });
+
   test('records a view and shows a sign-in prompt on a published work', async ({
     page,
   }) => {
