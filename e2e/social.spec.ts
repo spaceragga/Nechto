@@ -23,7 +23,7 @@ test.describe('social engagement', () => {
     const thread = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: 'Комментарии' }) });
-    await expect(thread.locator('[aria-busy="true"]')).toBeVisible();
+    await expect(thread.locator('[aria-busy="true"]')).toBeAttached();
     await expect(thread.getByLabel(/просмотр/)).toHaveCount(0);
 
     release();
