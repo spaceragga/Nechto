@@ -129,7 +129,11 @@ function EngagementMarks({
   );
 
   const row = (
-    <div className="flex items-center gap-4 drop-shadow-[0_1px_2px_rgb(0_0_0_/_70%)]">
+    <div
+      className={`flex items-center gap-4 ${
+        onImage ? 'drop-shadow-[0_1px_2px_rgb(0_0_0_/_70%)]' : ''
+      }`}
+    >
       {views}
       {likeControl}
     </div>
@@ -137,7 +141,7 @@ function EngagementMarks({
 
   if (onImage) {
     return (
-      <div className="pointer-events-auto absolute bottom-2 left-2 text-[var(--fg)]">
+      <div className="pointer-events-auto absolute bottom-3 left-3 text-[var(--fg)]">
         {row}
         {error ? <FormError>{error}</FormError> : null}
       </div>
@@ -145,8 +149,8 @@ function EngagementMarks({
   }
 
   return (
-    <div className="mx-auto mt-8 max-w-md border-t border-white/15 pt-4">
-      <div className="flex justify-center">{row}</div>
+    <div>
+      {row}
       {error ? <FormError>{error}</FormError> : null}
     </div>
   );

@@ -194,7 +194,7 @@ export function WorkFrame({
           className={
             fit === 'cover'
               ? 'relative h-full w-full'
-              : 'relative inline-flex max-h-full max-w-full'
+              : 'relative max-h-full max-w-full [width:max-content]'
           }
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- same path as StorageService public URLs */}
@@ -206,7 +206,7 @@ export function WorkFrame({
             className={
               fit === 'cover'
                 ? 'block h-full w-full object-cover'
-                : 'max-h-full max-w-full object-contain'
+                : 'block h-auto w-auto max-h-full max-w-full object-contain'
             }
             draggable={false}
           />

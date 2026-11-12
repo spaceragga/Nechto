@@ -70,11 +70,6 @@ export async function PublicProjectView({
           ),
         )}
       </div>
-      <EngagementBar
-        targetType="project"
-        targetId={project.id}
-        signedIn={Boolean(viewerEmail)}
-      />
       {canReport ? (
         <div className="mx-auto mt-10 max-w-md">
           <ReportForm
@@ -88,6 +83,13 @@ export async function PublicProjectView({
         targetType="project"
         targetId={project.id}
         signedIn={Boolean(viewerEmail)}
+        lead={
+          <EngagementBar
+            targetType="project"
+            targetId={project.id}
+            signedIn={Boolean(viewerEmail)}
+          />
+        }
       />
     </main>
   );

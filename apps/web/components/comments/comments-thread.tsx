@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import type { CommentTargetType, CommentView } from '@nechto/api-contract';
 import { Button } from '@/components/ui/button';
@@ -20,12 +20,14 @@ type CommentsThreadProps = {
   targetType: CommentTargetType;
   targetId: string;
   signedIn: boolean;
+  lead?: ReactNode;
 };
 
 export function CommentsThread({
   targetType,
   targetId,
   signedIn,
+  lead,
 }: CommentsThreadProps) {
   const t = useTranslations('Comments');
   const tErrors = useTranslations('Errors');
@@ -123,7 +125,8 @@ export function CommentsThread({
   }
 
   return (
-    <section className="mx-auto mt-12 w-full max-w-2xl border-t border-white/15 pt-12 text-left">
+    <section className="mx-auto mt-12 w-full max-w-2xl border-t border-white/15 pt-8 text-left">
+      {lead ? <div className="mb-8">{lead}</div> : null}
       <h2 className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
         {t('title')}
       </h2>

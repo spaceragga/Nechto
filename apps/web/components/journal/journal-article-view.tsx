@@ -67,13 +67,7 @@ export async function JournalArticleView({
             />
           }
         />
-      ) : (
-        <EngagementBar
-          targetType="article"
-          targetId={article.id}
-          signedIn={signedIn}
-        />
-      )}
+      ) : null}
       <div className="mt-10 flex flex-col gap-6">
         {paragraphs.map((paragraph) => (
           <p
@@ -103,6 +97,15 @@ export async function JournalArticleView({
         targetType="article"
         targetId={article.id}
         signedIn={signedIn}
+        lead={
+          cover ? undefined : (
+            <EngagementBar
+              targetType="article"
+              targetId={article.id}
+              signedIn={signedIn}
+            />
+          )
+        }
       />
     </main>
   );
