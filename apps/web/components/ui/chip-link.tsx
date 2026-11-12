@@ -10,6 +10,7 @@ type ChipLinkProps = {
   children: ReactNode;
   active?: boolean;
   scroll?: boolean;
+  marker?: string;
 };
 
 export function ChipLink({
@@ -17,6 +18,7 @@ export function ChipLink({
   children,
   active = false,
   scroll = true,
+  marker,
 }: ChipLinkProps) {
   const router = useRouter();
   const hydrated = useHydrated();
@@ -43,8 +45,10 @@ export function ChipLink({
       href={href}
       scroll={scroll}
       onClick={onClick}
+      aria-current={active ? 'page' : undefined}
+      data-house-nav={marker}
       data-hydrated={hydrated ? 'true' : 'false'}
-      className={`inline-flex items-center justify-center px-5 py-1 font-sans text-xl tracking-wide transition-colors duration-150 ${
+      className={`inline-flex shrink-0 items-center justify-center px-5 py-1 font-sans text-xl tracking-wide transition-colors duration-150 ${
         active
           ? 'bg-[var(--accent)] text-[var(--fg)]'
           : 'bg-white/[0.04] hover:bg-white/[0.08]'

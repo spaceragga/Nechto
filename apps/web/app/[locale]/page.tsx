@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { DirectionChips } from '@/components/direction-chips';
 import { HomeCreatorsRail } from '@/components/home/home-creators-rail';
-import { HomeExploreNav } from '@/components/home/home-explore-nav';
 import { HomeFragmentsRail } from '@/components/home/home-fragments-rail';
 import { HomeHangingSpot } from '@/components/home/home-hanging-spot';
 import { HomeStage } from '@/components/home/home-stage';
@@ -108,7 +107,6 @@ export default async function HomePage({
           <p className="mt-2 max-w-2xl font-sans text-base leading-relaxed opacity-70">
             {t('subtitle')}
           </p>
-          <HomeExploreNav />
         </header>
 
         <HomeStage locale={locale} feed={feed} />

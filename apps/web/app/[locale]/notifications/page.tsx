@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
+import { HouseIntro } from '@/components/house-intro';
 import { NotificationsPageClient } from '@/components/notifications/notifications-page-client';
 import { createServerApiClient } from '@/lib/api-server';
 import { getCurrentUser } from '@/lib/session';
@@ -26,10 +27,7 @@ export default async function NotificationsPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-12">
-      <header>
-        <h1 className="font-serif text-4xl tracking-wide">{t('title')}</h1>
-        <p className="mt-3 text-sm opacity-70">{t('lede')}</p>
-      </header>
+      <HouseIntro title={t('title')} lede={t('lede')} />
       <NotificationsPageClient
         initial={list}
         labels={{

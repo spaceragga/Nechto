@@ -1,4 +1,6 @@
 import { DirectionChips } from '@/components/direction-chips';
+import { HouseIntro } from '@/components/house-intro';
+import type { HouseNavKey } from '@/lib/house-nav';
 import type { DirectionChipPath } from '@/components/direction-chips';
 import { MediaTile } from '@/components/ui/media-tile';
 import { Link } from '@/i18n/navigation';
@@ -13,6 +15,8 @@ export type ExploreCatalogItem = {
 
 type ExploreCatalogPageProps = {
   title: string;
+  /** When set, the matching nav button flies into this title. */
+  navKey?: HouseNavKey;
   lede: string;
   empty: string;
   more?: string;
@@ -24,6 +28,7 @@ type ExploreCatalogPageProps = {
 
 export function ExploreCatalogPage({
   title,
+  navKey,
   lede,
   empty,
   more,
@@ -34,15 +39,16 @@ export function ExploreCatalogPage({
 }: ExploreCatalogPageProps) {
   return (
     <main className="flex w-full flex-col gap-10 px-6 py-12">
-      <header>
-        <h1 className="font-serif text-4xl tracking-wide">{title}</h1>
-        <p className="mt-3 max-w-2xl font-sans text-sm opacity-70">{lede}</p>
-        {filterPath ? (
-          <div className="mt-6">
+      <HouseIntro
+        title={title}
+        lede={lede}
+        navKey={navKey}
+        controls={
+          filterPath ? (
             <DirectionChips active={direction} basePath={filterPath} />
-          </div>
-        ) : null}
-      </header>
+          ) : undefined
+        }
+      />
       {items.length === 0 ? (
         <p className="text-sm opacity-70">{empty}</p>
       ) : (

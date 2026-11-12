@@ -92,6 +92,24 @@ test.describe('site navigation', () => {
     );
   });
 
+  test('walks from a profile into a section', async ({ page }) => {
+    await navigate(page, '/kasia-voit');
+    const sections = page
+      .getByRole('banner')
+      .getByRole('navigation', { name: 'Разделы' });
+    const journal = sections.getByRole('link', { name: 'Журнал', exact: true });
+    await expect(journal).toBeVisible();
+    await expect(journal).not.toHaveAttribute('aria-current', 'page');
+    await followLink(page, journal);
+    await expect(page).toHaveURL(/\/journal\/?$/);
+    await expect(
+      page
+        .getByRole('banner')
+        .getByRole('navigation', { name: 'Разделы' })
+        .getByRole('link', { name: 'Журнал', exact: true }),
+    ).toHaveAttribute('aria-current', 'page');
+  });
+
   test('opens remaining pages from the English shell', async ({ page }) => {
     test.setTimeout(60_000);
     await navigate(page, '/en');

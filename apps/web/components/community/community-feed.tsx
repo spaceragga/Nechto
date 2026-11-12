@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
+import { HouseIntro } from '@/components/house-intro';
 import { FollowButton } from '@/components/social/follow-button';
+import type { HouseNavKey } from '@/lib/house-nav';
 import { ChipLink } from '@/components/ui/chip-link';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
@@ -19,6 +21,7 @@ type CommunityTab = 'people' | 'following';
 
 type CommunityFeedProps = {
   title: string;
+  navKey: HouseNavKey;
   lede: string;
   tabsLabel: string;
   peopleTab: string;
@@ -35,6 +38,7 @@ type CommunityFeedProps = {
 
 export function CommunityFeed({
   title,
+  navKey,
   lede,
   tabsLabel,
   peopleTab,
@@ -50,21 +54,24 @@ export function CommunityFeed({
 }: CommunityFeedProps) {
   return (
     <main className="flex w-full flex-col gap-12 px-6 py-12">
-      <header>
-        <h1 className="font-serif text-4xl tracking-wide">{title}</h1>
-        <p className="mt-3 max-w-2xl font-sans text-sm opacity-70">{lede}</p>
-        <nav aria-label={tabsLabel} className="mt-6 flex flex-wrap gap-2">
-          <ChipLink href="/community" active={tab === 'people'}>
-            {peopleTab}
-          </ChipLink>
-          <ChipLink
-            href="/community?tab=following"
-            active={tab === 'following'}
-          >
-            {followingTab}
-          </ChipLink>
-        </nav>
-      </header>
+      <HouseIntro
+        title={title}
+        lede={lede}
+        navKey={navKey}
+        controls={
+          <nav aria-label={tabsLabel} className="flex flex-wrap gap-2">
+            <ChipLink href="/community" active={tab === 'people'}>
+              {peopleTab}
+            </ChipLink>
+            <ChipLink
+              href="/community?tab=following"
+              active={tab === 'following'}
+            >
+              {followingTab}
+            </ChipLink>
+          </nav>
+        }
+      />
       {people.length === 0 ? (
         <EmptyNote href={emptyHref}>{empty}</EmptyNote>
       ) : (

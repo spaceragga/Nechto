@@ -268,6 +268,7 @@ test.describe('home page locales', () => {
     await page.goto('/');
 
     const exploreChip = page
+      .getByRole('banner')
       .getByRole('navigation', { name: 'Разделы' })
       .getByRole('link', { name: 'Авторы' });
     await expect(exploreChip).toHaveCSS('border-top-width', '0px');
@@ -675,6 +676,8 @@ test.describe('home page locales', () => {
 
     const explore = page.getByRole('navigation', { name: 'Разделы' });
     await expect(explore.getByRole('link', { name: 'Авторы' })).toBeVisible();
+    await expect(explore.getByRole('link', { name: 'Работы' })).toBeVisible();
+    await expect(explore.getByRole('link', { name: 'Проекты' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'Развес' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'Новые' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'Подборки' })).toBeVisible();
@@ -745,6 +748,8 @@ test.describe('home page locales', () => {
 
     const explore = page.getByRole('navigation', { name: 'Sections' });
     await expect(explore.getByRole('link', { name: 'Creators' })).toBeVisible();
+    await expect(explore.getByRole('link', { name: 'Works' })).toBeVisible();
+    await expect(explore.getByRole('link', { name: 'Projects' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'Hanging' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'New' })).toBeVisible();
     await expect(

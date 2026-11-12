@@ -1,3 +1,4 @@
+import { HouseIntro } from '@/components/house-intro';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 
@@ -46,10 +47,7 @@ export function DialogueIndex({
 }: DialogueIndexProps) {
   return (
     <main className="flex w-full flex-col gap-10 px-6 py-12">
-      <header>
-        <h1 className="font-serif text-4xl tracking-wide">{title}</h1>
-        <p className="mt-3 max-w-2xl font-sans text-sm opacity-70">{lede}</p>
-      </header>
+      <HouseIntro title={title} lede={lede} navKey="dialogue" />
 
       {dialogues.length === 0 ? (
         empty ? (

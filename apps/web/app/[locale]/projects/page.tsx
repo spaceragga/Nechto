@@ -30,6 +30,7 @@ export default async function ProjectsPage({
     <ExploreCatalogPage
       title={t('title')}
       lede={t('lede')}
+      navKey="projects"
       empty={direction ? t('emptyDirection') : t('emptyCatalog')}
       more={t('more')}
       nextHref={

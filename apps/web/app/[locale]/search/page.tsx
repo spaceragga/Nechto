@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
+import { HouseIntro } from '@/components/house-intro';
 import { SearchPageClient } from '@/components/search/search-page-client';
 import { createServerApiClient } from '@/lib/api-server';
 
@@ -36,12 +37,7 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
 
   return (
     <main className="flex w-full flex-col gap-10 px-6 py-12">
-      <header>
-        <h1 className="font-serif text-4xl tracking-wide">{t('title')}</h1>
-        <p className="mt-3 max-w-2xl font-sans text-sm opacity-70">
-          {t('lede')}
-        </p>
-      </header>
+      <HouseIntro title={t('title')} lede={t('lede')} />
       <SearchPageClient
         results={results}
         labels={{

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { HouseIntro } from '@/components/house-intro';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { Link } from '@/i18n/navigation';
 
@@ -166,22 +167,15 @@ export function HangingWall({
 
   return (
     <main className="px-6 py-12">
-      <div className="mx-auto flex w-full max-w-6xl min-w-0 flex-col text-center">
-        <header>
-          <h1 className="font-serif text-2xl leading-tight tracking-wide md:text-3xl">
-            {title}
-          </h1>
-          <p className="mx-auto mt-2 max-w-2xl font-sans text-base leading-relaxed opacity-70">
-            {lede}
-          </p>
-        </header>
+      <HouseIntro title={title} lede={lede} navKey="hanging" />
+      <div className="mx-auto mt-10 flex w-full max-w-6xl min-w-0 flex-col text-center">
         {frames.length === 0 ? (
-          <p className="mt-10 text-sm opacity-70">{empty}</p>
+          <p className="text-sm opacity-70">{empty}</p>
         ) : (
           <section
             ref={setWall}
             aria-label={title}
-            className="mt-10 flex min-h-40 w-full flex-col gap-8"
+            className="flex min-h-40 w-full flex-col gap-8"
           >
             {rows.map((row) => (
               <div

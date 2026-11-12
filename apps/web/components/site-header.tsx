@@ -4,14 +4,15 @@ import { ChromeIconLink } from '@/components/chrome-icon';
 import { BrandGlyph } from '@/components/glyphs/brand-glyph';
 import { HeaderSearch } from '@/components/header-search';
 import { HomeAuthPanel } from '@/components/home-auth-panel';
+import { HouseNav } from '@/components/house-nav';
 
 export async function SiteHeader() {
   const t = await getTranslations('Site');
   const tAuth = await getTranslations('Auth');
 
   return (
-    <header className="sticky top-0 z-20 border-b border-white/15 bg-[var(--bg)] px-6 py-2">
-      <div className="flex w-full items-center gap-4">
+    <header className="sticky top-0 z-20 bg-[var(--bg)]">
+      <div className="flex w-full items-center gap-4 px-6 py-2">
         <ChromeIconLink href="/" label={t('brand')}>
           <BrandGlyph />
         </ChromeIconLink>
@@ -28,6 +29,7 @@ export async function SiteHeader() {
           </Suspense>
         </div>
       </div>
+      <HouseNav />
     </header>
   );
 }

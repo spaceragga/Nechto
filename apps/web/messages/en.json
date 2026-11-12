@@ -7,7 +7,21 @@
     "community": "Community"
   },
   "Site": {
-    "brand": "Nechto"
+    "brand": "Nechto",
+    "nav": {
+      "label": "Sections",
+      "creators": "Creators",
+      "works": "Works",
+      "projects": "Projects",
+      "hanging": "Hanging",
+      "new": "New",
+      "collections": "Selections",
+      "journal": "Journal",
+      "dialogue": "Dialogue",
+      "studio": "Studio",
+      "community": "Community",
+      "following": "Following"
+    }
   },
   "HomePage": {
     "title": "House of the Independent Creator",
@@ -79,22 +93,11 @@
     "seeAll": "All",
     "emptyWorks": "No works in this direction yet.",
     "emptyProjects": "No projects in this direction yet.",
-    "emptyCreators": "No creators in this direction yet.",
-    "exploreNav": {
-      "label": "Sections",
-      "creators": "Creators",
-      "hanging": "Hanging",
-      "new": "New",
-      "collections": "Selections",
-      "journal": "Journal",
-      "dialogue": "Dialogue",
-      "studio": "Studio",
-      "community": "Community",
-      "following": "Following"
-    }
+    "emptyCreators": "No creators in this direction yet."
   },
   "Studio": {
     "title": "Studio",
+    "lede": "A place an author gathers around the work.",
     "featuredKicker": "In the house now",
     "themes": "By theme",
     "creators": "Authors",
@@ -106,14 +109,14 @@
   },
   "Journal": {
     "title": "Journal",
-    "lede": "Articles by authors of the house: slow reading about work, place, and looking. Not a feed and not a caption on a frame.",
+    "lede": "On the work, the place, and the way of looking. A slow reading.",
     "kicker": "Article",
     "empty": "No published articles yet.",
     "toAuthor": "To the author: {name}"
   },
   "Dialogue": {
     "title": "Dialogue",
-    "lede": "A curator places two works side by side: different authors, one pause. Look together, then go to the people.",
+    "lede": "Two works stand side by side. A pause is left between them.",
     "kicker": "Pair",
     "empty": "No curated pairs yet.",
     "footer": "A pair is not a ranking or a contest. If you need an author after looking — open the profile or the work.",
@@ -132,13 +135,13 @@
   },
   "Hanging": {
     "title": "Hanging",
-    "lede": "The latest work from each published creator. No ranking.",
+    "lede": "The latest work of each author. Today it hangs on its own wall.",
     "empty": "No published works yet.",
     "more": "More"
   },
   "Search": {
     "title": "Search",
-    "lede": "Creators, works, series, journal, dialogues, and studios — by name and title.",
+    "lede": "A name or a title, and the house answers.",
     "placeholder": "Name, slug, or title",
     "submit": "Search",
     "works": "Works",
@@ -152,7 +155,7 @@
   },
   "Notifications": {
     "title": "Notifications",
-    "lede": "Likes, follows, and comments on your works and series.",
+    "lede": "Who stopped nearby: a look, a word, a quiet presence.",
     "empty": "No notifications yet.",
     "markAllRead": "Mark all read",
     "kindLiked": "Liked your work",
@@ -167,14 +170,14 @@
   },
   "Fresh": {
     "title": "New",
-    "lede": "Fresh publications in the order they arrived in the house.",
+    "lede": "Fresh publications. They have just been brought into the house.",
     "empty": "No published works yet.",
     "more": "More",
     "body": "Fresh publications. This feed is still taking shape."
   },
   "Collections": {
     "title": "Selections",
-    "lede": "Author series and rooms by direction.",
+    "lede": "Whole series, and rooms by direction. Each with an air of its own.",
     "empty": "No published works for directions yet.",
     "emptySeries": "No published series yet.",
     "series": "Series",
@@ -184,7 +187,8 @@
   },
   "CommunityFeed": {
     "title": "Community",
-    "lede": "The house wall: people who have stepped into the light. No ranking. Talk lives under the work and in the text. There is no separate feed.",
+    "lede": "The house wall, where people stand. Their voices stay with the work and the writing.",
+    "ledeFollowing": "Pages you keep closer than the rest.",
     "tabsLabel": "Community sections",
     "peopleTab": "People",
     "followingTab": "Following",
@@ -458,7 +462,7 @@
   },
   "Works": {
     "title": "Works",
-    "lede": "Publications in the order they appeared in the house.",
+    "lede": "One work, taken out of everything beside it. It keeps a silence of its own.",
     "emptyCatalog": "No published works yet.",
     "emptyDirection": "No works in this direction yet.",
     "more": "More",
@@ -487,7 +491,7 @@
   },
   "Projects": {
     "title": "Projects",
-    "lede": "Author series in the order they appeared in the house.",
+    "lede": "Frames that agreed to travel together. The story gathers along the way.",
     "emptyCatalog": "No published projects yet.",
     "emptyDirection": "No projects in this direction yet.",
     "more": "More",
@@ -540,6 +544,7 @@
   },
   "Creators": {
     "title": "Creators",
+    "lede": "People who have already stepped into the light. Each with a name of their own.",
     "filter": "Filter by direction",
     "all": "All",
     "empty": "No creators here yet",

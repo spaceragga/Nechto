@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { CreatorCard } from '@/components/creators/creator-card';
+import { HouseIntro } from '@/components/house-intro';
 import { DirectionChips } from '@/components/direction-chips';
 import { parseCatalogDirection } from '@/lib/catalog-query';
 import { loadPublishedCreators } from '@/lib/load-published-feed';
@@ -27,11 +28,13 @@ export default async function CreatorsPage({
   });
 
   return (
-    <main className="w-full px-6 py-16">
-      <h1 className="font-serif text-4xl tracking-wide">{t('title')}</h1>
-      <div className="mt-6">
-        <DirectionChips active={direction} />
-      </div>
+    <main className="w-full px-6 py-12">
+      <HouseIntro
+        title={t('title')}
+        lede={t('lede')}
+        navKey="creators"
+        controls={<DirectionChips active={direction} />}
+      />
       {creators.length === 0 ? (
         <p className="mt-10 text-sm opacity-70">{t('empty')}</p>
       ) : (
