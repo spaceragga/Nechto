@@ -62,7 +62,7 @@
     "hangingSpot": {
       "kicker": "Hanging",
       "title": "On the wall today",
-      "lede": "Latest works from different authors. A ranked top is still ahead.",
+      "lede": "One recent work from different authors. No score.",
       "cta": "The full hanging"
     },
     "lookingSpot": {
@@ -83,7 +83,7 @@
     "exploreNav": {
       "label": "Sections",
       "creators": "Creators",
-      "topWorks": "Top works",
+      "hanging": "Hanging",
       "new": "New",
       "collections": "Selections",
       "journal": "Journal",
@@ -123,18 +123,18 @@
     "title": "How to look",
     "updated": "Voice of the house",
     "paragraphs": [
-      "A like here is attention, not a rank. Look at one work, read the caption, pause.",
+      "A like here is attention, not a place on the wall. Look at one work, read the caption, pause.",
       "The journal is separate articles by authors for a reader. It is not a jpeg caption and not an editorial blog.",
       "Dialogue is two works side by side from a curator. Not a feed: one pair, a note, a path to the authors.",
-      "Selections and series are whole stories. New is what just arrived. Top here is not a scoreboard.",
+      "Selections and series are whole stories. New is what just arrived. The hanging is each author's latest work, not a scoreboard.",
       "If you need someone for a job, look for a profile and a studio, not a feed. An author steps into the light when they publish their page."
     ]
   },
-  "TopWorks": {
-    "title": "Top works",
+  "Hanging": {
+    "title": "Hanging",
     "lede": "The latest work from each published creator. No ranking.",
     "empty": "No published works yet.",
-    "body": "The strongest work from creators. This selection is still taking shape."
+    "more": "More"
   },
   "Search": {
     "title": "Search",

@@ -3,7 +3,7 @@ import { ChipLink } from '@/components/ui/chip-link';
 
 const EXPLORE_LINKS = [
   { href: '/creators', key: 'creators' },
-  { href: '/top-works', key: 'topWorks' },
+  { href: '/hanging', key: 'hanging' },
   { href: '/new', key: 'new' },
   { href: '/collections', key: 'collections' },
   { href: '/journal', key: 'journal' },

@@ -2,17 +2,15 @@ import { expect, test } from '@playwright/test';
 import { navigate } from './follow-link';
 
 test.describe('explore feeds', () => {
-  test('opens new, top works, and community in Russian', async ({ page }) => {
+  test('opens new, hanging, and community in Russian', async ({ page }) => {
     await navigate(page, '/new');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Новые');
     await expect(page.locator('main')).toContainText(
       /Свежие публикации|Пока нет опубликованных/,
     );
 
-    await navigate(page, '/top-works');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Топ работ',
-    );
+    await navigate(page, '/hanging');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Развес');
     await expect(page.locator('main')).toContainText(
       /Последняя работа|Пока нет опубликованных/,
     );
@@ -51,17 +49,15 @@ test.describe('explore feeds', () => {
     ).toBeVisible();
   });
 
-  test('opens new, top works, and community in English', async ({ page }) => {
+  test('opens new, hanging, and community in English', async ({ page }) => {
     await navigate(page, '/en/new');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('New');
     await expect(page.locator('main')).toContainText(
       /Fresh publications|No published works/,
     );
 
-    await navigate(page, '/en/top-works');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Top works',
-    );
+    await navigate(page, '/en/hanging');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hanging');
     await expect(page.locator('main')).toContainText(
       /The latest work|No published works/,
     );
@@ -121,5 +117,15 @@ test.describe('explore feeds', () => {
     await tile.click();
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator('main [data-work-frame]').first()).toBeVisible();
+  });
+
+  test('redirects the old top-works address', async ({ page }) => {
+    await page.goto('/top-works');
+    await expect(page).toHaveURL(/\/hanging$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Развес');
+
+    await page.goto('/en/top-works');
+    await expect(page).toHaveURL(/\/en\/hanging$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hanging');
   });
 });

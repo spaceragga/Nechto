@@ -8,6 +8,7 @@ describe('profileSlugSchema', () => {
   it('rejects app route names so public pages can live at /{slug}', () => {
     expect(profileSlugSchema.safeParse('profile').success).toBe(false);
     expect(profileSlugSchema.safeParse('creators').success).toBe(false);
+    expect(profileSlugSchema.safeParse('hanging').success).toBe(false);
     expect(profileSlugSchema.safeParse('top-works').success).toBe(false);
     expect(profileSlugSchema.safeParse('search').success).toBe(false);
     expect(profileSlugSchema.safeParse('notifications').success).toBe(false);
