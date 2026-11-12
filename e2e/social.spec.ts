@@ -34,7 +34,10 @@ test.describe('social engagement', () => {
     await expect(
       page.getByRole('button', { name: 'Отписаться' }),
     ).toBeVisible();
+    await page.goto('/community?tab=following');
+    await expect(page.locator('main a[href="/kasia-voit"]')).toBeVisible();
 
+    await page.goto('/kasia-voit');
     const workLink = page
       .locator('main a[href^="/kasia-voit/"]:not([href*="/p/"])')
       .first();

@@ -166,6 +166,54 @@ export async function loadPublishedCreators(options?: {
   }
 }
 
+function emptyCursorPage<T>(): CursorPage<T> {
+  return { items: [], nextCursor: null };
+}
+
+export async function loadCommunityPeople(options?: {
+  cursor?: string;
+  limit?: number;
+}): Promise<CursorPage<PublicProfileWithWorks>> {
+  try {
+    const api = await createServerApiClient();
+    return await api.listCreators({
+      limit: options?.limit ?? 20,
+      cursor: options?.cursor,
+      sort: 'published',
+    });
+  } catch {
+    return emptyCursorPage();
+  }
+}
+
+export async function loadMyFollowing(options?: {
+  cursor?: string;
+  limit?: number;
+}): Promise<CursorPage<PublicProfile>> {
+  try {
+    const api = await createServerApiClient();
+    return await api.listFollowing({
+      limit: options?.limit ?? 20,
+      cursor: options?.cursor,
+    });
+  } catch {
+    return emptyCursorPage();
+  }
+}
+
+export async function loadFollowedSlugs(slugs: string[]): Promise<Set<string>> {
+  if (slugs.length === 0) {
+    return new Set();
+  }
+  try {
+    const api = await createServerApiClient();
+    const marks = await api.followedSlugs(slugs);
+    return new Set(marks.slugs);
+  } catch {
+    return new Set();
+  }
+}
+
 function withAuthorDirections(work: WorkWithAuthor): WorkWithAuthor {
   return {
     ...work,

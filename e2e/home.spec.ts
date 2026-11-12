@@ -681,6 +681,7 @@ test.describe('home page locales', () => {
     await expect(
       explore.getByRole('link', { name: 'Сообщество' }),
     ).toBeVisible();
+    await expect(explore.getByRole('link', { name: 'Подписки' })).toBeVisible();
 
     await followLink(page, explore.getByRole('link', { name: 'Авторы' }));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Авторы');
@@ -755,6 +756,9 @@ test.describe('home page locales', () => {
     await expect(explore.getByRole('link', { name: 'Journal' })).toBeVisible();
     await expect(
       explore.getByRole('link', { name: 'Community' }),
+    ).toBeVisible();
+    await expect(
+      explore.getByRole('link', { name: 'Following' }),
     ).toBeVisible();
 
     await followLink(page, explore.getByRole('link', { name: 'Creators' }));

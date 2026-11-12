@@ -516,6 +516,40 @@ describe('ApiClient', () => {
     );
   });
 
+  it('loads the following list and the marks for the people wall', async () => {
+    fetchMock.mockImplementation(async (input) => {
+      const url = String(input);
+      const body = url.includes('/marks')
+        ? { slugs: ['kasia-voit'] }
+        : { items: [{ slug: 'kasia-voit' }], nextCursor: null };
+      return new Response(JSON.stringify(body), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+    const client = new ApiClient({
+      baseUrl: 'http://localhost:3001',
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await expect(client.listFollowing({ limit: 20 })).resolves.toEqual({
+      items: [{ slug: 'kasia-voit' }],
+      nextCursor: null,
+    });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/following?limit=20',
+      expect.anything(),
+    );
+
+    await expect(
+      client.followedSlugs(['kasia-voit', 'taras-litvin']),
+    ).resolves.toEqual({ slugs: ['kasia-voit'] });
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'http://localhost:3001/social/following/marks?slug=kasia-voit&slug=taras-litvin',
+      expect.anything(),
+    );
+  });
+
   it('uploads avatar as multipart without forcing JSON content-type', async () => {
     fetchMock.mockResolvedValue(
       new Response(

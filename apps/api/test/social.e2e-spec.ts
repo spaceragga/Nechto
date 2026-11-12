@@ -137,6 +137,23 @@ describe('Social engagement (e2e)', () => {
       .expect(200);
     expect(followed.body).toEqual({ followerCount: 1, following: true });
 
+    await request(app.getHttpServer()).get('/social/following').expect(401);
+
+    const following = await request(app.getHttpServer())
+      .get('/social/following')
+      .set('Cookie', visitorCookie)
+      .expect(200);
+    expect(following.body.items).toEqual(
+      expect.arrayContaining([expect.objectContaining({ slug })]),
+    );
+
+    const marks = await request(app.getHttpServer())
+      .get('/social/following/marks')
+      .query({ slug })
+      .set('Cookie', visitorCookie)
+      .expect(200);
+    expect(marks.body.slugs).toEqual([slug]);
+
     await request(app.getHttpServer())
       .delete('/social/likes')
       .set('Cookie', visitorCookie)

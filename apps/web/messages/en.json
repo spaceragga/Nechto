@@ -89,7 +89,8 @@
       "journal": "Journal",
       "dialogue": "Dialogue",
       "studio": "Studio",
-      "community": "Community"
+      "community": "Community",
+      "following": "Following"
     }
   },
   "Studio": {
@@ -183,11 +184,14 @@
   },
   "CommunityFeed": {
     "title": "Community",
-    "lede": "The house wall: people who have stepped into the light, and the work beside them. No ranking.",
-    "people": "Creators",
-    "wall": "Wall",
+    "lede": "The house wall: people who have stepped into the light. No ranking. Talk lives under the work and in the text. There is no separate feed.",
+    "tabsLabel": "Community sections",
+    "peopleTab": "People",
+    "followingTab": "Following",
     "empty": "Quiet for now. Published profiles will appear here.",
-    "body": "Community feed and discussion. This section is still taking shape."
+    "emptyFollowing": "You are not following anyone yet.",
+    "signInFollowing": "Sign in to see who you follow.",
+    "more": "More"
   },
   "LanguageSwitcher": {
     "label": "Language",

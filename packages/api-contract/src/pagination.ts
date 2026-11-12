@@ -6,8 +6,12 @@ export const cursorPageQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(50).optional().default(20),
 });
 
+export const creatorListSortSchema = z.enum(['featured', 'published']);
+
 export const listCreatorsQuerySchema = cursorPageQuerySchema.extend({
   direction: creatorDirectionSchema.optional(),
+  /** `published` is arrival order. Omitted keeps the home pin first. */
+  sort: creatorListSortSchema.optional(),
 });
 
 export const listPublishedWorksQuerySchema = listCreatorsQuerySchema;
