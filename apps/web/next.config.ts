@@ -11,8 +11,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
   transpilePackages: ['@nechto/api-client', '@nechto/api-contract'],
-  // Docker Desktop (Windows) bind mounts do not emit inotify events.
-  ...(usePolling ? { watchOptions: { pollIntervalMs: 500 } } : {}),
+  // Compose runs `next dev --webpack`. Turbopack's watchOptions never apply there.
   webpack: (config, { dev }) => {
     if (dev && usePolling) {
       config.watchOptions = {
