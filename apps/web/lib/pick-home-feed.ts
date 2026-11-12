@@ -52,21 +52,6 @@ export function pickStudioCreator(
   return creators.find((creator) => creator.inStudio) ?? creators[0] ?? null;
 }
 
-export function latestWorkPerAuthor(works: WorkWithAuthor[]): WorkWithAuthor[] {
-  const seen = new Set<string>();
-  const picked: WorkWithAuthor[] = [];
-
-  for (const work of works) {
-    if (seen.has(work.author.slug)) {
-      continue;
-    }
-    seen.add(work.author.slug);
-    picked.push(work);
-  }
-
-  return picked;
-}
-
 export function worksByDirection(
   works: WorkWithAuthor[],
 ): Map<CreatorDirection, WorkWithAuthor[]> {

@@ -558,7 +558,7 @@ test.describe('home page locales', () => {
     ).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Сегодня на стене/ }),
-    ).toHaveAttribute('href', '/top-works');
+    ).toHaveAttribute('href', '/hanging');
     await expect(spots.locator('[data-work-frame]').first()).toBeVisible();
     expect(await spots.locator('[data-work-frame]').count()).toBeGreaterThan(0);
     expect(
@@ -580,6 +580,9 @@ test.describe('home page locales', () => {
     await expect(
       spots.getByRole('link', { name: /On the wall today/ }),
     ).toBeVisible();
+    await expect(
+      spots.getByRole('link', { name: /On the wall today/ }),
+    ).toHaveAttribute('href', '/en/hanging');
     await expect(spots.locator('[data-work-frame]').first()).toBeVisible();
     expect(await spots.locator('[data-work-frame]').count()).toBeGreaterThan(0);
     expect(
@@ -672,9 +675,7 @@ test.describe('home page locales', () => {
 
     const explore = page.getByRole('navigation', { name: 'Разделы' });
     await expect(explore.getByRole('link', { name: 'Авторы' })).toBeVisible();
-    await expect(
-      explore.getByRole('link', { name: 'Топ работ' }),
-    ).toBeVisible();
+    await expect(explore.getByRole('link', { name: 'Развес' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'Новые' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'Подборки' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'Журнал' })).toBeVisible();
@@ -688,10 +689,8 @@ test.describe('home page locales', () => {
 
     await page.goto('/');
     const sections = page.getByRole('navigation', { name: 'Разделы' });
-    await followLink(page, sections.getByRole('link', { name: 'Топ работ' }));
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Топ работ',
-    );
+    await followLink(page, sections.getByRole('link', { name: 'Развес' }));
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Развес');
 
     await page.goto('/');
     await followLink(
@@ -746,9 +745,7 @@ test.describe('home page locales', () => {
 
     const explore = page.getByRole('navigation', { name: 'Sections' });
     await expect(explore.getByRole('link', { name: 'Creators' })).toBeVisible();
-    await expect(
-      explore.getByRole('link', { name: 'Top works' }),
-    ).toBeVisible();
+    await expect(explore.getByRole('link', { name: 'Hanging' })).toBeVisible();
     await expect(explore.getByRole('link', { name: 'New' })).toBeVisible();
     await expect(
       explore.getByRole('link', { name: 'Selections' }),
@@ -768,10 +765,8 @@ test.describe('home page locales', () => {
 
     await page.goto('/en');
     const sections = page.getByRole('navigation', { name: 'Sections' });
-    await followLink(page, sections.getByRole('link', { name: 'Top works' }));
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Top works',
-    );
+    await followLink(page, sections.getByRole('link', { name: 'Hanging' }));
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hanging');
 
     await page.goto('/en');
     await followLink(

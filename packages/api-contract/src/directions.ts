@@ -40,6 +40,7 @@ export const RESERVED_PROFILE_SLUGS = [
   'change-password',
   'terms',
   'privacy',
+  'hanging',
   'top-works',
   'search',
   'notifications',

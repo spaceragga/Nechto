@@ -50,7 +50,7 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
                 </div>
               ))}
         </div>
-        <Link href="/top-works" className="mt-3 flex flex-col text-center">
+        <Link href="/hanging" className="mt-3 flex flex-col text-center">
           <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-80">
             {t('hangingSpot.kicker')}
           </p>
