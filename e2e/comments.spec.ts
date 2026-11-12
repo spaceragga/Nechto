@@ -36,6 +36,7 @@ test.describe('comments', () => {
 
     const stamp = Date.now();
     const body = `Комментарий e2e ${stamp}`;
+    await page.getByRole('button', { name: 'Оставить комментарий' }).click();
     await page.getByLabel('Комментарий').fill(body);
     await page.getByRole('button', { name: 'Отправить' }).click();
     const posted = page.getByRole('listitem').filter({ hasText: body });

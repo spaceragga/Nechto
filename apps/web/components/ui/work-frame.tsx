@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { toUploadSrc } from '@/lib/to-upload-src';
 
 type WorkFrameProps = {
@@ -10,6 +10,8 @@ type WorkFrameProps = {
   fit?: 'contain' | 'cover';
   /** Disable hover motion (editors, tiny thumbs). */
   staticFrame?: boolean;
+  /** Cover tiles only. Contain frames stay clear. */
+  overlay?: ReactNode;
 };
 
 const EASE_IN =
@@ -28,6 +30,7 @@ export function WorkFrame({
   className = '',
   fit = 'contain',
   staticFrame = false,
+  overlay,
 }: WorkFrameProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -200,6 +203,11 @@ export function WorkFrame({
           }
           draggable={false}
         />
+      ) : null}
+      {overlay && fit === 'cover' ? (
+        <div className="pointer-events-none absolute inset-0 z-[2]">
+          {overlay}
+        </div>
       ) : null}
       {live ? (
         <div

@@ -73,6 +73,18 @@ export async function DialogueView({
       </section>
 
       <p className="max-w-2xl font-sans text-sm opacity-70">{t('footer')}</p>
+      <CommentsSection
+        targetType="dialogue"
+        targetId={dialogue.id}
+        signedIn={Boolean(viewerEmail)}
+        lead={
+          <EngagementBar
+            targetType="dialogue"
+            targetId={dialogue.id}
+            signedIn={Boolean(viewerEmail)}
+          />
+        }
+      />
       {canReport ? (
         <ReportForm
           target={{ targetType: 'dialogue', targetId: dialogue.id }}
@@ -80,16 +92,6 @@ export async function DialogueView({
           className="mt-0"
         />
       ) : null}
-      <EngagementBar
-        targetType="dialogue"
-        targetId={dialogue.id}
-        signedIn={Boolean(viewerEmail)}
-      />
-      <CommentsSection
-        targetType="dialogue"
-        targetId={dialogue.id}
-        signedIn={Boolean(viewerEmail)}
-      />
       <p>
         <Link href="/dialogue" className="text-sm text-[var(--accent)]">
           {t('back')}

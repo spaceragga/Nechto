@@ -70,6 +70,18 @@ export async function PublicProjectView({
           ),
         )}
       </div>
+      <CommentsSection
+        targetType="project"
+        targetId={project.id}
+        signedIn={Boolean(viewerEmail)}
+        lead={
+          <EngagementBar
+            targetType="project"
+            targetId={project.id}
+            signedIn={Boolean(viewerEmail)}
+          />
+        }
+      />
       {canReport ? (
         <div className="mx-auto mt-10 max-w-md">
           <ReportForm
@@ -79,16 +91,6 @@ export async function PublicProjectView({
           />
         </div>
       ) : null}
-      <EngagementBar
-        targetType="project"
-        targetId={project.id}
-        signedIn={Boolean(viewerEmail)}
-      />
-      <CommentsSection
-        targetType="project"
-        targetId={project.id}
-        signedIn={Boolean(viewerEmail)}
-      />
     </main>
   );
 }

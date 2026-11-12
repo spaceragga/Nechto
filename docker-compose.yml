@@ -45,6 +45,10 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_FROM: ${SMTP_FROM:-Nechto <noreply@nechto.local>}
       PASSWORD_RESET_TTL_MINUTES: ${PASSWORD_RESET_TTL_MINUTES:-30}
+      # Windows bind mounts do not notify inotify. tsc --watch (nest start --watch) polls instead.
+      TSC_WATCHFILE: DynamicPriorityPolling
+      TSC_WATCHDIRECTORY: DynamicPriorityPolling
+      CHOKIDAR_USEPOLLING: 'true'
     ports:
       - '${API_PORT:-3001}:3001'
     volumes:
@@ -70,9 +74,9 @@ services:
       NODE_ENV: development
       # RSC server fetch must reach the api service (not host localhost).
       API_INTERNAL_URL: ${API_INTERNAL_URL:-http://api:3001}
-      # Windows bind mounts do not notify inotify; webpack + Watchpack poll instead.
+      # Switch for the webpack watchOptions in next.config.ts.
       WATCHPACK_POLLING: 'true'
-    # Webpack loads postcss.config.mjs; polling sees host edits without recreating the container.
+    # Tailwind's PostCSS config is picked up by webpack. Turbopack in this image does not.
     command: npm run dev -- --webpack
     ports:
       - '${WEB_PORT:-3000}:3000'

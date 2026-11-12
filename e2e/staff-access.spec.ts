@@ -47,7 +47,11 @@ test.describe('staff access', () => {
     );
     await expect(page.getByText('artist1@nechto.test')).toBeVisible();
 
+    const bannerAfter = page.getByRole('banner');
+    await expect(
+      bannerAfter.getByRole('link', { name: 'Модерация' }),
+    ).toBeVisible();
     await navigate(page, '/moderation');
-    await expect(page.getByText('Недостаточно прав')).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Жалобы');
   });
 });

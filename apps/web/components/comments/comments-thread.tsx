@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import type { CommentTargetType, CommentView } from '@nechto/api-contract';
 import { Button } from '@/components/ui/button';
@@ -20,12 +20,14 @@ type CommentsThreadProps = {
   targetType: CommentTargetType;
   targetId: string;
   signedIn: boolean;
+  lead?: ReactNode;
 };
 
 export function CommentsThread({
   targetType,
   targetId,
   signedIn,
+  lead,
 }: CommentsThreadProps) {
   const t = useTranslations('Comments');
   const tErrors = useTranslations('Errors');
@@ -35,6 +37,7 @@ export function CommentsThread({
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [body, setBody] = useState('');
+  const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -80,6 +83,7 @@ export function CommentsThread({
       });
       setItems((current) => [...current, created]);
       setBody('');
+      setOpen(false);
     } catch (caught) {
       setError(mapApiErrorMessage(caught, tErrors));
     } finally {
@@ -123,7 +127,8 @@ export function CommentsThread({
   }
 
   return (
-    <section className="mx-auto mt-12 w-full max-w-2xl text-left">
+    <section className="mx-auto mt-12 w-full max-w-2xl border-t border-white/15 pt-8 text-left">
+      {lead ? <div className="mb-8 flex justify-center">{lead}</div> : null}
       <h2 className="font-sans text-sm tracking-[0.16em] uppercase opacity-70">
         {t('title')}
       </h2>
@@ -191,34 +196,46 @@ export function CommentsThread({
         </div>
       ) : null}
       {signedIn ? (
-        <form
-          className="mt-8 flex flex-col gap-3"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void submit();
-          }}
-        >
-          <label className="flex flex-col gap-1 text-sm">
-            <span>{t('placeholder')}</span>
-            <textarea
-              className="min-h-24 rounded border border-white/20 bg-transparent px-3 py-2"
-              value={body}
-              maxLength={2000}
-              onChange={(event) => setBody(event.target.value)}
-              required
-            />
-          </label>
-          <Button
-            type="submit"
-            disabled={pending || !hydrated || body.trim().length === 0}
-            className="self-start"
+        <div className="mt-8 flex w-full flex-col items-center gap-3">
+          <button
+            type="button"
+            className="cursor-pointer font-sans text-sm text-[var(--accent)]"
+            aria-expanded={open}
+            onClick={() => setOpen((current) => !current)}
           >
-            {pending ? t('submitting') : t('submit')}
-          </Button>
-        </form>
+            {t('compose')}
+          </button>
+          {open ? (
+            <form
+              className="flex w-full flex-col items-start gap-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void submit();
+              }}
+            >
+              <textarea
+                className="min-h-28 w-full rounded border border-white/20 bg-transparent px-3 py-2 text-sm"
+                value={body}
+                maxLength={2000}
+                aria-label={t('placeholder')}
+                autoFocus
+                onChange={(event) => setBody(event.target.value)}
+              />
+              <Button
+                type="submit"
+                disabled={pending || !hydrated || body.trim().length === 0}
+              >
+                {pending ? t('submitting') : t('submit')}
+              </Button>
+            </form>
+          ) : null}
+        </div>
       ) : (
-        <p className="mt-8 font-sans text-sm">
-          <Link href="/login" className="text-[var(--accent)]">
+        <p className="mt-8 text-center font-sans text-sm">
+          <Link
+            href="/login"
+            className="cursor-pointer text-[var(--accent)] no-underline"
+          >
             {t('signIn')}
           </Link>
         </p>

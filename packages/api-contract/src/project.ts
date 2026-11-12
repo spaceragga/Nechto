@@ -93,6 +93,9 @@ export type ProjectSummary = {
   frameImageUrls: string[];
   blockCount: number;
   author: WorkAuthor;
+  /** Present on a public profile grid. */
+  likeCount?: number;
+  viewCount?: number;
 };
 
 export type PublicProject = Project & {

@@ -73,7 +73,10 @@ export function ReportForm({
 
   if (sent) {
     return (
-      <p className={`${className} text-sm opacity-70`} role="status">
+      <p
+        className={`${className} text-center text-sm opacity-70`}
+        role="status"
+      >
         {t('sent')}
       </p>
     );
@@ -81,7 +84,7 @@ export function ReportForm({
 
   if (!open) {
     return (
-      <div className={className}>
+      <div className={`${className} text-center`}>
         <button
           type="button"
           className="font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline disabled:opacity-50"
@@ -96,7 +99,7 @@ export function ReportForm({
 
   return (
     <form
-      className={`${className} flex max-w-md flex-col gap-4 border border-white/10 p-4 text-left`}
+      className={`${className} mx-auto flex w-full max-w-md flex-col gap-4 border border-white/10 p-4 text-left`}
       onSubmit={(event) => {
         event.preventDefault();
         void submit();

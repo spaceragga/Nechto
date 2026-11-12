@@ -29,6 +29,7 @@ export async function JournalArticleView({
     ? tCreators(`directions.${article.author.directions[0]}`)
     : null;
   const cover = toUploadSrc(article.coverImageUrl);
+  const signedIn = Boolean(viewerEmail);
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
@@ -75,23 +76,25 @@ export async function JournalArticleView({
           {t('toAuthor', { name: article.author.displayName })}
         </Link>
       </p>
+      <CommentsSection
+        targetType="article"
+        targetId={article.id}
+        signedIn={signedIn}
+        lead={
+          <EngagementBar
+            targetType="article"
+            targetId={article.id}
+            signedIn={signedIn}
+          />
+        }
+      />
       {canReport ? (
         <ReportForm
           target={{ targetType: 'article', targetId: article.id }}
           viewerEmail={viewerEmail}
-          className="mt-8"
+          className="mt-10"
         />
       ) : null}
-      <EngagementBar
-        targetType="article"
-        targetId={article.id}
-        signedIn={Boolean(viewerEmail)}
-      />
-      <CommentsSection
-        targetType="article"
-        targetId={article.id}
-        signedIn={Boolean(viewerEmail)}
-      />
     </main>
   );
 }

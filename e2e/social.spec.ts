@@ -11,7 +11,7 @@ test.describe('social engagement', () => {
     await expect(workLink).toBeVisible();
     await workLink.click();
 
-    await expect(page.getByText(/просмотров/)).toBeVisible();
+    await expect(page.getByLabel(/просмотр/)).toBeVisible();
     await expect(
       page.getByRole('link', { name: 'Войдите, чтобы поставить лайк' }),
     ).toBeVisible();

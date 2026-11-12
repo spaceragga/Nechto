@@ -5,6 +5,7 @@ const catalog = require('../src/dev/dev-artist-catalog.json');
 const seriesByEmail = require('../src/dev/dev-artist-series.json');
 const articlesByEmail = require('../src/dev/dev-artist-articles.json');
 const { purgeTestUsers } = require('./purge-test-users.cjs');
+const { seedSocialActivity } = require('./seed-dev-social.cjs');
 
 const apiBaseUrl = (
   process.env.SEED_API_URL ?? 'http://localhost:3001'
@@ -389,6 +390,11 @@ async function main() {
     return;
   }
 
+  if (process.env.SEED_ONLY === 'social') {
+    await seedSocialActivity();
+    return;
+  }
+
   const health = await request('/health');
   if (!health.ok) {
     throw new Error(
@@ -407,6 +413,7 @@ async function main() {
   await seedDialogues();
   await seedStudios();
   await seedReports();
+  await seedSocialActivity();
   console.log(`Password for all: ${password}`);
 }
 
@@ -429,13 +436,13 @@ async function grantArtist1Admin() {
   try {
     const result = await prisma.user.updateMany({
       where: { email: 'artist1@nechto.test' },
-      data: { isAdmin: true, isCurator: true, isModerator: false },
+      data: { isAdmin: true, isCurator: true, isModerator: true },
     });
     if (result.count === 0) {
       console.warn('artist1@nechto.test not found; staff flags were not set');
       return;
     }
-    console.log('  artist1@nechto.test isAdmin+isCurator=true');
+    console.log('  artist1@nechto.test isAdmin+isCurator+isModerator=true');
   } finally {
     await prisma.$disconnect();
   }

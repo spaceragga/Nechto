@@ -47,6 +47,7 @@ export async function PublicProfileView({
   const projectsPane = pane === 'projects';
   const journalPane = pane === 'journal';
   const href = profilePath(slug);
+  const isOwn = Boolean(viewerEmail) && !canReport;
   const scrollToken = journalPane
     ? 'journal'
     : projectsPane
@@ -64,16 +65,17 @@ export async function PublicProfileView({
           <h1 className="mt-2 font-serif text-4xl tracking-wide md:text-5xl">
             {title}
           </h1>
-          {profile.bio ? (
-            <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed opacity-70">
-              {profile.bio}
-            </p>
-          ) : null}
           {profile.directions.length > 0 ? (
             <p className="mt-3 font-sans text-base opacity-70">
+              {t('directionsLabel')}{' '}
               {profile.directions
                 .map((direction) => t(`directions.${direction}`))
                 .join(' · ')}
+            </p>
+          ) : null}
+          {profile.bio ? (
+            <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed opacity-70">
+              {profile.bio}
             </p>
           ) : null}
           {profile.inStudio && slug ? (
@@ -85,7 +87,7 @@ export async function PublicProfileView({
             <FollowButton
               slug={slug}
               signedIn={Boolean(viewerEmail)}
-              isOwn={Boolean(viewerEmail) && !canReport}
+              isOwn={isOwn}
             />
           ) : null}
         </div>
@@ -138,6 +140,11 @@ export async function PublicProfileView({
                 subtitle={article.lede ? excerpt(article.lede, 110) : undefined}
                 src={toUploadSrc(article.coverImageUrl)}
                 wellClassName="aspect-[3/2] w-full"
+                engagement={{
+                  likeCount: article.likeCount ?? 0,
+                  viewCount: article.viewCount ?? 0,
+                  showViews: isOwn,
+                }}
               />
             ))}
           </section>
@@ -159,6 +166,11 @@ export async function PublicProfileView({
                 }
                 src={toUploadSrc(project.coverImageUrl)}
                 wellClassName="aspect-[3/2] w-full"
+                engagement={{
+                  likeCount: project.likeCount ?? 0,
+                  viewCount: project.viewCount ?? 0,
+                  showViews: isOwn,
+                }}
               />
             ))}
           </section>
@@ -177,6 +189,11 @@ export async function PublicProfileView({
               }
               src={toUploadSrc(work.imageUrl)}
               wellClassName="aspect-[3/2] w-full"
+              engagement={{
+                likeCount: work.likeCount ?? 0,
+                viewCount: work.viewCount ?? 0,
+                showViews: isOwn,
+              }}
             />
           ))}
         </section>

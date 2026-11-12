@@ -56,6 +56,18 @@ export async function PublicWorkView({
           className="mt-8 h-[28rem] w-full md:h-[36rem]"
         />
       ) : null}
+      <CommentsSection
+        targetType="work"
+        targetId={work.id}
+        signedIn={Boolean(viewerEmail)}
+        lead={
+          <EngagementBar
+            targetType="work"
+            targetId={work.id}
+            signedIn={Boolean(viewerEmail)}
+          />
+        }
+      />
       {canReport ? (
         <div className="mx-auto mt-10 max-w-md">
           <ReportForm
@@ -65,16 +77,6 @@ export async function PublicWorkView({
           />
         </div>
       ) : null}
-      <EngagementBar
-        targetType="work"
-        targetId={work.id}
-        signedIn={Boolean(viewerEmail)}
-      />
-      <CommentsSection
-        targetType="work"
-        targetId={work.id}
-        signedIn={Boolean(viewerEmail)}
-      />
       {more.length > 0 ? (
         <section className="mt-12">
           <p className="font-sans text-base opacity-70">{t('more')}</p>
@@ -91,6 +93,11 @@ export async function PublicWorkView({
                 }
                 src={toUploadSrc(item.imageUrl)}
                 wellClassName="aspect-[3/2] w-full"
+                engagement={{
+                  likeCount: item.likeCount ?? 0,
+                  viewCount: item.viewCount ?? 0,
+                  showViews: Boolean(viewerEmail) && !canReport,
+                }}
               />
             ))}
           </div>

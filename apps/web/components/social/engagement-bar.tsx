@@ -6,7 +6,8 @@ import type {
   EngagementSnapshot,
   EngagementTargetType,
 } from '@nechto/api-contract';
-import { Button } from '@/components/ui/button';
+import { EyeGlyph } from '@/components/glyphs/eye-glyph';
+import { HeartGlyph } from '@/components/glyphs/heart-glyph';
 import { FormError } from '@/components/ui/form-error';
 import { useHydrated } from '@/hooks/use-hydrated';
 import { Link } from '@/i18n/navigation';
@@ -17,7 +18,7 @@ import {
 } from '@/lib/api';
 import { mapApiErrorMessage } from '@/lib/map-api-error';
 
-type EngagementBarProps = {
+type EngagementMarksProps = {
   targetType: EngagementTargetType;
   targetId: string;
   signedIn: boolean;
@@ -29,14 +30,8 @@ const empty: EngagementSnapshot = {
   likedByMe: false,
 };
 
-export function EngagementBar({
-  targetType,
-  targetId,
-  signedIn,
-}: EngagementBarProps) {
-  const t = useTranslations('Social');
+function useEngagement(targetType: EngagementTargetType, targetId: string) {
   const tErrors = useTranslations('Errors');
-  const hydrated = useHydrated();
   const [state, setState] = useState<EngagementSnapshot>(empty);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +42,7 @@ export function EngagementBar({
       .then((snapshot) => {
         if (!cancelled) {
           setState(snapshot);
+          setError(null);
         }
       })
       .catch((caught) => {
@@ -59,7 +55,7 @@ export function EngagementBar({
     };
   }, [targetType, targetId, tErrors]);
 
-  async function toggleLike() {
+  async function toggleLike(signedIn: boolean) {
     if (!signedIn || pending) {
       return;
     }
@@ -77,31 +73,68 @@ export function EngagementBar({
     }
   }
 
+  return { state, pending, error, toggleLike };
+}
+
+export function EngagementBar({
+  targetType,
+  targetId,
+  signedIn,
+}: EngagementMarksProps) {
+  const t = useTranslations('Social');
+  const hydrated = useHydrated();
+  const { state, pending, error, toggleLike } = useEngagement(
+    targetType,
+    targetId,
+  );
+
+  const views = (
+    <span
+      className="inline-flex items-center gap-1.5 font-sans text-sm tabular-nums"
+      aria-label={t('views', { count: state.viewCount })}
+    >
+      <EyeGlyph open className="h-6 w-6" />
+      {state.viewCount}
+    </span>
+  );
+
+  const heart = (
+    <>
+      <HeartGlyph filled={state.likedByMe} className="h-6 w-6" />
+      <span className="font-sans text-sm tabular-nums">{state.likeCount}</span>
+    </>
+  );
+
+  const likeControl = signedIn ? (
+    <button
+      type="button"
+      className="inline-flex items-center gap-1.5 opacity-90 transition-opacity hover:opacity-100 disabled:opacity-40"
+      disabled={!hydrated || pending}
+      onClick={() => void toggleLike(signedIn)}
+      aria-pressed={state.likedByMe}
+      aria-label={
+        pending ? t('liking') : state.likedByMe ? t('unlike') : t('like')
+      }
+    >
+      {heart}
+    </button>
+  ) : (
+    <Link
+      href="/login"
+      className="inline-flex items-center gap-1.5 opacity-90 transition-opacity hover:opacity-100"
+      aria-label={t('signInToLike')}
+    >
+      {heart}
+    </Link>
+  );
+
   return (
-    <section className="mx-auto mt-8 max-w-md text-center">
-      <p className="font-sans text-sm opacity-70">
-        {t('views', { count: state.viewCount })}
-        <span aria-hidden="true"> · </span>
-        {t('likes', { count: state.likeCount })}
-      </p>
-      {signedIn ? (
-        <Button
-          type="button"
-          className="mt-3"
-          disabled={!hydrated || pending}
-          onClick={() => void toggleLike()}
-          aria-pressed={state.likedByMe}
-        >
-          {pending ? t('liking') : state.likedByMe ? t('unlike') : t('like')}
-        </Button>
-      ) : (
-        <p className="mt-3 font-sans text-sm">
-          <Link href="/login" className="text-[var(--accent)]">
-            {t('signInToLike')}
-          </Link>
-        </p>
-      )}
+    <div>
+      <div className="flex items-center gap-4">
+        {likeControl}
+        {views}
+      </div>
       {error ? <FormError>{error}</FormError> : null}
-    </section>
+    </div>
   );
 }

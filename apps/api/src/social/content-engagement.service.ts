@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { EngagementQuery, EngagementSnapshot } from '@nechto/api-contract';
+import { isUniqueConstraintError } from '../prisma/is-unique-constraint-error';
 import { PrismaService } from '../prisma/prisma.service';
 import { PublicTargetService } from './resolve-public-target';
 
@@ -24,22 +25,29 @@ export class ContentEngagementService {
     userId: string | null,
   ): Promise<EngagementSnapshot> {
     const target = await this.targets.require(query.targetType, query.targetId);
-    await this.prisma.contentView.upsert({
-      where: {
-        viewerKey_targetType_targetId: {
+    try {
+      await this.prisma.contentView.upsert({
+        where: {
+          viewerKey_targetType_targetId: {
+            viewerKey,
+            targetType: target.targetType,
+            targetId: target.targetId,
+          },
+        },
+        create: {
           viewerKey,
+          userId,
           targetType: target.targetType,
           targetId: target.targetId,
         },
-      },
-      create: {
-        viewerKey,
-        userId,
-        targetType: target.targetType,
-        targetId: target.targetId,
-      },
-      update: {},
-    });
+        update: {},
+      });
+    } catch (error) {
+      // Two parallel records of the same viewer hit the unique key together.
+      if (!isUniqueConstraintError(error)) {
+        throw error;
+      }
+    }
     return this.counts(target.targetType, target.targetId, userId);
   }
 
