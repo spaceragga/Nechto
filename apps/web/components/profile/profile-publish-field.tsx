@@ -49,7 +49,10 @@ export function ProfilePublishField({
       ) : null}
       {error ? <FormError>{error}</FormError> : null}
       {visible && profile.slug ? (
-        <Link href={profilePath(profile.slug)} className="text-sm">
+        <Link
+          href={profilePath(profile.slug)}
+          className="accent-mark self-start"
+        >
           {t('viewPublic')}
         </Link>
       ) : null}

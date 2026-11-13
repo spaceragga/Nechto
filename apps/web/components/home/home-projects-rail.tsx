@@ -23,7 +23,7 @@ export async function HomeProjectsRail({
     <section id="projects" className="scroll-mt-20">
       <div className="mb-2 flex items-baseline justify-between gap-3">
         <h2 className="font-sans text-2xl tracking-wide">{t('projects')}</h2>
-        <Link href={catalogHref} className="accent-mark font-sans text-base">
+        <Link href={catalogHref} className="accent-mark">
           {t('seeAll')}
         </Link>
       </div>

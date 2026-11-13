@@ -94,7 +94,7 @@ export function WorkPicker({
           <span className="min-w-0 flex-1 truncate">{workLabel(selected)}</span>
           <button
             type="button"
-            className="shrink-0 text-[var(--accent)]"
+            className="accent-quiet shrink-0"
             onClick={clear}
           >
             {clearLabel}

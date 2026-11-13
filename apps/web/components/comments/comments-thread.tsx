@@ -164,7 +164,7 @@ export function CommentsThread({
                 {item.canDelete ? (
                   <button
                     type="button"
-                    className="accent-quiet mt-2 font-sans text-sm disabled:opacity-50"
+                    className="accent-quiet mt-2 disabled:opacity-50"
                     disabled={deletingId === item.id || !hydrated}
                     onClick={() => {
                       void remove(item.id);
@@ -181,7 +181,7 @@ export function CommentsThread({
       {nextCursor ? (
         <button
           type="button"
-          className="accent-quiet mt-4 font-sans text-sm disabled:opacity-50"
+          className="accent-mark mt-4 self-start disabled:opacity-50"
           disabled={loadingMore || !hydrated}
           onClick={() => {
             void loadMore();
@@ -199,7 +199,7 @@ export function CommentsThread({
         <div className="mt-8 flex w-full flex-col items-center gap-3">
           <button
             type="button"
-            className="accent-quiet font-sans text-sm"
+            className="accent-quiet"
             aria-expanded={open}
             onClick={() => setOpen((current) => !current)}
           >

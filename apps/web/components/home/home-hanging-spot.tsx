@@ -64,10 +64,7 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
           <p className="mt-1 font-sans text-base leading-relaxed opacity-70">
             {t('hangingSpot.lede')}
           </p>
-          <Link
-            href="/hanging"
-            className="accent-mark mt-2 self-center font-sans text-base"
-          >
+          <Link href="/hanging" className="accent-mark mt-2 self-center">
             {t('hangingSpot.cta')}
           </Link>
         </div>

@@ -41,6 +41,8 @@ a {
   display: inline-block;
   width: fit-content;
   max-width: 100%;
+  font-family: var(--font-sans);
+  font-size: 1rem;
   line-height: 1.15;
   color: var(--accent);
   transition: color 0.12s ease;
@@ -162,6 +164,8 @@ a {
 /* In-page verb: stays orange. A hairline, not a chip. */
 .accent-quiet {
   cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
   color: var(--accent);
   background-image: linear-gradient(var(--accent), var(--accent));
   background-repeat: no-repeat;

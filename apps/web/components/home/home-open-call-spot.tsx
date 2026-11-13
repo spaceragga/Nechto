@@ -38,10 +38,7 @@ export function HomeOpenCallSpot({
         <p className="mt-2 max-w-lg font-sans text-base leading-relaxed opacity-90">
           {lede}
         </p>
-        <Link
-          href={href}
-          className="accent-mark pointer-events-auto mt-3 font-sans text-base"
-        >
+        <Link href={href} className="accent-mark pointer-events-auto mt-3">
           {cta}
         </Link>
       </div>

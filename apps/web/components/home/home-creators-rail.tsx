@@ -25,7 +25,7 @@ export async function HomeCreatorsRail({
     <section id="creators" aria-label={t('creators')}>
       <div className="mb-2 flex items-baseline justify-between gap-3">
         <h2 className="font-sans text-2xl tracking-wide">{t('creators')}</h2>
-        <Link href={catalogHref} className="accent-mark font-sans text-base">
+        <Link href={catalogHref} className="accent-mark">
           {t('creatorsLink')}
         </Link>
       </div>

@@ -218,10 +218,7 @@ export function HangingWall({
           </section>
         )}
         {nextHref && more ? (
-          <Link
-            href={nextHref}
-            className="accent-mark mt-8 font-sans text-base"
-          >
+          <Link href={nextHref} className="accent-mark mt-8">
             {more}
           </Link>
         ) : null}

@@ -97,23 +97,30 @@ export function AuthForm({ mode }: AuthFormProps) {
             : t('registerSubmit')}
       </Button>
 
-      <p className="text-sm opacity-70">
+      <p className="text-sm">
         {mode === 'login' ? (
           <>
-            {t('noAccount')} <Link href="/register">{t('registerLink')}</Link>
+            <span className="opacity-70">{t('noAccount')} </span>
+            <Link href="/register" className="accent-quiet">
+              {t('registerLink')}
+            </Link>
             <br />
             <Link
               href={{
                 pathname: '/forgot-password',
                 query: { from: 'login' },
               }}
+              className="accent-quiet"
             >
               {t('forgotPassword')}
             </Link>
           </>
         ) : (
           <>
-            {t('hasAccount')} <Link href="/login">{t('loginLink')}</Link>
+            <span className="opacity-70">{t('hasAccount')} </span>
+            <Link href="/login" className="accent-quiet">
+              {t('loginLink')}
+            </Link>
           </>
         )}
       </p>

@@ -111,7 +111,7 @@ export function CommunityFeed({
         </section>
       )}
       {nextHref && more ? (
-        <Link href={nextHref} className="font-sans text-sm">
+        <Link href={nextHref} className="accent-mark self-start">
           {more}
         </Link>
       ) : null}
@@ -130,11 +130,8 @@ function EmptyNote({
     return <p className="text-sm opacity-70">{children}</p>;
   }
   return (
-    <p className="text-sm opacity-70">
-      <Link
-        href={href}
-        className="cursor-pointer text-[var(--accent)] no-underline"
-      >
+    <p className="text-sm">
+      <Link href={href} className="accent-quiet">
         {children}
       </Link>
     </p>

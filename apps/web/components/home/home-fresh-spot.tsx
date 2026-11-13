@@ -29,7 +29,7 @@ export function HomeFreshSpot({
         <h2 className="font-sans text-sm tracking-[0.16em] uppercase opacity-80">
           {kicker}
         </h2>
-        <Link href="/new" className="accent-mark font-sans text-base">
+        <Link href="/new" className="accent-mark">
           {seeAll}
         </Link>
       </div>

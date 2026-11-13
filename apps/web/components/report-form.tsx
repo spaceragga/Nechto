@@ -87,7 +87,7 @@ export function ReportForm({
       <div className={`${className} text-center`}>
         <button
           type="button"
-          className="accent-quiet font-sans text-sm disabled:opacity-50"
+          className="accent-quiet disabled:opacity-50"
           disabled={!hydrated}
           onClick={() => setOpen(true)}
         >

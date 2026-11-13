@@ -79,10 +79,7 @@ export function HomeCta({ href, children, className = 'mt-2' }: HomeCtaProps) {
   }
 
   return (
-    <Link
-      href={href}
-      className={`accent-mark font-sans text-base ${className}`.trim()}
-    >
+    <Link href={href} className={`accent-mark ${className}`.trim()}>
       {children}
     </Link>
   );
