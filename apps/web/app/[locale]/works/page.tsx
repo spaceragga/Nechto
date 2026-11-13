@@ -27,6 +27,7 @@ export default async function WorksPage({ params, searchParams }: PageProps) {
     <ExploreCatalogPage
       title={t('title')}
       lede={t('lede')}
+      navKey="works"
       empty={direction ? t('emptyDirection') : t('emptyCatalog')}
       more={t('more')}
       nextHref={

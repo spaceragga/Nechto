@@ -4,6 +4,7 @@ import {
   type WorkWithAuthor,
 } from '@nechto/api-contract';
 import { CreatorCard } from '@/components/creators/creator-card';
+import { HouseIntro } from '@/components/house-intro';
 import { MediaTile } from '@/components/ui/media-tile';
 import { WorkFrame } from '@/components/ui/work-frame';
 import { excerpt } from '@/lib/excerpt';
@@ -14,6 +15,7 @@ import { Link } from '@/i18n/navigation';
 
 type StudioIndexProps = {
   title: string;
+  lede: string;
   featuredKicker: string;
   themesLabel: string;
   worksLabel: string;
@@ -33,6 +35,7 @@ function creatorsForTheme(
 
 export function StudioIndex({
   title,
+  lede,
   featuredKicker,
   themesLabel,
   worksLabel,
@@ -52,9 +55,7 @@ export function StudioIndex({
 
   return (
     <main className="flex w-full flex-col gap-12 px-6 py-12">
-      <header>
-        <h1 className="font-serif text-4xl tracking-wide">{title}</h1>
-      </header>
+      <HouseIntro title={title} lede={lede} navKey="studio" />
 
       {!hasContent ? <p className="text-sm opacity-70">{empty}</p> : null}
 

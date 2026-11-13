@@ -20,8 +20,9 @@ test.describe('explore feeds', () => {
       'Сообщество',
     );
     await expect(page.locator('main')).toContainText(/Стена дома|Пока тихо/);
-    await expect(page.getByRole('link', { name: 'Люди' })).toBeVisible();
-    await page.getByRole('link', { name: 'Подписки' }).click();
+    const tabs = page.getByRole('navigation', { name: 'Разделы сообщества' });
+    await expect(tabs.getByRole('link', { name: 'Люди' })).toBeVisible();
+    await tabs.getByRole('link', { name: 'Подписки' }).click();
     await expect(page).toHaveURL(/tab=following/);
     await expect(page.locator('main')).toContainText(
       'Войдите, чтобы увидеть, на кого вы подписаны.',
@@ -69,8 +70,9 @@ test.describe('explore feeds', () => {
     await expect(page.locator('main')).toContainText(
       /The house wall|Quiet for now/,
     );
-    await expect(page.getByRole('link', { name: 'People' })).toBeVisible();
-    await page.getByRole('link', { name: 'Following' }).click();
+    const tabs = page.getByRole('navigation', { name: 'Community sections' });
+    await expect(tabs.getByRole('link', { name: 'People' })).toBeVisible();
+    await tabs.getByRole('link', { name: 'Following' }).click();
     await expect(page).toHaveURL(/tab=following/);
     await expect(page.locator('main')).toContainText(
       'Sign in to see who you follow.',

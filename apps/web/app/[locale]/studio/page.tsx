@@ -21,6 +21,7 @@ export default async function StudioPage({ params }: PageProps) {
   return (
     <StudioIndex
       title={t('title')}
+      lede={t('lede')}
       featuredKicker={t('featuredKicker')}
       themesLabel={t('themes')}
       worksLabel={t('works')}

@@ -67,8 +67,9 @@ export default async function CommunityFeedPage({
 
   return (
     <CommunityFeed
-      title={t('title')}
-      lede={t('lede')}
+      title={tab === 'following' ? t('followingTab') : t('title')}
+      navKey={tab === 'following' ? 'following' : 'community'}
+      lede={tab === 'following' ? t('ledeFollowing') : t('lede')}
       tabsLabel={t('tabsLabel')}
       peopleTab={t('peopleTab')}
       followingTab={t('followingTab')}

@@ -24,6 +24,7 @@ export default async function FreshPage({ params, searchParams }: PageProps) {
   return (
     <ExploreCatalogPage
       title={t('title')}
+      navKey="new"
       lede={t('lede')}
       empty={t('empty')}
       more={t('more')}
