@@ -5,7 +5,10 @@ import {
   type NotificationKind,
 } from '@nechto/api-contract';
 import { ApiHttpException } from '../common/errors/api-http-exception';
-import { publishedProfileWhere } from '../profiles/published-profile';
+import {
+  publicWorkWhere,
+  publishedProfileWhere,
+} from '../profiles/published-profile';
 import { PrismaService } from '../prisma/prisma.service';
 
 export type ResolvedPublicTarget = {
@@ -34,11 +37,7 @@ export class PublicTargetService {
     switch (targetType) {
       case 'work': {
         const work = await this.prisma.work.findFirst({
-          where: {
-            id: targetId,
-            hidden: false,
-            profile: publishedProfileWhere,
-          },
+          where: publicWorkWhere(targetId),
           select: { id: true, profile: { select: { userId: true } } },
         });
         if (!work) {

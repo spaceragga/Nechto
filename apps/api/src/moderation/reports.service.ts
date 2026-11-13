@@ -10,7 +10,10 @@ import {
 } from '@nechto/api-contract';
 import { ApiHttpException } from '../common/errors/api-http-exception';
 import { PrismaService } from '../prisma/prisma.service';
-import { publishedProfileWhere } from '../profiles/published-profile';
+import {
+  publicWorkWhere,
+  publishedProfileWhere,
+} from '../profiles/published-profile';
 import { ModerationAuditService } from './moderation-audit.service';
 import { toContentReport } from './report.mapper';
 
@@ -148,11 +151,7 @@ export class ReportsService {
       }
       case 'work': {
         const work = await this.prisma.work.findFirst({
-          where: {
-            id: dto.targetId,
-            hidden: false,
-            profile: publishedProfileWhere,
-          },
+          where: publicWorkWhere(dto.targetId),
           select: {
             id: true,
             title: true,
