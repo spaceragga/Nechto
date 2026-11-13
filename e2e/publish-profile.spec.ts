@@ -127,7 +127,9 @@ test.describe('publish profile', () => {
 
       await page.goto('/');
       const rail = page.getByRole('region', { name: 'Авторы' });
-      const railCard = rail.locator(`a[href="/${slug}"]`);
+      const railCard = rail.locator(
+        `a[href="/${slug}"]:has([data-work-frame])`,
+      );
       await expect(railCard).toBeVisible();
       const railSrc = await railCard
         .locator('[data-work-frame]')
