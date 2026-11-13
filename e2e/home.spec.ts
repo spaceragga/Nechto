@@ -251,8 +251,8 @@ test.describe('home page locales', () => {
     await page.goto('/');
 
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
-    const author = now.locator('a').first();
-    const outline = author.locator('..').locator('[data-now-row-outline]');
+    const outline = now.locator('[data-now-row-outline]').first();
+    const author = outline.locator('..').getByRole('link').first();
 
     await expect(outline).toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
     await author.hover();
@@ -424,14 +424,14 @@ test.describe('home page locales', () => {
     await expect(collectionSpot(page)).toBeVisible();
     await expect(spots.getByRole('link', { name: 'Все новые' })).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /Как смотреть/ }),
+      spots.getByRole('link', { name: 'Читать как смотреть' }),
     ).toBeVisible();
     await expect(spots.locator('[data-home-spot="dialogue"]')).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Войти в студию/ }),
     ).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /Как смотреть/ }),
+      spots.getByRole('link', { name: 'Читать как смотреть' }),
     ).toHaveAttribute('href', '/looking');
     await expect(
       spots.getByRole('link', { name: /Войти в студию/ }),
@@ -531,14 +531,14 @@ test.describe('home page locales', () => {
     await expect(collectionSpot(page)).toBeVisible();
     await expect(spots.getByRole('link', { name: 'All new' })).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /How to look/ }),
+      spots.getByRole('link', { name: 'Read how to look' }),
     ).toBeVisible();
     await expect(spots.locator('[data-home-spot="dialogue"]')).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Enter the studio/ }),
     ).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /How to look/ }),
+      spots.getByRole('link', { name: 'Read how to look' }),
     ).toHaveAttribute('href', '/en/looking');
     await expect(journalSpot(page)).toBeVisible();
     await expect(
@@ -552,9 +552,10 @@ test.describe('home page locales', () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
 
-    const openCall = page.getByRole('link', { name: /Публикация профиля/ });
-    const title = openCall.getByRole('heading', { name: 'Публикация профиля' });
+    const title = page.getByRole('heading', { name: 'Публикация профиля' });
+    const openCall = title.locator('xpath=ancestor::article[1]');
     const frame = openCall.locator('[data-work-frame]');
+    const picture = openCall.getByRole('link', { name: 'Публикация профиля' });
 
     const openCallBox = await openCall.boundingBox();
     const titleBox = await title.boundingBox();
@@ -574,7 +575,10 @@ test.describe('home page locales', () => {
           (openCallBox!.x + openCallBox!.width / 2),
       ),
     ).toBeLessThan(24);
-    await expect(openCall).toHaveAttribute('href', '/register');
+    await expect(picture).toHaveAttribute('href', '/register');
+    await expect(
+      openCall.getByRole('link', { name: 'Опубликовать профиль' }),
+    ).toHaveAttribute('href', '/register');
   });
 
   test('shows the hanging spot in Russian', async ({ page }) => {
@@ -583,20 +587,17 @@ test.describe('home page locales', () => {
     const spots = page.getByRole('region', {
       name: 'Развес',
     });
+    const title = spots.getByRole('heading', { name: 'Сегодня на стене' });
+    await expect(title).toBeVisible();
+    await expect(title).toHaveCSS('text-align', 'center');
     await expect(
-      spots.getByRole('link', { name: /Сегодня на стене/ }),
-    ).toBeVisible();
-    await expect(
-      spots.getByRole('link', { name: /Сегодня на стене/ }),
+      spots.getByRole('link', { name: 'Весь развес' }),
     ).toHaveAttribute('href', '/hanging');
     await expect(spots.locator('[data-work-frame]').first()).toBeVisible();
     expect(await spots.locator('[data-work-frame]').count()).toBeGreaterThan(0);
     expect(
       await spots.locator('[data-work-frame]').count(),
     ).toBeLessThanOrEqual(5);
-    await expect(
-      spots.getByRole('link', { name: /Сегодня на стене/ }),
-    ).toHaveCSS('text-align', 'center');
     await expect(spots).toHaveCSS('padding-top', '16px');
     await expect(spots).toHaveCSS('padding-bottom', '16px');
   });
@@ -607,20 +608,17 @@ test.describe('home page locales', () => {
     const spots = page.getByRole('region', {
       name: 'Hanging',
     });
+    const title = spots.getByRole('heading', { name: 'On the wall today' });
+    await expect(title).toBeVisible();
+    await expect(title).toHaveCSS('text-align', 'center');
     await expect(
-      spots.getByRole('link', { name: /On the wall today/ }),
-    ).toBeVisible();
-    await expect(
-      spots.getByRole('link', { name: /On the wall today/ }),
+      spots.getByRole('link', { name: 'The full hanging' }),
     ).toHaveAttribute('href', '/en/hanging');
     await expect(spots.locator('[data-work-frame]').first()).toBeVisible();
     expect(await spots.locator('[data-work-frame]').count()).toBeGreaterThan(0);
     expect(
       await spots.locator('[data-work-frame]').count(),
     ).toBeLessThanOrEqual(5);
-    await expect(
-      spots.getByRole('link', { name: /On the wall today/ }),
-    ).toHaveCSS('text-align', 'center');
   });
 
   test('work frames have no rounding', async ({ page }) => {

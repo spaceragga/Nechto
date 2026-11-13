@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { ChromeIconButton } from '@/components/chrome-icon';
@@ -29,14 +29,14 @@ export function HeaderSearch() {
     }
   }
 
-  function clearIdleTimer() {
+  const clearIdleTimer = useCallback(() => {
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
       idleTimerRef.current = null;
     }
-  }
+  }, []);
 
-  function bumpIdle() {
+  const bumpIdle = useCallback(() => {
     clearIdleTimer();
     if (!open) {
       return;
@@ -44,7 +44,7 @@ export function HeaderSearch() {
     idleTimerRef.current = setTimeout(() => {
       setOpen(false);
     }, IDLE_CLOSE_MS);
-  }
+  }, [clearIdleTimer, open]);
 
   useEffect(() => {
     if (!open) {
@@ -54,7 +54,7 @@ export function HeaderSearch() {
     inputRef.current?.focus();
     bumpIdle();
     return clearIdleTimer;
-  }, [open]);
+  }, [open, bumpIdle, clearIdleTimer]);
 
   useEffect(() => {
     if (!open) {
