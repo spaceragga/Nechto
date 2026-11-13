@@ -220,7 +220,7 @@ export function HangingWall({
         {nextHref && more ? (
           <Link
             href={nextHref}
-            className="mt-8 font-sans text-base text-[var(--accent)]"
+            className="accent-mark mt-8 font-sans text-base"
           >
             {more}
           </Link>

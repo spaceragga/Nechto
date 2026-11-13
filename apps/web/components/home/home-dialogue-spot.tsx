@@ -1,82 +1,88 @@
+import {
+  HomeCredits,
+  HomeCta,
+  HomeKicker,
+  type HomeCredit,
+} from '@/components/home/home-credits';
+import { HomeSpotRoot, HomeStill } from '@/components/home/home-spot-root';
 import { WorkFrame } from '@/components/ui/work-frame';
-import { HomeSpotRoot } from '@/components/home/home-spot-root';
+
+type DialogueSide = {
+  title: string;
+  meta?: string;
+  src?: string | null;
+  workHref?: string | null;
+  credits?: HomeCredit[];
+};
 
 type HomeDialogueSpotProps = {
   kicker: string;
+  roomHref?: string;
   title: string;
   lede: string;
-  leftTitle: string;
-  leftMeta: string;
-  rightTitle: string;
-  rightMeta: string;
+  left: DialogueSide;
+  right: DialogueSide;
   cta: string;
   href?: string | null;
-  leftSrc?: string | null;
-  rightSrc?: string | null;
 };
+
+function Side({ side }: { side: DialogueSide }) {
+  return (
+    <div className="min-w-0">
+      <HomeStill href={side.workHref}>
+        <WorkFrame
+          src={side.src}
+          alt={side.title}
+          fit="cover"
+          className="h-64 w-full"
+        />
+      </HomeStill>
+      <p className="mt-2 truncate text-center font-serif text-base">
+        {side.title}
+      </p>
+      {side.credits && side.credits.length > 0 ? (
+        <p className="mt-0.5 flex justify-center">
+          <HomeCredits
+            credits={side.credits}
+            className="justify-center font-serif text-sm"
+          />
+        </p>
+      ) : side.meta ? (
+        <p className="mt-0.5 text-center font-serif text-sm opacity-70">
+          {side.meta}
+        </p>
+      ) : null}
+    </div>
+  );
+}
 
 export function HomeDialogueSpot({
   kicker,
+  roomHref = '/dialogue',
   title,
   lede,
-  leftTitle,
-  leftMeta,
-  rightTitle,
-  rightMeta,
+  left,
+  right,
   cta,
   href = '/dialogue',
-  leftSrc,
-  rightSrc,
 }: HomeDialogueSpotProps) {
   return (
     <article>
-      <HomeSpotRoot
-        href={href}
-        spot="dialogue"
-        className="flex min-w-0 flex-col"
-      >
+      <HomeSpotRoot spot="dialogue" className="flex min-w-0 flex-col">
         <div className="grid grid-cols-2 gap-1">
-          <div className="min-w-0">
-            <WorkFrame
-              src={leftSrc}
-              alt={leftTitle}
-              fit="cover"
-              className="h-64 w-full"
-            />
-            <p className="mt-2 truncate text-center font-serif text-base">
-              {leftTitle}
-            </p>
-            <p className="mt-0.5 text-center font-serif text-sm opacity-70">
-              {leftMeta}
-            </p>
-          </div>
-          <div className="min-w-0">
-            <WorkFrame
-              src={rightSrc}
-              alt={rightTitle}
-              fit="cover"
-              className="h-64 w-full"
-            />
-            <p className="mt-2 truncate text-center font-serif text-base">
-              {rightTitle}
-            </p>
-            <p className="mt-0.5 text-center font-serif text-sm opacity-70">
-              {rightMeta}
-            </p>
-          </div>
+          <Side side={left} />
+          <Side side={right} />
         </div>
-        <p className="mt-3 font-sans text-sm tracking-[0.16em] uppercase opacity-80">
+        <HomeKicker href={roomHref} className="mt-3">
           {kicker}
-        </p>
+        </HomeKicker>
         <h2 className="mt-1 font-serif text-2xl leading-tight tracking-wide md:text-3xl">
           {title}
         </h2>
         <p className="mt-1 font-sans text-base leading-relaxed opacity-70">
           {lede}
         </p>
-        <span className="mt-2 font-sans text-base text-[var(--accent)]">
-          {cta}
-        </span>
+        <HomeCta href={href}>{cta}</HomeCta>
       </HomeSpotRoot>
     </article>
   );

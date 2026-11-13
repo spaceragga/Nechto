@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { PolicyPage } from '@/components/policy-page';
+import { PolicyPage, type PolicySection } from '@/components/policy-page';
 
 type PolicyRouteProps = {
   params: Promise<{ locale: string }>;
@@ -15,8 +15,9 @@ export default async function CommunityGuidelinesPage({
   return (
     <PolicyPage
       title={t('title')}
+      lede={t('lede')}
       updated={t('updated')}
-      paragraphs={t.raw('paragraphs') as string[]}
+      sections={t.raw('sections') as PolicySection[]}
     />
   );
 }

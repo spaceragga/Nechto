@@ -38,18 +38,20 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
   return (
     <main className="flex w-full flex-col gap-10 px-6 py-12">
       <HouseIntro title={t('title')} lede={t('lede')} />
-      <SearchPageClient
-        results={results}
-        labels={{
-          works: t('works'),
-          creators: t('creators'),
-          projects: t('projects'),
-          articles: t('articles'),
-          dialogues: t('dialogues'),
-          studios: t('studios'),
-          empty: t('empty'),
-        }}
-      />
+      <div className="pl-12 sm:pl-24">
+        <SearchPageClient
+          results={results}
+          labels={{
+            works: t('works'),
+            creators: t('creators'),
+            projects: t('projects'),
+            articles: t('articles'),
+            dialogues: t('dialogues'),
+            studios: t('studios'),
+            empty: t('empty'),
+          }}
+        />
+      </div>
     </main>
   );
 }

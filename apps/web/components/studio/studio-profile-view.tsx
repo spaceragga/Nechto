@@ -28,7 +28,7 @@ export function StudioProfileView({
   return (
     <main className="flex w-full flex-col gap-12 px-6 py-12">
       <p className="font-sans text-sm">
-        <Link href="/studio" className="text-[var(--accent)] no-underline">
+        <Link href="/studio" className="accent-mark">
           {backLabel}
         </Link>
       </p>

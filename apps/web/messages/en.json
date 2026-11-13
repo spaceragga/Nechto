@@ -36,15 +36,18 @@
     "growthSpotsLabel": "New work, selections, looking, dialogue, and studio",
     "journalSpot": {
       "kicker": "Journal",
-      "title": "The journal is still taking shape",
-      "lede": "An author’s article will land here — writing for a reader, not a caption on a work.",
-      "cta": "Read"
+      "title": "No article yet",
+      "lede": "The place is left open. A text will stand here when it is brought in.",
+      "cta": "Read",
+      "emptyCta": "To the journal"
     },
     "collectionSpot": {
       "kicker": "Series",
       "title": "Selections",
       "meta": "No published series yet.",
-      "countMeta": "{author} · {count} frames"
+      "countMeta": "{count} frames",
+      "cta": "Open the series",
+      "emptyCta": "All selections"
     },
     "freshSpot": {
       "kicker": "Just in",
@@ -58,8 +61,8 @@
     },
     "dialogueSpot": {
       "kicker": "Dialogue",
-      "title": "Two works side by side",
-      "lede": "A curated pair is still ahead.",
+      "title": "No pair yet",
+      "lede": "Two walls are waiting. There is no pause between them yet.",
       "ledeLive": "{left} and {right}. No curator note yet — look at the pair as it is.",
       "leftTitle": "Not yet",
       "leftMeta": "—",
@@ -69,9 +72,10 @@
     },
     "studioSpot": {
       "kicker": "Studio",
-      "title": "The studio is still taking shape",
-      "lede": "A studio author will land here.",
-      "cta": "Enter the studio"
+      "title": "No studio yet",
+      "lede": "The room is not gathered. The place for it is already here.",
+      "cta": "Enter the studio",
+      "emptyCta": "All studios"
     },
     "hangingSpot": {
       "kicker": "Hanging",
@@ -82,7 +86,7 @@
     "lookingSpot": {
       "kicker": "For the visitor",
       "title": "How to look",
-      "lede": "No feed, no counter. One work, a caption, a pause. The journal teaches this slower than a rail.",
+      "lede": "How one room of the house differs from another.",
       "cta": "Read how to look"
     },
     "nowLabel": "Author selection",
@@ -124,13 +128,68 @@
   },
   "Looking": {
     "title": "How to look",
-    "updated": "Voice of the house",
-    "paragraphs": [
-      "A like here is attention, not a place on the wall. Look at one work, read the caption, pause.",
-      "The journal is separate articles by authors for a reader. It is not a jpeg caption and not an editorial blog.",
-      "Dialogue is two works side by side from a curator. Not a feed: one pair, a note, a path to the authors.",
-      "Selections and series are whole stories. New is what just arrived. The hanging is each author's latest work, not a scoreboard.",
-      "If you need someone for a job, look for a profile and a studio, not a feed. An author steps into the light when they publish their page."
+    "lede": "How the rooms of the house differ, and what you can find in each.",
+    "rooms": [
+      {
+        "kicker": "House",
+        "title": "The front",
+        "body": "The front gathers the day: one fresh work, an author, places for the journal, dialogue, and studio, what has just appeared, and series. It is not a full list of everything published. From here you leave for the rooms, and a name or a title can be called from the search in the header."
+      },
+      {
+        "kicker": "Creators",
+        "title": "Who is here",
+        "body": "People who have already opened their page. The list can be narrowed by practice: illustration, photography, fashion, craft, and the other directions. A card opens the profile, where that person's works, series, and writing live."
+      },
+      {
+        "kicker": "Works",
+        "title": "Single frames",
+        "body": "Every published work stands on its own, with its author and its caption. The open page shows the frame whole, and a word can be left under it. The directions above keep only the works of the practice you chose."
+      },
+      {
+        "kicker": "Projects",
+        "title": "Series",
+        "body": "A project gathers several frames in the order the author set. A short text sometimes sits between them, so this is a sequence, not a folder. A series can be browsed by direction and opened from the first frame to the last."
+      },
+      {
+        "kicker": "Hanging",
+        "title": "Today's wall",
+        "body": "One latest work from each author who is already publishing. Different people stand side by side, not a selection of the best. A frame keeps its own proportions: a wide one stays wide, a tall one stays tall."
+      },
+      {
+        "kicker": "New",
+        "title": "Recent publications",
+        "body": "Works in the order they appeared. You come here for what is fresh, without walking every author and series. Earlier work stays where it is: on its own page and with its author."
+      },
+      {
+        "kicker": "Selections",
+        "title": "Series and directions",
+        "body": "Two ways of gathering what is already published. Above, whole series as the author arranged them. Below, rooms by direction: everything placed with photography, interior, video, and the other practices."
+      },
+      {
+        "kicker": "Journal",
+        "title": "Writing",
+        "body": "An article is longer than a caption. An author writes about the work, the place, or the way of looking, and that text is read on its own. From the article you can return to the person who wrote it."
+      },
+      {
+        "kicker": "Dialogue",
+        "title": "Two works side by side",
+        "body": "A curator sets two works by different authors next to each other and leaves a short note between them. It is a neighborhood, not a contest. After the pair, either work opens, or the page of its author."
+      },
+      {
+        "kicker": "Studio",
+        "title": "A room of practice",
+        "body": "A studio is an author's separate place: a title of its own, a text about the practice, a cover, and the works gathered there. The profile says who this is. The studio shows how the room is arranged."
+      },
+      {
+        "kicker": "Community",
+        "title": "People and following",
+        "body": "Community is the list of people in the house, with a portrait and directions. Following is only the pages you marked as close. Talk does not live on that list. It stays under the works and in the writing."
+      },
+      {
+        "kicker": "Looking",
+        "title": "At one work",
+        "body": "You stay with one frame, read the caption, and do not rush the next. The heart marks that you stopped, and does not lift the work above the others. The eye counts that the page was opened. A word under the frame stays a comment."
+      }
     ]
   },
   "Hanging": {
@@ -141,8 +200,8 @@
   },
   "Search": {
     "title": "Search",
-    "lede": "A name or a title, and the house answers.",
-    "placeholder": "Name, slug, or title",
+    "lede": "A name, a title, or words from a caption and a text. The house answers with wherever they were found.",
+    "placeholder": "A name, a title, or words from a text",
     "submit": "Search",
     "works": "Works",
     "creators": "Creators",
@@ -592,32 +651,201 @@
   "Policies": {
     "terms": {
       "title": "Platform terms",
-      "updated": "Version dated August 15, 2026",
-      "paragraphs": [
-        "Nechto gives creators tools to publish portfolios and connect with visitors. Creators are responsible for profile accuracy, account security, and rights to uploaded material.",
-        "Illegal material, harassment, impersonation, spam, malicious links, and content that infringes third-party rights are prohibited. We may hide content or suspend a profile after review.",
-        "Creators retain ownership of their work and grant Nechto a non-exclusive license to store, technically process, and display it within the service.",
-        "For account, complaint, and data deletion requests, contact support@nechto.by."
+      "lede": "The agreement for the house: who publishes, what may go on the wall, and what happens when a piece gets in the way.",
+      "updated": "Version of 13 November 2026",
+      "sections": [
+        {
+          "kicker": "House",
+          "title": "What this is",
+          "paragraphs": [
+            "Nechto is a house where an author publishes a page, works, series, texts, and a studio. Use is free. There is no paid sale or subscription, so rules on returning goods do not attach here.",
+            "Registration opens an account. The mark “I accept the platform terms and the privacy notice” before a profile is published is consent in electronic form: a mark on an internet resource, as Article 5 of the Law of the Republic of Belarus of 7 May 2021 No. 99-Z “On Personal Data Protection” allows."
+          ]
+        },
+        {
+          "kicker": "Operator",
+          "title": "Who runs the house",
+          "paragraphs": [
+            "Letters about the terms, data, and complaints go to support@nechto.by.",
+            "The law requires the operator’s name and location before consent. The house has no separate requisites card: the name and postal address are sent to that address. No invented registration number or address is written here.",
+            "Where the Russian text and this English translation differ, the Russian text and the law of the Republic of Belarus govern the house."
+          ]
+        },
+        {
+          "kicker": "Account",
+          "title": "Sign-in and deletion",
+          "paragraphs": [
+            "Sign-in needs an email address and a password. The password is stored as a one-way hash, not as plain text. The session sits in a cookie the page script cannot read. How long the session lasts is set by the sign-in configuration.",
+            "You keep your own sign-in. Suspension hides the showcase and leaves editing open. Deletion, after the current password is confirmed, removes the account, the profile, and the work files. There is no restore.",
+            "Comments, complaints, and moderation records may remain when they are needed to deal with a violation or the law requires them. They are not shown as a live showcase."
+          ]
+        },
+        {
+          "kicker": "Publishing",
+          "title": "What goes on the wall",
+          "paragraphs": [
+            "The wall shows what the author uploaded and opened: name, bio, portrait, directions, works, series, articles, studio, and comments. A site and pages on other networks are optional. Until the profile is published, the showcase stays closed.",
+            "The author is responsible for a page that does not mislead, and for having the rights to the frames and texts."
+          ]
+        },
+        {
+          "kicker": "Rights",
+          "title": "Author and license",
+          "paragraphs": [
+            "Copyright stays with the author. Uploading into the house does not transfer the exclusive right. That follows from the Civil Code of the Republic of Belarus.",
+            "While a piece is published, the author gives the house a non-exclusive, royalty-free right to store the file, make a technical copy for display, and show the piece on the house pages. The right exists only to run the house.",
+            "It ends when the piece or the account is deleted. A copy may remain if a complaint, a backup, or a legal duty needs it. That copy is not put on the wall."
+          ]
+        },
+        {
+          "kicker": "Bans",
+          "title": "What stays off the wall",
+          "paragraphs": [
+            "Do not upload what the law of the Republic of Belarus forbids. That includes someone else’s work without a right, sexual material involving anyone under eighteen, calls to violence, threats, harassment, fraud, impersonation, harmful links, and spam.",
+            "The house is not the author of user works and does not promise to see every violation itself. A report from a profile, work, series, article, or dialogue page reaches a moderator. The report alone does not hide the piece. Hiding it, or suspending the profile, is a separate decision and is written into the moderation log."
+          ]
+        },
+        {
+          "kicker": "Dispute",
+          "title": "Who answers for what",
+          "paragraphs": [
+            "The house is open as it runs. The operator is liable where the law of the Republic of Belarus does not allow a contract to waive that liability. The author answers for their account and their materials to the people whose rights they touched.",
+            "A dispute that a letter to support@nechto.by does not close is handled in the procedure set by the law of the Republic of Belarus."
+          ]
+        }
       ]
     },
     "privacy": {
       "title": "Privacy notice",
-      "updated": "Version dated August 15, 2026",
-      "paragraphs": [
-        "We process email, profile data, uploaded work, technical logs, sessions, and aggregated views/contact clicks to operate and protect the service.",
-        "Data is shared only with infrastructure, storage, and email providers needed to operate Nechto. We do not sell personal data.",
-        "Users can delete their account. Backups expire under the retention schedule; incident and complaint evidence may be retained longer when required by law or service protection.",
-        "For access, correction, or deletion requests, contact support@nechto.by."
+      "lede": "What the house takes, why, on what ground, and how to take it back.",
+      "updated": "Version of 13 November 2026",
+      "sections": [
+        {
+          "kicker": "Law",
+          "title": "Which act",
+          "paragraphs": [
+            "Processing follows the Law of the Republic of Belarus of 7 May 2021 No. 99-Z “On Personal Data Protection”, including the amendments of the Law of 16 March 2026 No. 134-Z. The authorized body is the National Personal Data Protection Center.",
+            "This page is the operator’s policy. It is open before use. Apart from the terms, it explains the rights and what follows if consent is given or refused: without the mark the profile is not published, and open pages can be read without an account."
+          ]
+        },
+        {
+          "kicker": "Operator",
+          "title": "Where to write",
+          "paragraphs": [
+            "Letters about data go to support@nechto.by.",
+            "Before consent the law requires the operator, the purposes, the list of data, the term, the actions, and the person’s rights. The list is below. The operator’s name and postal address are sent on request: the house has no requisites card, and none are invented here."
+          ]
+        },
+        {
+          "kicker": "Data",
+          "title": "What, exactly",
+          "paragraphs": [
+            "Email address and password hash, so the house can open the account and send a password-reset letter. The password is not stored as plain text.",
+            "Name, page address, bio, portrait, directions, and links the person entered. Works, series, articles, studio, and comments are what they put up themselves.",
+            "Likes, follows, and views. A view is counted with a viewer mark so one opening is not counted many times. The house wall is not ranked by these numbers.",
+            "A report: the reason (spam, impersonation, harassment, copyright, or other), the details, and an email for the reply.",
+            "Two cookies, both unreadable by page script. The session cookie keeps the sign-in. The viewer mark lasts about 400 days and exists only to count a view. There are no advertising cookies.",
+            "Technical records without which the server cannot tell a failure from an ordinary request."
+          ]
+        },
+        {
+          "kicker": "Grounds",
+          "title": "Why",
+          "paragraphs": [
+            "The purposes are specific: to give an account, to show what was published, to count a view once, to take a report, and to protect the house from break-in and abuse. Another purpose needs a new ground.",
+            "Email and password are processed to perform the contract that starts at registration. Article 6 of Law No. 99-Z allows this without a separate consent when the data is needed for the acts under that contract.",
+            "Publishing a profile and materials rests on the consent mark. Withdrawing consent does not stop processing that still has another lawful ground, such as keeping a report. The operator says so in the reply.",
+            "The house does not ask for special data, such as health or beliefs.",
+            "Under sixteen, a legal representative gives consent, except where the person married earlier. The house is meant for people who are already sixteen, and it does not check age. If a page was opened earlier, the representative should write to support@nechto.by."
+          ]
+        },
+        {
+          "kicker": "Sharing",
+          "title": "Who can see it",
+          "paragraphs": [
+            "What is published is visible to visitors. Email, password, and anything unpublished are not shown to them.",
+            "Mail is sent only to reset a password. Files stay in the house storage. If another organization runs the server, the storage, or the mail, it is an authorized person under Article 7 and does only what the house needs. A transfer outside Belarus stays within Article 9 of Law No. 99-Z. Data is not sold or given to advertising networks.",
+            "Which data was provided to whom during the preceding year can be requested once per calendar year, free of charge."
+          ]
+        },
+        {
+          "kicker": "Term",
+          "title": "How long it stays",
+          "paragraphs": [
+            "While the account is alive and while the piece is published. Deleting the account erases the profile and the work files.",
+            "If a backup exists, it is not shown and lasts until the next one replaces it. A report and a moderation record stay while the review needs them or the law requires them.",
+            "The viewer mark lasts about 400 days. The session lasts as long as sign-in is configured to last. If cookies are blocked, sign-in will not hold, and a view may be counted again."
+          ]
+        },
+        {
+          "kicker": "Rights",
+          "title": "How to take it back",
+          "paragraphs": [
+            "To learn whether data is processed, which data, from where, on what ground, and for how long. The reply is within five working days, free of charge. Article 11 of Law No. 99-Z.",
+            "To correct data that is incomplete, outdated, or inaccurate. Documents that show the correction are required. The term is fifteen days. Article 11.",
+            "To learn which data was provided to whom over the preceding year. The term is fifteen days. Article 12.",
+            "To withdraw consent without giving a reason. If no other ground remains, processing stops and the data is deleted within fifteen days. Withdrawal does not make unlawful what was already done. Article 10.",
+            "To demand that processing stop and the data be deleted when no ground remains. The term is fifteen days. If another lawful ground remains, the operator may refuse and writes why. Article 13.",
+            "To appeal acts of the operator and of an authorized person to the National Personal Data Protection Center, and the Center’s decision to a court. Article 15 as amended by the Law of 16 March 2026 No. 134-Z.",
+            "An application under Articles 10–13 is filed in writing or as an electronic document. It needs the surname and given name, address, date of birth, the substance of the demand, and a signature or an electronic digital signature. An identification number is required only if the operator already has it: the house does not ask for one. A letter to support@nechto.by starts the conversation. If the demand needs the form in Article 14, the reply will say what is missing.",
+            "The account can also be deleted in account settings: the house asks for the current password."
+          ]
+        },
+        {
+          "kicker": "Protection",
+          "title": "How it is closed",
+          "paragraphs": [
+            "The password is not stored in the open. The session cookie is unreadable by page script. Data that is not on the wall is available to the people who run the house and moderation.",
+            "The operator takes measures so the data is not read, changed, or erased without a right. The National Center decides the notice procedure when protection is breached."
+          ]
+        }
       ]
     },
     "community": {
       "title": "Community guidelines",
-      "updated": "Version dated August 15, 2026",
-      "paragraphs": [
-        "Publish your own work or material you are authorized to use. Provide clear titles and useful image descriptions.",
-        "Threats, degradation, discrimination, sexual exploitation, fraud, spam, and deliberate deception are prohibited.",
-        "Visitors can report violations from a creator, work, series, article, or dialogue page. A moderator reviews reports; content may be hidden and decisions are recorded in the moderation audit log.",
-        "Copyright reports should include the material URL, a description of the rights, and contact details: support@nechto.by."
+      "lede": "How works and people stand next to each other, and what to do when that breaks.",
+      "updated": "Version of 13 November 2026",
+      "sections": [
+        {
+          "kicker": "Own",
+          "title": "What to publish",
+          "paragraphs": [
+            "Publish your own work, or work you have permission to use. A title and a caption are there so the work can be found and understood.",
+            "Someone else’s work does not go on the wall without a right, even if their name is written beside it."
+          ]
+        },
+        {
+          "kicker": "Beside",
+          "title": "What not to do",
+          "paragraphs": [
+            "Do not threaten, humiliate, harass, impersonate, deceive for money or attention, send the same thing without a reason, or post harmful links.",
+            "Sexual material involving anyone under eighteen is forbidden entirely. What the law of the Republic of Belarus forbids is forbidden here too."
+          ]
+        },
+        {
+          "kicker": "Report",
+          "title": "How to say so",
+          "paragraphs": [
+            "“Report” is on a profile, work, series, article, and dialogue. The form’s reasons are spam, impersonation, harassment, copyright, and other. An email for the reply is required if the account does not have one yet.",
+            "A report by itself hides nothing. Hiding is a moderator’s decision. It is written into the moderation log."
+          ]
+        },
+        {
+          "kicker": "Rights",
+          "title": "Someone else’s frame",
+          "paragraphs": [
+            "A letter to support@nechto.by: the link to the piece in the house, what is infringed, what your right rests on, and how to reach you.",
+            "The house may hide the piece while it is checked and keep a copy until the review is finished."
+          ]
+        },
+        {
+          "kicker": "Decision",
+          "title": "What a moderator can do",
+          "paragraphs": [
+            "Hide a piece or suspend a profile when these rules or the law are broken. Suspension hides the showcase and leaves the author signed in to edit.",
+            "If the decision looks wrong, write to support@nechto.by and say why."
+          ]
+        }
       ]
     }
   },

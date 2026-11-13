@@ -51,7 +51,10 @@ export function WorkFrame({
       return;
     }
 
-    const root = frame.closest('a') ?? frame;
+    const focusRoot =
+      frame.parentElement instanceof HTMLAnchorElement
+        ? frame.parentElement
+        : frame;
     let raf = 0;
     let inside = false;
     let pointerX = 0;
@@ -126,7 +129,8 @@ export function WorkFrame({
         'relatedTarget' in event
           ? (event as PointerEvent | FocusEvent).relatedTarget
           : null;
-      if (related instanceof Node && root.contains(related)) {
+      const host = event.type.startsWith('focus') ? focusRoot : frame;
+      if (related instanceof Node && host.contains(related)) {
         return;
       }
       inside = false;
@@ -145,11 +149,11 @@ export function WorkFrame({
       schedule();
     };
 
-    root.addEventListener('pointerenter', enter);
-    root.addEventListener('pointermove', move);
-    root.addEventListener('pointerleave', leave);
-    root.addEventListener('focusin', focusIn);
-    root.addEventListener('focusout', leave);
+    frame.addEventListener('pointerenter', enter);
+    frame.addEventListener('pointermove', move);
+    frame.addEventListener('pointerleave', leave);
+    focusRoot.addEventListener('focusin', focusIn);
+    focusRoot.addEventListener('focusout', leave);
 
     image.style.transformStyle = 'preserve-3d';
     image.style.willChange = 'transform, filter';
@@ -161,11 +165,11 @@ export function WorkFrame({
       if (raf) {
         window.cancelAnimationFrame(raf);
       }
-      root.removeEventListener('pointerenter', enter);
-      root.removeEventListener('pointermove', move);
-      root.removeEventListener('pointerleave', leave);
-      root.removeEventListener('focusin', focusIn);
-      root.removeEventListener('focusout', leave);
+      frame.removeEventListener('pointerenter', enter);
+      frame.removeEventListener('pointermove', move);
+      frame.removeEventListener('pointerleave', leave);
+      focusRoot.removeEventListener('focusin', focusIn);
+      focusRoot.removeEventListener('focusout', leave);
       image.style.willChange = '';
       image.style.transform = '';
       image.style.filter = '';

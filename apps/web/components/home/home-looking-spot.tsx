@@ -1,3 +1,4 @@
+import { HomeCta, HomeKicker } from '@/components/home/home-credits';
 import { HomeSpotRoot } from '@/components/home/home-spot-root';
 
 type HomeLookingSpotProps = {
@@ -15,23 +16,17 @@ export function HomeLookingSpot({
 }: HomeLookingSpotProps) {
   return (
     <article>
-      <HomeSpotRoot
-        href="/looking"
-        spot="looking"
-        className="flex min-w-0 flex-col"
-      >
-        <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-80">
-          {kicker}
-        </p>
+      <HomeSpotRoot spot="looking" className="flex min-w-0 flex-col">
+        <HomeKicker href="/looking">{kicker}</HomeKicker>
         <h2 className="mt-2 font-serif text-2xl leading-tight tracking-wide md:text-3xl">
           {title}
         </h2>
         <p className="mt-2 max-w-sm font-sans text-base leading-relaxed opacity-70">
           {lede}
         </p>
-        <span className="mt-3 font-sans text-base text-[var(--accent)]">
+        <HomeCta href="/looking" className="mt-3">
           {cta}
-        </span>
+        </HomeCta>
       </HomeSpotRoot>
     </article>
   );

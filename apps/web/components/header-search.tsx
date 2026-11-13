@@ -74,13 +74,13 @@ export function HeaderSearch() {
       <div
         className={`overflow-hidden transition-[max-width,opacity,margin] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           open
-            ? 'mr-1 max-w-[21rem] opacity-100'
+            ? 'mr-1 max-w-[min(25.2rem,calc(100vw-11rem))] opacity-100'
             : 'pointer-events-none mr-0 max-w-0 opacity-0'
         }`}
       >
         <form
           role="search"
-          className="flex h-10 w-[21rem] items-center"
+          className="flex h-10 w-[min(25.2rem,calc(100vw-11rem))] items-center"
           onSubmit={(event) => {
             event.preventDefault();
             const next = q.trim();

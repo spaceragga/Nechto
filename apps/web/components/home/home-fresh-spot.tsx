@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation';
 export type HomeFreshItem = {
   title: string;
   author: string;
+  authorHref?: string | null;
   time: string;
   href: string;
   src?: string | null;
@@ -28,7 +29,7 @@ export function HomeFreshSpot({
         <h2 className="font-sans text-sm tracking-[0.16em] uppercase opacity-80">
           {kicker}
         </h2>
-        <Link href="/new" className="font-sans text-base text-[var(--accent)]">
+        <Link href="/new" className="accent-mark font-sans text-base">
           {seeAll}
         </Link>
       </div>
@@ -37,28 +38,36 @@ export function HomeFreshSpot({
           {items.map((item, index) => (
             <li
               key={`${item.href}-${item.title}`}
-              className={index === 0 ? '' : 'border-t border-white/15'}
+              className={`flex items-center gap-3 py-3 ${
+                index === 0 ? '' : 'border-t border-white/15'
+              }`}
             >
-              <Link
-                href={item.href}
-                className="group flex items-center gap-3 py-3"
-              >
+              <Link href={item.href} className="shrink-0">
                 <WorkFrame
                   src={item.src}
                   alt={item.title}
                   fit="cover"
-                  className="h-30 w-[10.5rem] shrink-0"
+                  className="h-30 w-[10.5rem]"
                 />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-serif text-base">{item.title}</p>
-                  <p className="mt-0.5 font-serif text-sm opacity-70">
+              </Link>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-serif text-base">{item.title}</p>
+                {item.authorHref ? (
+                  <Link
+                    href={item.authorHref}
+                    className="home-credit mt-0.5 inline-block max-w-full truncate font-serif text-sm"
+                  >
+                    {item.author}
+                  </Link>
+                ) : (
+                  <p className="mt-0.5 truncate font-serif text-sm opacity-70">
                     {item.author}
                   </p>
-                </div>
-                <span className="shrink-0 font-sans text-sm opacity-50">
-                  {item.time}
-                </span>
-              </Link>
+                )}
+              </div>
+              <span className="shrink-0 font-sans text-sm opacity-50">
+                {item.time}
+              </span>
             </li>
           ))}
         </ul>

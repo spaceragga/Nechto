@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { WorkFrame } from '@/components/ui/work-frame';
 import type { WorkWithAuthor } from '@nechto/api-contract';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { workPath } from '@/lib/work-path';
+import { profilePath, workPath } from '@/lib/work-path';
 import { Link } from '@/i18n/navigation';
 
 type HomeHangingSpotProps = {
@@ -19,24 +19,28 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
         <div className="grid grid-cols-5 items-stretch gap-2">
           {live.length > 0
             ? live.map((work) => (
-                <Link
-                  key={work.id}
-                  href={workPath(work.author.slug, work.id)}
-                  className="group flex min-w-0 flex-col"
-                >
-                  <WorkFrame
-                    src={toUploadSrc(work.imageUrl)}
-                    alt={work.title}
-                    fit="cover"
-                    className="aspect-[3/4] w-full shrink-0"
-                  />
+                <div key={work.id} className="flex min-w-0 flex-col">
+                  <Link
+                    href={workPath(work.author.slug, work.id)}
+                    className="block"
+                  >
+                    <WorkFrame
+                      src={toUploadSrc(work.imageUrl)}
+                      alt={work.title}
+                      fit="cover"
+                      className="aspect-[3/4] w-full shrink-0"
+                    />
+                  </Link>
                   <p className="mt-1.5 truncate text-center font-serif text-sm leading-tight">
                     {work.title}
                   </p>
-                  <p className="mt-0.5 truncate text-center font-serif text-sm opacity-70">
+                  <Link
+                    href={profilePath(work.author.slug)}
+                    className="home-credit mt-0.5 max-w-full self-center truncate text-center font-serif text-sm"
+                  >
                     {work.author.displayName}
-                  </p>
-                </Link>
+                  </Link>
+                </div>
               ))
             : Array.from({ length: 5 }, (_, index) => (
                 <div key={index} className="flex min-w-0 flex-col">
@@ -50,7 +54,7 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
                 </div>
               ))}
         </div>
-        <Link href="/hanging" className="mt-3 flex flex-col text-center">
+        <div className="mt-3 flex flex-col text-center">
           <p className="font-sans text-sm tracking-[0.16em] uppercase opacity-80">
             {t('hangingSpot.kicker')}
           </p>
@@ -60,10 +64,13 @@ export async function HomeHangingSpot({ works = [] }: HomeHangingSpotProps) {
           <p className="mt-1 font-sans text-base leading-relaxed opacity-70">
             {t('hangingSpot.lede')}
           </p>
-          <span className="mt-2 font-sans text-base text-[var(--accent)]">
+          <Link
+            href="/hanging"
+            className="accent-mark mt-2 self-center font-sans text-base"
+          >
             {t('hangingSpot.cta')}
-          </span>
-        </Link>
+          </Link>
+        </div>
       </div>
     </section>
   );

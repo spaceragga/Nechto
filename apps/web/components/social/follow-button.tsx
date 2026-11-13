@@ -121,10 +121,7 @@ export function FollowButton({
         )
       ) : (
         <p className={compact ? 'font-sans text-xs' : 'mt-3 font-sans text-sm'}>
-          <Link
-            href="/login"
-            className="cursor-pointer text-[var(--accent)] no-underline"
-          >
+          <Link href="/login" className="accent-quiet">
             {compact ? t('follow') : t('signInToFollow')}
           </Link>
         </p>

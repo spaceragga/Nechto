@@ -93,7 +93,7 @@ export async function DialogueView({
         />
       ) : null}
       <p>
-        <Link href="/dialogue" className="text-sm text-[var(--accent)]">
+        <Link href="/dialogue" className="accent-mark text-sm">
           {t('back')}
         </Link>
       </p>

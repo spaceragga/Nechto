@@ -29,10 +29,10 @@ function collectionSpot(page: Page) {
   return page.locator('[data-home-spot="collection"]');
 }
 
-async function countUnclippedLinks(rail: Locator) {
+async function countUnclippedFrames(rail: Locator) {
   return rail.evaluate((root) => {
     const clip = root.getBoundingClientRect();
-    return [...root.querySelectorAll('a')].filter((el) => {
+    return [...root.querySelectorAll('[data-work-frame]')].filter((el) => {
       const box = el.getBoundingClientRect();
       const overlap =
         Math.min(box.right, clip.right) - Math.max(box.left, clip.left);
@@ -302,6 +302,35 @@ test.describe('home page locales', () => {
     expect(kickerBox!.y).toBeGreaterThanOrEqual(
       frameBox!.y + frameBox!.height - 1,
     );
+  });
+
+  test('billboard picture, author, direction, and button go to different places', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const spot = billboard(page);
+    const frame = spot.locator('[data-work-frame]');
+    const picture = frame.locator('xpath=ancestor::a[1]');
+    const pictureHref = await picture.getAttribute('href');
+    const slug = pictureHref?.split('/').filter(Boolean)[0] ?? '';
+    await expect(
+      spot.getByRole('link', { name: 'Открыть работу' }),
+    ).toHaveAttribute('href', pictureHref ?? '');
+    await expect(spot.locator('a[href*="direction="]')).toHaveAttribute(
+      'href',
+      /^\/works\?direction=/,
+    );
+    await expect(spot.locator(`a[href="/${slug}"]`)).toBeVisible();
+    await expect(
+      spot.getByText('Свежая работа', { exact: true }),
+    ).not.toHaveAttribute('href');
+    const series = collectionSpot(page).locator('a.accent-mark');
+    await expect(series).toBeVisible();
+    expect(await series.getAttribute('href')).toMatch(/\/p\/|\/collections$/);
+    await expect(
+      journalSpot(page).getByRole('link', { name: 'Журнал', exact: true }),
+    ).toHaveAttribute('href', '/journal');
   });
 
   test('shows a work feature and a creator feature in Russian', async ({
@@ -825,10 +854,10 @@ test.describe('home page locales', () => {
 
     await page.setViewportSize({ width: 420, height: 900 });
     await page.goto('/');
-    const narrowVisible = await countUnclippedLinks(worksRail);
+    const narrowVisible = await countUnclippedFrames(worksRail);
 
     await page.setViewportSize({ width: 1400, height: 900 });
-    const wideVisible = await countUnclippedLinks(worksRail);
+    const wideVisible = await countUnclippedFrames(worksRail);
 
     expect(narrowVisible).toBeGreaterThan(0);
     expect(wideVisible).toBeGreaterThan(narrowVisible);
