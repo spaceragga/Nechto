@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import type { NotificationList } from '@nechto/api-contract';
-import { Button } from '@/components/ui/button';
 import {
   markAllNotificationsReadRequest,
   markNotificationReadRequest,
@@ -64,9 +63,14 @@ export function NotificationsPageClient({
 
   return (
     <div className="flex flex-col gap-4">
-      <Button type="button" disabled={pending} onClick={() => void markAll()}>
+      <button
+        type="button"
+        className="accent-quiet self-start disabled:opacity-50"
+        disabled={pending}
+        onClick={() => void markAll()}
+      >
         {labels.markAll}
-      </Button>
+      </button>
       <ul className="flex flex-col gap-3">
         {items.map((item) => {
           const kindLabel = labels.kinds[item.kind] ?? item.kind;
@@ -119,7 +123,7 @@ export function NotificationsPageClient({
                 {!item.readAt ? (
                   <button
                     type="button"
-                    className="underline opacity-70"
+                    className="underline"
                     onClick={() => void markOne(item.id)}
                   >
                     ✓

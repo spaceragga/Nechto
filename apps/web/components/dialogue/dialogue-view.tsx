@@ -27,7 +27,7 @@ function DialogueSide({ work }: { work: WorkWithAuthor }) {
         />
         <h2 className="mt-4 font-serif text-2xl tracking-wide">{work.title}</h2>
       </Link>
-      <p className="mt-2 font-serif text-sm opacity-70">
+      <p className="mt-2 font-serif text-sm">
         <Link
           href={profilePath(work.author.slug)}
           className="text-[var(--accent)] no-underline"
@@ -93,7 +93,7 @@ export async function DialogueView({
         />
       ) : null}
       <p>
-        <Link href="/dialogue" className="text-sm text-[var(--accent)]">
+        <Link href="/dialogue" className="accent-mark">
           {t('back')}
         </Link>
       </p>

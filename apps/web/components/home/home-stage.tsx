@@ -8,6 +8,8 @@ import { HomeLookingSpot } from '@/components/home/home-looking-spot';
 import { HomeNow } from '@/components/home/home-now';
 import { HomeOpenCallSpot } from '@/components/home/home-open-call-spot';
 import { HomeStudioSpot } from '@/components/home/home-studio-spot';
+import type { HomeCredit } from '@/components/home/home-credits';
+import { catalogHref } from '@/lib/catalog-query';
 import { excerpt } from '@/lib/excerpt';
 import { getCurrentUser } from '@/lib/session';
 import { type HomeFeedSlices } from '@/lib/pick-home-feed';
@@ -24,6 +26,37 @@ type HomeStageProps = {
   locale: string;
   feed: HomeFeedSlices;
 };
+
+function directionCredit(
+  direction: string | undefined,
+  label: (id: string) => string,
+): HomeCredit | null {
+  if (!direction) {
+    return null;
+  }
+  return {
+    label: label(direction),
+    href: catalogHref('/works', { direction }),
+  };
+}
+
+function credits(...items: Array<HomeCredit | null>): HomeCredit[] {
+  return items.filter((item): item is HomeCredit => item !== null);
+}
+
+function authorCredits(
+  author: {
+    slug: string;
+    displayName: string;
+    directions: readonly string[];
+  },
+  label: (id: string) => string,
+): HomeCredit[] {
+  return credits(
+    { label: author.displayName, href: profilePath(author.slug) },
+    directionCredit(author.directions[0], label),
+  );
+}
 
 function formatFreshTime(iso: string, locale: string): string {
   return new Date(iso).toLocaleDateString(locale === 'en' ? 'en-GB' : 'ru-RU', {
@@ -47,6 +80,30 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
     ? profilePath(feed.creatorOfWeek.slug)
     : null;
   const journalHref = feed.journal ? articlePath(feed.journal.id) : '/journal';
+  const directionLabel = (id: string) => tCreators(`directions.${id}`);
+  const billboardCredits = feed.billboard
+    ? authorCredits(feed.billboard.author, directionLabel)
+    : [];
+  const creatorCredits = credits(
+    directionCredit(feed.creatorOfWeek?.directions[0], directionLabel),
+  );
+  const journalCredits = feed.journal
+    ? authorCredits(feed.journal.author, directionLabel)
+    : [];
+  const seriesCredits = feed.series
+    ? authorCredits(feed.series.author, directionLabel)
+    : [];
+  const studioCredits = feed.studio
+    ? credits(
+        feed.studio.studioTitle && feed.studio.displayName
+          ? {
+              label: feed.studio.displayName,
+              href: profilePath(feed.studio.slug),
+            }
+          : null,
+        directionCredit(feed.studio.directions[0], directionLabel),
+      )
+    : [];
 
   return (
     <section aria-label={t('growthSpotsLabel')} className="flex flex-col gap-4">
@@ -62,15 +119,8 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
               }
               kicker={t('billboardKicker')}
               title={feed.billboard?.title ?? t('pendingTitle')}
-              meta={
-                feed.billboard
-                  ? `${feed.billboard.author.displayName}${
-                      feed.billboard.author.directions[0]
-                        ? ` · ${tCreators(`directions.${feed.billboard.author.directions[0]}`)}`
-                        : ''
-                    }`
-                  : pending
-              }
+              credits={billboardCredits}
+              meta={feed.billboard ? undefined : pending}
               cta={t('billboardCta')}
               fit="cover"
               frameClassName="h-[26rem] w-full md:h-[32rem]"
@@ -89,11 +139,9 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
                 feed.creatorOfWeek?.slug ??
                 t('pendingTitle')
               }
-              meta={
-                feed.creatorOfWeek?.directions[0]
-                  ? tCreators(`directions.${feed.creatorOfWeek.directions[0]}`)
-                  : pending
-              }
+              titleHref={creatorHref}
+              credits={creatorCredits}
+              meta={feed.creatorOfWeek ? undefined : pending}
               cta={t('creatorCta')}
               align="center"
               spot="creator-week"
@@ -112,28 +160,38 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
                     })
                   : t('dialogueSpot.lede')
             }
-            leftTitle={feed.dialogue?.left.title ?? t('dialogueSpot.leftTitle')}
-            leftMeta={
-              feed.dialogue?.left.author.displayName ??
-              t('dialogueSpot.leftMeta')
-            }
-            rightTitle={
-              feed.dialogue?.right.title ?? t('dialogueSpot.rightTitle')
-            }
-            rightMeta={
-              feed.dialogue?.right.author.displayName ??
-              t('dialogueSpot.rightMeta')
-            }
-            leftSrc={
-              feed.dialogue
+            left={{
+              title: feed.dialogue?.left.title ?? t('dialogueSpot.leftTitle'),
+              meta: feed.dialogue ? undefined : t('dialogueSpot.leftMeta'),
+              src: feed.dialogue
                 ? toUploadSrc(feed.dialogue.left.imageUrl)
-                : undefined
-            }
-            rightSrc={
-              feed.dialogue
+                : undefined,
+              workHref: feed.dialogue
+                ? workPath(
+                    feed.dialogue.left.author.slug,
+                    feed.dialogue.left.id,
+                  )
+                : null,
+              credits: feed.dialogue
+                ? authorCredits(feed.dialogue.left.author, directionLabel)
+                : [],
+            }}
+            right={{
+              title: feed.dialogue?.right.title ?? t('dialogueSpot.rightTitle'),
+              meta: feed.dialogue ? undefined : t('dialogueSpot.rightMeta'),
+              src: feed.dialogue
                 ? toUploadSrc(feed.dialogue.right.imageUrl)
-                : undefined
-            }
+                : undefined,
+              workHref: feed.dialogue
+                ? workPath(
+                    feed.dialogue.right.author.slug,
+                    feed.dialogue.right.id,
+                  )
+                : null,
+              credits: feed.dialogue
+                ? authorCredits(feed.dialogue.right.author, directionLabel)
+                : [],
+            }}
             href={
               feed.dialogue?.id
                 ? dialoguePath(feed.dialogue.id)
@@ -153,8 +211,12 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
               excerpt(feed.journal?.author.displayName) ||
               t('journalSpot.lede')
             }
-            cta={t('journalSpot.cta')}
-            href={journalHref}
+            cta={
+              feed.journal ? t('journalSpot.cta') : t('journalSpot.emptyCta')
+            }
+            imageHref={feed.journal ? journalHref : null}
+            ctaHref={journalHref}
+            credits={journalCredits}
             src={
               feed.journal ? toUploadSrc(feed.journal.coverImageUrl) : undefined
             }
@@ -167,13 +229,19 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
             }
             kicker={t('collectionSpot.kicker')}
             title={feed.series?.title ?? t('collectionSpot.title')}
-            meta={
+            meta={feed.series ? undefined : t('collectionSpot.meta')}
+            countLabel={
               feed.series
                 ? t('collectionSpot.countMeta', {
-                    author: feed.series.author.displayName,
                     count: feed.series.blockCount,
                   })
-                : t('collectionSpot.meta')
+                : undefined
+            }
+            credits={seriesCredits}
+            cta={
+              feed.series
+                ? t('collectionSpot.cta')
+                : t('collectionSpot.emptyCta')
             }
             srcs={
               feed.series
@@ -197,6 +265,7 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
             items={feed.fresh.map((work) => ({
               title: work.title,
               author: work.author.displayName,
+              authorHref: profilePath(work.author.slug),
               time: formatFreshTime(work.createdAt, locale),
               href: workPath(work.author.slug, work.id),
               src: toUploadSrc(work.imageUrl),
@@ -215,8 +284,9 @@ export async function HomeStage({ locale, feed }: HomeStageProps) {
                 140,
               ) || t('studioSpot.lede')
             }
-            cta={t('studioSpot.cta')}
-            href={feed.studio?.slug ? `/studio/${feed.studio.slug}` : '/studio'}
+            cta={feed.studio ? t('studioSpot.cta') : t('studioSpot.emptyCta')}
+            href={feed.studio?.slug ? `/studio/${feed.studio.slug}` : null}
+            credits={studioCredits}
             src={toUploadSrc(
               feed.studio?.studioCoverUrl ??
                 feed.studio?.latestWorks[0]?.imageUrl,

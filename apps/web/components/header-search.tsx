@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { ChromeIconButton } from '@/components/chrome-icon';
@@ -29,14 +29,14 @@ export function HeaderSearch() {
     }
   }
 
-  function clearIdleTimer() {
+  const clearIdleTimer = useCallback(() => {
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
       idleTimerRef.current = null;
     }
-  }
+  }, []);
 
-  function bumpIdle() {
+  const bumpIdle = useCallback(() => {
     clearIdleTimer();
     if (!open) {
       return;
@@ -44,7 +44,7 @@ export function HeaderSearch() {
     idleTimerRef.current = setTimeout(() => {
       setOpen(false);
     }, IDLE_CLOSE_MS);
-  }
+  }, [clearIdleTimer, open]);
 
   useEffect(() => {
     if (!open) {
@@ -54,7 +54,7 @@ export function HeaderSearch() {
     inputRef.current?.focus();
     bumpIdle();
     return clearIdleTimer;
-  }, [open]);
+  }, [open, bumpIdle, clearIdleTimer]);
 
   useEffect(() => {
     if (!open) {
@@ -74,13 +74,13 @@ export function HeaderSearch() {
       <div
         className={`overflow-hidden transition-[max-width,opacity,margin] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           open
-            ? 'mr-1 max-w-[21rem] opacity-100'
+            ? 'mr-1 max-w-[min(25.2rem,calc(100vw-11rem))] opacity-100'
             : 'pointer-events-none mr-0 max-w-0 opacity-0'
         }`}
       >
         <form
           role="search"
-          className="flex h-10 w-[21rem] items-center"
+          className="flex h-10 w-[min(25.2rem,calc(100vw-11rem))] items-center"
           onSubmit={(event) => {
             event.preventDefault();
             const next = q.trim();

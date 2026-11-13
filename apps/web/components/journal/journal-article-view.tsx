@@ -69,10 +69,7 @@ export async function JournalArticleView({
         ))}
       </div>
       <p className="mt-12 font-sans text-base">
-        <Link
-          href={profilePath(article.author.slug)}
-          className="text-[var(--accent)]"
-        >
+        <Link href={profilePath(article.author.slug)} className="accent-mark">
           {t('toAuthor', { name: article.author.displayName })}
         </Link>
       </p>

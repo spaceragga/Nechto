@@ -1,7 +1,10 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import type { SearchResults } from '@nechto/api-contract';
-import { MediaTile } from '@/components/ui/media-tile';
+import { useTranslations } from 'next-intl';
+import { WorkFrame } from '@/components/ui/work-frame';
+import { excerpt } from '@/lib/excerpt';
 import { toUploadSrc } from '@/lib/to-upload-src';
 import {
   articlePath,
@@ -26,132 +29,244 @@ type SearchPageClientProps = {
   };
 };
 
+function Section({
+  label,
+  count,
+  children,
+}: {
+  label: string;
+  count: number;
+  children: ReactNode;
+}) {
+  return (
+    <section>
+      <h2 className="flex items-baseline gap-3 font-sans text-sm tracking-[0.16em] text-[var(--accent)] uppercase">
+        {label}
+        <span className="font-sans text-xs tracking-normal text-[var(--fg)] opacity-45">
+          {count}
+        </span>
+      </h2>
+      <ul className="mt-4 flex flex-col gap-5">{children}</ul>
+    </section>
+  );
+}
+
+function Hit({
+  href,
+  src,
+  alt,
+  title,
+  meta,
+  snippet,
+  thumb,
+}: {
+  href: string;
+  src?: string | null;
+  alt: string;
+  title: string;
+  meta?: string;
+  snippet?: string;
+  thumb?: ReactNode;
+}) {
+  const note = snippet && snippet !== title ? excerpt(snippet, 160) : '';
+
+  return (
+    <li>
+      <Link
+        href={href}
+        className="group grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-4 no-underline sm:grid-cols-[5.5rem_minmax(0,1fr)]"
+      >
+        {thumb ?? (
+          <WorkFrame
+            src={src}
+            alt={alt}
+            fit="cover"
+            staticFrame
+            className="aspect-square w-full"
+          />
+        )}
+        <div className="min-w-0 pt-0.5">
+          <p className="truncate font-serif text-xl tracking-wide group-hover:text-[var(--accent)]">
+            {title}
+          </p>
+          {meta ? (
+            <p className="mt-1 truncate font-sans text-sm opacity-60">{meta}</p>
+          ) : null}
+          {note ? (
+            <p className="mt-2 line-clamp-2 font-sans text-sm leading-relaxed opacity-80">
+              {note}
+            </p>
+          ) : null}
+        </div>
+      </Link>
+    </li>
+  );
+}
+
 export function SearchPageClient({ results, labels }: SearchPageClientProps) {
+  const tCreators = useTranslations('Creators');
+  const creators = results.creators.filter(
+    (creator): creator is typeof creator & { slug: string } =>
+      Boolean(creator.slug),
+  );
   const empty =
     results.works.length === 0 &&
-    results.creators.length === 0 &&
+    creators.length === 0 &&
     results.projects.length === 0 &&
     results.articles.length === 0 &&
     results.dialogues.length === 0 &&
     results.studios.length === 0;
 
   if (empty) {
-    return <p className="text-sm opacity-70">{labels.empty}</p>;
+    return <p className="font-sans text-base opacity-70">{labels.empty}</p>;
   }
 
   return (
-    <div className="flex flex-col gap-10">
-      {results.works.length > 0 ? (
-        <section>
-          <h2 className="font-serif text-2xl tracking-wide">{labels.works}</h2>
-          <div className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {results.works.map((work) => (
-              <MediaTile
-                key={work.id}
-                href={workPath(work.author.slug, work.id)}
-                title={work.title}
-                subtitle={work.author.displayName}
-                src={toUploadSrc(work.imageUrl)}
-              />
-            ))}
-          </div>
-        </section>
+    <div className="flex max-w-3xl flex-col gap-12">
+      {creators.length > 0 ? (
+        <Section label={labels.creators} count={creators.length}>
+          {creators.map((creator) => (
+            <Hit
+              key={creator.slug}
+              href={profilePath(creator.slug)}
+              src={toUploadSrc(creator.avatarUrl)}
+              alt={creator.displayName ?? creator.slug}
+              title={creator.displayName ?? creator.slug}
+              meta={creator.directions
+                .map((direction) => tCreators(`directions.${direction}`))
+                .join(' · ')}
+              snippet={creator.bio ?? ''}
+            />
+          ))}
+        </Section>
       ) : null}
-      {results.creators.length > 0 ? (
-        <section>
-          <h2 className="font-serif text-2xl tracking-wide">
-            {labels.creators}
-          </h2>
-          <ul className="mt-4 flex flex-col gap-3">
-            {results.creators.map((creator) => (
-              <li key={creator.slug ?? creator.displayName}>
-                <Link
-                  href={profilePath(creator.slug ?? '')}
-                  className="font-serif text-lg tracking-wide"
-                >
-                  {creator.displayName ?? creator.slug}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+      {results.works.length > 0 ? (
+        <Section label={labels.works} count={results.works.length}>
+          {results.works.map((work) => (
+            <Hit
+              key={work.id}
+              href={workPath(work.author.slug, work.id)}
+              src={toUploadSrc(work.imageUrl)}
+              alt={work.title}
+              title={work.title}
+              meta={work.author.displayName}
+              snippet={work.description}
+              thumb={
+                <WorkFrame
+                  src={toUploadSrc(work.imageUrl)}
+                  alt={work.title}
+                  fit="cover"
+                  staticFrame
+                  className="aspect-3/4 w-full"
+                />
+              }
+            />
+          ))}
+        </Section>
       ) : null}
       {results.projects.length > 0 ? (
-        <section>
-          <h2 className="font-serif text-2xl tracking-wide">
-            {labels.projects}
-          </h2>
-          <div className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {results.projects.map((project) => (
-              <MediaTile
-                key={project.id}
-                href={projectPath(project.author.slug, project.id)}
-                title={project.title}
-                subtitle={project.author.displayName}
-                src={toUploadSrc(project.coverImageUrl)}
-              />
-            ))}
-          </div>
-        </section>
+        <Section label={labels.projects} count={results.projects.length}>
+          {results.projects.map((project) => (
+            <Hit
+              key={project.id}
+              href={projectPath(project.author.slug, project.id)}
+              src={toUploadSrc(project.coverImageUrl)}
+              alt={project.title}
+              title={project.title}
+              meta={project.author.displayName}
+              snippet={project.description}
+              thumb={
+                <WorkFrame
+                  src={toUploadSrc(project.coverImageUrl)}
+                  alt={project.title}
+                  fit="cover"
+                  staticFrame
+                  className="aspect-3/2 w-full"
+                />
+              }
+            />
+          ))}
+        </Section>
       ) : null}
       {results.articles.length > 0 ? (
-        <section>
-          <h2 className="font-serif text-2xl tracking-wide">
-            {labels.articles}
-          </h2>
-          <div className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {results.articles.map((article) => (
-              <MediaTile
-                key={article.id}
-                href={articlePath(article.id)}
-                title={article.title}
-                subtitle={article.author.displayName}
-                src={toUploadSrc(article.coverImageUrl)}
-              />
-            ))}
-          </div>
-        </section>
+        <Section label={labels.articles} count={results.articles.length}>
+          {results.articles.map((article) => (
+            <Hit
+              key={article.id}
+              href={articlePath(article.id)}
+              src={toUploadSrc(article.coverImageUrl)}
+              alt={article.title}
+              title={article.title}
+              meta={article.author.displayName}
+              snippet={article.lede}
+              thumb={
+                <WorkFrame
+                  src={toUploadSrc(article.coverImageUrl)}
+                  alt={article.title}
+                  fit="cover"
+                  staticFrame
+                  className="aspect-3/2 w-full"
+                />
+              }
+            />
+          ))}
+        </Section>
       ) : null}
       {results.dialogues.length > 0 ? (
-        <section>
-          <h2 className="font-serif text-2xl tracking-wide">
-            {labels.dialogues}
-          </h2>
-          <ul className="mt-4 flex flex-col gap-3">
-            {results.dialogues.map((dialogue) => (
-              <li key={dialogue.id}>
-                <Link
-                  href={dialoguePath(dialogue.id)}
-                  className="font-serif text-lg tracking-wide"
-                >
-                  {dialogue.title}
-                </Link>
-                <p className="text-sm opacity-70">
-                  {dialogue.left.author.displayName} ·{' '}
-                  {dialogue.right.author.displayName}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Section label={labels.dialogues} count={results.dialogues.length}>
+          {results.dialogues.map((dialogue) => (
+            <Hit
+              key={dialogue.id}
+              href={dialoguePath(dialogue.id)}
+              alt={dialogue.title}
+              title={dialogue.title}
+              meta={`${dialogue.left.author.displayName} · ${dialogue.right.author.displayName}`}
+              snippet={dialogue.note}
+              thumb={
+                <div className="grid grid-cols-2 gap-0.5">
+                  <WorkFrame
+                    src={dialogue.left.imageUrl}
+                    alt={dialogue.left.title}
+                    fit="cover"
+                    staticFrame
+                    className="aspect-3/4 w-full"
+                  />
+                  <WorkFrame
+                    src={dialogue.right.imageUrl}
+                    alt={dialogue.right.title}
+                    fit="cover"
+                    staticFrame
+                    className="aspect-3/4 w-full"
+                  />
+                </div>
+              }
+            />
+          ))}
+        </Section>
       ) : null}
       {results.studios.length > 0 ? (
-        <section>
-          <h2 className="font-serif text-2xl tracking-wide">
-            {labels.studios}
-          </h2>
-          <div className="mt-4 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {results.studios.map((studio) => (
-              <MediaTile
-                key={studio.slug}
-                href={studioPath(studio.slug)}
-                title={studio.title}
-                subtitle={studio.displayName}
-                src={toUploadSrc(studio.coverUrl)}
-              />
-            ))}
-          </div>
-        </section>
+        <Section label={labels.studios} count={results.studios.length}>
+          {results.studios.map((studio) => (
+            <Hit
+              key={studio.slug}
+              href={studioPath(studio.slug)}
+              src={toUploadSrc(studio.coverUrl ?? studio.avatarUrl)}
+              alt={studio.title}
+              title={studio.title}
+              meta={studio.displayName}
+              snippet={studio.description || studio.bio}
+              thumb={
+                <WorkFrame
+                  src={toUploadSrc(studio.coverUrl ?? studio.avatarUrl)}
+                  alt={studio.title}
+                  fit="cover"
+                  staticFrame
+                  className="aspect-3/2 w-full"
+                />
+              }
+            />
+          ))}
+        </Section>
       ) : null}
     </div>
   );

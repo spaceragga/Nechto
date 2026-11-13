@@ -29,10 +29,10 @@ function collectionSpot(page: Page) {
   return page.locator('[data-home-spot="collection"]');
 }
 
-async function countUnclippedLinks(rail: Locator) {
+async function countUnclippedFrames(rail: Locator) {
   return rail.evaluate((root) => {
     const clip = root.getBoundingClientRect();
-    return [...root.querySelectorAll('a')].filter((el) => {
+    return [...root.querySelectorAll('[data-work-frame]')].filter((el) => {
       const box = el.getBoundingClientRect();
       const overlap =
         Math.min(box.right, clip.right) - Math.max(box.left, clip.left);
@@ -251,8 +251,8 @@ test.describe('home page locales', () => {
     await page.goto('/');
 
     const now = page.getByRole('complementary', { name: 'Подборка авторов' });
-    const author = now.locator('a').first();
-    const outline = author.locator('..').locator('[data-now-row-outline]');
+    const outline = now.locator('[data-now-row-outline]').first();
+    const author = outline.locator('..').getByRole('link').first();
 
     await expect(outline).toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
     await author.hover();
@@ -302,6 +302,35 @@ test.describe('home page locales', () => {
     expect(kickerBox!.y).toBeGreaterThanOrEqual(
       frameBox!.y + frameBox!.height - 1,
     );
+  });
+
+  test('billboard picture, author, direction, and button go to different places', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const spot = billboard(page);
+    const frame = spot.locator('[data-work-frame]');
+    const picture = frame.locator('xpath=ancestor::a[1]');
+    const pictureHref = await picture.getAttribute('href');
+    const slug = pictureHref?.split('/').filter(Boolean)[0] ?? '';
+    await expect(
+      spot.getByRole('link', { name: 'Открыть работу' }),
+    ).toHaveAttribute('href', pictureHref ?? '');
+    await expect(spot.locator('a[href*="direction="]')).toHaveAttribute(
+      'href',
+      /^\/works\?direction=/,
+    );
+    await expect(spot.locator(`a[href="/${slug}"]`)).toBeVisible();
+    await expect(
+      spot.getByText('Свежая работа', { exact: true }),
+    ).not.toHaveAttribute('href');
+    const series = collectionSpot(page).locator('a.accent-mark');
+    await expect(series).toBeVisible();
+    expect(await series.getAttribute('href')).toMatch(/\/p\/|\/collections$/);
+    await expect(
+      journalSpot(page).getByRole('link', { name: 'Журнал', exact: true }),
+    ).toHaveAttribute('href', '/journal');
   });
 
   test('shows a work feature and a creator feature in Russian', async ({
@@ -395,14 +424,14 @@ test.describe('home page locales', () => {
     await expect(collectionSpot(page)).toBeVisible();
     await expect(spots.getByRole('link', { name: 'Все новые' })).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /Как смотреть/ }),
+      spots.getByRole('link', { name: 'Читать как смотреть' }),
     ).toBeVisible();
     await expect(spots.locator('[data-home-spot="dialogue"]')).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Войти в студию/ }),
     ).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /Как смотреть/ }),
+      spots.getByRole('link', { name: 'Читать как смотреть' }),
     ).toHaveAttribute('href', '/looking');
     await expect(
       spots.getByRole('link', { name: /Войти в студию/ }),
@@ -502,14 +531,14 @@ test.describe('home page locales', () => {
     await expect(collectionSpot(page)).toBeVisible();
     await expect(spots.getByRole('link', { name: 'All new' })).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /How to look/ }),
+      spots.getByRole('link', { name: 'Read how to look' }),
     ).toBeVisible();
     await expect(spots.locator('[data-home-spot="dialogue"]')).toBeVisible();
     await expect(
       spots.getByRole('link', { name: /Enter the studio/ }),
     ).toBeVisible();
     await expect(
-      spots.getByRole('link', { name: /How to look/ }),
+      spots.getByRole('link', { name: 'Read how to look' }),
     ).toHaveAttribute('href', '/en/looking');
     await expect(journalSpot(page)).toBeVisible();
     await expect(
@@ -523,9 +552,10 @@ test.describe('home page locales', () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
 
-    const openCall = page.getByRole('link', { name: /Публикация профиля/ });
-    const title = openCall.getByRole('heading', { name: 'Публикация профиля' });
+    const title = page.getByRole('heading', { name: 'Публикация профиля' });
+    const openCall = title.locator('xpath=ancestor::article[1]');
     const frame = openCall.locator('[data-work-frame]');
+    const picture = openCall.getByRole('link', { name: 'Публикация профиля' });
 
     const openCallBox = await openCall.boundingBox();
     const titleBox = await title.boundingBox();
@@ -545,7 +575,10 @@ test.describe('home page locales', () => {
           (openCallBox!.x + openCallBox!.width / 2),
       ),
     ).toBeLessThan(24);
-    await expect(openCall).toHaveAttribute('href', '/register');
+    await expect(picture).toHaveAttribute('href', '/register');
+    await expect(
+      openCall.getByRole('link', { name: 'Опубликовать профиль' }),
+    ).toHaveAttribute('href', '/register');
   });
 
   test('shows the hanging spot in Russian', async ({ page }) => {
@@ -554,20 +587,17 @@ test.describe('home page locales', () => {
     const spots = page.getByRole('region', {
       name: 'Развес',
     });
+    const title = spots.getByRole('heading', { name: 'Сегодня на стене' });
+    await expect(title).toBeVisible();
+    await expect(title).toHaveCSS('text-align', 'center');
     await expect(
-      spots.getByRole('link', { name: /Сегодня на стене/ }),
-    ).toBeVisible();
-    await expect(
-      spots.getByRole('link', { name: /Сегодня на стене/ }),
+      spots.getByRole('link', { name: 'Весь развес' }),
     ).toHaveAttribute('href', '/hanging');
     await expect(spots.locator('[data-work-frame]').first()).toBeVisible();
     expect(await spots.locator('[data-work-frame]').count()).toBeGreaterThan(0);
     expect(
       await spots.locator('[data-work-frame]').count(),
     ).toBeLessThanOrEqual(5);
-    await expect(
-      spots.getByRole('link', { name: /Сегодня на стене/ }),
-    ).toHaveCSS('text-align', 'center');
     await expect(spots).toHaveCSS('padding-top', '16px');
     await expect(spots).toHaveCSS('padding-bottom', '16px');
   });
@@ -578,20 +608,17 @@ test.describe('home page locales', () => {
     const spots = page.getByRole('region', {
       name: 'Hanging',
     });
+    const title = spots.getByRole('heading', { name: 'On the wall today' });
+    await expect(title).toBeVisible();
+    await expect(title).toHaveCSS('text-align', 'center');
     await expect(
-      spots.getByRole('link', { name: /On the wall today/ }),
-    ).toBeVisible();
-    await expect(
-      spots.getByRole('link', { name: /On the wall today/ }),
+      spots.getByRole('link', { name: 'The full hanging' }),
     ).toHaveAttribute('href', '/en/hanging');
     await expect(spots.locator('[data-work-frame]').first()).toBeVisible();
     expect(await spots.locator('[data-work-frame]').count()).toBeGreaterThan(0);
     expect(
       await spots.locator('[data-work-frame]').count(),
     ).toBeLessThanOrEqual(5);
-    await expect(
-      spots.getByRole('link', { name: /On the wall today/ }),
-    ).toHaveCSS('text-align', 'center');
   });
 
   test('work frames have no rounding', async ({ page }) => {
@@ -825,10 +852,10 @@ test.describe('home page locales', () => {
 
     await page.setViewportSize({ width: 420, height: 900 });
     await page.goto('/');
-    const narrowVisible = await countUnclippedLinks(worksRail);
+    const narrowVisible = await countUnclippedFrames(worksRail);
 
     await page.setViewportSize({ width: 1400, height: 900 });
-    const wideVisible = await countUnclippedLinks(worksRail);
+    const wideVisible = await countUnclippedFrames(worksRail);
 
     expect(narrowVisible).toBeGreaterThan(0);
     expect(wideVisible).toBeGreaterThan(narrowVisible);

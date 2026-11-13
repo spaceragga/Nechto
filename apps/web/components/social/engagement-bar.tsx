@@ -120,7 +120,7 @@ export function EngagementBar({
   const likeControl = signedIn ? (
     <button
       type="button"
-      className="inline-flex items-center gap-1.5 opacity-90 transition-opacity hover:opacity-100 disabled:opacity-40"
+      className="inline-flex items-center gap-1.5 disabled:opacity-40"
       disabled={!hydrated || pending}
       onClick={() => void toggleLike(signedIn)}
       aria-pressed={state.likedByMe}
@@ -133,7 +133,7 @@ export function EngagementBar({
   ) : (
     <Link
       href="/login"
-      className="inline-flex items-center gap-1.5 opacity-90 transition-opacity hover:opacity-100"
+      className="inline-flex items-center gap-1.5"
       aria-label={t('signInToLike')}
     >
       {heart}

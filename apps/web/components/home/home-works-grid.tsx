@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
+import { HomeSplitTile } from '@/components/home/home-split-tile';
 import { FluidRail } from '@/components/ui/fluid-rail';
-import { MediaTile } from '@/components/ui/media-tile';
 import type { WorkWithAuthor } from '@nechto/api-contract';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { workPath } from '@/lib/work-path';
+import { profilePath, workPath } from '@/lib/work-path';
 import { Link } from '@/i18n/navigation';
 
 type HomeWorksGridProps = {
@@ -23,20 +23,25 @@ export async function HomeWorksGrid({
     <section id="works" className="scroll-mt-20">
       <div className="mb-2 flex items-baseline justify-between gap-3">
         <h2 className="font-sans text-2xl tracking-wide">{t('works')}</h2>
-        <Link href={catalogHref} className="font-sans text-base opacity-80">
+        <Link href={catalogHref} className="accent-mark">
           {t('seeAll')}
         </Link>
       </div>
       {works.length > 0 ? (
         <FluidRail minItem="16rem" className="items-start">
           {works.map((work) => (
-            <MediaTile
+            <HomeSplitTile
               key={work.id}
-              href={workPath(work.author.slug, work.id)}
+              imageHref={workPath(work.author.slug, work.id)}
+              alt={work.title}
               title={work.title}
-              subtitle={work.author.displayName}
               src={toUploadSrc(work.imageUrl)}
-              captionSize="sm"
+              credits={[
+                {
+                  label: work.author.displayName,
+                  href: profilePath(work.author.slug),
+                },
+              ]}
             />
           ))}
         </FluidRail>

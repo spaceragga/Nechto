@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
+import { HomeSplitTile } from '@/components/home/home-split-tile';
 import { FluidRail } from '@/components/ui/fluid-rail';
-import { MediaTile } from '@/components/ui/media-tile';
 import type { ProjectSummary } from '@nechto/api-contract';
 import { toUploadSrc } from '@/lib/to-upload-src';
-import { projectPath } from '@/lib/work-path';
+import { profilePath, projectPath } from '@/lib/work-path';
 import { Link } from '@/i18n/navigation';
 
 type HomeProjectsRailProps = {
@@ -23,20 +23,25 @@ export async function HomeProjectsRail({
     <section id="projects" className="scroll-mt-20">
       <div className="mb-2 flex items-baseline justify-between gap-3">
         <h2 className="font-sans text-2xl tracking-wide">{t('projects')}</h2>
-        <Link href={catalogHref} className="font-sans text-base opacity-80">
+        <Link href={catalogHref} className="accent-mark">
           {t('seeAll')}
         </Link>
       </div>
       {projects.length > 0 ? (
         <FluidRail minItem="16rem" className="items-start">
           {projects.map((project) => (
-            <MediaTile
+            <HomeSplitTile
               key={project.id}
-              href={projectPath(project.author.slug, project.id)}
+              imageHref={projectPath(project.author.slug, project.id)}
+              alt={project.title}
               title={project.title}
-              subtitle={project.author.displayName}
               src={toUploadSrc(project.coverImageUrl)}
-              captionSize="sm"
+              credits={[
+                {
+                  label: project.author.displayName,
+                  href: profilePath(project.author.slug),
+                },
+              ]}
             />
           ))}
         </FluidRail>

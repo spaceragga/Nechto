@@ -77,7 +77,7 @@ export class SearchService {
       return emptyResults(q);
     }
 
-    const titleMatch = { contains: q, mode: 'insensitive' as const };
+    const text = { contains: q, mode: 'insensitive' as const };
 
     const [
       workRows,
@@ -91,7 +91,7 @@ export class SearchService {
         where: {
           hidden: false,
           profile: publishedProfileWhere,
-          title: titleMatch,
+          OR: [{ title: text }, { description: text }],
         },
         orderBy: { createdAt: 'desc' },
         take: query.limit,
@@ -102,7 +102,7 @@ export class SearchService {
           AND: [
             publishedProfileWhere,
             {
-              OR: [{ displayName: titleMatch }, { slug: titleMatch }],
+              OR: [{ displayName: text }, { slug: text }, { bio: text }],
             },
           ],
         },
@@ -122,7 +122,11 @@ export class SearchService {
           hidden: false,
           profile: publishedProfileWhere,
           blocks: { some: { kind: 'image' } },
-          title: titleMatch,
+          OR: [
+            { title: text },
+            { description: text },
+            { blocks: { some: { body: text } } },
+          ],
         },
         orderBy: { createdAt: 'desc' },
         take: query.limit,
@@ -136,7 +140,7 @@ export class SearchService {
           hidden: false,
           publishedAt: { not: null },
           profile: publishedProfileWhere,
-          title: titleMatch,
+          OR: [{ title: text }, { lede: text }, { body: text }],
         },
         orderBy: { publishedAt: 'desc' },
         take: query.limit,
@@ -149,7 +153,7 @@ export class SearchService {
         where: {
           hidden: false,
           publishedAt: { not: null },
-          title: titleMatch,
+          OR: [{ title: text }, { note: text }],
         },
         orderBy: { publishedAt: 'desc' },
         take: query.limit,
@@ -162,7 +166,11 @@ export class SearchService {
             {
               studioListedAt: { not: null },
               studioHidden: false,
-              studioTitle: titleMatch,
+              OR: [
+                { studioTitle: text },
+                { studioDescription: text },
+                { displayName: text },
+              ],
             },
           ],
         },

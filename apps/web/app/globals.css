@@ -34,11 +34,222 @@ a {
   text-decoration: none;
 }
 
+/* Orange action: a short coal, then a snug chip. Not a banner. */
+.accent-mark {
+  position: relative;
+  z-index: 0;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.15;
+  color: var(--accent);
+  transition: color 0.12s ease;
+}
+
+.text-center > .accent-mark,
+.items-center .accent-mark {
+  align-self: center;
+}
+
+.accent-mark::before,
+.accent-mark::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.accent-mark::before {
+  z-index: -1;
+  inset: -0.02em -0.12em;
+  background: var(--accent);
+  clip-path: polygon(
+    0% 90%,
+    18% 84%,
+    36% 96%,
+    54% 82%,
+    72% 95%,
+    88% 86%,
+    100% 92%,
+    100% 100%,
+    0% 100%
+  );
+  transition: clip-path 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.accent-mark::after {
+  z-index: -1;
+  bottom: -0.08em;
+  left: 0;
+  width: 28%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #f3c7a2 40%,
+    var(--accent) 72%,
+    transparent
+  );
+  animation: accent-ember 1.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.accent-mark:is(:hover, :focus-visible),
+.group:is(:hover, :focus-visible) .accent-mark {
+  color: var(--fg);
+  transition: color 0.1s ease 0.05s;
+}
+
+.accent-mark:is(:hover, :focus-visible)::before,
+.group:is(:hover, :focus-visible) .accent-mark::before {
+  clip-path: polygon(
+    0% 0%,
+    13% 0%,
+    27% 0%,
+    44% 0%,
+    61% 0%,
+    78% 0%,
+    100% 0%,
+    100% 100%,
+    0% 100%
+  );
+}
+
+.accent-mark:is(:hover, :focus-visible)::after,
+.group:is(:hover, :focus-visible) .accent-mark::after {
+  opacity: 0;
+  animation: none;
+}
+
+@keyframes accent-ember {
+  0% {
+    transform: translate3d(-30%, 0, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  55% {
+    transform: translate3d(140%, 0, 0);
+  }
+  100% {
+    transform: translate3d(280%, 0, 0);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accent-mark,
+  .accent-mark::before,
+  .accent-mark::after {
+    animation: none;
+    transition: none;
+  }
+
+  .accent-mark::before {
+    clip-path: none;
+    opacity: 0;
+  }
+
+  .accent-mark::after {
+    display: none;
+  }
+
+  .accent-mark:is(:hover, :focus-visible)::before,
+  .group:is(:hover, :focus-visible) .accent-mark::before {
+    opacity: 1;
+  }
+}
+
+/* In-page verb: stays orange. A hairline, not a chip. */
+.accent-quiet {
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--accent);
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.16s ease;
+}
+
+.accent-quiet:is(:hover, :focus-visible) {
+  background-size: 100% 1px;
+}
+
+.accent-quiet:disabled {
+  cursor: default;
+  background-size: 0% 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accent-quiet {
+    transition: none;
+  }
+}
+
+/* A name or a direction: cream, then an accent line. Not a chip. */
+.home-credit {
+  cursor: pointer;
+  color: color-mix(in srgb, var(--fg) 82%, transparent);
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition:
+    color 0.16s ease,
+    background-size 0.16s ease;
+}
+
+.home-credit:is(:hover, :focus-visible) {
+  color: var(--accent);
+  background-size: 100% 1px;
+}
+
+.home-title-link {
+  transition: color 0.16s ease;
+}
+
+.home-title-link:is(:hover, :focus-visible) {
+  color: var(--accent);
+}
+
+/* Room name: Journal, Studio, Dialogue. Goes to that page. */
+.home-room {
+  cursor: pointer;
+  color: color-mix(in srgb, var(--fg) 80%, transparent);
+  transition: color 0.16s ease;
+}
+
+.home-room:is(:hover, :focus-visible) {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-credit,
+  .home-title-link,
+  .home-room {
+    transition: none;
+  }
+}
+
 [data-language-switch] {
+  appearance: none;
   border: none;
   outline: none;
   box-shadow: none;
-  background: transparent;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23f4f1ea' stroke-opacity='0.55' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 0.5rem 0.34rem;
+}
+
+[data-language-switch]:focus,
+[data-language-switch]:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 [data-language-switch] option {

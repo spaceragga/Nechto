@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { HomeNowRow, type HomeNowItem } from '@/components/home/home-now-row';
 import type { PublishedCreator } from '@/lib/load-published-feed';
 import { toUploadSrc } from '@/lib/to-upload-src';
+import { catalogHref } from '@/lib/catalog-query';
 import { workPath, profilePath } from '@/lib/work-path';
 
 type HomeNowProps = {
@@ -18,6 +19,9 @@ export async function HomeNow({ creators = [] }: HomeNowProps) {
     directionLabel: creator.directions[0]
       ? tCreators(`directions.${creator.directions[0]}`)
       : '',
+    directionHref: creator.directions[0]
+      ? catalogHref('/works', { direction: creator.directions[0] })
+      : null,
     avatarSrc: toUploadSrc(creator.avatarUrl),
     works: creator.latestWorks.map((work) => ({
       title: work.title,

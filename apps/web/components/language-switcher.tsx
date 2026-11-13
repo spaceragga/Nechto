@@ -33,21 +33,17 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <label className="flex items-center gap-2 text-sm tracking-wide opacity-80">
+    <label className="flex items-center text-sm leading-tight tracking-wide text-[color-mix(in_srgb,var(--fg)_62%,transparent)]">
       <span className="sr-only">{t('label')}</span>
       <select
         data-language-switch
-        className="bg-transparent py-1"
+        className="cursor-pointer py-0 pr-4"
         value={locale}
         disabled={!hydrated}
         onChange={(event) => onChange(event.target.value)}
       >
         {routing.locales.map((item) => (
-          <option
-            key={item}
-            value={item}
-            className="bg-[var(--bg)] text-[var(--fg)]"
-          >
+          <option key={item} value={item}>
             {t(item)}
           </option>
         ))}

@@ -65,7 +65,7 @@ export function ExploreCatalogPage({
         </section>
       )}
       {nextHref && more ? (
-        <Link href={nextHref} className="font-sans text-sm">
+        <Link href={nextHref} className="accent-mark self-start">
           {more}
         </Link>
       ) : null}

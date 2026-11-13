@@ -164,7 +164,7 @@ export function CommentsThread({
                 {item.canDelete ? (
                   <button
                     type="button"
-                    className="mt-2 font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline disabled:opacity-50"
+                    className="accent-quiet mt-2 disabled:opacity-50"
                     disabled={deletingId === item.id || !hydrated}
                     onClick={() => {
                       void remove(item.id);
@@ -181,7 +181,7 @@ export function CommentsThread({
       {nextCursor ? (
         <button
           type="button"
-          className="mt-4 font-sans text-sm text-[var(--accent)] underline-offset-4 hover:underline disabled:opacity-50"
+          className="accent-mark mt-4 self-start disabled:opacity-50"
           disabled={loadingMore || !hydrated}
           onClick={() => {
             void loadMore();
@@ -199,7 +199,7 @@ export function CommentsThread({
         <div className="mt-8 flex w-full flex-col items-center gap-3">
           <button
             type="button"
-            className="cursor-pointer font-sans text-sm text-[var(--accent)]"
+            className="accent-quiet"
             aria-expanded={open}
             onClick={() => setOpen((current) => !current)}
           >
@@ -232,10 +232,7 @@ export function CommentsThread({
         </div>
       ) : (
         <p className="mt-8 text-center font-sans text-sm">
-          <Link
-            href="/login"
-            className="cursor-pointer text-[var(--accent)] no-underline"
-          >
+          <Link href="/login" className="accent-quiet">
             {t('signIn')}
           </Link>
         </p>

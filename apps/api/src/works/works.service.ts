@@ -15,7 +15,10 @@ import {
 import { ApiHttpException } from '../common/errors/api-http-exception';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
-import { publishedProfileWhere } from '../profiles/published-profile';
+import {
+  publicWorkWhere,
+  publishedProfileWhere,
+} from '../profiles/published-profile';
 import { withEngagementCounts } from '../social/engagement-counts';
 import { extensionForImageMime } from '../storage/image-file';
 import { assertWorkFile } from './work-file';
@@ -153,10 +156,7 @@ export class WorksService {
 
   async getPublishedById(id: string): Promise<WorkWithAuthor> {
     const row = await this.prisma.work.findFirst({
-      where: {
-        id,
-        profile: publishedProfileWhere,
-      },
+      where: publicWorkWhere(id),
       include: {
         profile: {
           select: publishedAuthorSelect,
